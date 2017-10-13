@@ -19,6 +19,12 @@ let _connecting = false,
 
 client.registry
     .registerDefaultTypes()
+    .registerDefaultGroups()
+    .registerGroups([
+        ['cogsv', 'Cognitive Services']
+    ])
+    .registerDefaultCommands({ prefix: false, ping: false, eval_: false, commandState: false })
+    .registerCommandsIn(path.join(__dirname, 'commands'))
 
 client
     .on('ready', () => {
