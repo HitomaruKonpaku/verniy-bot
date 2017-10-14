@@ -3,8 +3,8 @@ const { RichEmbed } = require('discord.js')
 const request = require('request-promise')
 const oneLine = require('common-tags').oneLine
 
+const CognitiveServices = require('../../settings.json').Microsoft.CognitiveServices
 const logger = require('../../logger')
-const token = require('../../settings.json').Microsoft.CognitiveServices.Token
 
 module.exports = class ReplyCommand extends Command {
     constructor(client) {
@@ -39,10 +39,10 @@ module.exports = class ReplyCommand extends Command {
             /.((jpg)|(png)|(bmp)|(gif))$/.test(url) &&
             /^(?:(http[s]?|ftp[s]):\/\/)?([^:\/\s]+)(:[0-9]+)?((?:\/\w+)*\/)([\w\-\.]+[^#?\s]+)([^#\s]*)?(#[\w\-]+)?$/.test(url)
         ) {
-            request('https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/ocr', {
+            request(CognitiveServices.Server + '/vision/v1.0/ocr', {
                     method: 'POST',
-                    qs: { 'language': 'unk', 'detectOrientation': 'true' },
-                    headers: { 'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': token },
+                    qs: { 'language': 'unk', 'detectOrientation': true },
+                    headers: { 'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': CognitiveServices.Token },
                     body: { url },
                     json: true,
                 })
