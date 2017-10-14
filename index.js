@@ -19,12 +19,10 @@ let _connecting = false,
 
 client.registry
     .registerDefaultTypes()
-    // .registerDefaultGroups()
     .registerGroups([
         ['util', 'Utility'],
         ['cogsv', 'Cognitive Services'],
     ])
-    .registerDefaultCommands({ help: false, prefix: false, ping: true, eval_: false, commandState: false })
     .registerCommandsIn(path.join(__dirname, 'commands'))
 
 client

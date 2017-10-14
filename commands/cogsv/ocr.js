@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { RichEmbed } = require('discord.js')
 const request = require('request-promise')
+const oneLine = require('common-tags').oneLine
 
 const logger = require('../../logger')
 const token = require('../../settings.json').Microsoft.CognitiveServices.Token
@@ -11,7 +12,13 @@ module.exports = class ReplyCommand extends Command {
             name: 'ocr',
             group: 'cogsv',
             memberName: 'ocr',
-            description: 'Optical Character Recognition',
+            description: oneLine `
+                Optical Character Recognition.
+                Supported image formats: JPEG, PNG, GIF, BMP.
+                Image file size must be less than 4MB.
+                Image dimensions must be between 40 x 40 and 3200 x 3200 pixels, and the image cannot be larger than 10 megapixels.
+                Supported only 1 language in 1 image.
+            `,
             examples: ['ocr <image_link>']
         })
     }
@@ -34,40 +41,25 @@ module.exports = class ReplyCommand extends Command {
         ) {
             request('https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/ocr', {
                     method: 'POST',
-                    qs: {
-                        'language': 'unk',
-                        'detectOrientation': 'true',
-                    },
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Ocp-Apim-Subscription-Key': token,
-                    },
-                    body: {
-                        url,
-                    },
+                    qs: { 'language': 'unk', 'detectOrientation': 'true' },
+                    headers: { 'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': token },
+                    body: { url },
                     json: true,
                 })
                 .then(res => {
-                    var content = res.regions.map(
-                        r => r.lines.map(
-                            l => l.words.map(
-                                w => w.text
-                            ).join('')
-                        ).join('\n')
-                    ).join('\n')
-
-                    msg.embed(getRichEmbed(true, content, url, res.language, res.orientation))
+                    var content = res.regions.map(r => r.lines.map(l => l.words.map(w => w.text).join('')).join('\n')).join('\n')
+                    msg.embed(ocrRichEmbed(true, content, url, res.language, res.orientation))
                 })
                 .catch(err => {
-                    msg.embed(getRichEmbed(false, err.error.message))
+                    msg.embed(ocrRichEmbed(false, err.error.message))
                 })
         } else {
-            msg.embed(getRichEmbed(false, 'Invalid image URL'))
+            msg.embed(ocrRichEmbed(false, 'Invalid image URL'))
         }
     }
 }
 
-function getRichEmbed(success, message, image, language, orientation) {
+function ocrRichEmbed(success, message, image, language, orientation) {
     let embed = new RichEmbed()
         .setColor(success ? 0x2196f3 : 0xf04747)
         .setDescription(message)
