@@ -24,7 +24,7 @@ client.registry
         ['util', 'Utility'],
         ['cogsv', 'Cognitive Services'],
     ])
-    // .registerDefaultCommands({ prefix: false, ping: false, eval_: false, commandState: false })
+    .registerDefaultCommands({ help: false, prefix: false, ping: true, eval_: false, commandState: false })
     .registerCommandsIn(path.join(__dirname, 'commands'))
 
 client
