@@ -2,8 +2,7 @@ const { CommandoClient } = require('discord.js-commando')
 const path = require('path')
 
 const logger = require('./logger')
-const settings = require('./settings.json')
-const token = settings.Discord.Token
+const DiscordSettings = require('./settings.json').Discord
 
 const client = new CommandoClient({
     owner: ['153363129915539457'],
@@ -11,7 +10,7 @@ const client = new CommandoClient({
     commandEditableDuration: 15,
     nonCommandEditable: false,
     unknownCommandResponse: false,
-    invite: settings.Discord.InviteLink,
+    invite: DiscordSettings.InviteLink,
 })
 
 let _connecting = false,
@@ -50,4 +49,4 @@ client
 
     })
 
-client.login(token)
+client.login(DiscordSettings.Token)
