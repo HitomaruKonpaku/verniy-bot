@@ -73,7 +73,7 @@ module.exports = class HelpCommand extends Command {
 					${oneLine`
 						To run a command in ${msg.guild || 'any server'},
 						use ${Command.usage('command', msg.guild ? msg.guild.commandPrefix : null, this.client.user)}.
-						For example, ${Command.usage('prefix', msg.guild ? msg.guild.commandPrefix : null, this.client.user)}.
+						For example, ${Command.usage('help', msg.guild ? msg.guild.commandPrefix : null, this.client.user)}.
 					`}
 					To run a command in this DM, simply use ${Command.usage('command', null, null)} with no prefix.
 
