@@ -6,7 +6,7 @@ const oneLine = require('common-tags').oneLine
 const CognitiveServices = require('../../settings.json').Microsoft.CognitiveServices
 const logger = require('../../logger')
 
-module.exports = class ReplyCommand extends Command {
+module.exports = class OCRCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'ocr',

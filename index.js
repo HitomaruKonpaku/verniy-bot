@@ -10,7 +10,7 @@ const client = new CommandoClient({
     commandEditableDuration: 15,
     nonCommandEditable: false,
     unknownCommandResponse: false,
-    invite: DiscordSettings.InviteLink,
+    invite: DiscordSettings.ServerLink,
 })
 
 let _connecting = false,
