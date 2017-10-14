@@ -58,4 +58,4 @@ typings/
 .env
 
 # Eveee Project
-settings.json
+_data

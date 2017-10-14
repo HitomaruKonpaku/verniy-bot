@@ -2,7 +2,7 @@ const { CommandoClient } = require('discord.js-commando')
 const path = require('path')
 
 const logger = require('./logger')
-const DiscordSettings = require('./settings.json').Discord
+const DiscordSettings = require('./_data/settings.json').Discord
 
 const client = new CommandoClient({
     owner: ['153363129915539457'],
