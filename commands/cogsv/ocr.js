@@ -20,13 +20,13 @@ module.exports = class ReplyCommand extends Command {
         let url,
             user = msg.author.username + '@' + msg.author.discriminator
 
-        logger.log(args, user)
-
         if (msg.attachments.size != 0) {
             url = msg.attachments.first().url
         } else {
             url = args
         }
+
+        logger.log(url, user)
 
         if (
             /.((jpg)|(png)|(bmp)|(gif))$/.test(url) &&
