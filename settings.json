@@ -1,0 +1,13 @@
+{
+    "Discord": {
+        "ClientID": "",
+        "Token": "",
+        "InviteLink": ""
+    },
+    "Microsoft": {
+        "CognitiveServices": {
+            "Server": "https://westcentralus.api.cognitive.microsoft.com",
+            "Token": ""
+        }
+    }
+}
