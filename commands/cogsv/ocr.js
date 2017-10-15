@@ -4,7 +4,7 @@ const request = require('request-promise')
 const oneLine = require('common-tags').oneLine
 
 const CognitiveServices = require('../../_data/settings.json').Microsoft.CognitiveServices
-const logger = require('../../logger')
+const logger = require('../../lib/logger')
 
 module.exports = class OCRCommand extends Command {
     constructor(client) {
@@ -19,7 +19,7 @@ module.exports = class OCRCommand extends Command {
                 Image dimensions must be between 40 x 40 and 3200 x 3200 pixels, and the image cannot be larger than 10 megapixels.
                 Supported only 1 language in 1 image.
             `,
-            examples: ['ocr <image_link>']
+            examples: ['ocr <image_link>', 'ocr <image_attachment>']
         })
     }
 
