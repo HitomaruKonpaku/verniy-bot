@@ -1,10 +1,10 @@
 const { Command } = require('discord.js-commando')
 const { RichEmbed } = require('discord.js')
 const request = require('request-promise')
-const oneLine = require('common-tags').oneLine
+const { oneLine } = require('common-tags')
 
 const CognitiveServices = require('../../_data/settings.json').Microsoft.CognitiveServices
-const logger = require('../../lib/logger')
+const Logger = require('../../lib/logger')
 
 module.exports = class OCRCommand extends Command {
     constructor(client) {
@@ -33,7 +33,7 @@ module.exports = class OCRCommand extends Command {
             url = args
         }
 
-        logger.log(url, user)
+        Logger.log(url, user)
 
         if (
             /.((jpg)|(png)|(bmp)|(gif))$/.test(url) &&

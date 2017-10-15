@@ -1,5 +1,5 @@
-const oneLine = require('common-tags').oneLine
-const Command = require('discord.js-commando/src/commands/base')
+const { Command } = require('discord.js-commando')
+const { oneLine } = require('common-tags')
 
 module.exports = class PingCommand extends Command {
         constructor(client) {
