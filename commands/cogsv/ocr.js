@@ -47,7 +47,7 @@ module.exports = class OCRCommand extends Command {
                     json: true,
                 })
                 .then(res => {
-                    var content = res.regions.map(r => r.lines.map(l => l.words.map(w => w.text).join('')).join('\n')).join('\n')
+                    let content = res.regions.map(r => r.lines.map(l => l.words.map(w => w.text).join('')).join('\n')).join('\n')
                     msg.embed(ocrRichEmbed(true, content, url, res.language, res.orientation))
                 })
                 .catch(err => {

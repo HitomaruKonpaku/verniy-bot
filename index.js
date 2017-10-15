@@ -6,7 +6,7 @@ const logger = require('./lib/logger')
 
 const client = new CommandoClient({
     owner: ['153363129915539457'],
-    commandPrefix: '?',
+    commandPrefix: DiscordSettings.Prefix,
     commandEditableDuration: 15,
     nonCommandEditable: false,
     unknownCommandResponse: false,
