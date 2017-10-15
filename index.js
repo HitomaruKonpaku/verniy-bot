@@ -14,34 +14,31 @@ const client = new Commando.Client({
     invite: DiscordSettings.ServerLink,
 })
 
-let _connecting = false,
-    _reconnecting = true
-
 client
     .on('ready', () => {
-        _connecting = true
-        _reconnecting = false
-        Logger.log('Connected')
+        Logger.log('Ready')
+        Logger.infoLog('READY')
         client.user.setGame('Electron Beams')
     })
-    .on('error', err => {
-        if (_connecting) {
-            _connecting = false
-            Logger.log('Disconnected')
-        }
-    })
     .on('reconnecting', () => {
-        if (!_reconnecting) {
-            _reconnecting = true
-            Logger.log('Reconnecting...')
-        }
+        Logger.log('Reconnecting')
+        Logger.infoLog('RECNT')
     })
-    .on('disconnect', ev => {
-
+    .on('debug', info => { Logger.infoLog('DEBUG', info) })
+    .on('warn', info => { Logger.infoLog('WARN', info) })
+    .on('error', error => {
+        Logger.log('Error')
+        Logger.infoLog('ERROR', error)
     })
-    .on('message', msg => {
-
+    .on('resume', replayed => {
+        Logger.log('Resume')
+        Logger.infoLog('RESM', replayed)
     })
+    .on('disconnect', event => {
+        Logger.log('Disconnect')
+        Logger.infoLog('DISCN', event)
+    })
+    .on('message', message => {})
 
 client
     .setProvider(sqlite
