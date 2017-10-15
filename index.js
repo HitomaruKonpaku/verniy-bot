@@ -31,6 +31,7 @@ client
         _connecting = true
         _reconnecting = false
         logger.log('Connected')
+        client.user.setGame('Electron Beams')
     })
     .on('error', err => {
         if (_connecting) {
