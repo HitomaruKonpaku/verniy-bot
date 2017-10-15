@@ -6,7 +6,7 @@ module.exports = class KCAsCommand extends Command {
             name: 'ava',
             group: 'util',
             memberName: 'ava',
-            description: 'Gets user\'s avatar URL',
+            description: 'Gets avatar of mentioned user.',
             examples: [],
             argsType: 'single',
             args: [{

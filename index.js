@@ -22,6 +22,7 @@ client.registry
         ['util', 'Utility'],
         ['cogsv', 'Cognitive Services'],
         ['kc', 'Kantai Collection'],
+        ['test', 'Test'],
     ])
     .registerCommandsIn(path.join(__dirname, 'commands'))
 
