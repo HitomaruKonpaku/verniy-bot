@@ -18,10 +18,10 @@ client
     .on('ready', () => {
         client.user.setGame('Electron Beams')
         Logger.console({ user: client.user.tag, message: 'Ready!' })
-        Logger.file({ level: 'ready', data: 'Client ready!' })
+        Logger.file({ level: 'ready' })
     })
     .on('reconnecting', () => {
-        Logger.file({ level: 'reconnecting', data: 'Reconnecting...' })
+        Logger.file({ level: 'reconnecting' })
     })
     .on('debug', info => {
         Logger.file({ level: 'debug', data: info })

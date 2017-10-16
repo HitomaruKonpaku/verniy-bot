@@ -32,7 +32,7 @@ module.exports = class OCRCommand extends Command {
             /^(?:(http[s]?|ftp[s]):\/\/)?([^:\/\s]+)(:[0-9]+)?((?:\/\w+)*\/)([\w\-\.]+[^#?\s]+)([^#\s]*)?(#[\w\-]+)?$/.test(url)
         ) {
             Logger.console({ user, message: `OCR: ${url}` })
-            Logger.file({ level: 'ocr', data: `${user} - ${url}` })
+            Logger.file({ level: 'ocr', data: `REQUEST;;${user} >> ${url}` })
 
             request(CognitiveServices.Server + '/vision/v1.0/ocr', {
                     method: 'POST',
@@ -42,12 +42,12 @@ module.exports = class OCRCommand extends Command {
                     json: true,
                 })
                 .then(res => {
-                    Logger.file({ level: 'ocr', data: `Success - ${JSON.stringify (res)}` })
+                    Logger.file({ level: 'ocr', data: `SUCCESS;;${JSON.stringify (res)}` })
                     let message = res.regions.map(r => r.lines.map(l => l.words.map(w => w.text).join('')).join('\n')).join('\n')
                     msg.embed(ocrRichEmbed({ success: true, message: message, image: url, language: res.language, orientation: res.orientation, textAngle: res.textAngle }))
                 })
                 .catch(err => {
-                    Logger.file({ level: 'ocr', data: `Error - ${err.toString ()}` })
+                    Logger.file({ level: 'ocr', data: `ERROR;;${err.toString ()}` })
                     msg.embed(ocrRichEmbed(false, err.error.message))
                 })
         } else {
