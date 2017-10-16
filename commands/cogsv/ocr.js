@@ -28,7 +28,7 @@ module.exports = class OCRCommand extends Command {
             url = msg.attachments.size != 0 ? msg.attachments.first().url : args
 
         if (
-            /.((jpg)|(png)|(bmp)|(gif))$/.test(url) &&
+            /\w+.((jpg)|(png)|(bmp)|(gif))/.test(url) &&
             /^(?:(http[s]?|ftp[s]):\/\/)?([^:\/\s]+)(:[0-9]+)?((?:\/\w+)*\/)([\w\-\.]+[^#?\s]+)([^#\s]*)?(#[\w\-]+)?$/.test(url)
         ) {
             Logger.console({ user, message: `OCR: ${url}` })
@@ -48,10 +48,10 @@ module.exports = class OCRCommand extends Command {
                 })
                 .catch(err => {
                     Logger.file({ level: 'ocr', data: `ERROR;;${err.toString ()}` })
-                    msg.embed(ocrRichEmbed(false, err.error.message))
+                    msg.embed(ocrRichEmbed({ success: false, message: err.error.message }))
                 })
         } else {
-            msg.embed(ocrRichEmbed(false, 'Invalid image URL'))
+            msg.embed(ocrRichEmbed({ success: false, message: 'Invalid image URL' }))
         }
     }
 }
