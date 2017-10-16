@@ -24,33 +24,30 @@ module.exports = class OCRCommand extends Command {
     }
 
     async run(msg, args) {
-        let url,
-            user = msg.author.username + '@' + msg.author.discriminator
-
-        if (msg.attachments.size != 0) {
-            url = msg.attachments.first().url
-        } else {
-            url = args
-        }
-
-        Logger.log(url, user)
+        let user = msg.author.tag,
+            url = msg.attachments.size != 0 ? msg.attachments.first().url : args
 
         if (
             /.((jpg)|(png)|(bmp)|(gif))$/.test(url) &&
             /^(?:(http[s]?|ftp[s]):\/\/)?([^:\/\s]+)(:[0-9]+)?((?:\/\w+)*\/)([\w\-\.]+[^#?\s]+)([^#\s]*)?(#[\w\-]+)?$/.test(url)
         ) {
+            Logger.console({ user, message: `OCR: ${url}` })
+            Logger.file({ level: 'ocr', data: `${user} - ${url}` })
+
             request(CognitiveServices.Server + '/vision/v1.0/ocr', {
                     method: 'POST',
-                    qs: { 'language': 'unk', 'detectOrientation': true },
+                    qs: { 'language': 'unk', 'detectOrientation': 'true' },
                     headers: { 'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': CognitiveServices.Token },
                     body: { url },
                     json: true,
                 })
                 .then(res => {
-                    let content = res.regions.map(r => r.lines.map(l => l.words.map(w => w.text).join('')).join('\n')).join('\n')
-                    msg.embed(ocrRichEmbed(true, content, url, res.language, res.orientation))
+                    Logger.file({ level: 'ocr', data: `Success - ${JSON.stringify (res)}` })
+                    let message = res.regions.map(r => r.lines.map(l => l.words.map(w => w.text).join('')).join('\n')).join('\n')
+                    msg.embed(ocrRichEmbed({ success: true, message: message, image: url, language: res.language, orientation: res.orientation, textAngle: res.textAngle }))
                 })
                 .catch(err => {
+                    Logger.file({ level: 'ocr', data: `Error - ${err.toString ()}` })
                     msg.embed(ocrRichEmbed(false, err.error.message))
                 })
         } else {
@@ -59,7 +56,7 @@ module.exports = class OCRCommand extends Command {
     }
 }
 
-function ocrRichEmbed(success, message, image, language, orientation) {
+function ocrRichEmbed({ success, message, image, language, orientation, textAngle }) {
     let embed = new RichEmbed()
         .setColor(success ? 0x2196f3 : 0xf04747)
         .setDescription(message)
@@ -69,5 +66,7 @@ function ocrRichEmbed(success, message, image, language, orientation) {
         embed.addField('Language', language, true)
     if (orientation)
         embed.addField('Orientation', orientation, true)
+    if (textAngle)
+        embed.addField('Text Angle', textAngle, true)
     return embed
 }

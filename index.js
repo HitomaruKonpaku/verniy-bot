@@ -16,29 +16,32 @@ const client = new Commando.Client({
 
 client
     .on('ready', () => {
-        Logger.log('Ready')
-        Logger.infoLog('READY')
         client.user.setGame('Electron Beams')
+        Logger.console({ user: client.user.tag, message: 'Ready!' })
+        Logger.file({ level: 'ready', data: 'Client ready!' })
     })
     .on('reconnecting', () => {
-        Logger.log('Reconnecting')
-        Logger.infoLog('RECNT')
+        Logger.file({ level: 'reconnecting', data: 'Reconnecting...' })
     })
-    .on('debug', info => { Logger.infoLog('DEBUG', info) })
-    .on('warn', info => { Logger.infoLog('WARN', info) })
+    .on('debug', info => {
+        Logger.file({ level: 'debug', data: info })
+    })
+    .on('warn', info => {
+        Logger.file({ level: 'warn', data: info })
+    })
     .on('error', error => {
-        Logger.log('Error')
-        Logger.infoLog('ERROR', error)
+        Logger.file({ level: 'error', data: error })
     })
     .on('resume', replayed => {
-        Logger.log('Resume')
-        Logger.infoLog('RESM', replayed)
+        Logger.console({ user: client.user.tag, message: 'Resume' })
+        Logger.file({ level: 'resume', data: replayed })
     })
     .on('disconnect', event => {
-        Logger.log('Disconnect')
-        Logger.infoLog('DISCN', event)
+        Logger.file({ level: 'disconnect', data: event })
     })
-    .on('message', message => {})
+    .on('message', message => {
+
+    })
 
 client
     .setProvider(sqlite

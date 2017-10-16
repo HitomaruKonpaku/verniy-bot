@@ -1,26 +1,27 @@
 {
-  "name": "eveee",
-  "version": "1.0.0",
-  "description": "Eveee - Bot for Discord",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HitomaruKonpaku/Eveee.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/HitomaruKonpaku/Eveee/issues"
-  },
-  "homepage": "https://github.com/HitomaruKonpaku/Eveee#readme",
-  "dependencies": {
-    "discord.js": "^11.2.1",
-    "discord.js-commando": "github:gawdl3y/discord.js-commando#11.2",
-    "request": "^2.83.0",
-    "request-promise": "^4.2.2",
-    "sqlite": "^2.8.0"
-  }
+    "name": "eveee",
+    "version": "1.0.0",
+    "description": "Eveee - Bot for Discord",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/HitomaruKonpaku/Eveee.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/HitomaruKonpaku/Eveee/issues"
+    },
+    "homepage": "https://github.com/HitomaruKonpaku/Eveee#readme",
+    "dependencies": {
+        "discord.js": "^11.2.1",
+        "discord.js-commando": "github:gawdl3y/discord.js-commando#11.2",
+        "fs-extra": "^4.0.2",
+        "request": "^2.83.0",
+        "request-promise": "^4.2.2",
+        "sqlite": "^2.8.0"
+    }
 }

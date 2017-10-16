@@ -58,5 +58,6 @@ typings/
 .env
 
 # Eveee Project
+package-lock.json
 _data
 _log
