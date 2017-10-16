@@ -60,13 +60,13 @@ function ocrRichEmbed({ success, message, image, language, orientation, textAngl
     let embed = new RichEmbed()
         .setColor(success ? 0x2196f3 : 0xf04747)
         .setDescription(message)
-    if (image)
+    if (image != undefined)
         embed.setThumbnail(image)
-    if (language)
-        embed.addField('Language', language, true)
-    if (orientation)
+    if (language != undefined)
+        embed.addField('Language', language, false)
+    if (orientation != undefined)
         embed.addField('Orientation', orientation, true)
-    if (textAngle)
+    if (textAngle != undefined)
         embed.addField('Text Angle', textAngle, true)
     return embed
 }
