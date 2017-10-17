@@ -17,6 +17,7 @@
     },
     "homepage": "https://github.com/HitomaruKonpaku/Eveee#readme",
     "dependencies": {
+        "cheerio": "^1.0.0-rc.2",
         "discord.js": "^11.2.1",
         "discord.js-commando": "github:gawdl3y/discord.js-commando#11.2",
         "fs-extra": "^4.0.2",
