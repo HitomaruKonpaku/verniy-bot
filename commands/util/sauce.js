@@ -22,39 +22,52 @@ module.exports = class SauceCommand extends Command {
             /\w+.((jpg)|(png)|(bmp)|(gif))/.test(url) &&
             /^(?:(http[s]?|ftp[s]):\/\/)?([^:\/\s]+)(:[0-9]+)?((?:\/\w+)*\/)([\w\-\.]+[^#?\s]+)([^#\s]*)?(#[\w\-]+)?$/.test(url)
         ) {
-            url = 'http://saucenao.com/search.php?db=999&url=' + url
-            request(url, {
-                    transform: function(body) { return cheerio.load(body) }
+            let searchUrl = 'http://saucenao.com/search.php?db=999&url=' + url
+            request(searchUrl, {
+                    transform: function(body) {
+                        return cheerio.load(body)
+                    }
                 })
                 .then($ => {
-                    let links = []
-                    $('.resulttablecontent').each(function(i, e) {
-                        let percent = Number(e.firstChild.firstChild.firstChild.data.replace('%', ''))
-                        if (percent < 90) return
+                    const patterns = [
+                        /pixiv.net\/member_illust.php\?mode=medium&illust_id=\d+$/,
+                        /seiga.nicovideo.jp\/seiga\/im\d+$/,
+                        /yande.re\/post\/show\/\d+$/,
+                        /danbooru.donmai.us\/post\/show\/\d+$/,
+                        /gelbooru.com\/index.php\?page=post&s=view&id=\d+$/,
+                        /konachan.com\/post\/show\/\d+$/,
+                        /chan.sankakucomplex.com\/post\/show\/\d+$/,
+                        /anime-pictures.net\/pictures\/view_post\/\d+$/
+                    ]
 
-                        $('a', $(e)).each(function(i, e) {
-                            const match = [
-                                /http:\/\/www.pixiv.net\/member_illust.php\?mode=medium&illust_id=\d+/,
-                                /http:\/\/seiga.nicovideo.jp\/seiga\/im\d+/,
-                                /https:\/\/danbooru.donmai.us\/post\/show\/\d+/,
-                                /https:\/\/gelbooru.com\/index.php\?page=post&s=view&id=\d+/,
-                                /https:\/\/yande.re\/post\/show\/\d+/
-                            ]
-                            let href = e.attribs.href
-                            if (match.some(v => v.test(href))) {
+                    let links = []
+
+                    $('.resulttablecontent').each(function(index, value) {
+                        let matchPercent = Number(value.firstChild.firstChild.firstChild.data.replace('%', ''))
+                        if (matchPercent < 90) return
+
+                        $('a', value).each(function(index, value) {
+                            let href = value.attribs.href
+                            if (patterns.some(v => v.test(href))) {
                                 links.push(href)
                             }
                         })
                     })
 
-                    let embed = new RichEmbed()
-                        .setColor(0x2196f3)
-                        .setDescription(links.join('\n'))
-                    msg.embed(embed)
+                    msg.embed(sauceRichEmbed({ success: true, links }))
                 })
                 .catch(err => {
-                    console.log(err)
+                    msg.embed(sauceRichEmbed({ success: false, message: err.error.message }))
                 })
+        } else {
+            msg.embed(ocrRichEmbed({ success: false, message: 'Invalid image URL' }))
         }
     }
+}
+
+function sauceRichEmbed({ success, links, message }) {
+    let embed = new RichEmbed()
+        .setColor(success && links.length > 0 ? 0x2196f3 : 0xf04747)
+        .setDescription(!success ? message : links.length > 0 ? links.join('\n') : 'No match found!')
+    return embed
 }

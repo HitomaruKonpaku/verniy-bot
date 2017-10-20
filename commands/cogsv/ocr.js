@@ -34,7 +34,9 @@ module.exports = class OCRCommand extends Command {
             Logger.console({ user, message: `OCR: ${url}` })
             Logger.file({ level: 'ocr', data: `REQUEST;;${user} >> ${url}` })
 
-            request(CognitiveServices.Server + '/vision/v1.0/ocr', {
+            const baseUrl = CognitiveServices.Server + '/vision/v1.0/ocr'
+
+            request(baseUrl, {
                     method: 'POST',
                     qs: { 'language': 'unk', 'detectOrientation': 'true' },
                     headers: { 'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': CognitiveServices.Token },
