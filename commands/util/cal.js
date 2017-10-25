@@ -13,7 +13,7 @@ module.exports = class CalculationCommand extends Command {
     }
 
     async run(msg, args) {
-        let pattern = /^[0-9\ \+\-\*\/\&\|\!\^\.]+$/
+        let pattern = /^[0-9. +\-*/&|!^%]+$/
         if (pattern.test(args)) {
             msg.channel.send(eval(args))
         } else {
