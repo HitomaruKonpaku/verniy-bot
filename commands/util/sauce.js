@@ -44,7 +44,7 @@ module.exports = class SauceCommand extends Command {
 
                     $('.resulttablecontent').each(function(index, value) {
                         let matchPercent = Number(value.firstChild.firstChild.firstChild.data.replace('%', ''))
-                        if (matchPercent < 90) return
+                        if (matchPercent < 70) return
 
                         $('a', value).each(function(index, value) {
                             let href = value.attribs.href
@@ -60,7 +60,7 @@ module.exports = class SauceCommand extends Command {
                     msg.embed(sauceRichEmbed({ success: false, message: err.error.message }))
                 })
         } else {
-            msg.embed(ocrRichEmbed({ success: false, message: 'Invalid image URL' }))
+            msg.embed(sauceRichEmbed({ success: false, message: 'Invalid image URL' }))
         }
     }
 }
