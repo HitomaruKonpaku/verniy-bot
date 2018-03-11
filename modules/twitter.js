@@ -16,7 +16,9 @@ module.exports = {
         }, stream => {
             // Handle successful
             stream.on('data', tweet => {
-                if (tweet.retweeted_status != null) return
+                if (!(new Set(Settings.KanColle.DevTwitterID).has(tweet.user.id_str))) {
+                    return
+                }
                 var broadcastChannels = new Set(Settings.KanColle.BroadcastChannels)
                 var listChannels = discordClient.channels
                 var receiver = listChannels.filterArray(v => v.type == 'text' && broadcastChannels.has(v.id))
