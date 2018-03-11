@@ -1,0 +1,20 @@
+{
+  "name": "verniy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "HitomaruKonpaku",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "discord.js-commando": "github:gawdl3y/discord.js-commando#11.2",
+    "twitter": "^1.7.1"
+  },
+  "engines": {
+    "node": "8.7.0"
+  }
+}
