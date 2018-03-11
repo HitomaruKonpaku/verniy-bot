@@ -12,11 +12,11 @@ const client = new Twitter({
 module.exports = {
     run: (discordClient) => {
         client.stream('statuses/filter', {
-            follow: Settings.KanColle.DevTwitterID,
-            track: ''
+            follow: Settings.KanColle.DevTwitterID.join(',')
         }, stream => {
             // Handle successful
             stream.on('data', tweet => {
+                if (tweet.retweeted_status != null) return
                 var broadcastChannels = new Set(Settings.KanColle.BroadcastChannels)
                 var listChannels = discordClient.channels
                 var receiver = listChannels.filterArray(v => v.type == 'text' && broadcastChannels.has(v.id))

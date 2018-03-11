@@ -14,8 +14,10 @@ module.exports = {
         'AccessTokenSecret': 'rIDXTtjAYn07yoA4JxxudZgrzuOAdfLiWiaGowHKAyv2n'
     },
     'KanColle': {
-        // 'DevTwitterID': '2591243785', // HitomaruKonpaku
-        'DevTwitterID': '294025417', // KanColle_STAFF
+        'DevTwitterID': [
+            // '2591243785', // HitomaruKonpaku
+            '294025417', // KanColle_STAFF
+        ],
         'BroadcastChannels': [
             '310270617607864322', // HitoSPAM > botroom
             '376294828608061440', // Quan nhau cua T > kancolle-only
