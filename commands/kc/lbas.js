@@ -7,7 +7,7 @@ module.exports = class KCLbasCommand extends Command {
             name: 'lb',
             group: 'kc',
             memberName: 'lb',
-            description: '',
+            description: 'Land Base Aerial Support',
         })
     }
 

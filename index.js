@@ -39,6 +39,7 @@ client
 client.registry
     .registerDefaultTypes()
     .registerGroups([
+        ['util', 'Utility'],
         ['kc', 'KanColle'],
     ])
     .registerCommandsIn(path.join(__dirname, 'commands'))

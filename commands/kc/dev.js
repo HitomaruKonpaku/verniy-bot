@@ -7,7 +7,7 @@ module.exports = class KCDevCommand extends Command {
             name: 'dev',
             group: 'kc',
             memberName: 'dev',
-            description: '',
+            description: 'Development quick guide',
         })
     }
 

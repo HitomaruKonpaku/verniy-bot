@@ -7,7 +7,7 @@ module.exports = class KCAirCommand extends Command {
             name: 'as',
             group: 'kc',
             memberName: 'as',
-            description: '',
+            description: 'AirPower for boss route',
         })
     }
 
