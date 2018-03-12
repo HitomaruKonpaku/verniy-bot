@@ -1,4 +1,5 @@
 const Commando = require('discord.js-commando')
+const path = require('path')
 const Settings = require('./_data/settings')
 
 var tf = require('./modules/twitter-follow')
@@ -34,5 +35,12 @@ client
     .on('resume', replayed => { })
     .on('disconnect', event => { })
     .on('message', message => { })
+
+client.registry
+    .registerDefaultTypes()
+    .registerGroups([
+        ['kc', 'KanColle'],
+    ])
+    .registerCommandsIn(path.join(__dirname, 'commands'))
 
 client.login(Settings.Discord.Token)
