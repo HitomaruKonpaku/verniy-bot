@@ -1,4 +1,3 @@
-
 module.exports = {
     'Discord': {
         'ClientID': '422330233035948032',
@@ -13,15 +12,27 @@ module.exports = {
         'AccessToken': '2591243785-GWwKbj2PhuIKBmm7ruy7Dj34crD9h0ggFEc0weP',
         'AccessTokenSecret': 'rIDXTtjAYn07yoA4JxxudZgrzuOAdfLiWiaGowHKAyv2n'
     },
+    'TwitterFollow': [{
+            'Followings': [
+                '2591243785', // HitomaruKonpaku
+            ],
+            'BroadcastChannels': [
+                '310270617607864322', // HitoSPAM > botroom
+            ]
+        },
+        {
+            'Followings': [
+                '294025417', // KanColle_STAFF
+            ],
+            'BroadcastChannels': [
+                '310270617607864322',
+                '376294828608061440', // Quan nhau cua T > kancolle-only
+            ]
+        }
+    ],
     'KanColle': {
-        'DevTwitterID': [
-            // '2591243785', // HitomaruKonpaku
-            '294025417', // KanColle_STAFF
-        ],
-        'BroadcastChannels': [
-            '310270617607864322', // HitoSPAM > botroom
-            '376294828608061440', // Quan nhau cua T > kancolle-only
-            ''
-        ]
+        'LBAS': '',
+        'AirPower': '',
+        'Development': ''
     }
 }

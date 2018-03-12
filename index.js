@@ -1,7 +1,7 @@
 const Commando = require('discord.js-commando')
-const Settings = require('./_data/settings.js')
+const Settings = require('./_data/settings')
 
-const twitter = require('./modules/twitter')
+var tf = require('./modules/twitter-follow')
 
 const client = new Commando.Client({
     owner: Settings.Discord.Owner,
@@ -17,15 +17,24 @@ client
         // Log
         console.log(`${client.user.tag} online!`)
 
-        // Worker
-        twitter.run(client)
+        // Twitter stalker
+        tf.init({
+            'ConsumerKey': Settings.Twitter.ConsumerKey,
+            'ConsumerSecret': Settings.Twitter.ConsumerSecret,
+            'AccessToken': Settings.Twitter.AccessToken,
+            'AccessTokenSecret': Settings.Twitter.AccessTokenSecret,
+        })
+        Settings.TwitterFollow.forEach(v => {
+            tf.follow({ discord: client, follows: v.Followings, broadcastChannels: v.BroadcastChannels })
+        })
+
     })
-    .on('reconnecting', () => { })
-    .on('debug', info => { })
-    .on('warn', info => { })
-    .on('error', error => { })
-    .on('resume', replayed => { })
-    .on('disconnect', event => { })
-    .on('message', message => { })
+    .on('reconnecting', () => {})
+    .on('debug', info => {})
+    .on('warn', info => {})
+    .on('error', error => {})
+    .on('resume', replayed => {})
+    .on('disconnect', event => {})
+    .on('message', message => {})
 
 client.login(Settings.Discord.Token)
