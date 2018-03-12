@@ -6,10 +6,10 @@ var client
 module.exports = {
     init: ({ ConsumerKey, ConsumerSecret, AccessToken, AccessTokenSecret }) => {
         client = new Twitter({
-            consumer_key = ConsumerKey,
-            consumer_secret = ConsumerSecret,
-            access_token_key = AccessToken,
-            access_token_secret = AccessTokenSecret,
+            consumer_key: ConsumerKey,
+            consumer_secret: ConsumerSecret,
+            access_token_key: AccessToken,
+            access_token_secret: AccessTokenSecret,
         })
     },
     follow: ({ discord, follows }) => {
