@@ -1,14 +1,16 @@
 const { RichEmbed } = require('discord.js')
 const Twitter = require('twitter')
 
-var client = new Twitter()
+var client
 
 module.exports = {
     init: ({ ConsumerKey, ConsumerSecret, AccessToken, AccessTokenSecret }) => {
-        client.consumer_key = ConsumerKey
-        client.consumer_secret = ConsumerSecret
-        client.access_token_key = AccessToken
-        client.access_token_secret = AccessTokenSecret
+        client = new Twitter({
+            consumer_key = ConsumerKey,
+            consumer_secret = ConsumerSecret,
+            access_token_key = AccessToken,
+            access_token_secret = AccessTokenSecret,
+        })
     },
     follow: ({ discord, follows }) => {
         client.stream('statuses/filter', {

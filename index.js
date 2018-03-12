@@ -19,10 +19,10 @@ client
 
         // Twitter stalker
         tf.init({
-            'ConsumerKey': Settings.Twitter.ConsumerKey,
-            'ConsumerSecret': Settings.Twitter.ConsumerSecret,
-            'AccessToken': Settings.Twitter.AccessToken,
-            'AccessTokenSecret': Settings.Twitter.AccessTokenSecret,
+            ConsumerKey: Settings.Twitter.ConsumerKey,
+            ConsumerSecret: Settings.Twitter.ConsumerSecret,
+            AccessToken: Settings.Twitter.AccessToken,
+            AccessTokenSecret: Settings.Twitter.AccessTokenSecret,
         })
         tf.follow({ discord: client, follows: Settings.TwitterFollow })
 
