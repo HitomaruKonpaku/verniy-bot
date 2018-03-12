@@ -12,24 +12,15 @@ module.exports = {
         'AccessToken': '2591243785-GWwKbj2PhuIKBmm7ruy7Dj34crD9h0ggFEc0weP',
         'AccessTokenSecret': 'rIDXTtjAYn07yoA4JxxudZgrzuOAdfLiWiaGowHKAyv2n'
     },
-    'TwitterFollow': [{
-            'Followings': [
-                '2591243785', // HitomaruKonpaku
-            ],
-            'BroadcastChannels': [
-                '310270617607864322', // HitoSPAM > botroom
-            ]
-        },
-        {
-            'Followings': [
-                '294025417', // KanColle_STAFF
-            ],
-            'BroadcastChannels': [
-                '310270617607864322',
-                '376294828608061440', // Quan nhau cua T > kancolle-only
-            ]
-        }
-    ],
+    'TwitterFollow': {
+        '2591243785': [
+            '310270617607864322',
+        ],
+        '294025417': [
+            '310270617607864322',
+            '376294828608061440',
+        ]
+    },
     'KanColle': {
         'LBAS': '',
         'AirPower': '',

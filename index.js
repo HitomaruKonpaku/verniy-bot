@@ -24,9 +24,7 @@ client
             'AccessToken': Settings.Twitter.AccessToken,
             'AccessTokenSecret': Settings.Twitter.AccessTokenSecret,
         })
-        Settings.TwitterFollow.forEach(v => {
-            tf.follow({ discord: client, follows: v.Followings, broadcastChannels: v.BroadcastChannels })
-        })
+        tf.follow({ discord: client, follows: Settings.TwitterFollow })
 
     })
     .on('reconnecting', () => {})
