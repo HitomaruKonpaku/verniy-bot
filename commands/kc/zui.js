@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando')
-const KC = require('../../_data/settings').KanColle
+
+const zuizui = 'ｽﾞｲ₍₍(ง˘ω˘)ว⁾⁾ｽﾞｲ'
 
 module.exports = class KCZuiCommand extends Command {
     constructor(client) {
@@ -7,11 +8,11 @@ module.exports = class KCZuiCommand extends Command {
             name: 'zui',
             group: 'kc',
             memberName: 'zui',
-            description: 'ｽﾞｲ₍₍(ง˘ω˘)ว⁾⁾ｽﾞｲ',
+            description: zuizui,
         })
     }
 
     async run(msg, args) {
-        msg.channel.send('ｽﾞｲ₍₍(ง˘ω˘)ว⁾⁾ｽﾞｲ')
+        msg.channel.send(zuizui)
     }
 }

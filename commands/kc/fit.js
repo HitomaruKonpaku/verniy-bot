@@ -1,17 +1,17 @@
 const { Command } = require('discord.js-commando')
 const KC = require('../../_data/settings').KanColle
 
-module.exports = class KCAkashiCommand extends Command {
+module.exports = class KCGunFitCommand extends Command {
     constructor(client) {
         super(client, {
-            name: 'akashi',
+            name: 'fit',
             group: 'kc',
-            memberName: 'akashi',
-            description: 'Akashi List',
+            memberName: 'fit',
+            description: 'Gun fit table',
         })
     }
 
     async run(msg, args) {
-        msg.channel.send(KC.Akashi)
+        msg.channel.send(KC.GunFit)
     }
 }
