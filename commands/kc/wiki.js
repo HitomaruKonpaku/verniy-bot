@@ -18,7 +18,7 @@ module.exports = class KCWikiCommand extends Command {
                 var base = KC.Wikia
                 var links = []
                 data.items.forEach(v => {
-                    links.push(`<${base + v.title}>`)
+                    links.push(`<${base + encodeURI(v.title)}>`)
                 })
                 msg.channel.send(links.join('\n'))
             })
