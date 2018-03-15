@@ -12,9 +12,11 @@
   "dependencies": {
     "discord.js": "^11.3.2",
     "discord.js-commando": "github:gawdl3y/discord.js-commando#11.2",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2",
     "twitter": "^1.7.1"
   },
   "engines": {
-    "node": "8.7.0"
+    "node": "9.8.0"
   }
 }
