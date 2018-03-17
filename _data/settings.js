@@ -30,5 +30,6 @@ module.exports = {
         AirPower: 'https://i.imgur.com/8DcnG08.png',
         Development: 'https://i.imgur.com/ZehPS8X.png',
         GunFit: 'https://i.imgur.com/RLiJubo.png',
+        EscortMod: 'https://i.imgur.com/f3U41DI.png',
     }
 }
