@@ -85,5 +85,41 @@ module.exports = {
                 console.log(error)
             })
         })
-    }
+    },
+    followAva: ({ discord }) => {
+        var savedImage
+
+        function runAPI() {
+            // console.log('Starting users/show api...')
+            client.get('users/show', {
+                // @HitomaruKonpaku
+                // user_id: '2591243785',
+                // @KanColle_STAFF
+                user_id: '294025417',
+                include_entities: false,
+            }, (error, tweet) => {
+                var img = tweet.profile_image_url_https.replace('_normal', '')
+                if (savedImage != undefined && savedImage != img) {
+                    var channels = discord.channels.filterArray(v =>
+                        v.type == 'text'
+                        && new Set([
+                            '422709303376609290',
+                            '376294828608061440',
+                            '421681074565939201',
+                        ]).has(v.id)
+                    )
+                    channels.forEach(v => { v.send(img) })
+                }
+                savedImage = img
+            })
+        }
+
+        // First run
+        runAPI()
+
+        // Interval run
+        setInterval(() => {
+            runAPI()
+        }, 1000 * 60)
+    },
 }
