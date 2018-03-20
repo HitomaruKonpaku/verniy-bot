@@ -1,4 +1,4 @@
-// Load process enviroment
+// Load process environment
 require('dotenv').config()
 
 const Commando = require('discord.js-commando')
