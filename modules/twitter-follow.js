@@ -109,9 +109,14 @@ module.exports = {
                 user_id: userID,
                 include_entities: false,
             }, (error, tweet) => {
+                if (error != undefined) {
+                    console.log(error)
+                    return
+                }
+
                 // Get the image link
                 var img = tweet.profile_image_url_https.replace('_normal', '')
-                console.log(`AVA: ${link}`)
+                console.log(`AVA: ${img}`)
 
                 if (savedImage != undefined &&
                     savedImage != img &&
