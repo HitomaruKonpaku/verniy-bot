@@ -1,6 +1,7 @@
 const { RichEmbed } = require('discord.js')
 const Twitter = require('twitter')
 
+// GLOBAL VAR
 var client
 var followData
 var followUsers
@@ -27,6 +28,10 @@ function getBroadcastChannels(user) {
 }
 
 function handleReceivedTweet(discord, tweet) {
+    // Make tweet link
+    const link = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+    console.log(`GET: ${link}`)
+
     // Check tweet source user
     if (!followUsers.has(tweet.user.id_str)) {
         return
@@ -39,9 +44,6 @@ function handleReceivedTweet(discord, tweet) {
     if (tweet.extended_entities) {
         // TODO
     }
-
-    // Make tweet link
-    const link = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
 
     // Filter channel to be send
     const channelDiscord = discord.channels
@@ -56,6 +58,7 @@ function handleReceivedTweet(discord, tweet) {
 
     // Send to all channel
     channelReceive.forEach(v => { v.send(link) })
+    console.log(`BROADCAST: Completed`)
 }
 
 module.exports = {
@@ -66,6 +69,7 @@ module.exports = {
             access_token_key: AccessToken,
             access_token_secret: AccessTokenSecret,
         })
+        console.log('INIT: Completed')
     },
     follow: ({ discord, follows }) => {
         // Module helper
@@ -87,29 +91,37 @@ module.exports = {
         })
     },
     followAva: ({ discord }) => {
+        // @HitomaruKonpaku
+        // const userID = '2591243785'
+        // @KanColle_STAFF
+        const userID = '294025417'
+        const channel2Send = getBroadcastChannels(userID)
+
+        // Var
         var savedImage
 
         function runAPI() {
-            // console.log('Starting users/show api...')
+            console.log('TRACE: Requesting users/show...')
             client.get('users/show', {
-                // @HitomaruKonpaku
-                // user_id: '2591243785',
-                // @KanColle_STAFF
-                user_id: '294025417',
+                user_id: userID,
                 include_entities: false,
             }, (error, tweet) => {
+                // Get the image link
                 var img = tweet.profile_image_url_https.replace('_normal', '')
-                if (savedImage != undefined && savedImage != img) {
+                console.log(`AVA: ${link}`)
+
+                if (savedImage != undefined &&
+                    savedImage != img &&
+                    img != '') {
                     var channels = discord.channels.filterArray(v =>
-                        v.type == 'text'
-                        && new Set([
-                            '422709303376609290',
-                            '376294828608061440',
-                            '421681074565939201',
-                        ]).has(v.id)
+                        v.type == 'text' &&
+                        channel2Send.has(v.id)
                     )
                     channels.forEach(v => { v.send(img) })
+                    console.log(`BROADCAST: Completed`)
                 }
+
+                // Save the new image
                 savedImage = img
             })
         }

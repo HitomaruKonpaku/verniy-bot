@@ -16,7 +16,7 @@ const client = new Commando.Client({
 client
     .on('ready', () => {
         // Log
-        console.log(`${client.user.tag} online!`)
+        console.log(`${client.user.tag} READY!`)
 
         // Twitter stalker
         tf.init({
