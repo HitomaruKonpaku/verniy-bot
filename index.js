@@ -26,7 +26,7 @@ client
             AccessTokenSecret: Settings.Twitter.AccessTokenSecret,
         })
         tf.follow({ discord: client, follows: Settings.TwitterFollow })
-        // tf.followAva({ discord: client })
+        tf.followAva({ discord: client })
 
     })
     .on('reconnecting', () => { })

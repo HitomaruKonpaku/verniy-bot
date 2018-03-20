@@ -135,7 +135,7 @@ module.exports = {
         // Interval run
         setInterval(() => {
             runAPI()
-        }, 1000 * 60)
+        }, 1000 * 60 * 1)
     },
     rateLimit: () => {
         client.get('application/rate_limit_status',
