@@ -76,6 +76,9 @@ module.exports = {
         if (followData != undefined) return
         initData(follows)
 
+        // Log
+        console.log(`TRACE: Following ${getFollowString()}`)
+
         // Start twitter stream
         client.stream('statuses/filter', {
             follow: getFollowString()
