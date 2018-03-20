@@ -12,6 +12,7 @@
   "dependencies": {
     "discord.js": "^11.3.2",
     "discord.js-commando": "github:gawdl3y/discord.js-commando#11.2",
+    "dotenv": "^5.0.1",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
     "twitter": "^1.7.1"

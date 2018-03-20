@@ -1,13 +1,16 @@
+// Load process enviroment
+require('dotenv').config()
+
 const Commando = require('discord.js-commando')
 const path = require('path')
-const Settings = require('./_data/settings')
+const Settings = require('./settings')
 const Log = require('./modules/logger')
 
 var tf = require('./modules/twitter-api')
 
 const client = new Commando.Client({
-    owner: Settings.Discord.Owner,
-    commandPrefix: Settings.Discord.Prefix,
+    owner: process.env.DISCORD_OWNER || '153363129915539457',
+    commandPrefix: process.env.DISCORD_PREFIX || '.',
     commandEditableDuration: 15,
     nonCommandEditable: false,
     unknownCommandResponse: false,
@@ -21,10 +24,10 @@ client
 
         // Twitter stalker
         tf.init({
-            ConsumerKey: Settings.Twitter.ConsumerKey,
-            ConsumerSecret: Settings.Twitter.ConsumerSecret,
-            AccessToken: Settings.Twitter.AccessToken,
-            AccessTokenSecret: Settings.Twitter.AccessTokenSecret,
+            ConsumerKey: process.env.TWITTER_CONSUMER_KEY,
+            ConsumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+            AccessToken: process.env.TWITTER_ACCESS_TOKEN,
+            AccessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
         })
         tf.follow({ discord: client, follows: Settings.TwitterFollow })
         tf.followAva({ discord: client })
@@ -49,4 +52,4 @@ client.registry
 
 // Log in section
 Log.custom('connecting', 'Logging in to Discord...')
-client.login(Settings.Discord.Token)
+client.login(process.env.DISCORD_TOKEN)

@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const KC = require('../../_data/settings').KanColle
+const KC = require('../../settings').KanColle
 
 module.exports = class KCGunFitCommand extends Command {
     constructor(client) {

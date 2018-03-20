@@ -116,7 +116,7 @@ module.exports = {
                 .then(tweet => {
                     // Get the image link
                     var img = tweet.profile_image_url_https.replace('_normal', '')
-                    Log.custom('img', img)
+                    Log.custom('get', img)
 
                     if (savedImage != undefined &&
                         savedImage != img &&
