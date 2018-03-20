@@ -12,8 +12,6 @@ module.exports = class TwitterRateLimitCommand extends Command {
     }
 
     async run(msg, args) {
-        Twitter.rateLimit().then(data => {
-            msg.channel.send(data)
-        })
+        Twitter.rateLimit()
     }
 }

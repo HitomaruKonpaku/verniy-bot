@@ -138,6 +138,12 @@ module.exports = {
         }, 1000 * 60)
     },
     rateLimit: () => {
-        return client.get('application/rate_limit_status')
+        client.get('application/rate_limit_status',
+            { resources: 'users', },
+            (err, data) => {
+                console.log(err)
+                console.log(data)
+            }
+        )
     },
 }
