@@ -1,5 +1,6 @@
 const { RichEmbed } = require('discord.js')
 const Twitter = require('twitter')
+const Log = require('../modules/logger')
 
 // GLOBAL VAR
 var client
@@ -30,7 +31,7 @@ function getBroadcastChannels(user) {
 function handleReceivedTweet(discord, tweet) {
     // Make tweet link
     const link = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-    console.log(`GET: ${link}`)
+    Log.custom('get', link)
 
     // Check tweet source user
     if (!followUsers.has(tweet.user.id_str)) {
@@ -53,12 +54,9 @@ function handleReceivedTweet(discord, tweet) {
         && channelSetting.has(v.id)
     )
 
-    // Log
-    console.log(`RT: ${link}`)
-
     // Send to all channel
     channelReceive.forEach(v => { v.send(link) })
-    console.log(`BROADCAST: Completed`)
+    Log.custom('broadcast', 'Completed')
 }
 
 module.exports = {
@@ -69,7 +67,7 @@ module.exports = {
             access_token_key: AccessToken,
             access_token_secret: AccessTokenSecret,
         })
-        console.log('INIT: Completed')
+        Log.info('Twitter API init completed')
     },
     follow: ({ discord, follows }) => {
         // Module helper
@@ -77,7 +75,7 @@ module.exports = {
         initData(follows)
 
         // Log
-        console.log(`TRACE: Following ${getFollowString()}`)
+        Log.info(`Following ${getFollowString()}`)
 
         // Start twitter stream
         client.stream('statuses/filter', {
@@ -89,7 +87,7 @@ module.exports = {
             })
             // Handle error
             stream.on('error', error => {
-                console.log(error)
+                Log.error(error)
             })
         })
     },
@@ -100,38 +98,43 @@ module.exports = {
         const userID = '294025417'
         const channel2Send = getBroadcastChannels(userID)
 
+        // Check interval
+        const checkInterval = 30
+
         // Var
         var savedImage
 
         function runAPI() {
-            console.log('TRACE: Requesting users/show...')
-            client.get('users/show', {
-                user_id: userID,
-                include_entities: false,
-            }, (error, tweet) => {
-                if (error != undefined) {
-                    console.log(error)
-                    return
-                }
+            const api = 'users/show'
+            Log.info(`Requesting ${api}`)
 
-                // Get the image link
-                var img = tweet.profile_image_url_https.replace('_normal', '')
-                console.log(`AVA: ${img}`)
+            client
+                .get(api, {
+                    user_id: userID,
+                    include_entities: false,
+                })
+                .then(tweet => {
+                    // Get the image link
+                    var img = tweet.profile_image_url_https.replace('_normal', '')
+                    Log.custom('img', img)
 
-                if (savedImage != undefined &&
-                    savedImage != img &&
-                    img != '') {
-                    var channels = discord.channels.filterArray(v =>
-                        v.type == 'text' &&
-                        channel2Send.has(v.id)
-                    )
-                    channels.forEach(v => { v.send(img) })
-                    console.log(`BROADCAST: Completed`)
-                }
+                    if (savedImage != undefined &&
+                        savedImage != img &&
+                        img != '') {
+                        var channels = discord.channels.filterArray(v =>
+                            v.type == 'text' &&
+                            channel2Send.has(v.id)
+                        )
+                        channels.forEach(v => { v.send(img) })
+                        Log.custom('broadcast', 'Completed')
+                    }
 
-                // Save the new image
-                savedImage = img
-            })
+                    // Save the new image
+                    savedImage = img
+                })
+                .catch(error => {
+                    Log.error(error)
+                })
         }
 
         // First run
@@ -140,15 +143,20 @@ module.exports = {
         // Interval run
         setInterval(() => {
             runAPI()
-        }, 1000 * 60 * 1)
+        }, 1000 * checkInterval)
     },
     rateLimit: () => {
-        client.get('application/rate_limit_status',
-            { resources: 'users', },
-            (err, data) => {
-                console.log(err)
-                console.log(JSON.stringify(data))
-            }
-        )
+        client
+            .get('application/rate_limit_status', {
+                resources: [
+                    'users'
+                ].join(','),
+            })
+            .then(data => {
+                Log.debug(data)
+            })
+            .catch(error => {
+                Log.error(error)
+            })
     },
 }

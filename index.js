@@ -1,8 +1,9 @@
 const Commando = require('discord.js-commando')
 const path = require('path')
 const Settings = require('./_data/settings')
+const Log = require('./modules/logger')
 
-var tf = require('./modules/twitter-follow')
+var tf = require('./modules/twitter-api')
 
 const client = new Commando.Client({
     owner: Settings.Discord.Owner,
@@ -10,13 +11,13 @@ const client = new Commando.Client({
     commandEditableDuration: 15,
     nonCommandEditable: false,
     unknownCommandResponse: false,
-    invite: Settings.Discord.InviteLink,
+    // invite: Settings.Discord.InviteLink,
 })
 
 client
     .on('ready', () => {
         // Log
-        console.log(`${client.user.tag} READY!`)
+        Log.info(`${client.user.tag} READY!`)
 
         // Twitter stalker
         tf.init({
@@ -40,9 +41,12 @@ client
 client.registry
     .registerDefaultTypes()
     .registerGroups([
+        ['dev', 'Developer'],
         ['util', 'Utility'],
         ['kc', 'KanColle'],
     ])
     .registerCommandsIn(path.join(__dirname, 'commands'))
 
+// Log in section
+Log.custom('connecting', 'Logging in to Discord...')
 client.login(Settings.Discord.Token)
