@@ -142,7 +142,7 @@ module.exports = {
             { resources: 'users', },
             (err, data) => {
                 console.log(err)
-                console.log(data)
+                console.log(JSON.stringify(data))
             }
         )
     },
