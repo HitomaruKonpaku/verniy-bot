@@ -137,4 +137,7 @@ module.exports = {
             runAPI()
         }, 1000 * 60)
     },
+    rateLimit: () => {
+        return client.get('application/rate_limit_status')
+    },
 }
