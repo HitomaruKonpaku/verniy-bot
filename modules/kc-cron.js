@@ -19,8 +19,8 @@ var cronPvp = new CronJob({
     cronTime: '0 0,30,45,50,55,58,59 0,1,12,13 * * *',
     onTick: () => {
         var date = new Date(),
-            hour = date.getHours(),
-            min = date.getMinutes(),
+            hour = (date.getUTCHours() + 7) % 24,
+            min = date.getUTCMinutes(),
             diff = 60 - min,
             msg
 
