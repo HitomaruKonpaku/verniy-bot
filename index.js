@@ -22,6 +22,9 @@ client
         // Log
         Log.info(`${client.user.tag} READY!`)
 
+        // KanColle cron
+        require('./modules/kc-cron').run(client)
+
         // Twitter stalker
         tf.init({
             ConsumerKey: process.env.TWITTER_CONSUMER_KEY,
