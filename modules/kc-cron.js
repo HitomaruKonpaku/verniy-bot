@@ -1,9 +1,14 @@
 const CronJob = require('cron').CronJob
 const Log = require('./logger')
 
-const cronTimeZone = 'Asia/Ho_Chi_Minh'
-const cronRun = false
+// UTC +/-
+const TIME_ZONE = 7
 
+// cron data
+const cronTimeZone = 'Asia/Ho_Chi_Minh'
+const cronStart = false
+
+// global var
 var _channels
 
 function initChannels(discord, filter) {
@@ -17,12 +22,17 @@ function sendMessage(message) {
     _channels.forEach(v => { v.send(message) })
 }
 
+// kc pvp cron
 var cronPvp = new CronJob({
-    // cronTime: '* * * * * *',
-    cronTime: '0 0,30,45,50,55,58,59 0,1,12,13 * * *',
+    cronTime: [
+        '0',
+        [0, 30, 45, 50, 55, 59].join(','),
+        [17, 18, 5, 6].map(v => (v + TIME_ZONE) % 24).join(','),
+        '*', '*', '*',
+    ].join(' '),
     onTick: () => {
         var date = new Date(),
-            hour = (date.getUTCHours() + 7) % 24,
+            hour = (date.getUTCHours() + TIME_ZONE) % 24,
             min = date.getUTCMinutes(),
             diff = 60 - min,
             msg
@@ -40,15 +50,19 @@ var cronPvp = new CronJob({
         sendMessage(msg)
     },
     timeZone: cronTimeZone,
-    start: cronRun,
+    start: cronStart,
 })
+
+// kc quest cron
+// var cronQuest = new CronJob({})
 
 module.exports = {
     run: discord => {
         Log.info('KC-CRON running...')
         initChannels(discord, [
             '422709303376609290',
-            '376294828608061440'
+            '376294828608061440',
+            '421681074565939201',
         ])
 
         Log.info('Starting PvP cron')
