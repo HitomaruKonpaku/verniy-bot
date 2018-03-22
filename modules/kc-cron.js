@@ -1,6 +1,9 @@
 const CronJob = require('cron').CronJob
 const Log = require('./logger')
 
+const cronTimeZone = 'Asia/Ho_Chi_Minh'
+const cronRun = false
+
 var _channels
 
 function initChannels(discord, filter) {
@@ -36,8 +39,8 @@ var cronPvp = new CronJob({
         Log.debug({ date, hour, min, diff, msg })
         sendMessage(msg)
     },
-    timeZone: 'Asia/Ho_Chi_Minh',
-    start: false,
+    timeZone: cronTimeZone,
+    start: cronRun,
 })
 
 module.exports = {
