@@ -19,5 +19,6 @@ module.exports = {
         Development: 'https://i.imgur.com/ZehPS8X.png',
         GunFit: 'https://i.imgur.com/RLiJubo.png',
         EscortMod: 'https://i.imgur.com/f3U41DI.png',
+        OverKill: 'https://i.imgur.com/YG0ub7G.png',
     }
 }
