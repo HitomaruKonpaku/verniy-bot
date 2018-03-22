@@ -7,7 +7,7 @@ module.exports = class TwitterRateLimitCommand extends Command {
             name: 'trl',
             group: 'dev',
             memberName: 'trl',
-            description: '',
+            description: 'Twitter rate limit',
         })
     }
 
