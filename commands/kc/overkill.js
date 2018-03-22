@@ -7,7 +7,7 @@ module.exports = class KCOverKillCommand extends Command {
             name: 'overkill',
             group: 'kc',
             memberName: 'overkill',
-            description: '',
+            description: 'Overkill protection',
         })
     }
 

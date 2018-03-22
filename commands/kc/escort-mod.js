@@ -7,7 +7,7 @@ module.exports = class KCEscortModCommand extends Command {
             name: 'demod',
             group: 'kc',
             memberName: 'demod',
-            description: 'How mod ship using Escorts',
+            description: 'How to mod ship using Escorts',
         })
     }
 
