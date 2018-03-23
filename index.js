@@ -19,7 +19,7 @@ const client = new Commando.Client({
 
 client
     .on('ready', () => {
-        Logger.info(`${client.user.tag} READY!`)
+        Logger.log(`${client.user.tag} READY!`)
 
         // KanColle cron
         require('./modules/kc-cron').run(client)
