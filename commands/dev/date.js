@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const Log = require('../../modules/logger')
+const Logger = require('../../modules/logger')
 
 module.exports = class DateCommand extends Command {
     constructor(client) {
@@ -16,7 +16,7 @@ module.exports = class DateCommand extends Command {
         var iso = date.toISOString()
         var utc = date.toUTCString()
         var local = date
-        Log.debug({ date, iso, utc, local })
+        Logger.debug({ date, iso, utc, local })
 
         var data = [
             `ISO  : ${iso}`,
@@ -24,7 +24,7 @@ module.exports = class DateCommand extends Command {
             `LOCAL: ${local}`,
         ]
 
-        data.forEach(v => Log.info(v))
+        data.forEach(v => Logger.info(v))
         msg.channel.send(data.join('\n'))
     }
 }

@@ -1,6 +1,6 @@
 const { RichEmbed } = require('discord.js')
 const Twitter = require('twitter')
-const Log = require('../modules/logger')
+const Logger = require('../modules/logger')
 
 // GLOBAL VAR
 var client
@@ -31,7 +31,7 @@ function getBroadcastChannels(user) {
 function handleReceivedTweet(discord, tweet) {
     // Make tweet link
     const link = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-    Log.custom('get', link)
+    Logger.log(`Tweet: ${link}`)
 
     // Check tweet source user
     if (!followUsers.has(tweet.user.id_str)) {
@@ -56,7 +56,7 @@ function handleReceivedTweet(discord, tweet) {
 
     // Send to all channel
     channelReceive.forEach(v => { v.send(link) })
-    Log.custom('broadcast', 'Completed')
+    Logger.log('Broadcast completed')
 }
 
 module.exports = {
@@ -67,15 +67,14 @@ module.exports = {
             access_token_key: AccessToken,
             access_token_secret: AccessTokenSecret,
         })
-        Log.info('Twitter API init completed')
+        Logger.log('Twitter API init completed')
     },
     follow: ({ discord, follows }) => {
         // Module helper
         if (followData != undefined) return
         initData(follows)
 
-        // Log
-        Log.info(`Following ${getFollowString()}`)
+        Logger.log(`Following ${getFollowString()}`)
 
         // Start twitter stream
         client.stream('statuses/filter', {
@@ -87,7 +86,7 @@ module.exports = {
             })
             // Handle error
             stream.on('error', error => {
-                Log.error(error)
+                Logger.error(error)
             })
         })
     },
@@ -100,16 +99,16 @@ module.exports = {
 
         // Check interval
         const envInterval = process.env.TWITTER_API_USER_PROFILE_INTERVAL
-        Log.info(`environment interval: ${envInterval}`)
+        Logger.log(`Environment interval: ${envInterval}`)
         const checkInterval = Number(envInterval) || 30
-        Log.info(`check interval: ${checkInterval}`)
+        Logger.log(`Assigned interval: ${checkInterval}`)
 
         // Var
         var savedImage
 
         function runAPI() {
             const api = 'users/show'
-            Log.info(`Requesting ${api}`)
+            Logger.log(`Requesting ${api}`)
 
             client
                 .get(api, {
@@ -119,7 +118,7 @@ module.exports = {
                 .then(tweet => {
                     // Get the image link
                     var img = tweet.profile_image_url_https.replace('_normal', '')
-                    Log.custom('get', img)
+                    Logger.log(`Avatar: ${img}`)
 
                     if (savedImage != undefined &&
                         savedImage != img &&
@@ -129,14 +128,14 @@ module.exports = {
                             channel2Send.has(v.id)
                         )
                         channels.forEach(v => { v.send(img) })
-                        Log.custom('broadcast', 'Completed')
+                        Logger.log('Broadcast completed')
                     }
 
                     // Save the new image
                     savedImage = img
                 })
                 .catch(error => {
-                    Log.error(error)
+                    Logger.error(error)
                 })
         }
 
@@ -156,10 +155,10 @@ module.exports = {
                 ].join(','),
             })
             .then(data => {
-                Log.debug(data)
+                Logger.debug(data)
             })
             .catch(error => {
-                Log.error(error)
+                Logger.error(error)
             })
     },
 }
