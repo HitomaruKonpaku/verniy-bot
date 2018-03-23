@@ -39,6 +39,9 @@ client
         Logger.log('Reconnecting...')
     })
     .on('debug', info => {
+        if (info.indexOf('Authenticated using token') != -1) {
+            return
+        }
         Logger.log(info)
     })
     .on('warn', info => {

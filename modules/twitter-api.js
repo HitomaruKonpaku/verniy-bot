@@ -55,6 +55,7 @@ function handleReceivedTweet(discord, tweet) {
     )
 
     // Send to all channel
+    Logger.log('Broadcasting...')
     channelReceive.forEach(v => { v.send(link) })
     Logger.log('Broadcast completed')
 }
@@ -127,6 +128,7 @@ module.exports = {
                             v.type == 'text' &&
                             channel2Send.has(v.id)
                         )
+                        Logger.log('Broadcasting...')
                         channels.forEach(v => { v.send(img) })
                         Logger.log('Broadcast completed')
                     }
