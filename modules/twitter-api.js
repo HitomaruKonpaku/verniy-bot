@@ -99,7 +99,10 @@ module.exports = {
         const channel2Send = getBroadcastChannels(userID)
 
         // Check interval
-        const checkInterval = 30
+        const envInterval = process.env.TWITTER_API_USER_PROFILE_INTERVAL
+        Log.info(`environment interval: ${envInterval}`)
+        const checkInterval = Number(envInterval) || 30
+        Log.info(`check interval: ${checkInterval}`)
 
         // Var
         var savedImage
