@@ -24,7 +24,7 @@ module.exports = class DateCommand extends Command {
             `LOCAL: ${local}`,
         ]
 
-        data.forEach(v => Logger.info(v))
+        data.forEach(v => Logger.log(v))
         msg.channel.send(data.join('\n'))
     }
 }
