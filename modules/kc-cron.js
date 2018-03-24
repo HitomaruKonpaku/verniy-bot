@@ -1,5 +1,5 @@
 const CronJob = require('cron').CronJob
-const Log = require('./logger')
+const Logger = require('./logger')
 
 // UTC +/-
 const TIME_ZONE = 7
@@ -40,13 +40,13 @@ var cronPvp = new CronJob({
         if (hour == 1 || hour == 13) {
             if (min != 0) { return }
             msg = `PvP reset`
-            Log.debug({ date, hour, min, diff, msg })
+            Logger.debug({ date, hour, min, diff, msg })
             sendMessage(msg)
             return
         }
 
         msg = `${diff} minute${diff > 1 ? 's' : ''} before PvP reset`
-        Log.debug({ date, hour, min, diff, msg })
+        Logger.debug({ date, hour, min, diff, msg })
         sendMessage(msg)
     },
     timeZone: cronTimeZone,
@@ -58,14 +58,14 @@ var cronPvp = new CronJob({
 
 module.exports = {
     run: discord => {
-        Log.info('KC-CRON running...')
+        Logger.log('Running KC cron module...')
         initChannels(discord, [
             '422709303376609290',
             '376294828608061440',
             '421681074565939201',
         ])
 
-        Log.info('Starting PvP cron')
+        Logger.log('Starting PvP cron')
         cronPvp.start()
     }
 }

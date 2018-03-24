@@ -1,14 +1,27 @@
+function makeLog(level, data) {
+    var obj = {
+        // time: new Date().toISOString(),
+        level: level.trim().toLowerCase(),
+        data,
+    }
+    return JSON.stringify(obj)
+}
+
+function printLog(level, data) {
+    console.log(makeLog(level, data))
+}
+
 module.exports = {
-    info: data => {
-        console.log(`INFO: ${data}`)
+    log: data => {
+        printLog('log', data)
     },
     debug: data => {
-        console.log(`DEBUG: ${JSON.stringify(data)}`)
+        printLog('debug', data)
     },
-    error: data => {
-        console.error(new Error(data))
-    },
-    custom: (level, data) => {
-        console.log(`${level.toString().toUpperCase()}: ${data}`)
+    error: error => {
+        if (error.message) {
+            printLog('error', error.message)
+        }
+        console.error(error)
     },
 }
