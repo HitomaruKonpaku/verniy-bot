@@ -45,7 +45,7 @@ var cronPvp = new CronJob({
             return
         }
 
-        msg = `${diff} minutes before PvP reset`
+        msg = `${diff} minute${diff > 1 ? 's' : ''} before PvP reset`
         Log.debug({ date, hour, min, diff, msg })
         sendMessage(msg)
     },
