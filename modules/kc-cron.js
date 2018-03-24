@@ -26,7 +26,7 @@ function sendMessage(message) {
 var cronPvp = new CronJob({
     cronTime: [
         '0',
-        [0, 30, 45, 50, 55, 59].join(','),
+        [0, 30, 55].join(','),
         [17, 18, 5, 6].map(v => (v + TIME_ZONE) % 24).join(','),
         '*', '*', '*',
     ].join(' '),
