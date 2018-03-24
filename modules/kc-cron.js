@@ -25,7 +25,7 @@ function sendMessage(message) {
 // kc pvp cron
 var cronPvp = new CronJob({
     cronTime: [
-        '0',
+        0,
         [0, 30, 55].join(','),
         [17, 18, 5, 6].map(v => (v + TIME_ZONE) % 24).join(','),
         '*', '*', '*',
@@ -54,7 +54,23 @@ var cronPvp = new CronJob({
 })
 
 // kc quest cron
-// var cronQuest = new CronJob({})
+var cronQuest = new CronJob({
+    cronTime: [
+        0, 0,
+        (20 + TIME_ZONE) % 24,
+        '*', '*', '*',
+    ].join(' '),
+    onTick: () => {
+        var msg = 'Quest reset'
+        Logger.debug({ msg })
+        sendMessage(msg)
+    },
+    timeZone: cronTimeZone,
+    start: cronStart,
+})
+
+// kc ranking cron
+// var cronRank = new CronJob({})
 
 module.exports = {
     run: discord => {
@@ -67,5 +83,9 @@ module.exports = {
 
         Logger.log('Starting PvP cron')
         cronPvp.start()
+
+        Logger.log('Starting Quest cron')
+        cronQuest.start()
+
     }
 }
