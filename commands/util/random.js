@@ -33,7 +33,7 @@ module.exports = class RandomCommand extends Command {
     async run(msg, args) {
         var min = args.min,
             max = args.max,
-            random = Math.floor(Math.random() * (max - min))
+            random = Math.floor(Math.random() * (max - min + 1) + min)
 
         Logger.log(`Generating random number...`)
         Logger.debug({ min, max, random })
