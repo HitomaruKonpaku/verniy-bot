@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const Twitter = require('../../modules/twitter-api')
+const Twitter = require('../../modules/twitter-client')
 
 module.exports = class TwitterRateLimitCommand extends Command {
     constructor(client) {
