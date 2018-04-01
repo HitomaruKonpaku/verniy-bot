@@ -9,17 +9,16 @@ const cronTimeZone = 'Asia/Ho_Chi_Minh'
 const cronStart = false
 
 // global var
+var _discord
 var _channels
 
-function initChannels(discord, filter) {
-    _channels = discord.channels.filterArray(v =>
-        v.type == 'text' &&
-        new Set(filter).has(v.id)
-    )
-}
-
 function sendMessage(message) {
-    _channels.forEach(v => { v.send(message) })
+    var broadcast = new Set(_channels)
+    var channels = _discord.channels.filterArray(v =>
+        v.type == 'text' &&
+        broadcast.has(v.id)
+    )
+    channels.forEach(v => { v.send(message) })
 }
 
 // kc pvp cron
@@ -75,11 +74,12 @@ var cronQuest = new CronJob({
 module.exports = {
     run: discord => {
         Logger.log('Running KC cron module...')
-        initChannels(discord, [
+        _discord = discord
+        _channels = [
             '422709303376609290',
             '376294828608061440',
             '421681074565939201',
-        ])
+        ]
 
         Logger.log('Starting PvP cron')
         cronPvp.start()
