@@ -36,9 +36,15 @@ client
         Logger.log('Reconnecting...')
     })
     .on('debug', info => {
-        if (info.indexOf('Authenticated using token') != -1) {
+        // Skip
+        if ([
+            'Authenticated using token',
+            'Sending a heartbeat',
+            'Heartbeat acknowledged',
+        ].some(v => info.indexOf(v) != -1)) {
             return
         }
+
         Logger.log(info)
     })
     .on('warn', info => {
