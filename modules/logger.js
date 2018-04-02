@@ -12,7 +12,7 @@ function printLog(level, data) {
 }
 
 module.exports = {
-    log: ({ level, data }) => {
+    custom: ({ level, data }) => {
         printLog(level, data)
     },
     log: data => {
