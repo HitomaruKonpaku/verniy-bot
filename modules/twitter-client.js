@@ -31,7 +31,6 @@ function getBroadcastChannels(user) {
 function handleReceivedTweet(discord, tweet) {
     // Make tweet link
     const link = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-    Logger.log(`Tweet: ${link}`)
 
     // Check tweet source user
     if (!followUsers.has(tweet.user.id_str)) {
@@ -46,12 +45,14 @@ function handleReceivedTweet(discord, tweet) {
         // TODO
     }
 
+    Logger.log(`Tweet: ${link}`)
+
     // Filter channel to be send
     const channelDiscord = discord.channels
     const channelSetting = getBroadcastChannels(tweet.user.id_str)
     const channelReceive = channelDiscord.filterArray(v =>
-        v.type == 'text'
-        && channelSetting.has(v.id)
+        v.type == 'text' &&
+        channelSetting.has(v.id)
     )
 
     // Send to all channel
@@ -109,7 +110,7 @@ module.exports = {
 
         function runAPI() {
             const api = 'users/show'
-            Logger.log(`Requesting ${api}`)
+            // Logger.log(`Requesting ${api}`)
 
             client
                 .get(api, {
@@ -119,11 +120,12 @@ module.exports = {
                 .then(tweet => {
                     // Get the image link
                     var img = tweet.profile_image_url_https.replace('_normal', '')
-                    Logger.log(`Avatar: ${img}`)
+                    // Logger.log(`Avatar: ${img}`)
 
                     if (savedImage != undefined &&
                         savedImage != img &&
                         img != '') {
+                        Logger.log(`Avatar: ${img}`)
                         var channels = discord.channels.filterArray(v =>
                             v.type == 'text' &&
                             channel2Send.has(v.id)
@@ -142,6 +144,7 @@ module.exports = {
         }
 
         // First run
+        Logger.log('Starting twitter avatar check...')
         runAPI()
 
         // Interval run
