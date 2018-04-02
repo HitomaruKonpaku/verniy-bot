@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+const Logger = require('../../modules/logger')
 
 module.exports = class LogCommand extends Command {
     constructor(client) {
@@ -11,11 +12,7 @@ module.exports = class LogCommand extends Command {
     }
 
     async run(msg, args) {
-        console.error(args)
-        console.warn(args)
-        console.info(args)
-        console.debug(args)
-        console.trace(args)
-        console.log(args)
+        Logger.log({ level: 'error', data: 'ERROR TEST', more: { a: 1, b: 2 } })
+        Logger.log({ level: 'debug', data: 'ERROR TEST', more: { a: 1, b: 2 } })
     }
 }

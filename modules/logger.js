@@ -12,6 +12,9 @@ function printLog(level, data) {
 }
 
 module.exports = {
+    log: ({ level, data }) => {
+        printLog(level, data)
+    },
     log: data => {
         printLog('log', data)
     },
