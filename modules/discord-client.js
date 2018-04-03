@@ -63,6 +63,7 @@ client.registry
         ['dev', 'Developer'],
         ['util', 'Utility'],
         ['kc', 'KanColle'],
+        ['fun', 'Funny'],
     ])
     .registerCommandsIn(path.join(__dirname, '..', 'commands'))
 
