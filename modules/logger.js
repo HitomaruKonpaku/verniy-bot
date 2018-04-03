@@ -1,7 +1,7 @@
 function makeLog(level, data) {
     var obj = {
         // time: new Date().toISOString(),
-        level: level.trim().toLowerCase(),
+        severity: level.trim().toLowerCase(),
         data,
     }
     return JSON.stringify(obj)
@@ -12,7 +12,7 @@ function printLog(level, data) {
 }
 
 module.exports = {
-    custom: ({ level, data }) => {
+    custom: (level, data) => {
         printLog(level, data)
     },
     log: data => {

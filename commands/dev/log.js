@@ -12,7 +12,5 @@ module.exports = class LogCommand extends Command {
     }
 
     async run(msg, args) {
-        Logger.custom({ level: 'error', data: args, more: { a: 1, b: 2 } })
-        Logger.custom({ level: 'debug', data: args, more: { a: 1, b: 2 } })
     }
 }
