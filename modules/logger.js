@@ -1,10 +1,9 @@
-function makeLog(level, data) {
-    var obj = {
-        // time: new Date().toISOString(),
-        severity: level.trim().toLowerCase(),
-        data,
+function makeLog(level, message) {
+    var o = {
+        severity: level,
+        text: message,
     }
-    return JSON.stringify(obj)
+    return JSON.stringify(o)
 }
 
 function printLog(level, data) {
@@ -12,18 +11,17 @@ function printLog(level, data) {
 }
 
 module.exports = {
-    custom: (level, data) => {
-        printLog(level, data)
+    debug: data => {
+        printLog(1, data)
     },
     log: data => {
-        printLog('log', data)
-    },
-    debug: data => {
-        printLog('debug', data)
+        printLog(3, data)
     },
     error: error => {
         if (error.message) {
-            printLog('error', error.message)
+            printLog(5, error.message)
+        } else {
+            printLog(5, message)
         }
         console.trace(error)
     },
