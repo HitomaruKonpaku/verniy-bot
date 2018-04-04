@@ -1,3 +1,5 @@
+import { log } from 'util';
+
 const { Command } = require('discord.js-commando')
 const Logger = require('../../modules/logger')
 
@@ -12,5 +14,9 @@ module.exports = class LogCommand extends Command {
     }
 
     async run(msg, args) {
+        var msg = 'Process exited with status 143'
+        Logger.log(msg)
+        Logger.debug(msg)
+        Logger.error(msg)
     }
 }
