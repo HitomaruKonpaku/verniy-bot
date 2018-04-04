@@ -51,7 +51,17 @@ client
         Logger.log(info)
     })
     .on('error', error => {
+        console.trace(error)
         Logger.error(error)
+
+        // Restart client
+        if (info.indexOf('ECONNRESET') != -1) {
+            client
+                .destroy()
+                .then(() => {
+                    _login()
+                })
+        }
     })
     .on('resume', replayed => { })
     .on('disconnect', event => { })
@@ -67,11 +77,18 @@ client.registry
     ])
     .registerCommandsIn(path.join(__dirname, '..', 'commands'))
 
+function _login() {
+    Logger.log('Connecting to Discord server...')
+    client
+        .login(process.env.DISCORD_TOKEN)
+        .catch(err => {
+            console.trace(err)
+            Logger.error(err)
+        })
+}
+
 module.exports = {
     login: () => {
-        Logger.log('Connecting to Discord server...')
-        client
-            .login(process.env.DISCORD_TOKEN)
-            .catch(err => Logger.error(err))
+        _login()
     }
 }
