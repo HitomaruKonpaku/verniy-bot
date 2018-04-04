@@ -25,6 +25,6 @@ module.exports = {
         if (error.message) {
             printLog('error', error.message)
         }
-        console.error(error)
+        console.trace(error)
     },
 }
