@@ -18,11 +18,7 @@ module.exports = {
         printLog(3, data)
     },
     error: error => {
-        if (error.message) {
-            printLog(5, error.message)
-        } else {
-            printLog(5, message)
-        }
+        printLog(5, error.message ? error.message : error)
         console.trace(error)
     },
 }

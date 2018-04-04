@@ -16,5 +16,9 @@ module.exports = class LogCommand extends Command {
         Logger.log(data)
         Logger.debug(data)
         Logger.error(data)
+        console.debug(data)
+        console.info(data)
+        console.warn(data)
+        console.error(data)
     }
 }
