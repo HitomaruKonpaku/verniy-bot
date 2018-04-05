@@ -13,7 +13,20 @@ module.exports = class UserInfoCommand extends Command {
     async run(msg, args) {
         msg.client.fetchUser(args)
             .then(data => {
-                console.log(JSON.stringify(data))
+                var cache = []
+                var json = JSON.stringify(data, function (key, value) {
+                    if (typeof value === 'object' && value !== null) {
+                        if (cache.indexOf(value) !== -1) {
+                            // Circular reference found, discard key
+                            return
+                        }
+                        // Store value in our collection
+                        cache.push(value)
+                    }
+                    return value
+                })
+                cache = null
+                console.log(json)
             })
             .catch(err => {
                 console.trace(err)
