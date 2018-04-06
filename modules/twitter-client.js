@@ -63,7 +63,7 @@ function handleReceivedTweet(discord, tweet) {
                 Logger.log(`Done: ${v.guild.name} / ${v.name}`)
             })
             .catch(err => {
-                console.trace(err)
+                Logger.error(err)
             })
     })
 }
@@ -138,8 +138,15 @@ module.exports = {
                             channel2Send.has(v.id)
                         )
                         Logger.log('Broadcasting...')
-                        channels.forEach(v => { v.send(img) })
-                        Logger.log('Broadcast completed')
+                        channels.forEach(v => {
+                            v.send(img)
+                                .then(msg => {
+                                    Logger.log(`Done: ${v.guild.name} / ${v.name}`)
+                                })
+                                .catch(err => {
+                                    Logger.error(err)
+                                })
+                        })
                     }
 
                     // Save the new image
