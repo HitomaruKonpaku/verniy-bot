@@ -60,7 +60,7 @@ function handleReceivedTweet(discord, tweet) {
     channelReceive.forEach(v => {
         v.send(link)
             .then(msg => {
-                console.log(`Done: ${v.name}`)
+                Logger.log(`Done: ${v.guild.name} / ${v.name}`)
             })
             .catch(err => {
                 console.trace(err)
