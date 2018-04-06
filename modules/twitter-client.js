@@ -57,8 +57,15 @@ function handleReceivedTweet(discord, tweet) {
 
     // Send to all channel
     Logger.log('Broadcasting...')
-    channelReceive.forEach(v => { v.send(link) })
-    Logger.log('Broadcast completed')
+    channelReceive.forEach(v => {
+        v.send(link)
+            .then(msg => {
+                console.log(`Done: ${v.name}`)
+            })
+            .catch(err => {
+                console.trace(err)
+            })
+    })
 }
 
 module.exports = {
