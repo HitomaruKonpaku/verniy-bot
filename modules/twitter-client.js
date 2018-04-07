@@ -155,22 +155,30 @@ module.exports = {
                             const Discord = require('discord.js')
                             const client = new Discord.Client()
                             client.on('ready', () => {
+                                Logger.log(`${client.user.tag} READY!`)
                                 client.channels
                                     .filterArray(v =>
                                         v.type == 'text' &&
-                                        v.id == '425302689887289344'
+                                        v.id == '425302689887289344' // KC Reddit > kc-only
                                     )
                                     .forEach(v => {
                                         v.send(img)
-                                            .then(() => { })
+                                            .then(() => {
+                                                Logger.log(`Done: ${v.guild.name} / ${v.name}`)
+                                            })
                                             .catch(err => {
                                                 Logger.error(err)
                                             })
                                             .then(() => {
+                                                Logger.log('Disconnecting from Discord as user!')
                                                 client.destroy()
+                                                    .then(() => {
+                                                        Logger.log('Disconnected!')
+                                                    })
                                             })
                                     })
                             })
+                            Logger.log('Connecting to Discord as user!')
                             client.login(token)
                         }
                     }
