@@ -3,6 +3,7 @@ const path = require('path')
 
 const Settings = require('../settings')
 const Logger = require('../modules/logger')
+const Twitter = require('../modules/twitter-client')
 
 const client = new Commando.Client({
     owner: process.env.DISCORD_OWNER || '153363129915539457',
@@ -21,19 +22,19 @@ client
         require('../modules/kc-cron').run(client)
 
         // Twitter client
-        const twitter = require('../modules/twitter-client')
-        twitter.init({
+        Twitter.init({
             ConsumerKey: process.env.TWITTER_CONSUMER_KEY,
             ConsumerSecret: process.env.TWITTER_CONSUMER_SECRET,
             AccessToken: process.env.TWITTER_ACCESS_TOKEN,
             AccessTokenSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
         })
-        twitter.follow({ discord: client, follows: Settings.TwitterFollow })
-        twitter.followAva({ discord: client })
+        Twitter.follow({ discord: client, follows: Settings.TwitterFollow })
+        Twitter.followAva({ discord: client })
 
     })
     .on('reconnecting', () => {
-        Logger.log('Reconnecting...')
+        Logger.log('RECONNECTING...')
+
     })
     .on('debug', info => {
         // Skip
@@ -45,10 +46,16 @@ client
             return
         }
 
-        Logger.log(info)
+        // 
+        Logger.log(`DEBUG: ${info}`)
+
+        // Attemp to reconnect twitter-follow
+        if (info.indexOf(`[ws] [connection] RESUMED`) != -1) {
+            Twitter.follow({ discord: client, follows: Settings.TwitterFollow })
+        }
     })
     .on('warn', info => {
-        Logger.log(info)
+        Logger.log(`WARN: ${info}`)
     })
     .on('error', error => {
         console.trace(error)
@@ -56,14 +63,12 @@ client
 
         // Restart client
         if (info.indexOf('ECONNRESET') != -1) {
-            client
-                .destroy()
-                .then(() => {
-                    _login()
-                })
+            _relog()
         }
     })
-    .on('resume', replayed => { })
+    .on('resume', replayed => {
+        Logger.log(`RESUME: ${replayed}`)
+    })
     .on('disconnect', event => { })
     .on('message', message => { })
 
@@ -84,6 +89,15 @@ function _login() {
         .catch(err => {
             console.trace(err)
             Logger.error(err)
+        })
+}
+
+function _relog() {
+    Logger.log('Relogging...')
+    client
+        .destroy()
+        .then(() => {
+            _login()
         })
 }
 
