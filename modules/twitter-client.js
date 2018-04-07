@@ -132,11 +132,13 @@ module.exports = {
                     if (savedImage != undefined &&
                         savedImage != img &&
                         img != '') {
+                        // 
                         Logger.log(`Avatar: ${img}`)
                         var channels = discord.channels.filterArray(v =>
                             v.type == 'text' &&
                             channel2Send.has(v.id)
                         )
+                        // Using bot to send
                         Logger.log('Broadcasting...')
                         channels.forEach(v => {
                             v.send(img)
@@ -147,6 +149,30 @@ module.exports = {
                                     Logger.error(err)
                                 })
                         })
+                        // Using user to send
+                        const token = process.env.DISCORD_TOKEN_USER
+                        if (token) {
+                            const Discord = require('discord.js')
+                            const client = new Discord.Client()
+                            client.on('ready', () => {
+                                client.channels
+                                    .filterArray(v =>
+                                        v.type == 'text' &&
+                                        v.id == '425302689887289344'
+                                    )
+                                    .forEach(v => {
+                                        v.send(img)
+                                            .then(() => { })
+                                            .catch(err => {
+                                                Logger.error(err)
+                                            })
+                                            .then(() => {
+                                                client.destroy()
+                                            })
+                                    })
+                            })
+                            client.login(token)
+                        }
                     }
 
                     // Save the new image

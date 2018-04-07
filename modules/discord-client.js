@@ -85,7 +85,7 @@ client.registry
 function _login() {
     Logger.log('Connecting to Discord server...')
     client
-        .login(process.env.DISCORD_TOKEN)
+        .login(process.env.DISCORD_TOKEN_BOT)
         .catch(err => {
             console.trace(err)
             Logger.error(err)
