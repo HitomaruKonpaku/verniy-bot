@@ -47,12 +47,8 @@ client
         }
 
         // 
+        info = info.replace(/\.$/, '')
         Logger.log(`DEBUG: ${info}`)
-
-        // Attemp to reconnect twitter-follow
-        if (info.indexOf(`[ws] [connection] RESUMED`) != -1) {
-            Twitter.follow({ discord: client, follows: Settings.TwitterFollow })
-        }
     })
     .on('warn', info => {
         Logger.log(`WARN: ${info}`)
@@ -68,6 +64,12 @@ client
     })
     .on('resume', replayed => {
         Logger.log(`RESUME: ${replayed}`)
+
+        // Attemp to reconnect twitter-follow
+        if (info.indexOf(`[ws] [connection] RESUMED`) != -1) {
+            Logger.log('Restart twitter follow')
+            Twitter.follow({ discord: client, follows: Settings.TwitterFollow })
+        }
     })
     .on('disconnect', event => { })
     .on('message', message => { })
