@@ -30,7 +30,12 @@ module.exports = class UserInfoCommand extends Command {
             embed.addField('Tag', user.tag)
             embed.addField('ID', user.id, true)
             embed.addField('Bot?', user.bot ? 'Yes' : 'No', true)
-            embed.addField('Created At', new Date(user.createdTimestamp).toISOString())
+            embed.addField('Created At',
+                new Date(user.createdTimestamp)
+                    .toISOString()
+                    .replace(/T|Z|\.\d{3}/g, ' ')
+                    .trim()
+            )
             embed.addField('Avatar URL', user.avatarURL)
 
             return embed
