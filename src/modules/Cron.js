@@ -1,5 +1,5 @@
 const CronJob = require('cron').CronJob
-const Logger = require('./logger')
+const Util = require('./Util')
 
 // UTC +/-
 const TIME_ZONE = 7
@@ -8,17 +8,14 @@ const TIME_ZONE = 7
 const cronTimeZone = 'Asia/Ho_Chi_Minh'
 const cronStart = false
 
-// global var
-var _discord
-var _channels
+// Global
+let _discord
+let _channels
 
-function sendMessage(message) {
-    var broadcast = new Set(_channels)
-    var channels = _discord.channels.filterArray(v =>
-        v.type == 'text' &&
-        broadcast.has(v.id)
-    )
-    channels.forEach(v => { v.send(message) })
+function sendMessage(msg) {
+    console.log(msg)
+    let channels = Util.getDiscordBroadcastChannel(_discord, _channels)
+    channels.forEach(v => { v.send(msg) })
 }
 
 // kc pvp cron
@@ -39,13 +36,11 @@ var cronPvp = new CronJob({
         if (hour == 1 || hour == 13) {
             if (min != 0) { return }
             msg = `PvP reset`
-            Logger.debug({ date, hour, min, diff, msg })
             sendMessage(msg)
             return
         }
 
         msg = `${diff} minute${diff > 1 ? 's' : ''} before PvP reset`
-        Logger.debug({ date, hour, min, diff, msg })
         sendMessage(msg)
     },
     timeZone: cronTimeZone,
@@ -61,7 +56,6 @@ var cronQuest = new CronJob({
     ].join(' '),
     onTick: () => {
         var msg = 'Quest reset'
-        Logger.debug({ msg })
         sendMessage(msg)
     },
     timeZone: cronTimeZone,
@@ -72,8 +66,9 @@ var cronQuest = new CronJob({
 // var cronRank = new CronJob({})
 
 module.exports = {
-    run: discord => {
-        Logger.log('Running KC cron module...')
+    start: discord => {
+        console.log('Running KC cron module...')
+
         _discord = discord
         _channels = [
             '422709303376609290',
@@ -81,11 +76,10 @@ module.exports = {
             '421681074565939201',
         ]
 
-        Logger.log('Starting PvP cron')
+        console.log('Starting PvP cron')
         cronPvp.start()
 
-        Logger.log('Starting Quest cron')
+        console.log('Starting Quest cron')
         cronQuest.start()
-
     }
 }

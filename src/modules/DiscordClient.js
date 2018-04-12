@@ -1,64 +1,91 @@
+const Commando = require('discord.js-commando')
+const path = require('path')
+const TwitterClient = require('./TwitterClient')
+const Cron = require('./Cron')
+
 class DiscordClient {
     constructor() {
         // Get variables for client
         this.token = process.env.DISCORD_TOKEN_BOT
-        this.owner = process.env.DISCORD_OWNER || '153363129915539457'
-        this.commandPrefix = process.env.DISCORD_PREFIX || '.'
-        this.commandEditableDuration = 20
-        this.nonCommandEditable = false
-        this.unknownCommandResponse = false
+        let owner = process.env.DISCORD_OWNER || '153363129915539457'
+        let commandPrefix = process.env.DISCORD_PREFIX || '.'
+        let commandEditableDuration = 20
+        let nonCommandEditable = false
+        let unknownCommandResponse = false
 
         // Init client
         this.client = new Commando.Client({
-            owner: this.owner,
-            commandPrefix: this.commandPrefix,
-            commandEditableDuration: this.commandEditableDuration,
-            nonCommandEditable: this.nonCommandEditable,
-            unknownCommandResponse: this.unknownCommandResponse,
+            owner,
+            commandPrefix,
+            commandEditableDuration,
+            nonCommandEditable,
+            unknownCommandResponse,
         })
 
         // Client events
         this.client
+            // Emitted when the client becomes ready to start working
             .on('ready', () => {
-                // Emitted when the client becomes ready to start working
+                console.log(`${this.client.user.tag} READY!!!`)
+
+                this.twitter = new TwitterClient()
+                this.twitter.checkNewTweet({ discord: this.client })
+                this.twitter.checkNewAva({ discord: this.client })
+
+                Cron.start(this.client)
             })
+            // Emitted whenever the client tries to reconnect to the WebSocket
             .on('reconnecting', () => {
-                // Emitted whenever the client tries to reconnect to the WebSocket
+                console.log('RECONNECTING')
             })
+            // Emitted for general debugging information
             .on('debug', info => {
-                // Emitted for general debugging information
+                // Skip
+                if ([
+                    'Authenticated using token',
+                    'Sending a heartbeat',
+                    'Heartbeat acknowledged',
+                ].some(v => info.indexOf(v) != -1)) {
+                    return
+                }
+                // Format
+                info = info.replace(/\.$/, '')
+                console.log(`DEBUG ${info}`)
             })
+            // Emitted for general warnings
             .on('warn', info => {
-                // Emitted for general warnings
+                info = info.replace(/\.$/, '')
+                console.log(`WARN ${info}`)
             })
+            // Emitted whenever the client's WebSocket encounters a connection error
             .on('error', error => {
-                // Emitted whenever the client's WebSocket encounters a connection error
+                console.log(`ERROR ${error}`)
             })
+            // Emitted whenever a WebSocket resumes
             .on('resume', replayed => {
-                // Emitted whenever a WebSocket resumes
             })
+            // Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect
             .on('disconnect', event => {
-                // Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect
             })
+            // Emitted whenever a message is created
             .on('message', message => {
-                // Emitted whenever a message is created
             })
 
         // Client registries
         this.client.registry
             .registerDefaultTypes()
             .registerGroups([
-                // ['dev', 'Developer'],
-                // ['util', 'Utility'],
-                // ['kc', 'KanColle'],
-                // ['fun', 'Funny'],
+                ['dev', 'Developer'],
+                ['util', 'Utility'],
+                ['kc', 'KanColle'],
+                ['fun', 'Funny'],
             ])
             .registerCommandsIn(path.join(__dirname, '..', 'commands'))
     }
     start() {
         this.client
             .login(this.token)
-            .catch(err => console.trace(err))
+            .catch(err => console.trace(err.message))
     }
 }
 

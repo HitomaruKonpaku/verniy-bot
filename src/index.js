@@ -1,11 +1,9 @@
-// // Load process environment
-// require('dotenv').config()
+// Load process environment
+require('dotenv').config()
 
-// // Start discord client
-// require('./modules/discord-client').login()
+// 
+const DiscordClient = require('./modules/DiscordClient')
 
-
-const { DiscordClient } = require('./modules')
-
-var discord = new DiscordClient()
+// 
+let discord = new DiscordClient()
 discord.start()

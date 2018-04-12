@@ -1,14 +1,38 @@
 module.exports = {
-    TwitterFollow: {
-        // @HitomaruKonpaku
-        '2591243785': {
-            '422709303376609290': {},
+    Twitter: {
+        NewTweet: {
+            // @HitomaruKonpaku
+            '2591243785': {
+                follower: {
+                    '422709303376609290': {},
+                },
+            },
+            // @KanColle_STAFF
+            '294025417': {
+                follower: {
+                    '422709303376609290': {}, // HitoSpam
+                    '376294828608061440': {}, // Quan nhau cua T > kc-viet
+                    '421681074565939201': {}, // Quan nhau cua T > kc-eng}
+                },
+            },
         },
-        // @KanColle_STAFF
-        '294025417': {
-            '422709303376609290': {}, // HitoSpam
-            '376294828608061440': {}, // Quan nhau cua T > kc-viet
-            '421681074565939201': {}, // Quan nhau cua T > kc-eng
+        NewAva: {
+            // @HitomaruKonpaku
+            '2591243785': {
+                interval: 30,
+                follower: {
+                    '422709303376609290': {},
+                },
+            },
+            // @KanColle_STAFF
+            '294025417': {
+                interval: 10,
+                follower: {
+                    '422709303376609290': {},
+                    '376294828608061440': {},
+                    '421681074565939201': {},
+                },
+            },
         },
     },
     KanColle: {
@@ -20,5 +44,5 @@ module.exports = {
         GunFit: 'https://i.imgur.com/RLiJubo.png',
         EscortMod: 'https://i.imgur.com/f3U41DI.png',
         OverKill: 'https://i.imgur.com/YG0ub7G.png',
-    }
+    },
 }
