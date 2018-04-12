@@ -5,6 +5,7 @@ const Cron = require('./Cron')
 
 class DiscordClient {
     constructor() {
+        console.log('DiscordClient constructor')
         // Get variables for client
         this.token = process.env.DISCORD_TOKEN_BOT
         let owner = process.env.DISCORD_OWNER || '153363129915539457'
@@ -12,7 +13,6 @@ class DiscordClient {
         let commandEditableDuration = 20
         let nonCommandEditable = false
         let unknownCommandResponse = false
-
         // Init client
         this.client = new Commando.Client({
             owner,
@@ -21,7 +21,6 @@ class DiscordClient {
             nonCommandEditable,
             unknownCommandResponse,
         })
-
         // Client events
         this.client
             // Emitted when the client becomes ready to start working
@@ -60,12 +59,19 @@ class DiscordClient {
             // Emitted whenever the client's WebSocket encounters a connection error
             .on('error', error => {
                 console.log(`ERROR ${error}`)
+
+                if (error.indexOf('ECONNRESET') != -1) {
+                    this.client
+                        .destroy()
+                        .then(() => setTimeout(() => { this.start() }, 1000))
+                }
             })
             // Emitted whenever a WebSocket resumes
             .on('resume', replayed => {
             })
             // Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect
             .on('disconnect', event => {
+                console.log('DISCONNECT')
             })
             // Emitted whenever a message is created
             .on('message', message => {

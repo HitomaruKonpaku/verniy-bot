@@ -5,12 +5,12 @@ const Util = require('./Util')
 
 class TwitterClient {
     constructor() {
+        console.log('TwitterClient constructor')
         // 
         const ConsumerKey = process.env.TWITTER_CONSUMER_KEY
         const ConsumerSecret = process.env.TWITTER_CONSUMER_SECRET
         const AccessToken = process.env.TWITTER_ACCESS_TOKEN
         const AccessTokenSecret = process.env.TWITTER_ACCESS_TOKEN_SECRET
-
         // 
         this.client = new Twitter({
             consumer_key: ConsumerKey,
@@ -23,6 +23,7 @@ class TwitterClient {
         // 
         const followList = Util.getTwitterFollow(TwitterSettings.NewTweet)
         const followSet = new Set(followList)
+        console.log(`Checking new tweet from ${followList.join(', ')}`)
         // 
         this.client.stream('statuses/filter', {
             follow: followList.join(',')
@@ -56,6 +57,7 @@ class TwitterClient {
         })
     }
     checkNewAva({ discord }) {
+        console.log(`Checking new twitter avatar`)
         // Declare
         const api = 'users/show'
         const followList = Util.getTwitterFollow(TwitterSettings.NewAva)
@@ -93,6 +95,7 @@ class TwitterClient {
         // Check
         followList.forEach(id => {
             // 
+            console.log(`Checking ava of ${id}`)
             const data = TwitterSettings.NewAva[id]
             let ava
             // 
@@ -113,6 +116,7 @@ class TwitterClient {
                             return
                         }
                         // Send
+                        console.log(`Ava: ${img}`)
                         const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewAva[id])
                         Util.getDiscordBroadcastChannel(discord, sendList)
                             .forEach(v => {
