@@ -2,10 +2,11 @@ const Commando = require('discord.js-commando')
 const path = require('path')
 const TwitterClient = require('./TwitterClient')
 const Cron = require('./Cron')
+const Logger = require('./Logger')
 
 class DiscordClient {
     constructor() {
-        console.log('DiscordClient constructor')
+        Logger.log('DiscordClient constructor')
         // Get variables for client
         this.token = process.env.DISCORD_TOKEN_BOT
         let owner = process.env.DISCORD_OWNER || '153363129915539457'
@@ -25,7 +26,7 @@ class DiscordClient {
         this.client
             // Emitted when the client becomes ready to start working
             .on('ready', () => {
-                console.log(`${this.client.user.tag} READY!!!`)
+                Logger.log(`${this.client.user.tag} READY!!!`)
 
                 this.twitter = new TwitterClient()
                 this.twitter.checkNewTweet({ discord: this.client })
@@ -35,7 +36,7 @@ class DiscordClient {
             })
             // Emitted whenever the client tries to reconnect to the WebSocket
             .on('reconnecting', () => {
-                console.log('RECONNECTING')
+                Logger.log('RECONNECTING')
             })
             // Emitted for general debugging information
             .on('debug', info => {
@@ -49,16 +50,16 @@ class DiscordClient {
                 }
                 // Format
                 info = info.replace(/\.$/, '')
-                console.log(`DEBUG ${info}`)
+                Logger.debug(info)
             })
             // Emitted for general warnings
             .on('warn', info => {
                 info = info.replace(/\.$/, '')
-                console.log(`WARN ${info}`)
+                Logger.warn(info)
             })
             // Emitted whenever the client's WebSocket encounters a connection error
             .on('error', error => {
-                console.log(`ERROR ${error}`)
+                Logger.error(error)
 
                 if (error.indexOf('ECONNRESET') != -1) {
                     this.client
@@ -71,7 +72,7 @@ class DiscordClient {
             })
             // Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect
             .on('disconnect', event => {
-                console.log('DISCONNECT')
+                Logger.warn('DISCONNECT')
             })
             // Emitted whenever a message is created
             .on('message', message => {
@@ -91,7 +92,7 @@ class DiscordClient {
     start() {
         this.client
             .login(this.token)
-            .catch(err => console.trace(err.message))
+            .catch(err => Logger.error(err.message))
     }
 }
 

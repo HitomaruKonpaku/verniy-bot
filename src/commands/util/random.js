@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+const Logger = require('../../modules/Logger')
 
 module.exports = class RandomCommand extends Command {
     constructor(client) {
@@ -34,7 +35,7 @@ module.exports = class RandomCommand extends Command {
             max = args.max,
             random = Math.floor(Math.random() * (max - min + 1) + min)
 
-        console.log(`RNG - min: ${min} max: ${max} result: ${random}`)
+        Logger.debug(`RNG - min: ${min}, max: ${max}, result: ${random}`)
         msg.channel.send(`:pray: ${random} :pray:`)
     }
 }

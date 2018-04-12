@@ -1,5 +1,6 @@
 const CronJob = require('cron').CronJob
 const Util = require('./Util')
+const Logger = require('./Logger')
 
 // UTC +/-
 const TIME_ZONE = 7
@@ -13,7 +14,7 @@ let _discord
 let _channels
 
 function sendMessage(msg) {
-    console.log(msg)
+    Logger.log(msg)
     let channels = Util.getDiscordBroadcastChannel(_discord, _channels)
     channels.forEach(v => { v.send(msg) })
 }
@@ -67,7 +68,7 @@ var cronQuest = new CronJob({
 
 module.exports = {
     start: discord => {
-        console.log('Running KC cron module...')
+        Logger.log('Running KC cron module...')
 
         _discord = discord
         _channels = [
@@ -76,10 +77,10 @@ module.exports = {
             '421681074565939201',
         ]
 
-        console.log('Starting PvP cron')
+        Logger.log('Starting PvP cron')
         cronPvp.start()
 
-        console.log('Starting Quest cron')
+        Logger.log('Starting Quest cron')
         cronQuest.start()
     }
 }

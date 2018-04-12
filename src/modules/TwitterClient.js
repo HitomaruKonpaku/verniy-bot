@@ -2,10 +2,11 @@ const { RichEmbed } = require('discord.js')
 const Twitter = require('twitter')
 const TwitterSettings = require('../settings').Twitter
 const Util = require('./Util')
+const Logger = require('./Logger')
 
 class TwitterClient {
     constructor() {
-        console.log('TwitterClient constructor')
+        Logger.log('TwitterClient constructor')
         // 
         const ConsumerKey = process.env.TWITTER_CONSUMER_KEY
         const ConsumerSecret = process.env.TWITTER_CONSUMER_SECRET
@@ -23,7 +24,7 @@ class TwitterClient {
         // 
         const followList = Util.getTwitterFollow(TwitterSettings.NewTweet)
         const followSet = new Set(followList)
-        console.log(`Checking new tweet from ${followList.join(', ')}`)
+        Logger.log(`Checking new tweet from ${followList.join(', ')}`)
         // 
         this.client.stream('statuses/filter', {
             follow: followList.join(',')
@@ -41,23 +42,23 @@ class TwitterClient {
                         return
                     }
                     // Send
-                    console.log(`Tweet: ${url}`)
+                    Logger.log(`Tweet: ${url}`)
                     const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
                     Util.getDiscordBroadcastChannel(discord, sendList)
                         .forEach(v => {
                             v.send(url)
-                                .then(() => console.log(`Done: ${v.guild.name} / ${v.name}`))
+                                .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
                         })
                 }
                 processTweet(tweet)
             })
             stream.on('error', err => {
-                console.trace(err)
+                Logger.error(err)
             })
         })
     }
     checkNewAva({ discord }) {
-        console.log(`Checking new twitter avatar`)
+        Logger.log(`Checking new twitter avatar`)
         // Declare
         const api = 'users/show'
         const followList = Util.getTwitterFollow(TwitterSettings.NewAva)
@@ -72,30 +73,30 @@ class TwitterClient {
             const Discord = require('discord.js')
             const client = new Discord.Client()
             client.on('ready', () => {
-                console.log(`${client.user.tag} READY!!!`)
+                Logger.log(`${client.user.tag} READY!!!`)
                 let channels = Util.getDiscordBroadcastChannel(client, [
                     '425302689887289344',
                 ])
                 channels.forEach(v => {
                     v.send(image)
-                        .then(() => console.log(`Done: ${v.guild.name} / ${v.name}`))
+                        .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
                         .catch(() => { })
                         .then(() => {
-                            console.log('Disconnecting from Discord as user!')
+                            Logger.log('Disconnecting from Discord as user!')
                             client.destroy()
                                 .then(() => {
-                                    console.log('Disconnected!')
+                                    Logger.log('Disconnected!')
                                 })
                         })
                 })
             })
-            console.log('Connecting to Discord as user!')
+            Logger.log('Connecting to Discord as user!')
             client.login(token)
         }
         // Check
         followList.forEach(id => {
             // 
-            console.log(`Checking ava of ${id}`)
+            Logger.log(`Checking ava of ${id}`)
             const data = TwitterSettings.NewAva[id]
             let ava
             // 
@@ -116,12 +117,12 @@ class TwitterClient {
                             return
                         }
                         // Send
-                        console.log(`Ava: ${img}`)
+                        Logger.log(`Ava: ${img}`)
                         const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewAva[id])
                         Util.getDiscordBroadcastChannel(discord, sendList)
                             .forEach(v => {
                                 v.send(img)
-                                    .then(() => console.log(`Done: ${v.guild.name} / ${v.name}`))
+                                    .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
                             })
                         // DO THIS ONLY WHEN USER IS @KanColle_STAFF
                         if (id == '294025417') {
@@ -129,6 +130,9 @@ class TwitterClient {
                         }
                         // Save new ava
                         ava = img
+                    })
+                    .catch(err => {
+                        Logger.error(err)
                     })
             }
             // Start to check
