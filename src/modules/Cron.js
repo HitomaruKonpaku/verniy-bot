@@ -68,7 +68,7 @@ var cronQuest = new CronJob({
 
 module.exports = {
     start: discord => {
-        Logger.log('Running KC cron module...')
+        Logger.log('Starting cron module')
 
         _discord = discord
         _channels = [
