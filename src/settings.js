@@ -1,4 +1,8 @@
 module.exports = {
+    Discord: {
+        ClientID: '422330233035948032',
+        InviteLink: 'https://discordapp.com/oauth2/authorize?scope=bot&client_id=422330233035948032',
+    },
     Twitter: {
         NewTweet: {
             // @HitomaruKonpaku
