@@ -14,9 +14,6 @@ module.exports = class BotInviteCommand extends Command {
     }
 
     async run(msg, args) {
-        if (!this.client.isOwner(msg.author)) {
-            return
-        }
         msg.channel.send(Discord.InviteLink)
     }
 }

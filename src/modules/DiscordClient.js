@@ -3,6 +3,7 @@ const path = require('path')
 const TwitterClient = require('./TwitterClient')
 const Cron = require('./Cron')
 const Logger = require('./Logger')
+const Util = require('./Util')
 
 class DiscordClient {
     constructor() {
@@ -28,9 +29,10 @@ class DiscordClient {
             .on('ready', () => {
                 Logger.log(`${this.client.user.tag} READY!!!`)
 
-                const guilds = this.client.guilds.array()
-                Logger.log(`Connected to ${guilds.length} guilds`)
-                guilds.forEach(v => Logger.log(`-- ${v.name}, ${v.memberCount} members`))
+                let cmd = Util.getDiscordCommandWithID(this.client, 'guild')
+                if (cmd) {
+                    cmd.run()
+                }
 
                 this.twitter = new TwitterClient()
                 this.twitter.checkNewTweet({ discord: this.client })

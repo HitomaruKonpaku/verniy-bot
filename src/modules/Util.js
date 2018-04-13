@@ -1,4 +1,9 @@
 module.exports = {
+    getDiscordCommandWithID: (discord, id) => {
+        let cmd = discord.registry.commands
+            .filterArray(v => v.name == id)
+        return cmd.length != 0 ? cmd[0] : undefined
+    },
     getDiscordBroadcastChannel: (discord, channels) => {
         let set = new Set(channels)
         let broadcast = discord.channels
