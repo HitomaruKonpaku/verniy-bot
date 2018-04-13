@@ -26,6 +26,42 @@ class TwitterClient {
         const followSet = new Set(followList)
         const api = 'statuses/filter'
 
+        const makeEmbed = tweet => {
+            let embed = new RichEmbed({
+                color: 0x1da1f2,
+                author: {
+                    name: `${tweet.user.name} (@${tweet.user.screen_name})`,
+                    url: `https://twitter.com/${tweet.user.screen_name}`,
+                    icon_url: tweet.user.profile_image_url_https,
+                },
+                footer: {
+                    text: 'Twitter',
+                    icon_url: 'http://abs.twimg.com/icons/apple-touch-icon-192x192.png',
+                }
+            })
+            let description = tweet.text
+            let media
+
+            if (tweet.extended_tweet) {
+                if (tweet.extended_tweet.full_text) {
+                    description = tweet.extended_tweet.full_text
+                }
+                if (tweet.extended_tweet.entities.media) {
+                    media = tweet.extended_tweet.entities.media[0].media_url_https
+                }
+            } else {
+                if (tweet.entities.media) {
+                    media = tweet.entities.media[0].media_url_https
+                }
+            }
+
+            description = description.replace(/(https{0,1}:\/\/t\.co\/\w+)$/, '').trim()
+            embed.setDescription(description)
+            embed.setImage(media)
+
+            return embed
+        }
+
         const streamStart = () => {
             Logger.log(`Checking new tweet from ${followList.join(', ')}`)
             this.client.stream(api, {
@@ -45,10 +81,11 @@ class TwitterClient {
                         }
                         // Send
                         Logger.log(`Tweet: ${url}`)
+                        const embed = makeEmbed(tweet)
                         const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
                         Util.getDiscordBroadcastChannel(discord, sendList)
                             .forEach(v => {
-                                v.send(url)
+                                v.send(url, embed)
                                     .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
                             })
                     }
@@ -63,6 +100,7 @@ class TwitterClient {
                 })
             })
         }
+
         streamStart()
     }
     checkNewAva({ discord }) {

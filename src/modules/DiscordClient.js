@@ -2,8 +2,8 @@ const Commando = require('discord.js-commando')
 const path = require('path')
 const TwitterClient = require('./TwitterClient')
 const Cron = require('./Cron')
-const Logger = require('./Logger')
 const Util = require('./Util')
+const Logger = require('./Logger')
 
 class DiscordClient {
     constructor() {
