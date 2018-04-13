@@ -31,7 +31,7 @@ module.exports = class RandomCommand extends Command {
     }
 
     async run(msg, args) {
-        var min = args.min,
+        let min = args.min,
             max = args.max,
             random = Math.floor(Math.random() * (max - min + 1) + min)
 

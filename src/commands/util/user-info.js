@@ -22,7 +22,7 @@ module.exports = class UserInfoCommand extends Command {
     async run(msg, args) {
 
         function userEmbed(user) {
-            var embed = new RichEmbed({
+            let embed = new RichEmbed({
                 color: 0x2196f3,
                 thumbnail: { url: user.avatarURL },
             })

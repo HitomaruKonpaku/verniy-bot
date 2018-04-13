@@ -20,7 +20,7 @@ function sendMessage(msg) {
 }
 
 // kc pvp cron
-var cronPvp = new CronJob({
+let cronPvp = new CronJob({
     cronTime: [
         0,
         [0, 30, 55].join(','),
@@ -28,7 +28,7 @@ var cronPvp = new CronJob({
         '*', '*', '*',
     ].join(' '),
     onTick: () => {
-        var date = new Date(),
+        let date = new Date(),
             hour = (date.getUTCHours() + TIME_ZONE) % 24,
             min = date.getUTCMinutes(),
             diff = 60 - min,
@@ -49,22 +49,19 @@ var cronPvp = new CronJob({
 })
 
 // kc quest cron
-var cronQuest = new CronJob({
+let cronQuest = new CronJob({
     cronTime: [
         0, 0,
         (20 + TIME_ZONE) % 24,
         '*', '*', '*',
     ].join(' '),
     onTick: () => {
-        var msg = 'Quest reset'
+        let msg = 'Quest reset'
         sendMessage(msg)
     },
     timeZone: cronTimeZone,
     start: cronStart,
 })
-
-// kc ranking cron
-// var cronRank = new CronJob({})
 
 module.exports = {
     start: discord => {
