@@ -28,6 +28,10 @@ class DiscordClient {
             .on('ready', () => {
                 Logger.log(`${this.client.user.tag} READY!!!`)
 
+                const guilds = this.client.guilds.array()
+                Logger.log(`Connected to ${guilds.length} guilds`)
+                guilds.forEach(v => Logger.log(`-- ${v.name}, ${v.memberCount} members`))
+
                 this.twitter = new TwitterClient()
                 this.twitter.checkNewTweet({ discord: this.client })
                 this.twitter.checkNewAva({ discord: this.client })
