@@ -24,38 +24,46 @@ class TwitterClient {
         // 
         const followList = Util.getTwitterFollow(TwitterSettings.NewTweet)
         const followSet = new Set(followList)
-        Logger.log(`Checking new tweet from ${followList.join(', ')}`)
-        // 
-        this.client.stream('statuses/filter', {
-            follow: followList.join(',')
-        }, stream => {
-            stream.on('data', tweet => {
-                const processTweet = tweet => {
-                    // 
-                    const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-                    // Check tweet source user
-                    if (!followSet.has(tweet.user.id_str)) {
-                        return
+        const api = 'statuses/filter'
+
+        const streamStart = () => {
+            Logger.log(`Checking new tweet from ${followList.join(', ')}`)
+            this.client.stream(api, {
+                follow: followList.join(',')
+            }, stream => {
+                stream.on('data', tweet => {
+                    const processTweet = tweet => {
+                        // Tweet url
+                        const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+                        // Check tweet source user
+                        if (!followSet.has(tweet.user.id_str)) {
+                            return
+                        }
+                        // Check retweeted
+                        if (tweet.retweeted_status) {
+                            return
+                        }
+                        // Send
+                        Logger.log(`Tweet: ${url}`)
+                        const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
+                        Util.getDiscordBroadcastChannel(discord, sendList)
+                            .forEach(v => {
+                                v.send(url)
+                                    .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
+                            })
                     }
-                    // Check retweeted
-                    if (tweet.retweeted_status) {
-                        return
-                    }
-                    // Send
-                    Logger.log(`Tweet: ${url}`)
-                    const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
-                    Util.getDiscordBroadcastChannel(discord, sendList)
-                        .forEach(v => {
-                            v.send(url)
-                                .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
-                        })
-                }
-                processTweet(tweet)
+                    processTweet(tweet)
+                })
+                stream.on('error', err => {
+                    Logger.error(err)
+                    // Reconnect
+                    const retryInMinute = 10
+                    Logger.log(`Reconnect to ${api} in ${retryInMinute} minutes`)
+                    setTimeout(() => streamStart(), 60000 * retryInMinute)
+                })
             })
-            stream.on('error', err => {
-                Logger.error(err)
-            })
-        })
+        }
+        streamStart()
     }
     checkNewAva({ discord }) {
         Logger.log(`Checking new twitter avatar`)
