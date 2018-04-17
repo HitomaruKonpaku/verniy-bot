@@ -1,4 +1,14 @@
+const Logger = require('./Logger')
+
 module.exports = {
+    broadcastDiscordChannels: (discord, channels, message, embed) => {
+        let channelList = getDiscordBroadcastChannel(discord, channels)
+        channelList.forEach(v => {
+            v.send(message, embed)
+                .then(() => Logger.log(`Done: ${v.guild.name} > ${v.name}`))
+                .catch(err => Logger.error(err))
+        })
+    },
     getDiscordCommandWithID: (discord, id) => {
         let cmd = discord.registry.commands
             .filterArray(v => v.name == id)
