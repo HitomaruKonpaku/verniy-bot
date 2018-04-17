@@ -7,16 +7,16 @@ module.exports = {
         NewTweet: {
             // @HitomaruKonpaku
             '2591243785': {
-                follower: {
+                channels: {
                     '422709303376609290': {},
                 },
             },
             // @KanColle_STAFF
             '294025417': {
-                follower: {
+                channels: {
                     '422709303376609290': {}, // HitoSpam
                     '376294828608061440': {}, // Quan nhau cua T > kc-viet
-                    '421681074565939201': {}, // Quan nhau cua T > kc-eng}
+                    '421681074565939201': {}, // Quan nhau cua T > kc-eng
                 },
             },
         },
@@ -24,18 +24,22 @@ module.exports = {
             // @HitomaruKonpaku
             '2591243785': {
                 interval: 30,
-                follower: {
-                    '422709303376609290': {},
-                },
+                channels: [
+                    '422709303376609290',
+                ],
             },
             // @KanColle_STAFF
             '294025417': {
                 interval: 10,
-                follower: {
-                    '422709303376609290': {},
-                    '376294828608061440': {},
-                    '421681074565939201': {},
-                },
+                channels: [
+                    '422709303376609290',
+                    '376294828608061440',
+                    '421681074565939201',
+                ],
+                channelsAsUser: [
+                    '425302689887289344',
+                    '345299518012653570',
+                ],
             },
         },
     },
