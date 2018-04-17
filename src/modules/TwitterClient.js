@@ -62,33 +62,34 @@ class TwitterClient {
             return embed
         }
 
+        const processTweet = tweet => {
+            // Tweet url
+            const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+            // Check tweet source user
+            if (!followSet.has(tweet.user.id_str)) {
+                return
+            }
+            // Check retweeted
+            if (tweet.retweeted_status) {
+                return
+            }
+            // Send
+            Logger.log(`Tweet: ${url}`)
+            const embed = makeEmbed(tweet)
+            const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
+            Util.getDiscordBroadcastChannel(discord, sendList)
+                .forEach(v => {
+                    v.send(url, embed)
+                        .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
+                })
+        }
+
         const streamStart = () => {
             Logger.log(`Checking new tweet from ${followList.join(', ')}`)
             this.client.stream(api, {
                 follow: followList.join(',')
             }, stream => {
                 stream.on('data', tweet => {
-                    const processTweet = tweet => {
-                        // Tweet url
-                        const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-                        // Check tweet source user
-                        if (!followSet.has(tweet.user.id_str)) {
-                            return
-                        }
-                        // Check retweeted
-                        if (tweet.retweeted_status) {
-                            return
-                        }
-                        // Send
-                        Logger.log(`Tweet: ${url}`)
-                        const embed = makeEmbed(tweet)
-                        const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
-                        Util.getDiscordBroadcastChannel(discord, sendList)
-                            .forEach(v => {
-                                v.send(url, embed)
-                                    .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
-                            })
-                    }
                     processTweet(tweet)
                 })
                 stream.on('error', err => {
