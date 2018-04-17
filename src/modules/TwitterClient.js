@@ -77,11 +77,7 @@ class TwitterClient {
             Logger.log(`Tweet: ${url}`)
             const embed = makeEmbed(tweet)
             const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
-            Util.getDiscordBroadcastChannel(discord, sendList)
-                .forEach(v => {
-                    v.send(url, embed)
-                        .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
-                })
+            Util.broadcastDiscordChannels(discord, sendList, url, embed)
         }
 
         const streamStart = () => {
@@ -114,8 +110,9 @@ class TwitterClient {
         // Declare
         const api = 'users/show'
         const followList = Util.getTwitterFollow(TwitterSettings.NewAva)
+
         // Special send as Discord user
-        const specialSend = image => {
+        const specialSend = (channels, image) => {
             // Discord user token
             const token = process.env.DISCORD_TOKEN_USER
             if (!token) {
@@ -124,16 +121,21 @@ class TwitterClient {
             // 
             const Discord = require('discord.js')
             const client = new Discord.Client()
+
             client.on('ready', () => {
                 Logger.log(`${client.user.tag} READY!!!`)
-                let channels = Util.getDiscordBroadcastChannel(client, [
-                    '425302689887289344',
-                ])
-                channels.forEach(v => {
+                let sendList = Util.getDiscordBroadcastChannel(client, channels)
+                let total = channels.length
+                let done = 0
+                sendList.forEach(v => {
                     v.send(image)
-                        .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
-                        .catch(() => { })
+                        .then(() => Logger.log(`Done: ${v.guild.name} > ${v.name}`))
+                        .catch(err => Logger.error(err))
                         .then(() => {
+                            done++
+                            if (done != total) {
+                                return
+                            }
                             Logger.log('Disconnecting from Discord as user!')
                             client.destroy()
                                 .then(() => {
@@ -142,9 +144,11 @@ class TwitterClient {
                         })
                 })
             })
+
             Logger.log('Connecting to Discord as user!')
             client.login(token)
         }
+
         // Check
         followList.forEach(id => {
             // 
@@ -168,17 +172,13 @@ class TwitterClient {
                         if (ava == img) {
                             return
                         }
-                        // Send
+                        // Send as bot
                         Logger.log(`Ava: ${img}`)
-                        const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewAva[id])
-                        Util.getDiscordBroadcastChannel(discord, sendList)
-                            .forEach(v => {
-                                v.send(img)
-                                    .then(() => Logger.log(`Done: ${v.guild.name} / ${v.name}`))
-                            })
-                        // DO THIS ONLY WHEN USER IS @KanColle_STAFF
-                        if (id == '294025417') {
-                            specialSend(img)
+                        const sendList = data.channels
+                        Util.broadcastDiscordChannels(discord, sendList, img)
+                        // Send as user
+                        if (data.channelsAsUser && data.channelsAsUser.length > 0) {
+                            specialSend(data.channelsAsUser, img)
                         }
                         // Save new ava
                         ava = img

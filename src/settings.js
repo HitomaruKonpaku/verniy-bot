@@ -37,8 +37,8 @@ module.exports = {
                     '421681074565939201',
                 ],
                 channelsAsUser: [
-                    '425302689887289344',
-                    '345299518012653570',
+                    '425302689887289344', // KC Discord > kc-only
+                    '345299518012653570', // nicex's lolis > boatsluts-kc
                 ],
             },
         },
