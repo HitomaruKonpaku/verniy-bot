@@ -98,6 +98,11 @@ class TwitterClient {
                     Logger.log(`Reconnect to ${api} in ${retryInMinute} minutes`)
                     setTimeout(() => streamStart(), 60000 * retryInMinute)
                 })
+                stream.on('end', () => {
+                    const retryInSec = 1
+                    Logger.log(`Stream API ended. Reconnect in ${retryInSec} seconds`)
+                    setTimeout(() => streamStart(), 1000 * retryInSec)
+                })
             })
         }
 
