@@ -9,6 +9,7 @@ module.exports = class DiscordRestartCommand extends Command {
             group: 'dev',
             memberName: 'restart',
             description: '',
+            guarded: true,
         })
     }
 

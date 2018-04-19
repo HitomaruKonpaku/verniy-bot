@@ -8,6 +8,7 @@ module.exports = class DiscordDisconnectCommand extends Command {
             group: 'dev',
             memberName: 'disconnect',
             description: '',
+            guarded: true,
         })
     }
 
