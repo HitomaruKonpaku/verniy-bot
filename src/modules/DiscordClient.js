@@ -10,7 +10,7 @@ class DiscordClient {
         Logger.log('DiscordClient constructor')
         // Get variables for client
         this.token = process.env.DISCORD_TOKEN_BOT
-        let owner = process.env.DISCORD_OWNER || '153363129915539457'
+        let owner = process.env.DISCORD_OWNER ? process.env.DISCORD_OWNER.split(',') : ['153363129915539457']
         let commandPrefix = process.env.DISCORD_PREFIX || '.'
         let commandEditableDuration = 20
         let nonCommandEditable = false
@@ -28,6 +28,7 @@ class DiscordClient {
             // Emitted when the client becomes ready to start working
             .on('ready', () => {
                 Logger.log(`${this.client.user.tag} READY!!!`)
+                this.client.user.setActivity('Type .help for help', { type: 'PLAYING' })
 
                 let cmd = Util.getDiscordCommandWithID(this.client, 'guild')
                 if (cmd) {
