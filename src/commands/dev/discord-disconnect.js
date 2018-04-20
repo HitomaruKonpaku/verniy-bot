@@ -19,6 +19,6 @@ module.exports = class DiscordDisconnectCommand extends Command {
         }
         Logger.warn('DISCONNECTING')
         this.client.destroy()
-        process.exit(1)
+        process.exit()
     }
 }
