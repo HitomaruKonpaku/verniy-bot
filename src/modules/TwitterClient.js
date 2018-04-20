@@ -82,12 +82,13 @@ class TwitterClient {
 
         const streamStart = () => {
             Logger.log(`Checking new tweet from ${followList.join(', ')}`)
+            let isError = undefined
+            const retryInMin = 5
+            const retryInSec = 1
+
             this.client.stream(api, {
                 follow: followList.join(',')
             }, stream => {
-                let isError = undefined
-                const retryInMinute = 5
-                const retryInSec = 1
                 stream.on('data', tweet => {
                     if (isError == undefined || isError == true)
                         Logger.log(`Twitter API ${api} connected`)
@@ -98,8 +99,8 @@ class TwitterClient {
                     if (isError == true) return
                     isError = true
                     Logger.error(err)
-                    Logger.log(`Reconnect to ${api} in ${retryInMinute} minutes`)
-                    setTimeout(() => streamStart(), 60000 * retryInMinute)
+                    Logger.log(`Reconnect to ${api} in ${retryInMin} minutes`)
+                    setTimeout(() => streamStart(), 60000 * retryInMin)
                 })
                 stream.on('end', () => {
                     if (isError == true) return
