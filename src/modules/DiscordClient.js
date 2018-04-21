@@ -30,6 +30,11 @@ class DiscordClient {
                 Logger.log(`${this.client.user.tag} READY!!!`)
                 this.client.user.setActivity('Type .help for help', { type: 'PLAYING' })
 
+                Logger.log('Owners')
+                this.client.owners.forEach(v => {
+                    Logger.log(`- ${v.id} > ${v.tag}`)
+                })
+
                 let cmd = Util.getDiscordCommandWithID(this.client, 'guild')
                 if (cmd) {
                     cmd.run()

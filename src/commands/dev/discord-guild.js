@@ -1,13 +1,14 @@
 const { Command } = require('discord.js-commando')
 const Logger = require('../../modules/Logger')
 
-module.exports = class DevGuildCommand extends Command {
+module.exports = class DiscordGuildCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'guild',
             group: 'dev',
             memberName: 'guild',
             description: '',
+            guarded: true,
         })
     }
 
