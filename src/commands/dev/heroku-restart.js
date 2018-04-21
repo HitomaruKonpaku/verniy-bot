@@ -23,7 +23,7 @@ module.exports = class HerokuRestartCommand extends Command {
             return
         }
 
-        Logger.log(`Restart dynos request from ${msg.author.tag}`)
+        Logger.log(`Restart all dynos request from ${msg.author.tag}`)
         this.client.destroy()
 
         const heroku = new Heroku({ token: process.env.HEROKU_API_KEY })
