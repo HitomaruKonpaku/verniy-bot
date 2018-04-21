@@ -17,13 +17,14 @@ module.exports = class HerokuRestartCommand extends Command {
         let isOwner = this.client.isOwner(msg.author)
         if (!isOwner) return
 
-        this.client.destroy()
-
         const key = process.env.HEROKU_API_KEY
         if (!key) {
             Logger.warn(`HEROKU_API_KEY not found`)
             return
         }
+
+        Logger.log(`Restart dynos request from ${msg.author.tag}`)
+        this.client.destroy()
 
         const heroku = new Heroku({ token: process.env.HEROKU_API_KEY })
         const appName = 'hito-verniy'
