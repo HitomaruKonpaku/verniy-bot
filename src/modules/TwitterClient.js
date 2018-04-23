@@ -158,10 +158,17 @@ class TwitterClient {
 
         // Check
         followList.forEach(id => {
-            // 
-            Logger.log(`Checking ava of ${id}`)
+            // Vars
             const data = TwitterSettings.NewAva[id]
+            const interval = data.interval
             let ava
+            // Pre-check
+            if (!interval) {
+                Logger.warn(`Missing check interval! Skipped ${id}`)
+                return
+            } else {
+                Logger.log(`Checking ava of ${id}`)
+            }
             // 
             const follow = () => {
                 this.client
@@ -196,7 +203,7 @@ class TwitterClient {
             }
             // Start to check
             follow()
-            setInterval(() => { follow() }, 1000 * data.interval)
+            setInterval(() => { follow() }, 1000 * interval)
         })
     }
 }
