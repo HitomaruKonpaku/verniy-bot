@@ -167,7 +167,7 @@ class TwitterClient {
                 Logger.warn(`Missing check interval! Skipped ${id}`)
                 return
             } else {
-                Logger.log(`Checking ava of ${id}`)
+                Logger.log(`Checking ava of ${id}, interval ${interval}s`)
             }
             // 
             const follow = () => {
