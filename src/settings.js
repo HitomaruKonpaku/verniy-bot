@@ -37,14 +37,18 @@ module.exports = {
                     '421681074565939201',
                 ],
                 channelsAsUser: [
+                    '365111136095305730', // Sad Panda > elsword
                     '425302689887289344', // KC Discord > kc-only
                     '345299518012653570', // nicex's lolis > boatsluts-kc
+                    '334800225191329792', // KC3 > kancolle
+                    '368557905718542338', // Dzeso > general
+                    '98922706317103104', // Daxyn > kancolle
                 ],
             },
         },
     },
     KanColle: {
-        LBAS: 'https://i.imgur.com/0Rxwv8G.png',
+        LBAS: 'https://i.imgur.com/PeKxPQU.png',
         Wikia: 'http://kancolle.wikia.com/wiki/',
         Akashi: 'http://akashi-list.me/',
         AirPower: 'https://i.imgur.com/8DcnG08.png',
