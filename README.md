@@ -2,9 +2,13 @@
 Discord bot using NodeJS
 
 ## Requirement
-* NodeJS
+* NodeJS 10.x
 
-### Logging
+## How to start the bot?
+* npm install
+* npm start
+
+## Show logs
 * Run Command Prompt
-* `heroku logs -n 1500 -a hito-verniy -t > logs.log`
+* `npm run logs` or `npm run logs-t`
 * Delete all regex `(\[\d+m)`

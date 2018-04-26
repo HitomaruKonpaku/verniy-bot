@@ -4,7 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "node ."
+    "start": "node .",
+    "logs": "heroku logs -a hito-verniy -n 1500 > logs.log",
+    "logs-t": "heroku logs -a hito-verniy -n 1500 -t > logs.log"
   },
   "author": "HitomaruKonpaku",
   "license": "ISC",
