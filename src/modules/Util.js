@@ -41,10 +41,16 @@ function getTwitterFollowBroadcast(data) {
     return list
 }
 
+function getRandomNumber(min, max) {
+    let random = Math.floor(Math.random() * (max - min + 1) + min)
+    return random
+}
+
 module.exports = {
     getDiscordBroadcastChannel: (discord, channels) => getDiscordBroadcastChannel(discord, channels),
     broadcastDiscordChannels: (discord, channels, message, embed) => broadcastDiscordChannels(discord, channels, message, embed),
     getDiscordCommandWithID: (discord, id) => getDiscordCommandWithID(discord, id),
     getTwitterFollow: (data) => getTwitterFollow(data),
-    getTwitterFollowBroadcast: (data) => getTwitterFollowBroadcast(data)
+    getTwitterFollowBroadcast: (data) => getTwitterFollowBroadcast(data),
+    getRandomNumber: (min, max) => getRandomNumber(min, max),
 }
