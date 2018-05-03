@@ -35,15 +35,15 @@ module.exports = class RandomCommand extends Command {
                 max = numbers.length - 1
                 random = Util.getRandomNumber(min, max)
                 Logger.log(`RNG > Index ${random} of array ${numbers.length} elements > Value ${numbers[random]}`)
-                msg.channel.send(this.randomString(numbers[random]))
+                msg.channel.send(this.message(numbers[random]))
                 return
         }
 
         random = Util.getRandomNumber(min, max)
-        msg.channel.send(this.randomString(random))
+        msg.channel.send(this.message(random))
     }
 
-    randomString(number) {
-        return `:pray: ${number} :pray:`
+    message(data) {
+        return `:pray: ${data} :pray:`
     }
 }
