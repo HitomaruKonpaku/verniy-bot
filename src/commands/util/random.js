@@ -9,28 +9,22 @@ module.exports = class RandomCommand extends Command {
             group: 'util',
             memberName: 'rd',
             description: 'Random number generator BlessRNG',
-            examples: ['rd', 'rd 10', 'rd 1 10', 'rd 2 3 5'],
+            examples: ['rd', 'rd 10', 'rd 1 10', 'rd 2 3 5 7'],
         })
     }
 
     async run(msg, args) {
-        let numbers = args.split(' ')
+        let numbers = args.trim().split(' ')
         if (numbers.some(v => isNaN(v))) {
             msg.channel.send(`Invalid numbers`)
             return
         }
 
-        const randomString = number => `:pray: ${number} :pray:`
-
         let min, max, random
         switch (numbers.length) {
-            case 0:
-                min = 0
-                max = Number.MAX_SAFE_INTEGER
-                break
             case 1:
                 min = 0
-                max = numbers[0]
+                max = numbers[0] != '' ? numbers[0] : 1E9
                 break
             case 2:
                 min = numbers[0]
@@ -40,11 +34,16 @@ module.exports = class RandomCommand extends Command {
                 min = 0
                 max = numbers.length - 1
                 random = Util.getRandomNumber(min, max)
-                msg.channel.send(randomString(numbers[random]))
+                Logger.log(`RNG > Index ${random} of array ${numbers.length} elements > Value ${numbers[random]}`)
+                msg.channel.send(this.randomString(numbers[random]))
                 return
         }
 
         random = Util.getRandomNumber(min, max)
-        msg.channel.send(randomString(random))
+        msg.channel.send(this.randomString(random))
+    }
+
+    randomString(number) {
+        return `:pray: ${number} :pray:`
     }
 }
