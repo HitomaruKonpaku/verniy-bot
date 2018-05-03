@@ -9,6 +9,7 @@ module.exports = class HerokuRestartCommand extends Command {
             group: 'dev',
             memberName: 'restart',
             description: '',
+            ownerOnly: true,
             guarded: true,
         })
     }
