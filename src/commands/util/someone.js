@@ -13,7 +13,7 @@ module.exports = class SomeoneCommand extends Command {
     }
 
     async run(msg, args) {
-        const members = msg.guild.members.random(1)
+        const members = msg.channel.members.random(1)
         const name = members[0].displayName
         msg.channel.send(this.message(name))
     }
