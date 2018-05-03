@@ -42,7 +42,7 @@ function getTwitterFollowBroadcast(data) {
 }
 
 function getRandomNumber(min, max) {
-    let random = Math.floor(Math.random() * (max - min + 1) + min)
+    let random = Math.floor(Math.random() * (max - min + 1)) + min
     Logger.log(`RNG > Min ${min} > Max ${max} > Random ${random}`)
     return random
 }
