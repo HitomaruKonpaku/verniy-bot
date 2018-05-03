@@ -12,6 +12,6 @@ module.exports = class SomeoneCommand extends Command {
     }
 
     async run(msg, args) {
-
+        // this.client
     }
 }
