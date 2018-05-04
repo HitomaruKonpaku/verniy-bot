@@ -94,10 +94,10 @@ class DiscordClient {
                 }
 
                 // Autism
-                const wave = ':wave:'
-                if (msg.content.index(wave) != -1) {
-                    msg.channel.send(wave)
-                }
+                // const wave = ':wave:'
+                // if (msg.content.index(wave) != -1) {
+                //     msg.channel.send(wave)
+                // }
             })
 
         // Client registries
