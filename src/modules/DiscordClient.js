@@ -36,13 +36,14 @@ class DiscordClient {
                 })
 
                 let cmd = Util.getDiscordCommandWithID(this.client, 'guild')
-                if (cmd) {
-                    cmd.run()
-                }
+                if (cmd) { cmd.run() }
 
-                this.twitter = new TwitterClient()
-                this.twitter.checkNewTweet({ discord: this.client })
-                this.twitter.checkNewAva({ discord: this.client })
+                const twitterEnable = process.env.TWITTER_ENABLE
+                if (twitterEnable === 'true' || twitterEnable === '1') {
+                    this.twitter = new TwitterClient()
+                    this.twitter.checkNewTweet({ discord: this.client })
+                    this.twitter.checkNewAva({ discord: this.client })
+                }
 
                 Cron.start(this.client)
             })
@@ -96,7 +97,6 @@ class DiscordClient {
                 // Autism
                 const content = msg.content
                 const wave = '👋'
-
                 if (content.indexOf(wave) != -1) {
                     msg.channel.send(wave)
                 }
