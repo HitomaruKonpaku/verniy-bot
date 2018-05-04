@@ -87,11 +87,16 @@ class DiscordClient {
                 Logger.warn('DISCONNECT')
             })
             // Emitted whenever a message is created
-            .on('message', message => {
+            .on('message', msg => {
+                // Ingore bot incoming message
+                if (msg.author.bot) {
+                    return
+                }
+
                 // Autism
                 const wave = ':wave:'
-                if (message.content.index(wave) != -1) {
-                    message.channel.send(wave)
+                if (msg.content.index(wave) != -1) {
+                    msg.channel.send(wave)
                 }
             })
 
