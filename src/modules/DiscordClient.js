@@ -88,6 +88,11 @@ class DiscordClient {
             })
             // Emitted whenever a message is created
             .on('message', message => {
+                // Autism
+                const wave = ':wave:'
+                if (message.content.index(wave) != -1) {
+                    message.channel.send(wave)
+                }
             })
 
         // Client registries
