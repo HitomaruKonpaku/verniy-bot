@@ -15,6 +15,7 @@ module.exports = {
             '294025417': {
                 channels: {
                     '422709303376609290': {}, // HitoSpam
+                    '441955702781771806': {}, // VN KC > dev-tweet
                     '376294828608061440': {}, // Quan nhau cua T > kc-viet
                     '421681074565939201': {}, // Quan nhau cua T > kc-eng
                 },
@@ -25,24 +26,25 @@ module.exports = {
             '2591243785': {
                 interval: 30,
                 channels: [
-                    '422709303376609290',
+                    '422709303376609290', // HitoSpam
                 ],
             },
             // @KanColle_STAFF
             '294025417': {
                 interval: 10,
                 channels: [
-                    '422709303376609290',
-                    '376294828608061440',
-                    '421681074565939201',
+                    '365111136095305730', // Sad Panda > elsword
+                    '422709303376609290', // HitoSpam
+                    '441955702781771806', // VN KC > dev-tweet
+                    '376294828608061440', // Quan nhau cua T > kc-viet
+                    '421681074565939201', // Quan nhau cua T > kc-eng
                 ],
                 channelsAsUser: [
-                    '365111136095305730', // Sad Panda > elsword
                     '425302689887289344', // KC Discord > kc-only
-                    '345299518012653570', // nicex's lolis > boatsluts-kc
+                    '345299518012653570', // nicex lolis > boatsluts-kc
                     '334800225191329792', // KC3 > kancolle
+                    '98922706317103104',  // Daxyn > kancolle
                     '368557905718542338', // Dzeso > general
-                    '98922706317103104', // Daxyn > kancolle
                 ],
             },
         },
