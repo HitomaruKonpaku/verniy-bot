@@ -9,6 +9,7 @@ class DiscordClient {
     constructor() {
         Logger.log('DiscordClient constructor')
         // Get variables for client
+        this.startSubModule = false
         this.token = process.env.DISCORD_TOKEN_BOT
         let owner = process.env.DISCORD_OWNER ? process.env.DISCORD_OWNER.split(',') : ['153363129915539457']
         let commandPrefix = process.env.DISCORD_PREFIX || '.'
@@ -37,6 +38,11 @@ class DiscordClient {
 
                 let cmd = Util.getDiscordCommandWithID(this.client, 'guild')
                 if (cmd) { cmd.run() }
+
+                if (this.startSubModule == true) {
+                    return
+                }
+                this.startSubModule = true
 
                 const twitterEnable = process.env.TWITTER_ENABLE
                 if (twitterEnable === 'true' || twitterEnable === '1') {
