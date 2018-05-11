@@ -5,6 +5,16 @@ const Cron = require('./Cron')
 const Util = require('./Util')
 const Logger = require('./Logger')
 
+const dateOptions = {
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+}
+
 class DiscordClient {
     constructor() {
         Logger.log('DiscordClient constructor')
@@ -106,6 +116,12 @@ class DiscordClient {
                 if (content.indexOf(wave) != -1) {
                     msg.channel.send(wave)
                 }
+            })
+            .on('guildCreate', guild => {
+                Logger.log(`GUILD JOINED: ${guild.name} at ${Intl.DateTimeFormat('vn', dateOptions).format(guild.joinedAt)}`)
+            })
+            .on('guildDelete', guild => {
+                Logger.log(`GUILD LEAVE : ${guild.name} at ${Intl.DateTimeFormat('vn', dateOptions).format(Date.now())}`)
             })
 
         // Client registries
