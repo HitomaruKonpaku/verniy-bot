@@ -31,7 +31,7 @@ module.exports = {
             },
             // @KanColle_STAFF
             '294025417': {
-                interval: 10,
+                interval: 6,
                 channels: [
                     '365111136095305730', // Sad Panda > elsword
                     '422709303376609290', // HitoSpam
