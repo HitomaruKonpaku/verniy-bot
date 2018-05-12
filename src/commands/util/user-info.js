@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { RichEmbed } = require('discord.js')
+const Logger = require('../../modules/Logger')
 
 module.exports = class UserInfoCommand extends Command {
     constructor(client) {
@@ -41,6 +42,8 @@ module.exports = class UserInfoCommand extends Command {
             return embed
         }
 
-        msg.channel.send(userEmbed(args.user))
+        msg.channel
+            .send(userEmbed(args.user))
+            .catch(err => Logger.error(err))
     }
 }

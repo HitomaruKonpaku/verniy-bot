@@ -1,4 +1,6 @@
 const { Command } = require('discord.js-commando')
+const Logger = require('../../modules/Logger')
+
 const _MSG = 'GoodAfternoon /'
 
 module.exports = class GoodAfternoonCommand extends Command {
@@ -12,6 +14,8 @@ module.exports = class GoodAfternoonCommand extends Command {
     }
 
     async run(msg, args) {
-        msg.channel.send(_MSG)
+        msg.channel
+            .send(_MSG)
+            .catch(err => Logger.error(err))
     }
 }

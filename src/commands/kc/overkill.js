@@ -12,6 +12,8 @@ module.exports = class KCOverKillCommand extends Command {
     }
 
     async run(msg, args) {
-        msg.channel.send(KC.OverKill)
+        msg.channel
+            .send(KC.OverKill)
+            .catch(err => Logger.error(err))
     }
 }

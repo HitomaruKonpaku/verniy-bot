@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando')
 const { RichEmbed } = require('discord.js')
 const Discord = require('../../settings').Discord
+const Logger = require('../../modules/Logger')
 
 module.exports = class BotInviteCommand extends Command {
     constructor(client) {
@@ -14,6 +15,8 @@ module.exports = class BotInviteCommand extends Command {
     }
 
     async run(msg, args) {
-        msg.channel.send(Discord.InviteLink)
+        msg.channel
+            .send(Discord.InviteLink)
+            .catch(err => Logger.error(err))
     }
 }

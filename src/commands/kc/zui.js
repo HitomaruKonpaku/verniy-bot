@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+const Logger = require('../../modules/Logger')
 
 const zuizui = 'ｽﾞｲ₍₍(ง˘ω˘)ว⁾⁾ｽﾞｲ'
 
@@ -13,6 +14,8 @@ module.exports = class KCZuiCommand extends Command {
     }
 
     async run(msg, args) {
-        msg.channel.send(zuizui)
+        msg.channel
+            .send(zuizui)
+            .catch(err => Logger.error(err))
     }
 }

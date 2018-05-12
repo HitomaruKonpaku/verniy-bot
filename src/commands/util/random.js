@@ -35,12 +35,16 @@ module.exports = class RandomCommand extends Command {
                 max = numbers.length - 1
                 random = Util.getRandomNumber(min, max)
                 Logger.log(`RNG > Index ${random} of array ${numbers.length} elements > Value ${numbers[random]}`)
-                msg.channel.send(this.message(numbers[random]))
+                msg.channel
+                    .send(this.message(numbers[random]))
+                    .catch(err => Logger.error(err))
                 return
         }
 
         random = Util.getRandomNumber(min, max)
-        msg.channel.send(this.message(random))
+        msg.channel
+            .send(this.message(random))
+            .catch(err => Logger.error(err))
     }
 
     message(data) {
