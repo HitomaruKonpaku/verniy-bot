@@ -157,6 +157,7 @@ class TwitterClient {
         }
 
         // Check
+        Logger.log(`Total request per 15 minutes: ${followList.reduce((p, v) => p + 900 / TwitterSettings.NewAva[v].interval, 0)}`)
         followList.forEach(id => {
             // Vars
             const data = TwitterSettings.NewAva[id]

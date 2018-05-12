@@ -57,8 +57,8 @@ class DiscordClient {
                 const twitterEnable = process.env.TWITTER_ENABLE
                 if (twitterEnable === 'true' || twitterEnable === '1') {
                     this.twitter = new TwitterClient()
-                    this.twitter.checkNewTweet({ discord: this.client })
                     this.twitter.checkNewAva({ discord: this.client })
+                    this.twitter.checkNewTweet({ discord: this.client })
                 }
 
                 Cron.start(this.client)
