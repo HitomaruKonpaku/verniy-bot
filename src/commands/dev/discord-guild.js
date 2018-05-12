@@ -18,13 +18,14 @@ module.exports = class DiscordGuildCommand extends Command {
             const prefix = '-'
             return Array(n).fill(prefix).join('')
         }
+        const localeCode = Settings.Global.LocaleCode
         const dateOptions = Settings.Global.DateOptions
         const guilds = this.client.guilds.array()
         Logger.log(`Connected to ${guilds.length} guild${guilds.length > 1 ? 's' : ''}`)
         guilds.forEach(v => {
             Logger.log(`${prefix(1)} ${v.name}`)
             Logger.log(`${prefix(2)} Owner: ${v.owner.user.tag}`)
-            Logger.log(`${prefix(2)} Joined At: ${Intl.DateTimeFormat('vn', dateOptions).format(v.joinedAt)}`)
+            Logger.log(`${prefix(2)} Joined At: ${Intl.DateTimeFormat(localeCode, dateOptions).format(v.joinedAt)}`)
             Logger.log(`${prefix(2)} Members: ${v.memberCount}`)
             Logger.log(`${prefix(2)} Bots: ${v.members.filterArray(v => v.user.bot).length}`)
         })

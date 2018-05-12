@@ -6,6 +6,7 @@ const TwitterClient = require('./TwitterClient')
 const Cron = require('./Cron')
 const Util = require('./Util')
 
+const localeCode = Settings.Global.LocaleCode
 const dateOptions = Settings.Global.DateOptions
 
 class DiscordClient {
@@ -111,10 +112,14 @@ class DiscordClient {
                 }
             })
             .on('guildCreate', guild => {
-                Logger.log(`GUILD JOINED: ${guild.name} at ${Intl.DateTimeFormat('vn', dateOptions).format(guild.joinedAt)}`)
+                Logger.log(`GUILD JOINED: ${guild.name} at ${Intl
+                    .DateTimeFormat(localeCode, dateOptions)
+                    .format(guild.joinedAt)}`)
             })
             .on('guildDelete', guild => {
-                Logger.log(`GUILD LEAVE : ${guild.name} at ${Intl.DateTimeFormat('vn', dateOptions).format(Date.now())}`)
+                Logger.log(`GUILD LEAVE : ${guild.name} at ${Intl
+                    .DateTimeFormat(localeCode, dateOptions)
+                    .format(Date.now())}`)
             })
 
         // Client registries
