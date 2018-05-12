@@ -1,5 +1,6 @@
 module.exports = {
     Global: {
+        LocaleCode: 'vi',
         DateOptions: {
             timeZone: 'Asia/Ho_Chi_Minh',
             hour12: false,
