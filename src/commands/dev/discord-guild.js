@@ -18,6 +18,7 @@ module.exports = class DiscordGuildCommand extends Command {
             return Array(n).fill(prefix).join('')
         }
         const dateOptions = {
+            timeZone: 'Asia/Ho_Chi_Minh',
             hour12: false,
             year: 'numeric',
             month: '2-digit',

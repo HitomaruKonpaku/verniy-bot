@@ -6,6 +6,7 @@ const Util = require('./Util')
 const Logger = require('./Logger')
 
 const dateOptions = {
+    timeZone: 'Asia/Ho_Chi_Minh',
     hour12: false,
     year: 'numeric',
     month: '2-digit',
