@@ -24,14 +24,14 @@ module.exports = {
         NewAva: {
             // @HitomaruKonpaku
             '2591243785': {
-                interval: 30,
+                interval: 15,
                 channels: [
                     '422709303376609290', // HitoSpam
                 ],
             },
             // @KanColle_STAFF
             '294025417': {
-                interval: 6,
+                interval: 5,
                 channels: [
                     '365111136095305730', // Sad Panda > elsword
                     '422709303376609290', // HitoSpam
