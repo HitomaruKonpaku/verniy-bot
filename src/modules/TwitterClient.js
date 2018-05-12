@@ -206,6 +206,23 @@ class TwitterClient {
             setInterval(() => { follow() }, 1000 * interval)
         })
     }
+    checkRateLimit() {
+        const api = 'application/rate_limit_status'
+        this.client
+            .get(api, {
+                resources: ['users'].join(',')
+            })
+            .then(data => {
+                let resources = {}
+                let users = {}
+                resources['users'] = users
+                users['/users/show/:id'] = data.resources.users['/users/show/:id']
+                Logger.log(`TRL: ${JSON.stringify(resources)}`)
+            })
+            .catch(err => {
+                Logger.error(err)
+            })
+    }
 }
 
 module.exports = TwitterClient
