@@ -1,6 +1,6 @@
 const CronJob = require('cron').CronJob
-const Util = require('./Util')
 const Logger = require('./Logger')
+const Util = require('./Util')
 
 // UTC +/-
 const TIME_ZONE = 7

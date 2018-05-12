@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+const Settings = require('../../settings')
 const Logger = require('../../modules/Logger')
 
 module.exports = class DiscordGuildCommand extends Command {
@@ -17,16 +18,7 @@ module.exports = class DiscordGuildCommand extends Command {
             const prefix = '-'
             return Array(n).fill(prefix).join('')
         }
-        const dateOptions = {
-            timeZone: 'Asia/Ho_Chi_Minh',
-            hour12: false,
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-        }
+        const dateOptions = Settings.Global.DateOptions
         const guilds = this.client.guilds.array()
         Logger.log(`Connected to ${guilds.length} guild${guilds.length > 1 ? 's' : ''}`)
         guilds.forEach(v => {

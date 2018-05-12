@@ -1,8 +1,8 @@
 const { RichEmbed } = require('discord.js')
 const Twitter = require('twitter')
 const TwitterSettings = require('../settings').Twitter
-const Util = require('./Util')
 const Logger = require('./Logger')
+const Util = require('./Util')
 
 class TwitterClient {
     constructor() {
