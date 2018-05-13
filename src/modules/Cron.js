@@ -1,4 +1,5 @@
 const CronJob = require('cron').CronJob
+const Settings = require('../settings')
 const Logger = require('./Logger')
 const Util = require('./Util')
 
@@ -68,12 +69,7 @@ module.exports = {
         Logger.log('Starting cron module')
 
         _discord = discord
-        _channels = [
-            '422709303376609290',
-            '376294828608061440',
-            '421681074565939201',
-            '442409008788275200',
-        ]
+        _channels = Settings.KanColle.CronbBoadcastChannels
 
         Logger.log('Starting PvP cron')
         cronPvp.start()
