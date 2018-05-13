@@ -107,7 +107,7 @@ class DiscordClient {
                 // Autism
                 const content = msg.content
                 const wave = '👋'
-                if (content.indexOf(wave) != -1) {
+                if (content == wave) {
                     msg.channel.send(wave)
                 }
             })
