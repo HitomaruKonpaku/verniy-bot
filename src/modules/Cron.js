@@ -23,7 +23,7 @@ function sendMessage(msg) {
 let cronPvp = new CronJob({
     cronTime: [
         0,
-        [0, 30, 55].join(','),
+        [0, 30, 45, 55].join(','),
         [17, 18, 5, 6].map(v => (v + TIME_ZONE) % 24).join(','),
         '*', '*', '*',
     ].join(' '),
@@ -72,6 +72,7 @@ module.exports = {
             '422709303376609290',
             '376294828608061440',
             '421681074565939201',
+            '442409008788275200',
         ]
 
         Logger.log('Starting PvP cron')
