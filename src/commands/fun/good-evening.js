@@ -1,14 +1,14 @@
 const { Command } = require('discord.js-commando')
 const Logger = require('../../modules/Logger')
 
-const _MSG = 'GoodMorning /'
+const _MSG = 'GoodEvening /'
 
-module.exports = class GoodMorningCommand extends Command {
+module.exports = class GoodEveningCommand extends Command {
     constructor(client) {
         super(client, {
-            name: 'gm',
+            name: 'ge',
             group: 'fun',
-            memberName: 'gm',
+            memberName: 'ge',
             description: _MSG,
         })
     }

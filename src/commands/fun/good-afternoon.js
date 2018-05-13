@@ -9,7 +9,7 @@ module.exports = class GoodAfternoonCommand extends Command {
             name: 'ga',
             group: 'fun',
             memberName: 'ga',
-            description: '',
+            description: _MSG,
         })
     }
 
