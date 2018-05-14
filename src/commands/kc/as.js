@@ -1,6 +1,5 @@
 const { Command } = require('discord.js-commando')
 const KC = require('../../settings').KanColle
-const Logger = require('../../modules/Logger')
 
 module.exports = class KCAirCommand extends Command {
     constructor(client) {
@@ -8,13 +7,12 @@ module.exports = class KCAirCommand extends Command {
             name: 'as',
             group: 'kc',
             memberName: 'as',
-            description: 'AirPower for boss route',
+            description: 'AirPower of normal map',
         })
     }
 
     async run(msg) {
-        msg.channel
-            .send(KC.AirPower)
-            .catch(err => Logger.error(err))
+        const message = KC.AirPower
+        return msg.reply(message)
     }
 }

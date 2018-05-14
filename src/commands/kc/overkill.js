@@ -1,6 +1,5 @@
 const { Command } = require('discord.js-commando')
 const KC = require('../../settings').KanColle
-const Logger = require('../../modules/Logger')
 
 module.exports = class KCOverKillCommand extends Command {
     constructor(client) {
@@ -13,8 +12,7 @@ module.exports = class KCOverKillCommand extends Command {
     }
 
     async run(msg) {
-        msg.channel
-            .send(KC.OverKill)
-            .catch(err => Logger.error(err))
+        const message = KC.OverKill
+        return msg.reply(message)
     }
 }

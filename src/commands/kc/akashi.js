@@ -1,6 +1,5 @@
 const { Command } = require('discord.js-commando')
 const KC = require('../../settings').KanColle
-const Logger = require('../../modules/Logger')
 
 module.exports = class KCAkashiCommand extends Command {
     constructor(client) {
@@ -13,8 +12,7 @@ module.exports = class KCAkashiCommand extends Command {
     }
 
     async run(msg) {
-        msg.channel
-            .send(KC.Akashi)
-            .catch(err => Logger.error(err))
+        const message = KC.Akashi
+        return msg.reply(message)
     }
 }
