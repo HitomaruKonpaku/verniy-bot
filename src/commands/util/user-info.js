@@ -33,7 +33,7 @@ module.exports = class UserInfoCommand extends Command {
             embed.addField('Bot?', user.bot ? 'Yes' : 'No', true)
             embed.addField('Created At',
                 new Date(user.createdTimestamp)
-                    .toLocaleString(Settings.Global.LocaleCode, Settings.Global.DateOptions)
+                    .toLocaleDateString(Settings.Global.LocaleCode, Settings.Global.DateOptions)
                 // .toISOString()
                 // .replace(/T|Z|\.\d{3}/g, ' ')
                 // .trim()
