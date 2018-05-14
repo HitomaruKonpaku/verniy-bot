@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { RichEmbed } = require('discord.js')
-const Logger = require('../../modules/Logger')
+const Settings = require('../../settings')
 
 module.exports = class UserInfoCommand extends Command {
     constructor(client) {
@@ -33,17 +33,17 @@ module.exports = class UserInfoCommand extends Command {
             embed.addField('Bot?', user.bot ? 'Yes' : 'No', true)
             embed.addField('Created At',
                 new Date(user.createdTimestamp)
-                    .toISOString()
-                    .replace(/T|Z|\.\d{3}/g, ' ')
-                    .trim()
+                    .toLocaleString(Settings.Global.LocaleCode, Settings.Global.DateOptions)
+                // .toISOString()
+                // .replace(/T|Z|\.\d{3}/g, ' ')
+                // .trim()
             )
             embed.addField('Avatar URL', user.avatarURL)
 
             return embed
         }
 
-        msg.channel
-            .send(userEmbed(args.user))
-            .catch(err => Logger.error(err))
+        const embed = userEmbed(args.user)
+        return msg.reply(embed)
     }
 }

@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const Logger = require('../../modules/Logger')
 
 module.exports = class SomeoneCommand extends Command {
     constructor(client) {
@@ -15,9 +14,8 @@ module.exports = class SomeoneCommand extends Command {
     async run(msg) {
         const members = msg.channel.members.random(1)
         const name = members[0].displayName
-        msg.channel
-            .send(this.message(name))
-            .catch(err => Logger.error(err))
+        const message = this.message(name)
+        return msg.reply(message)
     }
 
     message(data) {

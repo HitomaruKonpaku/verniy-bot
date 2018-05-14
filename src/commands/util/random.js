@@ -16,7 +16,7 @@ module.exports = class RandomCommand extends Command {
     async run(msg, args) {
         let numbers = args.trim().split(' ')
         if (numbers.some(v => isNaN(v))) {
-            msg.channel.send('Invalid numbers')
+            msg.reply('Invalid numbers')
             return
         }
 
@@ -35,16 +35,11 @@ module.exports = class RandomCommand extends Command {
                 max = numbers.length - 1
                 random = Util.getRandomNumber(min, max)
                 Logger.log(`RNG > Index ${random} of array ${numbers.length} elements > Value ${numbers[random]}`)
-                msg.channel
-                    .send(this.message(numbers[random]))
-                    .catch(err => Logger.error(err))
-                return
+                return msg.reply(this.message(numbers[random]))
         }
 
         random = Util.getRandomNumber(min, max)
-        msg.channel
-            .send(this.message(random))
-            .catch(err => Logger.error(err))
+        return msg.reply(this.message(random))
     }
 
     message(data) {

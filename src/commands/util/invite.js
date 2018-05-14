@@ -1,6 +1,5 @@
 const { Command } = require('discord.js-commando')
 const Discord = require('../../settings').Discord
-const Logger = require('../../modules/Logger')
 
 module.exports = class BotInviteCommand extends Command {
     constructor(client) {
@@ -14,8 +13,7 @@ module.exports = class BotInviteCommand extends Command {
     }
 
     async run(msg) {
-        msg.channel
-            .send(`<${Discord.InviteLink}>`)
-            .catch(err => Logger.error(err))
+        const message = `<${Discord.InviteLink}>`
+        return msg.reply(message)
     }
 }

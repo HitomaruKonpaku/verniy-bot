@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const Logger = require('../../modules/Logger')
 
 module.exports = class UserAvaCommand extends Command {
     constructor(client) {
@@ -20,8 +19,7 @@ module.exports = class UserAvaCommand extends Command {
     }
 
     async run(msg, args) {
-        msg.channel
-            .send(`<${args.user.avatarURL}>`)
-            .catch(err => Logger.error(err))
+        const message = `<${args.user.avatarURL}>`
+        return msg.reply(message)
     }
 }
