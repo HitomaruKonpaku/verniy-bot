@@ -28,7 +28,7 @@ module.exports = class TwitterRateLimitCommand extends Command {
                 let isOwner = this.client.isOwner(msg.author)
                 if (!isOwner) return
 
-                var json = JSON.stringify(resources, (key, value) => key !== 'reset' ? value : new Date(Number(value) * 1000).toLocaleDateString(Settings.Global.LocaleCode, Settings.Global.DateOptions), '  ')
+                let json = JSON.stringify(resources, (key, value) => key !== 'reset' ? value : new Date(Number(value) * 1000).toLocaleDateString(Settings.Global.LocaleCode, Settings.Global.DateOptions), '  ')
                 msg.channel
                     .send(`\`\`\`json\n${json}\n\`\`\``)
                     .catch(err => Logger.error(err))

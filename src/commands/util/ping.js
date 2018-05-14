@@ -10,8 +10,8 @@ module.exports = class PingCommand extends Command {
             description: 'Checks the bot\'s ping to the Discord server.',
             throttling: {
                 usages: 5,
-                duration: 10
-            }
+                duration: 10,
+            },
         })
     }
 

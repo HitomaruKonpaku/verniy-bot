@@ -57,7 +57,7 @@ module.exports = {
                     '425302689887289344', // KC Discord > kc-only
                     '345299518012653570', // nicex lolis > boatsluts-kc
                     '334800225191329792', // KC3 > kancolle
-                    '98922706317103104',  // Daxyn > kancolle
+                    '98922706317103104', // Daxyn > kancolle
                     '368557905718542338', // Dzeso > general
                 ],
             },

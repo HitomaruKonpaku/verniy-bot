@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const { RichEmbed } = require('discord.js')
 const Discord = require('../../settings').Discord
 const Logger = require('../../modules/Logger')
 

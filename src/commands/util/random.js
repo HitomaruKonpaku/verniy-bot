@@ -16,7 +16,7 @@ module.exports = class RandomCommand extends Command {
     async run(msg, args) {
         let numbers = args.trim().split(' ')
         if (numbers.some(v => isNaN(v))) {
-            msg.channel.send(`Invalid numbers`)
+            msg.channel.send('Invalid numbers')
             return
         }
 

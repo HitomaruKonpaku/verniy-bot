@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const { RichEmbed } = require('discord.js')
 const Logger = require('../../modules/Logger')
 
 module.exports = class UserAvaCommand extends Command {
@@ -16,7 +15,7 @@ module.exports = class UserAvaCommand extends Command {
                     type: 'user',
                     wait: 10,
                 },
-            ]
+            ],
         })
     }
 

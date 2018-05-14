@@ -16,7 +16,7 @@ module.exports = class UserInfoCommand extends Command {
                     type: 'user',
                     wait: 10,
                 },
-            ]
+            ],
         })
     }
 

@@ -41,7 +41,9 @@ class DiscordClient {
                 })
 
                 let cmd = Util.getDiscordCommandWithID(this.client, 'guild')
-                if (cmd) { cmd.run() }
+                if (cmd) {
+                    cmd.run()
+                }
 
                 if (this.startSubModule == true) {
                     return
@@ -87,7 +89,9 @@ class DiscordClient {
                 if (error.indexOf('ECONNRESET') != -1) {
                     this.client
                         .destroy()
-                        .then(() => setTimeout(() => { this.start() }, 1000))
+                        .then(() => setTimeout(() => {
+                            this.start()
+                        }, 1000))
                 }
             })
             // Emitted whenever a WebSocket resumes

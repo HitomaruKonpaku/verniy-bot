@@ -20,7 +20,7 @@ module.exports = class HerokuRestartCommand extends Command {
 
         const key = process.env.HEROKU_API_KEY
         if (!key) {
-            Logger.warn(`HEROKU_API_KEY not found`)
+            Logger.warn('HEROKU_API_KEY not found')
             return
         }
 
@@ -31,7 +31,7 @@ module.exports = class HerokuRestartCommand extends Command {
         const appName = 'hito-verniy'
         heroku
             .delete(`/apps/${appName}/dynos`)
-            .then(app => Logger.log(`Restarting all dynos`))
+            .then(() => Logger.log('Restarting all dynos'))
             .catch(err => Logger.error(err))
     }
 }

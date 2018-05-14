@@ -7,12 +7,12 @@ const Util = require('./Util')
 class TwitterClient {
     constructor() {
         Logger.log('TwitterClient constructor')
-        // 
+        //
         const ConsumerKey = process.env.TWITTER_CONSUMER_KEY
         const ConsumerSecret = process.env.TWITTER_CONSUMER_SECRET
         const AccessToken = process.env.TWITTER_ACCESS_TOKEN
         const AccessTokenSecret = process.env.TWITTER_ACCESS_TOKEN_SECRET
-        // 
+        //
         this.client = new Twitter({
             consumer_key: ConsumerKey,
             consumer_secret: ConsumerSecret,
@@ -21,7 +21,7 @@ class TwitterClient {
         })
     }
     checkNewTweet({ discord }) {
-        // 
+        //
         const followList = Util.getTwitterFollow(TwitterSettings.NewTweet)
         const followSet = new Set(followList)
         const api = 'statuses/filter'
@@ -37,7 +37,7 @@ class TwitterClient {
                 footer: {
                     text: 'Twitter',
                     icon_url: 'http://abs.twimg.com/icons/apple-touch-icon-192x192.png',
-                }
+                },
             })
             let description = tweet.text
             let media
@@ -49,10 +49,8 @@ class TwitterClient {
                 if (tweet.extended_tweet.entities.media) {
                     media = tweet.extended_tweet.entities.media[0].media_url_https
                 }
-            } else {
-                if (tweet.entities.media) {
-                    media = tweet.entities.media[0].media_url_https
-                }
+            } else if (tweet.entities.media) {
+                media = tweet.entities.media[0].media_url_https
             }
 
             description = description.replace(/(https{0,1}:\/\/t\.co\/\w+)$/, '').trim()
@@ -87,11 +85,12 @@ class TwitterClient {
             const retryInSec = 1
 
             this.client.stream(api, {
-                follow: followList.join(',')
+                follow: followList.join(','),
             }, stream => {
                 stream.on('data', tweet => {
-                    if (isError == undefined || isError == true)
+                    if (isError == undefined || isError == true) {
                         Logger.log(`Twitter API ${api} connected`)
+                    }
                     isError = false
                     processTweet(tweet)
                 })
@@ -113,7 +112,7 @@ class TwitterClient {
         streamStart()
     }
     checkNewAva({ discord }) {
-        Logger.log(`Checking new twitter avatar`)
+        Logger.log('Checking new twitter avatar')
         // Declare
         const api = 'users/show'
         const followList = Util.getTwitterFollow(TwitterSettings.NewAva)
@@ -125,7 +124,7 @@ class TwitterClient {
             if (!token) {
                 return
             }
-            // 
+            //
             const Discord = require('discord.js')
             const client = new Discord.Client()
 
@@ -170,7 +169,7 @@ class TwitterClient {
             } else {
                 Logger.log(`Checking ava of ${id}, interval ${interval}s`)
             }
-            // 
+            //
             const follow = () => {
                 this.client
                     .get(api, {
@@ -204,13 +203,17 @@ class TwitterClient {
             }
             // Start to check
             follow()
-            setInterval(() => { follow() }, 1000 * interval)
+            setInterval(() => {
+                follow()
+            }, 1000 * interval)
         })
     }
     checkRateLimit() {
         const api = 'application/rate_limit_status'
         return this.client.get(api, {
-            resources: ['users'].join(',')
+            resources: [
+                'users',
+            ].join(','),
         })
     }
 }

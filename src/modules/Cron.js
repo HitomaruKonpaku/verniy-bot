@@ -17,7 +17,9 @@ let _channels
 function sendMessage(msg) {
     Logger.log(msg)
     let channels = Util.getDiscordBroadcastChannel(_discord, _channels)
-    channels.forEach(v => { v.send(msg) })
+    channels.forEach(v => {
+        v.send(msg)
+    })
 }
 
 // kc pvp cron
@@ -36,8 +38,10 @@ let cronPvp = new CronJob({
             msg
 
         if (hour == 1 || hour == 13) {
-            if (min != 0) { return }
-            msg = `PvP reset`
+            if (min != 0) {
+                return
+            }
+            msg = 'PvP reset'
             sendMessage(msg)
             return
         }
@@ -76,5 +80,5 @@ module.exports = {
 
         Logger.log('Starting Quest cron')
         cronQuest.start()
-    }
+    },
 }
