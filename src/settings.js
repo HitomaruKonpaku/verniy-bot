@@ -49,6 +49,7 @@ module.exports = {
                     '365111136095305730', // Sad Panda > elsword
                     '422709303376609290', // HitoSpam
                     '441955702781771806', // VN KC > dev-tweet
+                    '442409008788275200', // VN KC > chat
                     '376294828608061440', // Quan nhau cua T > kc-viet
                     '421681074565939201', // Quan nhau cua T > kc-eng
                 ],
