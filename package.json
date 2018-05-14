@@ -19,6 +19,7 @@
     "discord.js": "^11.3.2",
     "discord.js-commando": "^0.10.0",
     "dotenv": "^5.0.1",
+    "eslint": "^4.19.1",
     "heroku-client": "^3.0.6",
     "twitter": "^1.7.1"
   }
