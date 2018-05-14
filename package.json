@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "node .",
+    "start": "npm run lint && node .",
+    "lint": "eslint src",
     "logs": "heroku logs -a hito-verniy -n 1500 > logs.log",
     "logs-t": "heroku logs -a hito-verniy -n 1500 -t > logs.log"
   },
