@@ -1,7 +1,6 @@
 const { Command } = require('discord.js-commando')
-const Logger = require('../../modules/Logger')
 
-const _MSG = 'GoodNight /'
+const MESSAGE = 'GoodNight /'
 
 module.exports = class GoodNightCommand extends Command {
     constructor(client) {
@@ -9,13 +8,11 @@ module.exports = class GoodNightCommand extends Command {
             name: 'gn',
             group: 'fun',
             memberName: 'gn',
-            description: _MSG,
+            description: MESSAGE,
         })
     }
 
     async run(msg) {
-        msg.channel
-            .send(_MSG)
-            .catch(err => Logger.error(err))
+        return msg.reply(MESSAGE)
     }
 }
