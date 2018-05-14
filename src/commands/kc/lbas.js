@@ -13,6 +13,6 @@ module.exports = class KCLbasCommand extends Command {
 
     async run(msg) {
         const message = KC.LBAS
-        return msg.reply(message)
+        return msg.say(message)
     }
 }

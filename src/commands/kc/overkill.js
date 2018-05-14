@@ -13,6 +13,6 @@ module.exports = class KCOverKillCommand extends Command {
 
     async run(msg) {
         const message = KC.OverKill
-        return msg.reply(message)
+        return msg.say(message)
     }
 }

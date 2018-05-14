@@ -13,6 +13,6 @@ module.exports = class KCEscortModCommand extends Command {
 
     async run(msg) {
         const message = KC.EscortMod
-        return msg.reply(message)
+        return msg.say(message)
     }
 }

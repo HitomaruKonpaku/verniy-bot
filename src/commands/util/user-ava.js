@@ -20,6 +20,6 @@ module.exports = class UserAvaCommand extends Command {
 
     async run(msg, args) {
         const message = `<${args.user.avatarURL}>`
-        return msg.reply(message)
+        return msg.say(message)
     }
 }

@@ -13,6 +13,6 @@ module.exports = class KCGunFitCommand extends Command {
 
     async run(msg) {
         const message = KC.GunFit
-        return msg.reply(message)
+        return msg.say(message)
     }
 }

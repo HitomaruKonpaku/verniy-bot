@@ -13,6 +13,6 @@ module.exports = class KCAirCommand extends Command {
 
     async run(msg) {
         const message = KC.AirPower
-        return msg.reply(message)
+        return msg.say(message)
     }
 }

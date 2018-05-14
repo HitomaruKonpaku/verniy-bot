@@ -15,7 +15,7 @@ module.exports = class SomeoneCommand extends Command {
         const members = msg.channel.members.random(1)
         const name = members[0].displayName
         const message = this.message(name)
-        return msg.reply(message)
+        return msg.say(message)
     }
 
     message(data) {

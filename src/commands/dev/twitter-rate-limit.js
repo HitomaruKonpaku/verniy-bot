@@ -31,7 +31,7 @@ module.exports = class TwitterRateLimitCommand extends Command {
                     key !== 'reset' ? value : new Date(Number(value) * 1000)
                         .toLocaleDateString(Settings.Global.LocaleCode, Settings.Global.DateOptions), '  ')
                 const message = `\`\`\`json\n${json}\n\`\`\``
-                return msg.reply(message)
+                return msg.say(message)
             })
             .catch(err => Logger.error(err))
     }

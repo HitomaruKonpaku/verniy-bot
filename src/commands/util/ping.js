@@ -16,7 +16,7 @@ module.exports = class PingCommand extends Command {
 
     async run(msg) {
         const msgPing = '**Pinging...**'
-        const pingMsg = await msg.reply(msgPing)
+        const pingMsg = await msg.say(msgPing)
         const msgPong = [
             '**Pong!**',
             `The message round-trip took **${pingMsg.createdTimestamp - msg.createdTimestamp}ms**.`,

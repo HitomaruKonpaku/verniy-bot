@@ -13,6 +13,6 @@ module.exports = class KCAkashiCommand extends Command {
 
     async run(msg) {
         const message = KC.Akashi
-        return msg.reply(message)
+        return msg.say(message)
     }
 }

@@ -13,6 +13,6 @@ module.exports = class KCZuiCommand extends Command {
     }
 
     async run(msg) {
-        return msg.reply(MESSAGE)
+        return msg.say(MESSAGE)
     }
 }

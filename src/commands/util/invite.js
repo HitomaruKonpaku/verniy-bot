@@ -14,6 +14,6 @@ module.exports = class BotInviteCommand extends Command {
 
     async run(msg) {
         const message = `<${Discord.InviteLink}>`
-        return msg.reply(message)
+        return msg.say(message)
     }
 }

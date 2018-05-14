@@ -44,6 +44,6 @@ module.exports = class UserInfoCommand extends Command {
         }
 
         const embed = userEmbed(args.user)
-        return msg.reply(embed)
+        return msg.say(embed)
     }
 }

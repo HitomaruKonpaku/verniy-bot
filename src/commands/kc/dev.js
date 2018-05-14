@@ -13,6 +13,6 @@ module.exports = class KCDevCommand extends Command {
 
     async run(msg) {
         const message = KC.Development
-        return msg.reply(message)
+        return msg.say(message)
     }
 }
