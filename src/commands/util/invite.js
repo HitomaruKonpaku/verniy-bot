@@ -13,7 +13,7 @@ module.exports = class BotInviteCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(`<${Discord.InviteLink}>`)
             .catch(err => Logger.error(err))

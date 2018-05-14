@@ -13,7 +13,7 @@ module.exports = class DiscordGuildCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         const prefix = n => {
             const prefix = '-'
             return Array(n).fill(prefix).join('')

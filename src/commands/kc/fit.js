@@ -12,7 +12,7 @@ module.exports = class KCGunFitCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(KC.GunFit)
             .catch(err => Logger.error(err))

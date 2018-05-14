@@ -12,7 +12,7 @@ module.exports = class KCAkashiCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(KC.Akashi)
             .catch(err => Logger.error(err))

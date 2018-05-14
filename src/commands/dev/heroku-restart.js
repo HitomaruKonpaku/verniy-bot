@@ -14,7 +14,7 @@ module.exports = class HerokuRestartCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         let isOwner = this.client.isOwner(msg.author)
         if (!isOwner) return
 

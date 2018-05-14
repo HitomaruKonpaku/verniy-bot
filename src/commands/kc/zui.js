@@ -13,7 +13,7 @@ module.exports = class KCZuiCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(zuizui)
             .catch(err => Logger.error(err))

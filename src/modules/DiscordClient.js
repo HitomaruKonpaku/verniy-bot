@@ -95,10 +95,11 @@ class DiscordClient {
                 }
             })
             // Emitted whenever a WebSocket resumes
-            .on('resume', replayed => {
+            .on('resume', () => {
+                Logger.log('RESUME')
             })
             // Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect
-            .on('disconnect', event => {
+            .on('disconnect', () => {
                 Logger.warn('DISCONNECT')
             })
             // Emitted whenever a message is created

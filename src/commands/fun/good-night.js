@@ -13,7 +13,7 @@ module.exports = class GoodNightCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(_MSG)
             .catch(err => Logger.error(err))

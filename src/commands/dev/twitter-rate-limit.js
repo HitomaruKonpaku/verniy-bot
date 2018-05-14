@@ -14,7 +14,7 @@ module.exports = class TwitterRateLimitCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         let twitter = new TwitterClient()
         twitter
             .checkRateLimit()

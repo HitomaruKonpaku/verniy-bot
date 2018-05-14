@@ -12,7 +12,7 @@ module.exports = class KCAirCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(KC.AirPower)
             .catch(err => Logger.error(err))

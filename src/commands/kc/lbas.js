@@ -12,7 +12,7 @@ module.exports = class KCLbasCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(KC.LBAS)
             .catch(err => Logger.error(err))

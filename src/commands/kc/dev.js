@@ -12,7 +12,7 @@ module.exports = class KCDevCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(KC.Development)
             .catch(err => Logger.error(err))

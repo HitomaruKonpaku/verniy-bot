@@ -12,7 +12,7 @@ module.exports = class KCEscortModCommand extends Command {
         })
     }
 
-    async run(msg, args) {
+    async run(msg) {
         msg.channel
             .send(KC.EscortMod)
             .catch(err => Logger.error(err))
