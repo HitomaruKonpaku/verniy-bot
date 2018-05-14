@@ -9,7 +9,6 @@ module.exports = class DiscordGuildCommand extends Command {
             group: 'dev',
             memberName: 'guild',
             description: '',
-            guarded: true,
         })
     }
 
