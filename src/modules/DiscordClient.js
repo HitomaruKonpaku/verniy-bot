@@ -126,6 +126,11 @@ class DiscordClient {
                     .DateTimeFormat(localeCode, dateOptions)
                     .format(Date.now())}`)
             })
+            .on('guildUnavailable', guild => {
+                Logger.log(`GUILD UNAVAILABLE: ${guild.name} at ${Intl
+                    .DateTimeFormat(localeCode, dateOptions)
+                    .format(Date.now())}`)
+            })
 
         // Client registries
         this.client.registry
