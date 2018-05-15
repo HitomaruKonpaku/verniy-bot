@@ -26,7 +26,7 @@ module.exports = class HelpCommand extends Command {
 
     async run(msg, args) {
         const registry = this.client.registry
-        const groups = registry.groups
+        const groups = registry.groups.filter(v => v.id != 'dev')
         const commands = registry.findCommands(args.command, false, msg)
         let isShowAll = args.command && args.command.toLowerCase() === 'all'
         const messages = []
