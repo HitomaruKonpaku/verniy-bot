@@ -62,9 +62,7 @@ module.exports = class HelpCommand extends Command {
                     )} to view the list of all commands.`
                 )
             }
-        }
-
-        try {
+        } else {
             isShowAll = true
             const helpHead = [
                 `To run a command in ${msg.guild || 'any server'}, use ${Command.usage('command', msg.guild ? msg.guild.commandPrefix : null, this.client.user)}.`,
@@ -86,11 +84,14 @@ module.exports = class HelpCommand extends Command {
                 helpGroups,
             ].join('\n')
             const help = [helpHead, helpBody].join('\n\n')
-            messages.push(await msg.direct(help))
-            if (msg.channel.type !== 'dm') messages.push(await msg.say('Sent you a DM with information.'))
-        } catch (err) {
-            messages.push(await msg.say('Unable to send you the help DM. You probably have DMs disabled.'))
+            try {
+                messages.push(await msg.direct(help))
+                if (msg.channel.type !== 'dm') messages.push(await msg.say('Sent you a DM with information.'))
+            } catch (err) {
+                messages.push(await msg.say('Unable to send you the help DM. You probably have DMs disabled.'))
+            }
         }
+
         return messages
     }
 }
