@@ -73,7 +73,7 @@ module.exports = {
         Logger.log('Starting cron module')
 
         _discord = discord
-        _channels = Settings.KanColle.CronbBoadcastChannels
+        _channels = Settings.KanColle.CronBroadcastChannels
 
         Logger.log('Starting PvP cron')
         cronPvp.start()

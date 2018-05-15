@@ -72,7 +72,7 @@ module.exports = {
         GunFit: 'https://i.imgur.com/RLiJubo.png',
         EscortMod: 'https://i.imgur.com/f3U41DI.png',
         OverKill: 'https://i.imgur.com/YG0ub7G.png',
-        CronbBoadcastChannels: [
+        CronBroadcastChannels: [
             '422709303376609290', // HitoSpam
             '442409008788275200', // VN KC > chat
             '376294828608061440', // Quan nhau cua T > kc-viet
