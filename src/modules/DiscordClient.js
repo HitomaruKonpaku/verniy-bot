@@ -85,14 +85,6 @@ class DiscordClient {
             // Emitted whenever the client's WebSocket encounters a connection error
             .on('error', error => {
                 Logger.error(error)
-
-                if (error.indexOf('ECONNRESET') != -1) {
-                    this.client
-                        .destroy()
-                        .then(() => setTimeout(() => {
-                            this.start()
-                        }, 1000))
-                }
             })
             // Emitted whenever a WebSocket resumes
             .on('resume', () => {
