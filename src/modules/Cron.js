@@ -15,11 +15,8 @@ let _discord
 let _channels
 
 function sendMessage(msg) {
-    Logger.log(msg)
-    let channels = Util.getDiscordBroadcastChannel(_discord, _channels)
-    channels.forEach(v => {
-        v.send(msg)
-    })
+    Logger.log(`CRON ${msg}`)
+    Util.broadcastDiscordChannels(_discord, _channels, msg)
 }
 
 // kc pvp cron

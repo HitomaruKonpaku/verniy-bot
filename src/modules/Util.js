@@ -50,8 +50,8 @@ function getRandomNumber(min, max) {
 }
 
 module.exports = {
-    getDiscordBroadcastChannel: (discord, channels) => getDiscordBroadcastChannel(discord, channels),
     broadcastDiscordChannels: (discord, channels, message, embed) => broadcastDiscordChannels(discord, channels, message, embed),
+    getDiscordBroadcastChannel: (discord, channels) => getDiscordBroadcastChannel(discord, channels),
     getDiscordCommandWithID: (discord, id) => getDiscordCommandWithID(discord, id),
     getTwitterFollow: (data) => getTwitterFollow(data),
     getTwitterFollowBroadcast: (data) => getTwitterFollowBroadcast(data),
