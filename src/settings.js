@@ -64,7 +64,7 @@ module.exports = {
         },
     },
     KanColle: {
-        LBAS: 'https://i.imgur.com/PeKxPQU.png',
+        LBAS: 'https://i.imgur.com/pmuBMki.png',
         Wikia: 'http://kancolle.wikia.com/wiki/',
         Akashi: 'http://akashi-list.me/',
         AirPower: 'https://i.imgur.com/8DcnG08.png',
