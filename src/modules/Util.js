@@ -4,7 +4,7 @@ function broadcastDiscordChannels(discord, channels, message, embed) {
     let channelList = getDiscordBroadcastChannel(discord, channels)
     channelList.forEach(v => {
         v.send(message, embed)
-            .then(() => Logger.log(`Done: ${v.guild.name} > ${v.name}`))
+            .then(() => Logger.log(`DONE ${v.guild.name} > ${v.name}`))
             .catch(err => Logger.error(err))
     })
 }

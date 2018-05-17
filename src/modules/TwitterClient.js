@@ -72,7 +72,7 @@ class TwitterClient {
                 return
             }
             // Send
-            Logger.log(`Tweet: ${url}`)
+            Logger.log(`TWEET @${tweet.user.screen_name} ${url}`)
             const embed = makeEmbed(tweet)
             const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
             Util.broadcastDiscordChannels(discord, sendList, url, embed)
@@ -135,7 +135,7 @@ class TwitterClient {
                 let done = 0
                 sendList.forEach(v => {
                     v.send(image)
-                        .then(() => Logger.log(`Done: ${v.guild.name} > ${v.name}`))
+                        .then(() => Logger.log(`DONE ${v.guild.name} > ${v.name}`))
                         .catch(err => Logger.error(err))
                         .then(() => {
                             done++
@@ -187,7 +187,7 @@ class TwitterClient {
                             return
                         }
                         // Send as bot
-                        Logger.log(`Ava: ${img}`)
+                        Logger.log(`AVA ${img}`)
                         const sendList = data.channels
                         Util.broadcastDiscordChannels(discord, sendList, img)
                         // Send as user
