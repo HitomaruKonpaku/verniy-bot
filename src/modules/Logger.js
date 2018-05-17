@@ -8,8 +8,8 @@ module.exports = {
     warn: msg => {
         console.log(`WARN ${msg}`)
     },
-    error: error => {
-        console.log(`ERROR ${error}`)
-        console.trace(error)
+    error: err => {
+        console.log(`ERROR ${err.message ? err.message : err}`)
+        console.trace(err)
     },
 }
