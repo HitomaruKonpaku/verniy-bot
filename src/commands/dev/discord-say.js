@@ -24,11 +24,11 @@ module.exports = class DiscordSayCommand extends Command {
         const message = args[1]
         const id = dest.match(/\d+/)[0]
 
-        if (dest.indexOf('@') != -1 || this.client.users.some(v => v.id == id)) {
+        if (this.client.users.some(v => v.id === id)) {
             this.client.users.get(id)
                 .send(message)
                 .catch(err => Logger.error(err))
-        } else if (dest.indexOf('#') != -1 || this.client.channels.some(v => v.id == id)) {
+        } else if (this.client.channels.some(v => v.id === id)) {
             this.client.channels.get(id)
                 .send(message)
                 .catch(err => Logger.error(err))
