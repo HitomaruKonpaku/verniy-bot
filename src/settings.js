@@ -78,5 +78,6 @@ module.exports = {
             '376294828608061440', // Quan nhau cua T > kc-viet
             '421681074565939201', // Quan nhau cua T > kc-eng
         ],
+        Rice: 'https://i.imgur.com/IUNR1v0.png',
     },
 }
