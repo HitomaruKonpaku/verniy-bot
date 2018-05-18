@@ -33,6 +33,12 @@ module.exports = {
                     '421681074565939201': {}, // Quan nhau cua T > kc-eng
                 },
             },
+            // @FlatIsNice | Tibi | Tibo442
+            '3383309523': {
+                channels: {
+                    '422709303376609290': {},
+                },
+            },
         },
         NewAva: {
             // @HitomaruKonpaku
