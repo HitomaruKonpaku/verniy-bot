@@ -70,11 +70,11 @@ module.exports = {
         },
     },
     KanColle: {
+        Rice: 'https://pbs.twimg.com/media/DdogirGV4Agl68x.png:orig',
         LBAS: 'https://i.imgur.com/pmuBMki.png',
-        Wikia: 'http://kancolle.wikia.com/wiki/',
-        Akashi: 'http://akashi-list.me/',
         AirPower: 'https://i.imgur.com/8DcnG08.png',
         Development: 'https://i.imgur.com/ZehPS8X.png',
+        Akashi: 'http://akashi-list.me/',
         GunFit: 'https://i.imgur.com/RLiJubo.png',
         EscortMod: 'https://i.imgur.com/f3U41DI.png',
         OverKill: 'https://i.imgur.com/YG0ub7G.png',
@@ -84,6 +84,5 @@ module.exports = {
             '376294828608061440', // Quan nhau cua T > kc-viet
             '421681074565939201', // Quan nhau cua T > kc-eng
         ],
-        Rice: 'https://i.imgur.com/Rxa1Tw5.png',
     },
 }
