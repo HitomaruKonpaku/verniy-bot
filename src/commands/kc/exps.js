@@ -14,8 +14,8 @@ module.exports = class KCExpsCommand extends Command {
         const message = [
             'Open KC3 > Strat Room > Console (press F12) & paste the below code',
             '```js',
-            'let exp = 0',
-            'for (let ship in KC3ShipManager.list) exp += KC3ShipManager.list[ship].exp[0]',
+            'var exp = 0',
+            'for (var ship in KC3ShipManager.list) exp += KC3ShipManager.list[ship].exp[0]',
             'exp.toLocaleString()',
             '```',
         ].join('\n')
