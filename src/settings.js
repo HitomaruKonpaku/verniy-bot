@@ -70,7 +70,7 @@ module.exports = {
         },
     },
     KanColle: {
-        Rice: 'https://pbs.twimg.com/media/DdogirGV4Agl68x.png:orig',
+        Rice: 'https://i.imgur.com/Sd1GTcc.jpg',
         LBAS: 'https://i.imgur.com/pmuBMki.png',
         AirPower: 'https://i.imgur.com/8DcnG08.png',
         Development: 'https://i.imgur.com/ZehPS8X.png',
