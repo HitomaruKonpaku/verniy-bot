@@ -1,5 +1,6 @@
 const { RichEmbed } = require('discord.js')
 const Twitter = require('twitter')
+const Entities = require('html-entities').AllHtmlEntities
 const TwitterSettings = require('../settings').Twitter
 const Logger = require('./Logger')
 const Util = require('./Util')
@@ -53,7 +54,11 @@ class TwitterClient {
                 media = tweet.entities.media[0].media_url_https
             }
 
+            // Clear shortened link at the end of tweet
             description = description.replace(/(https{0,1}:\/\/t\.co\/\w+)$/, '').trim()
+            // Fix special char e.g. '&amp;' to '&'
+            description = new Entities().decode(description)
+
             embed.setDescription(description)
             embed.setImage(media)
 
