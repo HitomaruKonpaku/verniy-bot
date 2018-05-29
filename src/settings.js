@@ -29,8 +29,7 @@ module.exports = {
                 channels: {
                     '422709303376609290': {}, // HitoSpam
                     '441955702781771806': {}, // VN KC > dev-tweet
-                    '376294828608061440': {}, // Quan nhau cua T > kc-viet
-                    '421681074565939201': {}, // Quan nhau cua T > kc-eng
+                    '451006611360710656': {}, // Quan nhau cua T > dev-tweet
                 },
             },
             // @FlatIsNice | Tibi | Tibo442
@@ -56,8 +55,7 @@ module.exports = {
                     '422709303376609290', // HitoSpam
                     '441955702781771806', // VN KC > dev-tweet
                     '442409008788275200', // VN KC > chat
-                    '376294828608061440', // Quan nhau cua T > kc-viet
-                    '421681074565939201', // Quan nhau cua T > kc-eng
+                    '451006611360710656', // Quan nhau cua T > dev-tweet
                 ],
                 channelsAsUser: [
                     '425302689887289344', // KC Discord > kc-only
