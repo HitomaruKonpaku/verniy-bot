@@ -22,5 +22,5 @@ Discord bot using NodeJS
 
 ## Show logs
 * Run Command Prompt
-* `npm run logs` or `npm run logs-t`
+* `npm run log` or `npm run logt`
 * Delete all regex `(\[\d+m)`
