@@ -5,10 +5,10 @@ Discord bot using NodeJS
 * NodeJS 10.x
 * Create `.env` file in root folder
 * Add following fields to `.env` file
-  * DISCORD_PREFIX = ""
-  * DISCORD_OWNER = ""
   * DISCORD_TOKEN_BOT = ""
   * DISCORD_TOKEN_USER = ""
+  * DISCORD_PREFIX = ""
+  * DISCORD_OWNER = ""
   * TWITTER_ENABLE = ""
   * TWITTER_CONSUMER_KEY = ""
   * TWITTER_CONSUMER_SECRET = ""
@@ -22,5 +22,8 @@ Discord bot using NodeJS
 
 ## Show logs
 * Run Command Prompt
-* `npm run log` or `npm run logt`
-* Delete all regex `(\[\d+m)`
+* Pick 1
+  * `npm run log`
+  * `npm run logt`
+* New log file will be created in folder `logs/`
+* Delete all regex `(\[\d+m)` if necessary
