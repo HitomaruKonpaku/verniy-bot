@@ -33,7 +33,7 @@ class DiscordClient {
             // Emitted when the client becomes ready to start working
             .on('ready', () => {
                 Logger.log(`${this.client.user.tag} READY!!!`)
-                this.client.user.setActivity('Type .help for help', { type: 'PLAYING' })
+                this.client.user.setActivity(`Type ${commandPrefix}help for help`, { type: 'PLAYING' })
 
                 Logger.log('Owners')
                 this.client.owners
