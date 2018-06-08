@@ -6,13 +6,16 @@
   "scripts": {
     "start": "node .",
     "lint": "eslint src",
-    "log": "heroku logs -a hito-verniy -n 1500 > log.log",
-    "logt": "heroku logs -a hito-verniy -n 1500 -t > log.log"
+    "log-folder": "if not exist logs mkdir logs",
+    "log-file": "heroku logs -a hito-verniy -n 1500 > logs/%date:~10,4%%date:~7,2%%date:~4,2%%time:~0,2%%time:~3,2%%time:~6,2%.log",
+    "log-file-stream": "heroku logs -a hito-verniy -n 1500 -t > logs/%date:~10,4%%date:~7,2%%date:~4,2%%time:~0,2%%time:~3,2%%time:~6,2%.log",
+    "log": "npm run log-folder && npm run log-file",
+    "logt": "npm run log-folder && npm run log-file-stream"
   },
   "author": "HitomaruKonpaku",
   "license": "ISC",
   "engines": {
-    "node": "10.2.1",
+    "node": "10.4.0",
     "npm": "6.1.0"
   },
   "dependencies": {
