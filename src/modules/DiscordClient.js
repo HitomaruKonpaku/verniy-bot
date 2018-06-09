@@ -124,7 +124,7 @@ class DiscordClient {
     }
     runOnReady() {
         //
-        Logger.log(`${this.client.user.tag} READY!!!`)
+        Logger.log(`DISCORD ${this.client.user.tag} READY!!!`)
         this.client.user.setActivity(`Type ${this.commandPrefix}help for help`, { type: 'PLAYING' })
         //
         Logger.log('Owners')
@@ -189,9 +189,13 @@ class DiscordClient {
                 this.sendTweet(channels, tweet)
             })
             .on('avatar', user => {
+                const img = user.profile_image_url_https.replace('_normal', '')
+                Logger.log(`TWITTER AVATAR @${user.screen_name} > ${img}`)
                 const uid = user.id_str
                 const channels = newAvatarData[uid].channels
-                this.sendAvatar(channels, user)
+                this.sendAvatar(channels, img)
+                const channels2 = newAvatarData[uid].channelsAsUser
+                if (channels2) this.sendAvatarAsUser(channels2, img)
             })
     }
     sendTweet(channels, tweet) {
@@ -237,10 +241,36 @@ class DiscordClient {
         Logger.log(`TWITTER TWEET ${url}`)
         this.sendToChannels({ channels, message, embed })
     }
-    sendAvatar(channels, user) {
-        const img = user.profile_image_url_https.replace('_normal', '')
-        Logger.log(`TWITTER AVATAR @${user.screen_name} > ${img}`)
+    sendAvatar(channels, img) {
         this.sendToChannels({ channels, message: img })
+    }
+    sendAvatarAsUser(channels, img) {
+        const token = process.env.DISCORD_TOKEN_USER
+        if (token === undefined) return
+        const Discord = require('discord.js')
+        const client = new Discord.Client()
+        const channelSet = new Set(channels)
+        const total = channels.length
+        let done = 0
+        client.on('ready', () => {
+            Logger.log(`DISCORD ${client.user.tag} READY!!!`)
+            client.channels.filterArray(v => v.type == 'text' && channelSet.has(v.id))
+                .forEach(v => v
+                    .send(img)
+                    .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`))
+                    .catch(err => Logger.error(err))
+                    .then(() => {
+                        done++
+                        if (done !== total) return
+                        Logger.log('DISCORD Disconnecting as user!')
+                        client
+                            .destroy()
+                            .then(() => Logger.log('DISCORD Disconnected!'))
+                    })
+                )
+        })
+        Logger.log('DISCORD Connecting as user!')
+        client.login(token)
     }
     startCron() {
         Cron.start(this.client)
