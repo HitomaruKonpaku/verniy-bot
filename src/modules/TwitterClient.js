@@ -5,7 +5,7 @@ const Logger = require('./Logger')
 class TwitterClient extends EventEmitter {
     constructor() {
         super()
-        Logger.log('TwitterClient constructor')
+        Logger.log('TWITTER constructor')
         //
         const ConsumerKey = process.env.TWITTER_CONSUMER_KEY
         const ConsumerSecret = process.env.TWITTER_CONSUMER_SECRET
@@ -91,7 +91,10 @@ class TwitterClient extends EventEmitter {
         const twitter = this
         const api = 'users/show'
         const uidList = Object.keys(users)
+        Logger.log('TWITTER Checking avatar')
+        Logger.log(`TWITTER Total request per 15 minutes: ${uidList.reduce((p, v) => p + 900 / users[v].interval, 0)}`)
         uidList.forEach(id => {
+            Logger.log(`TWITTER Checking avatar of user ${id}`)
             const interval = users[id].interval
             let ava
             const check = () => {

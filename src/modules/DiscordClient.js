@@ -13,7 +13,7 @@ const dateOptions = Settings.Global.DateOptions
 
 class DiscordClient {
     constructor() {
-        Logger.log('DiscordClient constructor')
+        Logger.log('DISCORD constructor')
         // Get variables for client
         this.startSubModule = false
         this.token = process.env.DISCORD_TOKEN_BOT
@@ -166,13 +166,13 @@ class DiscordClient {
         if (!(twitterEnable === 'true' || twitterEnable === '1')) return
         const twitter = new TwitterClient()
         //
+        const newAvatarData = Settings.Twitter.NewAva
+        twitter.checkAvatar(newAvatarData)
+        //
         const newTweetData = Settings.Twitter.NewTweet
         const newTweetFollowList = Object.keys(newTweetData)
         const newTweetFollowSet = new Set(newTweetFollowList)
         twitter.checkTweet(newTweetFollowList)
-        //
-        const newAvatarData = Settings.Twitter.NewAva
-        twitter.checkAvatar(newAvatarData)
         //
         twitter
             .on('tweet', tweet => {
@@ -190,7 +190,7 @@ class DiscordClient {
             })
             .on('avatar', user => {
                 const uid = user.id_str
-                const channels = Object.keys(newAvatarData[uid].channels)
+                const channels = newAvatarData[uid].channels
                 this.sendAvatar(channels, user)
             })
     }
@@ -231,12 +231,15 @@ class DiscordClient {
             embed.setImage(media)
             return embed
         }
-        const message = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+        const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+        const message = message
         const embed = createEmbed(tweet)
+        Logger.log(`TWITTER TWEET ${url}`)
         this.sendToChannels({ channels, message, embed })
     }
     sendAvatar(channels, user) {
         const img = user.profile_image_url_https.replace('_normal', '')
+        Logger.log(`TWITTER AVATAR @${user.screen_name} > ${img}`)
         this.sendToChannels({ channels, message: img })
     }
     startCron() {
