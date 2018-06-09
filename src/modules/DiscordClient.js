@@ -236,7 +236,7 @@ class DiscordClient {
             return embed
         }
         const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-        const message = message
+        const message = url
         const embed = createEmbed(tweet)
         Logger.log(`TWITTER TWEET ${url}`)
         this.sendToChannels({ channels, message, embed })
