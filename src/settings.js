@@ -42,7 +42,7 @@ module.exports = {
         NewAva: {
             // @HitomaruKonpaku
             '2591243785': {
-                interval: 15,
+                interval: 10,
                 channels: [
                     '422709303376609290', // HitoSpam
                 ],
