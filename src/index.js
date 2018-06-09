@@ -8,5 +8,5 @@ Logger.log('Environment Variables loaded!')
 
 // Load discord
 const DiscordClient = require('./modules/DiscordClient')
-let discord = new DiscordClient()
+const discord = new DiscordClient()
 discord.start()

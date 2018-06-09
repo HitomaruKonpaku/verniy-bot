@@ -1,12 +1,10 @@
-const { RichEmbed } = require('discord.js')
-const Twitter = require('twitter')
-const Entities = require('html-entities').AllHtmlEntities
-const TwitterSettings = require('../settings').Twitter
+const EventEmitter = require('events')
+const Twitter = require('twit')
 const Logger = require('./Logger')
-const Util = require('./Util')
 
-class TwitterClient {
+class TwitterClient extends EventEmitter {
     constructor() {
+        super()
         Logger.log('TwitterClient constructor')
         //
         const ConsumerKey = process.env.TWITTER_CONSUMER_KEY
@@ -14,202 +12,115 @@ class TwitterClient {
         const AccessToken = process.env.TWITTER_ACCESS_TOKEN
         const AccessTokenSecret = process.env.TWITTER_ACCESS_TOKEN_SECRET
         //
+        let check = true
+        if (ConsumerKey === undefined) {
+            console.log('Missing ConsumerKey')
+            check = false
+        }
+        if (ConsumerSecret === undefined) {
+            console.log('Missing ConsumerSecret')
+            check = false
+        }
+        if (AccessToken === undefined) {
+            console.log('Missing AccessToken')
+            check = false
+        }
+        if (AccessTokenSecret === undefined) {
+            console.log('Missing AccessTokenSecret')
+            check = false
+        }
+        if (!check) {
+            return
+        }
+        //
         this.client = new Twitter({
             consumer_key: ConsumerKey,
             consumer_secret: ConsumerSecret,
-            access_token_key: AccessToken,
+            access_token: AccessToken,
             access_token_secret: AccessTokenSecret,
         })
     }
-    checkNewTweet({ discord }) {
-        //
-        const followList = Util.getTwitterFollow(TwitterSettings.NewTweet)
-        const followSet = new Set(followList)
-        const api = 'statuses/filter'
-
-        const makeEmbed = tweet => {
-            let embed = new RichEmbed({
-                color: 0x1da1f2,
-                author: {
-                    name: `${tweet.user.name} (@${tweet.user.screen_name})`,
-                    url: `https://twitter.com/${tweet.user.screen_name}`,
-                    icon_url: tweet.user.profile_image_url_https,
-                },
-                footer: {
-                    text: 'Twitter',
-                    icon_url: 'http://abs.twimg.com/icons/apple-touch-icon-192x192.png',
-                },
-            })
-            let description = tweet.text
-            let media
-
-            if (tweet.extended_tweet) {
-                if (tweet.extended_tweet.full_text) {
-                    description = tweet.extended_tweet.full_text
-                }
-                if (tweet.extended_tweet.entities.media) {
-                    media = tweet.extended_tweet.entities.media[0].media_url_https
-                }
-            } else if (tweet.entities.media) {
-                media = tweet.entities.media[0].media_url_https
-            }
-
-            // Clear shortened link at the end of tweet
-            description = description.replace(/(https{0,1}:\/\/t\.co\/\w+)$/, '').trim()
-            // Fix special char e.g. '&amp;' to '&'
-            description = new Entities().decode(description)
-
-            embed.setDescription(description)
-            embed.setImage(media)
-
-            return embed
-        }
-
-        const processTweet = tweet => {
-            // Tweet url
-            const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-            // Check tweet source user
-            if (!followSet.has(tweet.user.id_str)) {
-                return
-            }
-            // Check retweeted
-            if (tweet.retweeted_status) {
-                return
-            }
-            // Send
-            Logger.log(`TWEET @${tweet.user.screen_name} ${url}`)
-            const embed = makeEmbed(tweet)
-            const sendList = Util.getTwitterFollowBroadcast(TwitterSettings.NewTweet[tweet.user.id_str])
-            Util.broadcastDiscordChannels(discord, sendList, url, embed)
-        }
-
-        const streamStart = () => {
-            Logger.log(`Checking new tweet from ${followList.join(', ')}`)
-            let isError = undefined
-            const retryInMin = 5
-            const retryInSec = 1
-
-            this.client.stream(api, {
-                follow: followList.join(','),
-            }, stream => {
-                stream.on('data', tweet => {
-                    if (isError == undefined || isError == true) {
-                        Logger.log(`Twitter API ${api} connected`)
-                    }
-                    isError = false
-                    processTweet(tweet)
-                })
-                stream.on('error', err => {
-                    if (isError == true) return
-                    isError = true
-                    Logger.error(err)
-                    Logger.log(`Reconnect to ${api} in ${retryInMin} minutes`)
-                    setTimeout(() => streamStart(), 60000 * retryInMin)
-                })
-                stream.on('end', () => {
-                    if (isError == true) return
-                    Logger.log(`Stream API ended. Reconnect in ${retryInSec} seconds`)
-                    setTimeout(() => streamStart(), 1000 * retryInSec)
-                })
-            })
-        }
-
-        streamStart()
+    isAvailable() {
+        return this.client !== undefined
     }
-    checkNewAva({ discord }) {
-        Logger.log('Checking new twitter avatar')
-        // Declare
-        const api = 'users/show'
-        const followList = Util.getTwitterFollow(TwitterSettings.NewAva)
-
-        // Special send as Discord user
-        const specialSend = (channels, image) => {
-            // Discord user token
-            const token = process.env.DISCORD_TOKEN_USER
-            if (!token) {
-                return
-            }
-            //
-            const Discord = require('discord.js')
-            const client = new Discord.Client()
-
-            client.on('ready', () => {
-                Logger.log(`${client.user.tag} READY!!!`)
-                let sendList = Util.getDiscordBroadcastChannel(client, channels)
-                let total = channels.length
-                let done = 0
-                sendList.forEach(v => {
-                    v.send(image)
-                        .then(() => Logger.log(`DONE ${v.guild.name} > ${v.name}`))
-                        .catch(err => Logger.error(err))
-                        .then(() => {
-                            done++
-                            if (done != total) {
-                                return
-                            }
-                            Logger.log('Disconnecting from Discord as user!')
-                            client.destroy()
-                                .then(() => {
-                                    Logger.log('Disconnected!')
-                                })
-                        })
-                })
-            })
-
-            Logger.log('Connecting to Discord as user!')
-            client.login(token)
+    checkTweet(users) {
+        if (!this.isAvailable() || !Array.isArray(users)) {
+            return
         }
-
-        // Check
-        Logger.log(`Total request per 15 minutes: ${followList.reduce((p, v) => p + 900 / TwitterSettings.NewAva[v].interval, 0)}`)
-        followList.forEach(id => {
-            // Vars
-            const data = TwitterSettings.NewAva[id]
-            const interval = data.interval
+        const twitter = this
+        const api = 'statuses/filter'
+        const params = {
+            follow: users.join(','),
+        }
+        const stream = this.client.stream(api, params)
+        stream
+            .on('connect', req => {
+                console.log('Connecting...')
+            })
+            .on('connected', res => {
+                console.log('Connected')
+            })
+            .on('reconnect', (req, res, interval) => {
+                console.log('Reconnecting...')
+            })
+            .on('disconnect', msg => {
+                console.log('Disconnected')
+                console.log(msg)
+                stream.start()
+            })
+            .on('warning', warn => {
+                console.log('Warning')
+                console.log(warn)
+            })
+            .on('error', err => {
+                console.log('Error')
+                console.log(err)
+            })
+            .on('tweet', tweet => {
+                twitter.emit('tweet', tweet)
+            })
+            .on('limit', msg => {
+                console.log('Limit')
+                console.log(msg)
+            })
+    }
+    checkAvatar(users) {
+        if (!this.isAvailable()) {
+            return
+        }
+        const twitter = this
+        const api = 'users/show'
+        const uidList = Object.keys(users)
+        uidList.forEach(id => {
+            const interval = users[id].interval
             let ava
-            // Pre-check
-            if (!interval) {
-                Logger.warn(`Missing check interval! Skipped ${id}`)
-                return
-            } else {
-                Logger.log(`Checking ava of ${id}, interval ${interval}s`)
-            }
-            //
-            const follow = () => {
+            const check = () => {
                 this.client
-                    .get(api, {
-                        user_id: id,
-                        include_entities: false,
-                    })
-                    .then(user => {
-                        const img = user.profile_image_url_https.replace('_normal', '')
+                    .get(api, { user_id: id, include_entities: false })
+                    .then(data => {
+                        const user = data.data
+                        const img = user.profile_image_url_https
                         // Pre check
-                        if (!ava) {
+                        if (ava === undefined) {
                             ava = img
                             return
                         }
-                        if (ava == img) {
+                        if (ava === img) {
                             return
-                        }
-                        // Send as bot
-                        Logger.log(`AVA ${img}`)
-                        const sendList = data.channels
-                        Util.broadcastDiscordChannels(discord, sendList, img)
-                        // Send as user
-                        if (data.channelsAsUser && data.channelsAsUser.length > 0) {
-                            specialSend(data.channelsAsUser, img)
                         }
                         // Save new ava
                         ava = img
+                        //
+                        twitter.emit('avatar', user)
                     })
                     .catch(err => {
                         Logger.error(err)
                     })
             }
             // Start to check
-            follow()
+            check()
             setInterval(() => {
-                follow()
+                check()
             }, 1000 * interval)
         })
     }
