@@ -14,19 +14,19 @@ class TwitterClient extends EventEmitter {
         //
         let check = true
         if (ConsumerKey === undefined) {
-            console.log('Missing ConsumerKey')
+            Logger.log('TWITTER Missing ConsumerKey')
             check = false
         }
         if (ConsumerSecret === undefined) {
-            console.log('Missing ConsumerSecret')
+            Logger.log('TWITTER Missing ConsumerSecret')
             check = false
         }
         if (AccessToken === undefined) {
-            console.log('Missing AccessToken')
+            Logger.log('TWITTER Missing AccessToken')
             check = false
         }
         if (AccessTokenSecret === undefined) {
-            console.log('Missing AccessTokenSecret')
+            Logger.log('TWITTER Missing AccessTokenSecret')
             check = false
         }
         if (!check) {
@@ -55,33 +55,33 @@ class TwitterClient extends EventEmitter {
         const stream = this.client.stream(api, params)
         stream
             .on('connect', req => {
-                console.log('Connecting...')
+                Logger.log('TWITTER STREAM Connecting...')
             })
             .on('connected', res => {
-                console.log('Connected')
+                Logger.log('TWITTER STREAM Connected')
             })
             .on('reconnect', (req, res, interval) => {
-                console.log('Reconnecting...')
+                Logger.log('TWITTER STREAM Reconnecting...')
             })
             .on('disconnect', msg => {
-                console.log('Disconnected')
-                console.log(msg)
+                Logger.log('TWITTER STREAM Disconnected')
+                Logger.log(msg)
                 stream.start()
             })
             .on('warning', warn => {
-                console.log('Warning')
-                console.log(warn)
+                Logger.log('TWITTER STREAM Warning')
+                Logger.warn(warn)
             })
             .on('error', err => {
-                console.log('Error')
-                console.log(err)
+                Logger.log('TWITTER STREAM Error')
+                Logger.error(err)
             })
             .on('tweet', tweet => {
                 twitter.emit('tweet', tweet)
             })
             .on('limit', msg => {
-                console.log('Limit')
-                console.log(msg)
+                Logger.log('TWITTER STREAM Limit')
+                Logger.log(msg)
             })
     }
     checkAvatar(users) {

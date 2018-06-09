@@ -24,7 +24,7 @@ class DiscordClient {
         this.unknownCommandResponse = false
         //
         if (this.token === undefined) {
-            console.log('Missing token')
+            Logger.warn('DISCORD Missing token')
             return
         }
         // Init client
@@ -159,7 +159,7 @@ class DiscordClient {
             .filterArray(v => v.type == 'text' && channelSet.has(v.id))
             .forEach(v => v
                 .send(message, embed)
-                .then(() => console.log(`DONE > ${v.guild.name} > ${v.name}`)))
+                .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`)))
     }
     startTwitter() {
         const twitterEnable = process.env.TWITTER_ENABLE
@@ -169,7 +169,7 @@ class DiscordClient {
         const newTweetData = Settings.Twitter.NewTweet
         const newTweetFollowList = Object.keys(newTweetData)
         const newTweetFollowSet = new Set(newTweetFollowList)
-        // twitter.checkTweet(newTweetFollowList)
+        twitter.checkTweet(newTweetFollowList)
         //
         const newAvatarData = Settings.Twitter.NewAva
         twitter.checkAvatar(newAvatarData)
@@ -190,7 +190,7 @@ class DiscordClient {
             })
             .on('avatar', user => {
                 const uid = user.id_str
-                const channels = Object.keys(newTweetData[uid].channels)
+                const channels = Object.keys(newAvatarData[uid].channels)
                 this.sendAvatar(channels, user)
             })
     }
@@ -240,7 +240,7 @@ class DiscordClient {
         this.sendToChannels({ channels, message: img })
     }
     startCron() {
-        // Cron.start(this.client)
+        Cron.start(this.client)
     }
 }
 
