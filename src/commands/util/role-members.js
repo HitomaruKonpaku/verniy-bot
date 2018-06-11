@@ -20,9 +20,10 @@ module.exports = class RoleMembersCommand extends Command {
     }
 
     async run(msg, args) {
-        const members = args.role.members
+        const role = args.role
+        const members = role.members
         const message = [
-            `Found ${members.size} members`,
+            `Found **${members.size}** members with role **${role.name}**`,
             members.map(v => `> ${v.displayName}`).join('\n'),
         ].join('\n')
         return msg.say(message)
