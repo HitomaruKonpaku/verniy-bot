@@ -24,7 +24,9 @@ module.exports = class RoleMembersCommand extends Command {
         const members = role.members
         const message = [
             `Found **${members.size}** members with role **${role.name}**`,
-            members.map(v => `> ${v.displayName}`).join('\n'),
+            '```',
+            members.map(v => `${v.displayName}`).join('\n'),
+            '```',
         ].join('\n')
         return msg.say(message)
     }
