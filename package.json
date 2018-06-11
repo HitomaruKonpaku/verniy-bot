@@ -9,8 +9,8 @@
     "log": "npm run log-folder && npm run log-file",
     "logt": "npm run log-folder && npm run log-file-stream",
     "log-folder": "if not exist logs mkdir logs",
-    "log-file": "heroku logs -a hito-verniy -n 1500 > logs/%date:~10,4%%date:~7,2%%date:~4,2%%time:~0,2%%time:~3,2%%time:~6,2%.log",
-    "log-file-stream": "heroku logs -a hito-verniy -n 1500 -t > logs/%date:~10,4%%date:~7,2%%date:~4,2%%time:~0,2%%time:~3,2%%time:~6,2%.log",
+    "log-file": "heroku logs -a hito-verniy -n 1500 > logs/%date:~10,4%%date:~7,2%%date:~4,2%.log",
+    "log-file-stream": "heroku logs -a hito-verniy -n 1500 -t > logs/%date:~10,4%%date:~7,2%%date:~4,2%.log",
     "": ""
   },
   "author": "HitomaruKonpaku",
