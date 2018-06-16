@@ -44,18 +44,16 @@ class TwitterClient extends EventEmitter {
         return this.client !== undefined
     }
     checkTweet(users) {
-        if (!this.isAvailable() || !Array.isArray(users)) {
-            return
-        }
+        if (!this.isAvailable()) return
+        if (!Array.isArray(users)) return
         const twitter = this
         const api = 'statuses/filter'
-        const params = {
-            follow: users.join(','),
-        }
+        const params = { follow: users.join(',') }
         const stream = this.client.stream(api, params)
         stream
             .on('connect', req => {
                 Logger.log('TWITTER STREAM Connecting...')
+                Logger.log(`TWITTER STREAM Checking new tweet of ${users.join(', ')}`)
             })
             .on('connected', res => {
                 Logger.log('TWITTER STREAM Connected')
@@ -85,13 +83,11 @@ class TwitterClient extends EventEmitter {
             })
     }
     checkAvatar(users) {
-        if (!this.isAvailable()) {
-            return
-        }
+        if (!this.isAvailable()) return
         const twitter = this
         const api = 'users/show'
         const uidList = Object.keys(users)
-        Logger.log('TWITTER Checking avatar')
+        Logger.log('TWITTER Checking avatar...')
         Logger.log(`TWITTER Total request per 15 minutes: ${uidList.reduce((p, v) => p + 900 / users[v].interval, 0)}`)
         uidList.forEach(id => {
             Logger.log(`TWITTER Checking avatar of user ${id}`)
@@ -128,6 +124,7 @@ class TwitterClient extends EventEmitter {
         })
     }
     checkRateLimit() {
+        if (!this.isAvailable()) return
         const api = 'application/rate_limit_status'
         return this.client.get(api, {
             resources: [
