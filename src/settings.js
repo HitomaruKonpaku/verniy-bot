@@ -38,6 +38,18 @@ module.exports = {
                     '422709303376609290': {},
                 },
             },
+            // @GirlsFrontline
+            '3247835011': {
+                channels: {
+                    '457599318996811776': {}, // lolis > gf-news-feed
+                },
+            },
+            // @GirlsFrontlineE
+            '958921874523607040': {
+                channels: {
+                    '457599318996811776': {}, // lolis > gf-news-feed
+                },
+            },
         },
         NewAva: {
             // @HitomaruKonpaku
@@ -56,19 +68,32 @@ module.exports = {
                     '441955702781771806', // VN KC > dev-tweet
                     '442409008788275200', // VN KC > chat
                     '451006611360710656', // Quan nhau cua T > dev-tweet
+                    '368557905718542338', // Dzeso > general
                 ],
                 channelsAsUser: [
                     '425302689887289344', // KC Discord > kc-only
-                    '345299518012653570', // nicex lolis > boatsluts-kc
+                    '345299518012653570', // lolis > boatsluts-kc
                     '334800225191329792', // KC3 > kancolle
                     '98922706317103104', // Daxyn > kancolle
-                    '368557905718542338', // Dzeso > general
+                ],
+            },
+            // @GirlsFrontline
+            '3247835011': {
+                interval: 60,
+                channels: [
+                    '457599318996811776', // lolis > gf-news-feed
+                ],
+            },
+            // @GirlsFrontlineE
+            '958921874523607040': {
+                interval: 60,
+                channels: [
+                    '457599318996811776', // lolis > gf-news-feed
                 ],
             },
         },
     },
     KanColle: {
-        Rice: 'https://i.imgur.com/ON5nKdn.jpg',
         LBAS: 'https://i.imgur.com/pmuBMki.png',
         AirPower: 'https://i.imgur.com/8DcnG08.png',
         Development: 'https://i.imgur.com/ZehPS8X.png',
