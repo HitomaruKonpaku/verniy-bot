@@ -13,8 +13,7 @@ module.exports = class DiscordGuildCommand extends Command {
     }
 
     async run(msg) {
-        const prefix = (length, prefix) => {
-            prefix = prefix || '-'
+        const prefix = (length, prefix = '-') => {
             return Array(length).fill(prefix).join('')
         }
         const localeCode = Settings.Global.LocaleCode
