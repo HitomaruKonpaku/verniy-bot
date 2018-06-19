@@ -28,8 +28,10 @@ module.exports = class TwitterRateLimitCommand extends Command {
                 if (!isOwner) return
 
                 const json = JSON.stringify(resources, (key, value) =>
-                    key !== 'reset' ? value : new Date(Number(value) * 1000)
-                        .toLocaleDateString(Settings.Global.LocaleCode, Settings.Global.DateOptions), '  ')
+                    key !== 'reset'
+                        ? value
+                        : new Date(Number(value) * 1000).toCustomString(Settings.Global.TimezoneOffset)
+                    , '  ')
                 const message = `\`\`\`json\n${json}\n\`\`\``
                 return msg.say(message)
             })

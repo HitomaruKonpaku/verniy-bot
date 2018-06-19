@@ -6,6 +6,9 @@ Logger.log('STARTING.....')
 require('dotenv').config()
 Logger.log('Environment Variables loaded!')
 
+// Load prototype
+require('./modules/Prototype').load()
+
 // Load discord
 const DiscordClient = require('./modules/DiscordClient')
 const discord = new DiscordClient()

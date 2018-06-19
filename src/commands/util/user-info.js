@@ -32,11 +32,7 @@ module.exports = class UserInfoCommand extends Command {
             embed.addField('ID', user.id, true)
             embed.addField('Bot?', user.bot ? 'Yes' : 'No', true)
             embed.addField('Created At',
-                new Date(user.createdTimestamp)
-                    .toLocaleDateString(Settings.Global.LocaleCode, Settings.Global.DateOptions)
-                // .toISOString()
-                // .replace(/T|Z|\.\d{3}/g, ' ')
-                // .trim()
+                new Date(user.createdTimestamp).toCustomString(Settings.Global.TimezoneOffset)
             )
             embed.addField('Avatar URL', user.avatarURL)
 
