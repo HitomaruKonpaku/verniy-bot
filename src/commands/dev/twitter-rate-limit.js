@@ -18,11 +18,12 @@ module.exports = class TwitterRateLimitCommand extends Command {
         twitter
             .checkRateLimit()
             .then(data => {
-                let resources = {}
-                let users = {}
+                const respResources = data.data.resources
+                const resources = {}
+                const users = {}
                 resources['users'] = users
-                users['/users/show/:id'] = data.resources.users['/users/show/:id']
-                Logger.log(`TRL: ${JSON.stringify(resources)}`)
+                users['/users/show/:id'] = respResources.users['/users/show/:id']
+                Logger.log(`TWITTER RATE LIMIT: ${JSON.stringify(resources)}`)
 
                 const isOwner = this.client.isOwner(msg.author)
                 if (!isOwner) return
