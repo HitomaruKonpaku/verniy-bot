@@ -6,7 +6,7 @@ module.exports = class UserInfoCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'user',
-            group: 'util',
+            group: 'user',
             memberName: 'user',
             description: 'Check user info',
             args: [

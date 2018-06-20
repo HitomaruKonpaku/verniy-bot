@@ -4,7 +4,7 @@ module.exports = class SayCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'say',
-            group: 'dev',
+            group: 'util',
             memberName: 'say',
             description: '',
         })

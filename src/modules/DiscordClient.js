@@ -103,6 +103,8 @@ class DiscordClient {
             .registerGroups([
                 ['dev', 'Developer'],
                 ['util', 'Utility'],
+                ['user', 'User'],
+                ['guild', 'Guild'],
                 ['kc', 'KanColle'],
                 ['fun', 'Funny'],
             ])

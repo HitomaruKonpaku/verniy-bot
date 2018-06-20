@@ -4,7 +4,7 @@ module.exports = class RoleMembersCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'rm',
-            group: 'util',
+            group: 'guild',
             memberName: 'rm',
             description: 'List of members by role',
             guildOnly: true,

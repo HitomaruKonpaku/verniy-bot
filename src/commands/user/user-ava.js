@@ -4,7 +4,7 @@ module.exports = class UserAvaCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'ava',
-            group: 'util',
+            group: 'user',
             memberName: 'ava',
             description: 'Check user ava',
             args: [

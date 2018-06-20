@@ -4,7 +4,7 @@ module.exports = class SomeoneCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'someone',
-            group: 'util',
+            group: 'guild',
             memberName: 'someone',
             description: 'Get random user in current guild',
             guildOnly: true,
