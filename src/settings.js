@@ -11,13 +11,13 @@ module.exports = {
             // @HitomaruKonpaku
             '2591243785': {
                 channels: {
-                    '422709303376609290': {},
+                    '422709303376609290': {}, // Hitomaru Nuke Zone > bot-verniy
                 },
             },
             // @KanColle_STAFF
             '294025417': {
                 channels: {
-                    '422709303376609290': {}, // HitoSpam
+                    '422709303376609290': {},
                     '441955702781771806': {}, // VN KC > dev-tweet
                     '451006611360710656': {}, // Quan nhau cua T > dev-tweet
                 },
@@ -31,12 +31,14 @@ module.exports = {
             // @GirlsFrontline
             '3247835011': {
                 channels: {
+                    '458855845669634049': {}, // Sad Panda > gf-tweet
                     '457599318996811776': {}, // lolis > gf-news-feed
                 },
             },
             // @GirlsFrontlineE
             '958921874523607040': {
                 channels: {
+                    '458855845669634049': {}, // Sad Panda > gf-tweet
                     '457599318996811776': {}, // lolis > gf-news-feed
                 },
             },
@@ -46,15 +48,15 @@ module.exports = {
             '2591243785': {
                 interval: 10,
                 channels: [
-                    '422709303376609290', // HitoSpam
+                    '422709303376609290',
                 ],
             },
             // @KanColle_STAFF
             '294025417': {
                 interval: 5,
                 channels: [
+                    '422709303376609290',
                     '365111136095305730', // Sad Panda > elsword
-                    '422709303376609290', // HitoSpam
                     '441955702781771806', // VN KC > dev-tweet
                     '442409008788275200', // VN KC > chat
                     '451006611360710656', // Quan nhau cua T > dev-tweet
@@ -71,6 +73,7 @@ module.exports = {
             '3247835011': {
                 interval: 60,
                 channels: [
+                    '458855845669634049', // Sad Panda > gf-tweet
                     '457599318996811776', // lolis > gf-news-feed
                 ],
             },
@@ -78,6 +81,7 @@ module.exports = {
             '958921874523607040': {
                 interval: 60,
                 channels: [
+                    '458855845669634049', // Sad Panda > gf-tweet
                     '457599318996811776', // lolis > gf-news-feed
                 ],
             },
@@ -92,7 +96,7 @@ module.exports = {
         EscortMod: 'https://i.imgur.com/f3U41DI.png',
         OverKill: 'https://i.imgur.com/YG0ub7G.png',
         CronBroadcastChannels: [
-            '422709303376609290', // HitoSpam
+            '422709303376609290',
             '442409008788275200', // VN KC > chat
             '376294828608061440', // Quan nhau cua T > kc-viet
             '421681074565939201', // Quan nhau cua T > kc-eng
