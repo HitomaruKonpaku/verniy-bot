@@ -83,7 +83,7 @@ class DiscordClient {
                 // Autism
                 const content = msg.content
                 const wave = '👋'
-                if (content == wave) {
+                if (content === wave) {
                     msg.channel.send(wave)
                 }
             })
@@ -149,7 +149,7 @@ class DiscordClient {
         }
         const channelSet = new Set(channels)
         discord.channels
-            .filterArray(v => v.type == 'text' && channelSet.has(v.id))
+            .filterArray(v => v.type === 'text' && channelSet.has(v.id))
             .forEach(v => v
                 .send(message, embed)
                 .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`)))
@@ -247,7 +247,7 @@ class DiscordClient {
         let done = 0
         client.on('ready', () => {
             Logger.log(`DISCORD ${client.user.tag} READY!!!`)
-            client.channels.filterArray(v => v.type == 'text' && channelSet.has(v.id))
+            client.channels.filterArray(v => v.type === 'text' && channelSet.has(v.id))
                 .forEach(v => v
                     .send(img)
                     .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`))
