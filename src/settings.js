@@ -56,7 +56,7 @@ module.exports = {
                 interval: 5,
                 channels: [
                     '422709303376609290',
-                    '365111136095305730', // Sad Panda > elsword
+                    '365111136095305730', // Sad Panda > organization
                     '441955702781771806', // VN KC > dev-tweet
                     '442409008788275200', // VN KC > chat
                     '451006611360710656', // Quan nhau cua T > dev-tweet
