@@ -1,5 +1,5 @@
-const { Command } = require('discord.js-commando')
 const Discord = require('discord.js')
+const { Command } = require('discord.js-commando')
 
 module.exports = class RoleAddCommand extends Command {
     constructor(client) {
@@ -33,7 +33,7 @@ module.exports = class RoleAddCommand extends Command {
         const guildRole = args.role
         const guildRolePosition = guildRole.calculatedPosition
         if (botRolePosition <= guildRolePosition) {
-            return msg.say('Can not assign higher priority role')
+            return msg.say('Can not add higher priority role')
         }
         const member = msg.member
         return member
