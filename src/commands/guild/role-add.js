@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+const Discord = require('discord.js')
 
 module.exports = class RoleAddCommand extends Command {
     constructor(client) {
@@ -20,10 +21,23 @@ module.exports = class RoleAddCommand extends Command {
     }
 
     async run(msg, args) {
-        const role = args.role
+        const bot = this.client.guilds.get(msg.guild.id).me
+        const botRole = bot.roles.filterArray(v =>
+            new Discord.Permissions(v.permissions)
+                .has(Discord.Permissions.FLAGS.MANAGE_ROLES)
+        )[0]
+        if (botRole === undefined) {
+            return msg.say('Missing permission **MANAGE ROLES**')
+        }
+        const botRolePosition = botRole.calculatedPosition
+        const guildRole = args.role
+        const guildRolePosition = guildRole.calculatedPosition
+        if (botRolePosition <= guildRolePosition) {
+            return msg.say('Can not assign higher priority role')
+        }
         const member = msg.member
-        member.addRole(role.id)
-            .then(() => console.log('Done'))
-            .catch(() => console.log('Error'))
+        return member
+            .addRole(guildRole)
+            .then(() => msg.say('Done'))
     }
 }
