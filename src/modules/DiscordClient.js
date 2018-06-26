@@ -239,7 +239,7 @@ class DiscordClient {
     }
     sendAvatarAsUser(channels, img) {
         const token = process.env.DISCORD_TOKEN_USER
-        if (token === undefined) return
+        if (token === undefined || channels === undefined || channels.length === 0) return
         const Discord = require('discord.js')
         const client = new Discord.Client()
         const channelSet = new Set(channels)
