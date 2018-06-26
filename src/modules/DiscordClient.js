@@ -5,7 +5,7 @@ const he = require('he')
 const Settings = require('../settings')
 const Logger = require('./Logger')
 const TwitterClient = require('./TwitterClient')
-const Cron = require('./Cron')
+const CronKC = require('./CronKC')
 const Util = require('./Util')
 
 class DiscordClient {
@@ -266,7 +266,14 @@ class DiscordClient {
         client.login(token)
     }
     startCron() {
-        Cron.start(this.client)
+        Logger.log('CRON Starting...')
+        const cron = new CronKC()
+        cron.on('message', msg => {
+            Logger.log(`CRON Message: ${msg}`)
+            const channels = Settings.Cron.KanColle
+            this.sendToChannels({ channels, message: msg })
+        })
+        cron.start()
     }
 }
 
