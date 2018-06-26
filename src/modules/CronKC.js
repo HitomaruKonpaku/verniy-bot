@@ -35,6 +35,9 @@ class CronKC extends EventEmitter {
                 13: {
                     0: 'PvP reset',
                 },
+                21: {
+                    30: '30 minutes before Akashi\'s Improvement reset',
+                },
                 22: {
                     0: 'Akashi\'s Improvement reset',
                 },
