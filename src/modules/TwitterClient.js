@@ -118,9 +118,7 @@ class TwitterClient extends EventEmitter {
             }
             // Start to check
             check()
-            setInterval(() => {
-                check()
-            }, 1000 * interval)
+            setInterval(() => check(), 1000 * interval)
         })
     }
     checkRateLimit() {

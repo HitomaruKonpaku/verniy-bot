@@ -9,7 +9,7 @@ class CronKC extends EventEmitter {
         Logger.log('CRON CronKC constructor')
 
         const Timezone = Settings.Global.Timezone
-        const TimeZoneOffset = Settings.Global.TimezoneOffset
+        const TimezoneOffset = Settings.Global.TimezoneOffset
         const StartDefault = false
 
         const Message = {
@@ -51,11 +51,11 @@ class CronKC extends EventEmitter {
                 '*', '*', '*',
             ].join(' '),
             onTick: () => {
-                const date = new Date()
-                const hour = (date.getUTCHours() + TimeZoneOffset) % 24
-                const min = date.getUTCMinutes()
-                if (!Message.Daily[hour] || !Message.Daily[hour][min]) return
-                const msg = Message.Daily[hour][min]
+                const date = new Date(new Date().getTime() + TimezoneOffset * 3600000)
+                const hh = date.getUTCHours()
+                const mm = date.getUTCMinutes()
+                const msg = (Message.Daily[hh] || {})[mm]
+                if (!msg) return
                 this.emit('message', msg)
             },
             timeZone: Timezone,

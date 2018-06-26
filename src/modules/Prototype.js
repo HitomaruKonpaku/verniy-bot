@@ -15,20 +15,21 @@ function loadDatePrototype() {
         }
         TimezoneOffset = TimezoneOffset % 24
         const date = new Date(this.getTime() + TimezoneOffset * 3600000)
-        const a = [
+        const za = [
             date.getUTCFullYear(),
             date.getUTCMonth() + 1,
             date.getUTCDate(),
         ]
-        const b = [
+        const zb = [
             date.getUTCHours(),
             date.getUTCMinutes(),
             date.getUTCSeconds(),
         ]
-        const c = [
-            a.map(v => String(v).padStart(2, 0)).join('-'),
-            b.map(v => String(v).padStart(2, 0)).join(':'),
+        const zc = [
+            za.map(v => String(v).padStart(2, 0)).join('-'),
+            zb.map(v => String(v).padStart(2, 0)).join(':'),
         ]
-        return c.join(' ')
+        const zd = zc.join(' ')
+        return zd
     }
 }

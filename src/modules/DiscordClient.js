@@ -132,9 +132,7 @@ class DiscordClient {
             cmd.run()
         }
         //
-        if (this.startSubModule === true) {
-            return
-        }
+        if (this.startSubModule === true) return
         this.startSubModule = true
         //
         this.startTwitter()
@@ -155,8 +153,9 @@ class DiscordClient {
                 .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`)))
     }
     startTwitter() {
-        const twitterEnable = process.env.TWITTER_ENABLE
-        if (!(twitterEnable === 'true' || twitterEnable === '1')) return
+        const isEnable = process.env.TWITTER_ENABLE
+        if (!(isEnable === '1' || isEnable === 'true')) return
+
         const twitter = new TwitterClient()
         //
         const newAvatarData = Settings.Twitter.NewAva
@@ -266,6 +265,9 @@ class DiscordClient {
         client.login(token)
     }
     startCron() {
+        const isEnable = process.env.CRON_ENABLE
+        if (!(isEnable === '1' || isEnable === 'true')) return
+
         Logger.log('CRON Starting...')
         const cron = new CronKC()
         cron.on('message', msg => {
