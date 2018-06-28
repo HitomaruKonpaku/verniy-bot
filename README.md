@@ -9,6 +9,7 @@ Discord bot using NodeJS
   * DISCORD_TOKEN_USER = ""
   * DISCORD_PREFIX = ""
   * DISCORD_OWNER = ""
+  * CRON_ENABLE = ""
   * TWITTER_ENABLE = ""
   * TWITTER_CONSUMER_KEY = ""
   * TWITTER_CONSUMER_SECRET = ""
