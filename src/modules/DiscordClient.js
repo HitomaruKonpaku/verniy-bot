@@ -139,18 +139,16 @@ class DiscordClient {
         this.startCron()
     }
     sendToChannels({ discord, channels, message, embed }) {
-        if (discord === undefined) {
-            discord = this.client
-        }
-        if (channels === undefined) {
-            channels = []
-        }
+        discord = discord || this.client
+        channels = channels || []
         const channelSet = new Set(channels)
         discord.channels
             .filterArray(v => v.type === 'text' && channelSet.has(v.id))
             .forEach(v => v
                 .send(message, embed)
-                .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`)))
+                .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`))
+                .catch(err => console.log(err.message ? err.message : err))
+            )
     }
     startTwitter() {
         const isEnable = process.env.TWITTER_ENABLE
@@ -187,7 +185,7 @@ class DiscordClient {
                 const channels = newAvatarData[uid].channels
                 this.sendAvatar(channels, img)
                 const channels2 = newAvatarData[uid].channelsAsUser
-                if (channels2) this.sendAvatarAsUser(channels2, img)
+                this.sendAvatarAsUser(channels2, img)
             })
     }
     sendTweet(channels, tweet) {
@@ -237,8 +235,9 @@ class DiscordClient {
         this.sendToChannels({ channels, message: img })
     }
     sendAvatarAsUser(channels, img) {
+        if ((channels || []).length === 0) return
         const token = process.env.DISCORD_TOKEN_USER
-        if (token === undefined || channels === undefined || channels.length === 0) return
+        if (token === undefined) return
         const Discord = require('discord.js')
         const client = new Discord.Client()
         const channelSet = new Set(channels)
