@@ -1,3 +1,5 @@
+const Logger = require('./Logger')
+
 module.exports = {
     load: function () {
         loadDatePrototype()
@@ -32,4 +34,5 @@ function loadDatePrototype() {
         const zd = zc.join(' ')
         return zd
     }
+    Logger.log('PROTOTYPE Date.toCustomString()')
 }

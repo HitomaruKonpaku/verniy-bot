@@ -10,13 +10,15 @@ module.exports = {
 }
 
 function loadProcessEnv() {
+    Logger.log('PROCESSENV Loading...')
     require('dotenv').config()
-    Logger.log('ProcessEnv loaded!')
+    Logger.log('PROCESSENV Load completed!')
 }
 
 function loadPrototype() {
+    Logger.log('PROTOTYPE Loading...')
     require('./modules/Prototype').load()
-    Logger.log('Prototype loaded!')
+    Logger.log('PROTOTYPE Load completed!')
 }
 
 function loadDiscord() {
