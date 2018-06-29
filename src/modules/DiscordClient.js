@@ -217,7 +217,8 @@ class DiscordClient {
             }
 
             // Clear shortened link at the end of tweet
-            description = description.replace(/(https{0,1}:\/\/t\.co\/\w+)$/, '').trim()
+            const isUrlOnly = /^(https{0,1}:\/\/t\.co\/\w+)$/.test(description.trim())
+            if (!isUrlOnly) description = description.replace(/(https{0,1}:\/\/t\.co\/\w+)$/, '').trim()
             // Fix special char e.g. '&amp;' to '&'
             description = he.decode(description)
 
