@@ -71,8 +71,10 @@ module.exports = {
                 ],
                 channelsAsUser: [
                     '425302689887289344', // KC Discord > kc-only
-                    '345299518012653570', // lolis > boatsluts-kc
+                    '449024082529353739', // KanColle Wikia > kancolle-chat
+                    '165107321561808896', // KanColle Wiki > kancolle
                     '334800225191329792', // KC3 > kancolle
+                    '345299518012653570', // lolis > boatsluts-kc
                     '98922706317103104', // Daxyn > kancolle
                 ],
             },
