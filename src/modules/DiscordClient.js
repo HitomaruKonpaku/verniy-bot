@@ -179,13 +179,15 @@ class DiscordClient {
                 this.sendTweet(channels, tweet)
             })
             .on('avatar', user => {
-                const img = user.profile_image_url_https.replace('_normal', '')
-                Logger.log(`TWITTER AVATAR @${user.screen_name} > ${img}`)
+                const imgSrc = user.profile_image_url_https
+                if (!imgSrc) return
+                const imgFull = imgSrc.replace('_normal', '')
+                Logger.log(`TWITTER AVATAR @${user.screen_name} > ${imgFull}`)
                 const uid = user.id_str
                 const channels = newAvatarData[uid].channels
-                this.sendAvatar(channels, img)
+                this.sendAvatar(channels, imgFull)
                 const channels2 = newAvatarData[uid].channelsAsUser
-                this.sendAvatarAsUser(channels2, img)
+                this.sendAvatarAsUser(channels2, imgFull)
             })
     }
     sendTweet(channels, tweet) {
