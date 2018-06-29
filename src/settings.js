@@ -12,13 +12,19 @@ module.exports = {
             // @HitomaruKonpaku
             '2591243785': {
                 channels: {
-                    '422709303376609290': {}, // Hitomaru Nuke Zone > bot-verniy
+                    '462085619691290624': {}, // Hitomaru Nuke Zone > other
+                },
+            },
+            // @SpaceX
+            '34743251': {
+                channels: {
+                    '462085389327532033': {}, // Hitomaru Nuke Zone > spacex
                 },
             },
             // @KanColle_STAFF
             '294025417': {
                 channels: {
-                    '422709303376609290': {},
+                    '462085551734915074': {}, // Hitomaru Nuke Zone > kancolle_staff
                     '441955702781771806': {}, // VN KC > dev-tweet
                     '451006611360710656': {}, // Quan nhau cua T > dev-tweet
                 },
@@ -26,7 +32,7 @@ module.exports = {
             // @FlatIsNice | Tibi | Tibo442
             '3383309523': {
                 channels: {
-                    '422709303376609290': {},
+                    '462085771872960522': {}, // Hitomaru Nuke Zone > flatisnice
                 },
             },
             // @GirlsFrontline
@@ -49,14 +55,14 @@ module.exports = {
             '2591243785': {
                 interval: 10,
                 channels: [
-                    '422709303376609290',
+                    '462085619691290624', // Hitomaru Nuke Zone > other
                 ],
             },
             // @KanColle_STAFF
             '294025417': {
                 interval: 5,
                 channels: [
-                    '422709303376609290',
+                    '462085551734915074', // Hitomaru Nuke Zone > kancolle_staff
                     '365111136095305730', // Sad Panda > organization
                     '441955702781771806', // VN KC > dev-tweet
                     '442409008788275200', // VN KC > chat
@@ -99,7 +105,7 @@ module.exports = {
     },
     Cron: {
         KanColle: [
-            '422709303376609290',
+            '422709303376609290', // Hitomaru Nuke Zone > bot-verniy
             '442409008788275200', // VN KC > chat
             '376294828608061440', // Quan nhau cua T > kc-viet
             '421681074565939201', // Quan nhau cua T > kc-eng
