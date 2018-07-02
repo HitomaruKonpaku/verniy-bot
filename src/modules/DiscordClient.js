@@ -155,28 +155,26 @@ class DiscordClient {
         if (!(isEnable === '1' || isEnable === 'true')) return
 
         const twitter = new TwitterClient()
-        //
         const newAvatarData = Settings.Twitter.NewAva
-        twitter.checkAvatar(newAvatarData)
-        //
         const newTweetData = Settings.Twitter.NewTweet
         const newTweetFollowList = Object.keys(newTweetData)
         const newTweetFollowSet = new Set(newTweetFollowList)
+
+        twitter.checkAvatar(newAvatarData)
         twitter.checkTweet(newTweetFollowList)
-        //
+
         twitter
             .on('tweet', tweet => {
                 const uid = tweet.user.id_str
                 // Check tweet source user
-                if (!newTweetFollowSet.has(uid)) {
-                    return
-                }
+                if (!newTweetFollowSet.has(uid)) return
                 // Check retweeted
-                if (tweet.retweeted_status) {
-                    return
-                }
+                if (tweet.retweeted_status) return
+                // Make custom tweet object
+                // Send raw tweet
                 const channels = Object.keys(newTweetData[uid].channels)
                 this.sendTweet(channels, tweet)
+                // Send translated tweet
             })
             .on('avatar', user => {
                 const imgSrc = user.profile_image_url_https
