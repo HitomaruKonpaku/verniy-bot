@@ -1,7 +1,9 @@
 # Verniy
+
 Discord bot using NodeJS
 
 ## Requirement
+
 * NodeJS 10.x
 * Create `.env` file in root folder
 * Add following fields to `.env` file
@@ -17,14 +19,16 @@ Discord bot using NodeJS
   * TWITTER_ACCESS_TOKEN_SECRET = ""
   * HEROKU_API_KEY = ""
 
-## How to start the bot?
+## How to start the bot
+
 * npm install
 * npm start
 
 ## Show logs
+
 * Run Command Prompt
-* Pick 1
+* Type 1 of those below command
   * `npm run log`
   * `npm run logt`
-* New log file will be created in folder `logs/`
+* New log file will be created in folder `./logs/`
 * Delete all regex `(\[\d+m)` if necessary
