@@ -21,6 +21,12 @@ module.exports = {
                     '462085389327532033': {}, // Hitomaru Nuke Zone > spacex
                 },
             },
+            // @MinataHatsune
+            '219261616': {
+                channels: {
+                    '466986657304936458': {},
+                },
+            },
             // @KanColle_STAFF
             '294025417': {
                 channels: {
