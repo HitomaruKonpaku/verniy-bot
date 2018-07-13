@@ -8,54 +8,77 @@ module.exports = {
         InviteLink: 'https://discordapp.com/oauth2/authorize?scope=bot&client_id=422330233035948032',
     },
     Twitter: {
-        NewTweet: {
-            // @HitomaruKonpaku
-            '2591243785': {
-                channels: {
-                    '462085619691290624': {}, // Hitomaru Nuke Zone > other
-                },
+        NewTweet: [
+            {
+                follows: [
+                    // @HitomaruKonpaku
+                    '2591243785',
+                ],
+                channels: [
+                    // Hitomaru Nuke Zone > #other
+                    '462085619691290624',
+                ],
             },
-            // @SpaceX
-            '34743251': {
-                channels: {
-                    '462085389327532033': {}, // Hitomaru Nuke Zone > spacex
-                },
+            {
+                follows: [
+                    // @SpaceX
+                    '34743251',
+                ],
+                channels: [
+                    // Hitomaru Nuke Zone > #spacex
+                    '462085389327532033',
+                ],
             },
-            // @vnkeyfc
-            '588402934': {
-                channels: {
-                    '466986657304936458': {},
-                },
+            {
+                follows: [
+                    // @FlatIsNice | Tibi | Tibo442
+                    '3383309523',
+                ],
+                channels: [
+                    // Hitomaru Nuke Zone > #flatisnice
+                    '462085771872960522',
+                ],
             },
-            // @KanColle_STAFF
-            '294025417': {
-                channels: {
-                    '462085551734915074': {}, // Hitomaru Nuke Zone > kancolle_staff
-                    '441955702781771806': {}, // VN KC > dev-tweet
-                    '451006611360710656': {}, // Quan nhau cua T > dev-tweet
-                },
+            {
+                follows: [
+                    // @vnkeyfc
+                    '588402934',
+                ],
+                channels: [
+                    //
+                    '466986657304936458',
+                ],
+                retweet: true,
             },
-            // @FlatIsNice | Tibi | Tibo442
-            '3383309523': {
-                channels: {
-                    '462085771872960522': {}, // Hitomaru Nuke Zone > flatisnice
-                },
+            {
+                follows: [
+                    // @KanColle_STAFF
+                    '294025417',
+                ],
+                channels: [
+                    // Hitomaru Nuke Zone > #kancolle_staff
+                    '462085551734915074',
+                    // VN KC > #dev-tweet
+                    '441955702781771806',
+                    // Quan nhau cua T > #dev-tweet
+                    '451006611360710656',
+                ],
             },
-            // @GirlsFrontline
-            '3247835011': {
-                channels: {
-                    '458855845669634049': {}, // Sad Panda > gf-tweet
-                    '457599318996811776': {}, // lolis > gf-news-feed
-                },
+            {
+                follows: [
+                    // @GirlsFrontline
+                    '3247835011',
+                    // @GirlsFrontlineE
+                    '958921874523607040',
+                ],
+                channels: [
+                    // Sad Panda > #gf-tweet
+                    '458855845669634049',
+                    // lolis > #gf-news-feed
+                    '457599318996811776',
+                ],
             },
-            // @GirlsFrontlineE
-            '958921874523607040': {
-                channels: {
-                    '458855845669634049': {}, // Sad Panda > gf-tweet
-                    '457599318996811776': {}, // lolis > gf-news-feed
-                },
-            },
-        },
+        ],
         NewAva: {
             // @HitomaruKonpaku
             '2591243785': {
