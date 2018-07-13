@@ -154,9 +154,23 @@ class DiscordClient {
         const isEnable = process.env.TWITTER_ENABLE
         if (!(isEnable === '1' || isEnable === 'true')) return
 
+        const decodeNewTweet = raw => {
+            if (!Array.isArray(raw)) return {}
+            const data = {}
+            raw.forEach(v => {
+                Array(...v.follows).forEach(id => {
+                    data[id] = {
+                        channels: v.channels || [],
+                        retweet: !!v.retweet,
+                    }
+                })
+            })
+            return data
+        }
+
         const twitter = new TwitterClient()
         const newAvatarData = Settings.Twitter.NewAva
-        const newTweetData = Settings.Twitter.NewTweet
+        const newTweetData = decodeNewTweet(Settings.Twitter.NewTweet)
         const newTweetFollowList = Object.keys(newTweetData)
         const newTweetFollowSet = new Set(newTweetFollowList)
 
