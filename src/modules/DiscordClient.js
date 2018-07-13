@@ -213,7 +213,7 @@ class DiscordClient {
         const newTweetFollowList = Object.keys(newTweetData)
         const newTweetFollowSet = new Set(newTweetFollowList)
 
-        // twitter.checkAvatar(newAvatarData)
+        twitter.checkAvatar(newAvatarData)
         twitter.checkTweet(newTweetFollowList)
 
         twitter
@@ -223,7 +223,7 @@ class DiscordClient {
                 // Check tweet source user
                 if (!newTweetFollowSet.has(uid)) return
                 // Check retweeted
-                if (tweet.retweeted_status && !udata.retweet) return
+                if (!!tweet.retweeted_status && !udata.retweet) return
                 // Send tweet
                 const channels = udata.channels
                 const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
