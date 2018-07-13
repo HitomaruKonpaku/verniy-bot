@@ -146,7 +146,7 @@ class DiscordClient {
             .filterArray(v => v.type === 'text' && channelSet.has(v.id))
             .forEach(v => v
                 .send(message, embed)
-                .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`))
+                .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
                 .catch(err => console.log(err.message ? err.message : err))
             )
     }
@@ -159,6 +159,10 @@ class DiscordClient {
             const data = {}
             raw.forEach(v => {
                 Array(...v.follows).forEach(id => {
+                    if (data[id]) {
+                        data[id].channels = data[id].channels.concat(v.channels)
+                        return
+                    }
                     data[id] = {
                         channels: v.channels || [],
                         retweet: !!v.retweet,
@@ -168,44 +172,9 @@ class DiscordClient {
             return data
         }
 
-        const twitter = new TwitterClient()
-        const newAvatarData = Settings.Twitter.NewAva
-        const newTweetData = decodeNewTweet(Settings.Twitter.NewTweet)
-        const newTweetFollowList = Object.keys(newTweetData)
-        const newTweetFollowSet = new Set(newTweetFollowList)
-
-        twitter.checkAvatar(newAvatarData)
-        twitter.checkTweet(newTweetFollowList)
-
-        twitter
-            .on('tweet', tweet => {
-                const uid = tweet.user.id_str
-                // Check tweet source user
-                if (!newTweetFollowSet.has(uid)) return
-                // Check retweeted
-                if (tweet.retweeted_status) return
-                // Make custom tweet object
-                // Send raw tweet
-                const channels = Object.keys(newTweetData[uid].channels)
-                this.sendTweet(channels, tweet)
-                // Send translated tweet
-            })
-            .on('avatar', user => {
-                const imgSrc = user.profile_image_url_https
-                if (!imgSrc) return
-                const imgFull = imgSrc.replace('_normal', '')
-                Logger.log(`TWITTER AVATAR @${user.screen_name} > ${imgFull}`)
-                const uid = user.id_str
-                const channels = newAvatarData[uid].channels
-                this.sendAvatar(channels, imgFull)
-                const channels2 = newAvatarData[uid].channelsAsUser
-                this.sendAvatarAsUser(channels2, imgFull)
-            })
-    }
-    sendTweet(channels, tweet) {
-        const createEmbed = tweet => {
+        const makeTweetEmbed = tweet => {
             let embed = new RichEmbed({
-                color: 0x1da1f2,
+                color: parseInt(tweet.user.profile_background_color || '1DA1F2', 16),
                 author: {
                     name: `${tweet.user.name} (@${tweet.user.screen_name})`,
                     url: `https://twitter.com/${tweet.user.screen_name}`,
@@ -230,9 +199,6 @@ class DiscordClient {
                 media = tweet.entities.media[0].media_url_https
             }
 
-            // Clear shortened link at the end of tweet
-            const isUrlOnly = /^(https{0,1}:\/\/t\.co\/\w+)$/.test(description.trim())
-            if (!isUrlOnly) description = description.replace(/(https{0,1}:\/\/t\.co\/\w+)$/, '').trim()
             // Fix special char e.g. '&amp;' to '&'
             description = he.decode(description)
 
@@ -240,10 +206,45 @@ class DiscordClient {
             embed.setImage(media)
             return embed
         }
-        const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-        const message = url
-        const embed = createEmbed(tweet)
-        Logger.log(`TWITTER TWEET ${url}`)
+
+        const twitter = new TwitterClient()
+        const newAvatarData = Settings.Twitter.NewAva
+        const newTweetData = decodeNewTweet(Settings.Twitter.NewTweet)
+        const newTweetFollowList = Object.keys(newTweetData)
+        const newTweetFollowSet = new Set(newTweetFollowList)
+
+        // twitter.checkAvatar(newAvatarData)
+        twitter.checkTweet(newTweetFollowList)
+
+        twitter
+            .on('tweet', tweet => {
+                const uid = tweet.user.id_str
+                const udata = newTweetData[uid]
+                // Check tweet source user
+                if (!newTweetFollowSet.has(uid)) return
+                // Check retweeted
+                if (tweet.retweeted_status && !udata.retweet) return
+                // Send tweet
+                const channels = udata.channels
+                const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+                const message = url
+                const embed = makeTweetEmbed(tweet)
+                Logger.log(`TWITTER TWEET ${url}`)
+                this.sendTweet(channels, message, embed)
+            })
+            .on('avatar', user => {
+                const imgSrc = user.profile_image_url_https
+                if (!imgSrc) return
+                const imgFull = imgSrc.replace('_normal', '')
+                Logger.log(`TWITTER AVATAR @${user.screen_name} > ${imgFull}`)
+                const uid = user.id_str
+                const channels = newAvatarData[uid].channels
+                this.sendAvatar(channels, imgFull)
+                const channels2 = newAvatarData[uid].channelsAsUser
+                this.sendAvatarAsUser(channels2, imgFull)
+            })
+    }
+    sendTweet(channels, message, embed) {
         this.sendToChannels({ channels, message, embed })
     }
     sendAvatar(channels, img) {
@@ -263,7 +264,7 @@ class DiscordClient {
             client.channels.filterArray(v => v.type === 'text' && channelSet.has(v.id))
                 .forEach(v => v
                     .send(img)
-                    .then(() => Logger.log(`DONE > ${v.guild.name} > ${v.name}`))
+                    .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
                     .catch(err => Logger.error(err))
                     .then(() => {
                         done++

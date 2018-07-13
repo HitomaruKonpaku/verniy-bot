@@ -45,7 +45,7 @@ module.exports = {
                     '588402934',
                 ],
                 channels: [
-                    //
+                    // VNKFC
                     '466986657304936458',
                 ],
                 retweet: true,
