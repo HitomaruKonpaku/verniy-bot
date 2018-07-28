@@ -5,7 +5,8 @@ const Util = require('../../modules/Util')
 module.exports = class RandomCommand extends Command {
     constructor(client) {
         super(client, {
-            name: 'rd',
+            name: 'random',
+            aliases: ['rd'],
             group: 'util',
             memberName: 'rd',
             description: 'Random number generator BlessRNG',
@@ -24,7 +25,7 @@ module.exports = class RandomCommand extends Command {
         switch (numbers.length) {
             case 1:
                 min = 0
-                max = numbers[0] != '' ? numbers[0] : 1E9
+                max = numbers[0] != '' ? numbers[0] : 1E6
                 break
             case 2:
                 min = numbers[0]

@@ -128,9 +128,7 @@ class DiscordClient {
             })
         //
         const cmd = Util.getDiscordCommandWithID(this.client, 'guild')
-        if (cmd) {
-            cmd.run()
-        }
+        if (cmd) cmd.run()
         //
         if (this.startSubModule === true) return
         this.startSubModule = true
