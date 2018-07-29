@@ -13,7 +13,15 @@ module.exports = class BotInviteCommand extends Command {
     }
 
     async run(msg) {
-        const message = `<${Discord.InviteLink}>`
+        const chunk = [
+            [
+                'Please contact',
+                this.client.owners.map(v => `\`${v.tag}\``).join(', '),
+                'for more detail about the bot.',
+            ].join(' '),
+            `<${Discord.InviteLink}>`,
+        ]
+        const message = chunk.join('\n')
         return msg.say(message)
     }
 }
