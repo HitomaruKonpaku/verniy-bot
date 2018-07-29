@@ -9,6 +9,12 @@ module.exports = {
     },
     Twitter: {
         NewTweet: [
+            // {
+            //     follows: [],
+            //     channels: [],
+            //     retweet: undefined,
+            //     media: undefined,
+            // },
             {
                 follows: [
                     // @HitomaruKonpaku
@@ -18,6 +24,8 @@ module.exports = {
                     // Hitomaru Nuke Zone > #other
                     '462085619691290624',
                 ],
+                retweet: undefined,
+                media: undefined,
             },
             {
                 follows: [
@@ -50,7 +58,6 @@ module.exports = {
                     // VNKFC > #chat
                     '466986657304936458',
                 ],
-                retweet: true,
             },
             {
                 follows: [
