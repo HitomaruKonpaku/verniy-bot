@@ -199,6 +199,7 @@ class DiscordClient {
 
             let description = tweet.text
             let media
+
             if (tweet.extended_tweet) {
                 if (tweet.extended_tweet.full_text) {
                     description = tweet.extended_tweet.full_text
@@ -208,6 +209,12 @@ class DiscordClient {
                 }
             } else if (tweet.entities.media) {
                 media = tweet.entities.media[0].media_url_https
+            }
+
+            if (!media && tweet.quoted_status) {
+                if (tweet.quoted_status.extended_tweet.entities.media) {
+                    media = tweet.quoted_status.extended_tweet.entities.media[0].media_url_https
+                }
             }
 
             // Fix special char e.g. '&amp;' to '&'
