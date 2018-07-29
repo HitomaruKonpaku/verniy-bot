@@ -200,21 +200,27 @@ class DiscordClient {
             let description = tweet.text
             let media
 
-            if (tweet.extended_tweet) {
-                if (tweet.extended_tweet.full_text) {
-                    description = tweet.extended_tweet.full_text
+            try {
+                if (tweet.extended_tweet) {
+                    if (tweet.extended_tweet.full_text) {
+                        description = tweet.extended_tweet.full_text
+                    }
+                    if (tweet.extended_tweet.entities.media) {
+                        media = tweet.extended_tweet.entities.media[0].media_url_https
+                    }
+                } else if (tweet.entities.media) {
+                    media = tweet.entities.media[0].media_url_https
                 }
-                if (tweet.extended_tweet.entities.media) {
-                    media = tweet.extended_tweet.entities.media[0].media_url_https
+                if (!media && tweet.quoted_status) {
+                    if (tweet.quoted_status.extended_tweet) {
+                        media = tweet.quoted_status.extended_tweet.entities.media[0].media_url_https
+                    }
+                    if (tweet.quoted_status.entities.media) {
+                        media = tweet.quoted_status.entities.media[0].media_url_https
+                    }
                 }
-            } else if (tweet.entities.media) {
-                media = tweet.entities.media[0].media_url_https
-            }
-
-            if (!media && tweet.quoted_status) {
-                if (tweet.quoted_status.extended_tweet.entities.media) {
-                    media = tweet.quoted_status.extended_tweet.entities.media[0].media_url_https
-                }
+            } catch (err) {
+                Logger.warn(err)
             }
 
             // Fix special char e.g. '&amp;' to '&'
@@ -247,9 +253,9 @@ class DiscordClient {
                 // Send tweet
                 const channels = udata.channels
                 const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+                Logger.log(`TWITTER TWEET ${url}`)
                 const message = url
                 const embed = makeTweetEmbed(tweet)
-                Logger.log(`TWITTER TWEET ${url}`)
                 this.sendTweet(channels, message, embed)
             })
             .on('avatar', user => {
