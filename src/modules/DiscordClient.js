@@ -163,7 +163,8 @@ class DiscordClient {
                     }
                     data[id] = {
                         channels: v.channels || [],
-                        retweet: !!v.retweet,
+                        retweet: v.retweet,
+                        media: v.media,
                     }
                 })
             })
@@ -221,7 +222,9 @@ class DiscordClient {
                 // Check tweet source user
                 if (!newTweetFollowSet.has(uid)) return
                 // Check retweeted
-                if (!!tweet.retweeted_status && !udata.retweet) return
+                if (udata.retweet !== undefined && udata.retweet === !tweet.retweeted_status) return
+                // Check media
+                if (udata.media !== undefined && udata.media === !tweet.entities.media) return
                 // Send tweet
                 const channels = udata.channels
                 const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
