@@ -191,6 +191,7 @@ class DiscordClient {
                     url: `https://twitter.com/${tweet.user.screen_name}`,
                     icon_url: tweet.user.profile_image_url_https,
                 },
+                timestamp: new Date(),
                 footer: {
                     text: 'Twitter',
                     icon_url: 'http://abs.twimg.com/icons/apple-touch-icon-192x192.png',
@@ -248,7 +249,7 @@ class DiscordClient {
                 const udata = newTweetData[uid]
                 // Check tweet source user
                 if (!newTweetFollowSet.has(uid)) return
-                // Check retweeted
+                // Check retweet
                 if (udata.retweet !== undefined && udata.retweet === !tweet.retweeted_status) return
                 // Check media
                 if (udata.media !== undefined && udata.media === !tweet.entities.media) return
