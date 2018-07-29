@@ -184,7 +184,7 @@ class DiscordClient {
         }
 
         const makeTweetEmbed = tweet => {
-            let embed = new RichEmbed({
+            const embed = new RichEmbed({
                 color: parseInt(tweet.user.profile_background_color || '1DA1F2', 16),
                 author: {
                     name: `${tweet.user.name} (@${tweet.user.screen_name})`,
@@ -202,21 +202,23 @@ class DiscordClient {
 
             try {
                 if (tweet.extended_tweet) {
-                    if (tweet.extended_tweet.full_text) {
-                        description = tweet.extended_tweet.full_text
+                    const ex = tweet.extended_tweet
+                    if (ex.full_text) {
+                        description = ex.full_text
                     }
-                    if (tweet.extended_tweet.entities.media) {
-                        media = tweet.extended_tweet.entities.media[0].media_url_https
+                    if (ex.entities.media) {
+                        media = ex.entities.media[0].media_url_https
                     }
                 } else if (tweet.entities.media) {
                     media = tweet.entities.media[0].media_url_https
                 }
                 if (!media && tweet.quoted_status) {
-                    if (tweet.quoted_status.extended_tweet) {
-                        media = tweet.quoted_status.extended_tweet.entities.media[0].media_url_https
-                    }
-                    if (tweet.quoted_status.entities.media) {
-                        media = tweet.quoted_status.entities.media[0].media_url_https
+                    const qs = tweet.quoted_status
+                    if (qs.extended_tweet) {
+                        const ex = qs.extended_tweet
+                        media = ex.entities.media[0].media_url_https
+                    } else if (tweet.quoted_status.entities.media) {
+                        media = qs.entities.media[0].media_url_https
                     }
                 }
             } catch (err) {
