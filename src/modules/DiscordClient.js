@@ -145,7 +145,7 @@ class DiscordClient {
             .forEach(v => v
                 .send(message, embed)
                 .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
-                .catch(err => console.log(err.message ? err.message : err))
+                .catch(err => Logger.warn(err.message ? err.message : err))
             )
     }
     startTwitter() {
