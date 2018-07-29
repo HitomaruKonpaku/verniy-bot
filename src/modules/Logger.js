@@ -5,11 +5,13 @@ module.exports = {
     debug: msg => {
         console.log(`DEBUG ${msg}`)
     },
-    warn: msg => {
+    warn: err => {
+        const msg = err.message ? err.message : err
         console.log(`WARN ${msg}`)
     },
     error: err => {
-        console.log(`ERROR ${err.message ? err.message : err}`)
+        const msg = err.message ? err.message : err
+        console.log(`ERROR ${msg}`)
         console.trace(err)
     },
 }
