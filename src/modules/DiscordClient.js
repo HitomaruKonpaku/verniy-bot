@@ -145,7 +145,19 @@ class DiscordClient {
             .forEach(v => v
                 .send(message, embed)
                 .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
-                .catch(err => Logger.warn(err.message ? err.message : err))
+                .catch(err => {
+                    const code = err.code
+                    const message = err.message
+                    if (code === 50013 || message === 'Missing Permissions') {
+                        Logger.warn(`Missing Permissions > Send Message > ${v.guild.name} > #${v.name}`)
+                        return
+                    }
+                    if (code || message) {
+                        Logger.warn(`${code} > ${message}`)
+                        return
+                    }
+                    Logger.warn(err)
+                })
             )
     }
     startTwitter() {
