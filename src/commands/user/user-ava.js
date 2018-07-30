@@ -1,12 +1,13 @@
 const { Command } = require('discord.js-commando')
 
-module.exports = class UserAvaCommand extends Command {
+module.exports = class UserAvatarCommand extends Command {
     constructor(client) {
         super(client, {
-            name: 'ava',
+            name: 'avatar',
+            aliases: ['ava'],
             group: 'user',
-            memberName: 'ava',
-            description: 'Check user ava',
+            memberName: 'avatar',
+            description: 'Check user avatar',
             args: [
                 {
                     key: 'user',
