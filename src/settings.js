@@ -103,8 +103,8 @@ module.exports = {
                 channels: [
                     // Hitomaru Nuke Zone > #kancolle_staff
                     '462085551734915074',
-                    // Sad Panda > #organization
-                    '365111136095305730',
+                    // Sad Panda > #kancolle
+                    '474226940119613440',
                     // VN KC > #dev-tweet
                     '441955702781771806',
                     // VN KC > #chat
