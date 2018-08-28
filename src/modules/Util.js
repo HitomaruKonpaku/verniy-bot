@@ -12,7 +12,7 @@ function broadcastDiscordChannels(discord, channels, message, embed) {
 function getDiscordBroadcastChannel(discord, channels) {
     let set = new Set(channels)
     let broadcast = discord.channels
-        .filter(v =>
+        .filterArray(v =>
             v.type == 'text' &&
             set.has(v.id)
         )
@@ -21,7 +21,7 @@ function getDiscordBroadcastChannel(discord, channels) {
 
 function getDiscordCommandWithID(discord, id) {
     let cmd = discord.registry.commands
-        .filter(v => v.name == id)
+        .filterArray(v => v.name == id)
     return cmd.length != 0 ? cmd[0] : undefined
 }
 

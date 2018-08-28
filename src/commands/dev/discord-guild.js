@@ -23,7 +23,7 @@ module.exports = class DiscordGuildCommand extends Command {
             Logger.log(`${prefix(2)} Owner: ${v.owner.user.tag}`)
             Logger.log(`${prefix(2)} Joined At: ${new Date(v.joinedAt).toCustomString(Settings.Global.TimezoneOffset)}`)
             Logger.log(`${prefix(2)} Members: ${v.memberCount}`)
-            Logger.log(`${prefix(2)} Bots: ${v.members.filter(v => v.user.bot).length}`)
+            Logger.log(`${prefix(2)} Bots: ${v.members.filterArray(v => v.user.bot).length}`)
         })
     }
 }

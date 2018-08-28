@@ -141,7 +141,7 @@ class DiscordClient {
         channels = channels || []
         const channelSet = new Set(channels)
         discord.channels
-            .filter(v => v.type === 'text' && channelSet.has(v.id))
+            .filterArray(v => v.type === 'text' && channelSet.has(v.id))
             .forEach(v => v
                 .send(message, embed)
                 .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
@@ -290,7 +290,7 @@ class DiscordClient {
         let done = 0
         client.on('ready', () => {
             Logger.log(`DISCORD ${client.user.tag} READY!!!`)
-            client.channels.filter(v => v.type === 'text' && channelSet.has(v.id))
+            client.channels.filterArray(v => v.type === 'text' && channelSet.has(v.id))
                 .forEach(v => v
                     .send(img)
                     .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
