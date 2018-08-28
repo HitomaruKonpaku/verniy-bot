@@ -22,7 +22,7 @@ module.exports = class RoleRemoveCommand extends Command {
 
     async run(msg, args) {
         const bot = this.client.guilds.get(msg.guild.id).me
-        const botRole = bot.roles.filterArray(v =>
+        const botRole = bot.roles.filter(v =>
             new Discord.Permissions(v.permissions)
                 .has(Discord.Permissions.FLAGS.MANAGE_ROLES)
         )[0]
