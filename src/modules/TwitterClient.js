@@ -89,10 +89,16 @@ class TwitterClient extends EventEmitter {
         const uidList = Object.keys(users)
         Logger.log('TWITTER Checking avatar...')
         Logger.log(`TWITTER Total request per 15 minutes: ${uidList.reduce((p, v) => p + 900 / users[v].interval, 0)}`)
-        uidList.forEach(id => {
-            Logger.log(`TWITTER Checking avatar of user ${id}`)
-            const interval = users[id].interval
+        uidList.filter(id => users[id].interval).forEach(id => {
+            // #region Variables
+
             let ava
+            const interval = users[id].interval
+
+            // #endregion
+
+            // #region Local functions
+
             const check = () => {
                 this.client
                     .get(api, { user_id: id, include_entities: false })
@@ -116,7 +122,11 @@ class TwitterClient extends EventEmitter {
                         Logger.error(err)
                     })
             }
+
+            // #endregion
+
             // Start to check
+            Logger.log(`TWITTER Checking avatar of user ${id} every ${interval}s`)
             check()
             setInterval(() => check(), 1000 * interval)
         })
