@@ -164,6 +164,8 @@ class DiscordClient {
         const isEnable = process.env.TWITTER_ENABLE
         if (!(isEnable === '1' || isEnable === 'true')) return
 
+        // #region Local functions
+
         const decodeNewTweet = raw => {
             if (!Array.isArray(raw)) return {}
             const data = {}
@@ -234,6 +236,8 @@ class DiscordClient {
             return embed
         }
 
+        // #endregion
+
         const twitter = new TwitterClient()
         const newAvatarData = Settings.Twitter.NewAva
         const newTweetData = decodeNewTweet(Settings.Twitter.NewTweet)
@@ -260,6 +264,7 @@ class DiscordClient {
                 const message = url
                 const embed = makeTweetEmbed(tweet)
                 this.sendTweet(channels, message, embed)
+                // KC Event News Only
             })
             .on('avatar', user => {
                 const imgSrc = user.profile_image_url_https
@@ -270,7 +275,7 @@ class DiscordClient {
                 const channels = newAvatarData[uid].channels
                 this.sendAvatar(channels, imgFull)
                 const channels2 = newAvatarData[uid].channelsAsUser
-                this.sendAvatarAsUser(channels2, imgFull)
+                this.sendMessageAsUser(channels2, imgFull)
             })
     }
     sendTweet(channels, message, embed) {
@@ -279,7 +284,7 @@ class DiscordClient {
     sendAvatar(channels, img) {
         this.sendToChannels({ channels, message: img })
     }
-    sendAvatarAsUser(channels, img) {
+    sendMessageAsUser(channels, message) {
         if ((channels || []).length === 0) return
         const token = process.env.DISCORD_TOKEN_USER
         if (token === undefined) return
@@ -290,9 +295,10 @@ class DiscordClient {
         let done = 0
         client.on('ready', () => {
             Logger.log(`DISCORD ${client.user.tag} READY!!!`)
-            client.channels.filterArray(v => v.type === 'text' && channelSet.has(v.id))
+            client.channels
+                .filterArray(v => v.type === 'text' && channelSet.has(v.id))
                 .forEach(v => v
-                    .send(img)
+                    .send(message)
                     .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
                     .catch(err => Logger.error(err))
                     .then(() => {
