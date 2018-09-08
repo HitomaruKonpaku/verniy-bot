@@ -318,14 +318,10 @@ class DiscordClient {
         const channels = [
             // hito nuke > other
             '462085619691290624',
-            // kc-only
-            '425302689887289344',
-            // boatsluts-kc
-            '345299518012653570',
+            // // kc-only
+            // '425302689887289344',
             // vnkc > chat
             '442409008788275200',
-            // dax > kc
-            '98922706317103104',
             // dsz > general
             '363267356308406272',
         ]
