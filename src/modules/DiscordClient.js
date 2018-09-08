@@ -342,6 +342,7 @@ class DiscordClient {
                 ? tweet.extended_tweet.extended_entities.media
                 : []
         const message = [url, ...media.slice(1).map(v => v.media_url_https + ':orig')].join('\n')
+        Logger.log(message)
         this.sendAsUser({ channels, message })
     }
     startCron() {
