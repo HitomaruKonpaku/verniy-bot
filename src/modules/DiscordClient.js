@@ -299,6 +299,7 @@ class DiscordClient {
                 const embed = makeTweetEmbed(tweet)
                 this.sendAsBot({ channels, message, embed })
                 // KanColle New Info Only
+                this.checkKanColleNewInfo(tweet)
             })
             .on('avatar', user => {
                 const imgSrc = user.profile_image_url_https
@@ -311,6 +312,24 @@ class DiscordClient {
                 const channels2 = newAvatarData[uid].channelsAsUser
                 this.sendAsUser({ channels: channels2, message: imgFull })
             })
+    }
+    checkKanColleNewInfo(tweet) {
+        const users = ['3383309523']
+        const channels = ['425302689887289344']
+        // const users = ['2591243785']
+        // const channels = ['462085619691290624']
+        const uid = tweet.user.id_str
+        if (!users.includes(uid)) return
+        const pattern = 'Detected new'
+        if (!tweet.text.includes(pattern)) return
+        const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+        const media = tweet.extended_entities
+            ? tweet.extended_entities.media
+            : tweet.extended_tweet.extended_entities
+                ? tweet.extended_tweet.extended_entities.media
+                : []
+        const message = [url, ...media.slice(1).map(v => v.media_url_https + ':orig')].join('\n')
+        this.sendAsUser({ channels, message })
     }
     startCron() {
         const isEnable = process.env.CRON_ENABLE
