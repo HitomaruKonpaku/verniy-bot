@@ -136,11 +136,11 @@ class DiscordClient {
         this.startTwitter()
         this.startCron()
     }
-    sendToChannels({ discord, channels, message, embed }) {
-        discord = discord || this.client
-        channels = channels || []
+    sendAsBot({ channels, message, embed }) {
+        if ((channels || []).length === 0) return
+        const client = this.client
         const channelSet = new Set(channels)
-        discord.channels
+        client.channels
             .filterArray(v => v.type === 'text' && channelSet.has(v.id))
             .forEach(v => v
                 .send(message, embed)
@@ -159,6 +159,36 @@ class DiscordClient {
                     Logger.warn(err)
                 })
             )
+    }
+    sendAsUser({ channels, message, embed }) {
+        if ((channels || []).length === 0) return
+        const token = process.env.DISCORD_TOKEN_USER
+        if (token === undefined) return
+        const Discord = require('discord.js')
+        const client = new Discord.Client()
+        const channelSet = new Set(channels)
+        const sendTotal = channels.length
+        let sendCount = 0
+        client.on('ready', () => {
+            Logger.log(`DISCORD ${client.user.tag} READY!!!`)
+            client.channels
+                .filterArray(v => v.type === 'text' && channelSet.has(v.id))
+                .forEach(v => v
+                    .send(message, embed)
+                    .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
+                    .catch(err => Logger.error(err))
+                    .then(() => {
+                        sendCount++
+                        if (sendCount !== sendTotal) return
+                        Logger.log('DISCORD Disconnecting as user!')
+                        client
+                            .destroy()
+                            .then(() => Logger.log('DISCORD Disconnected!'))
+                    })
+                )
+        })
+        Logger.log('DISCORD Connecting as user!')
+        client.login(token)
     }
     startTwitter() {
         const isEnable = process.env.TWITTER_ENABLE
@@ -238,11 +268,15 @@ class DiscordClient {
 
         // #endregion
 
+        // #region Variables
+
         const twitter = new TwitterClient()
         const newAvatarData = Settings.Twitter.NewAva
         const newTweetData = decodeNewTweet(Settings.Twitter.NewTweet)
         const newTweetFollowList = Object.keys(newTweetData)
         const newTweetFollowSet = new Set(newTweetFollowList)
+
+        // #endregion
 
         twitter.checkAvatar(newAvatarData)
         twitter.checkTweet(newTweetFollowList)
@@ -263,8 +297,8 @@ class DiscordClient {
                 Logger.log(`TWITTER TWEET ${url}`)
                 const message = url
                 const embed = makeTweetEmbed(tweet)
-                this.sendTweet(channels, message, embed)
-                // KC Event News Only
+                this.sendAsBot({ channels, message, embed })
+                // KanColle New Info Only
             })
             .on('avatar', user => {
                 const imgSrc = user.profile_image_url_https
@@ -273,46 +307,10 @@ class DiscordClient {
                 Logger.log(`TWITTER AVATAR @${user.screen_name} > ${imgFull}`)
                 const uid = user.id_str
                 const channels = newAvatarData[uid].channels
-                this.sendAvatar(channels, imgFull)
+                this.sendAsBot({ channels, message: imgFull })
                 const channels2 = newAvatarData[uid].channelsAsUser
-                this.sendMessageAsUser(channels2, imgFull)
+                this.sendAsUser({ channels: channels2, message: imgFull })
             })
-    }
-    sendTweet(channels, message, embed) {
-        this.sendToChannels({ channels, message, embed })
-    }
-    sendAvatar(channels, img) {
-        this.sendToChannels({ channels, message: img })
-    }
-    sendMessageAsUser(channels, message) {
-        if ((channels || []).length === 0) return
-        const token = process.env.DISCORD_TOKEN_USER
-        if (token === undefined) return
-        const Discord = require('discord.js')
-        const client = new Discord.Client()
-        const channelSet = new Set(channels)
-        const total = channels.length
-        let done = 0
-        client.on('ready', () => {
-            Logger.log(`DISCORD ${client.user.tag} READY!!!`)
-            client.channels
-                .filterArray(v => v.type === 'text' && channelSet.has(v.id))
-                .forEach(v => v
-                    .send(message)
-                    .then(() => Logger.log(`DONE > ${v.guild.name} > #${v.name}`))
-                    .catch(err => Logger.error(err))
-                    .then(() => {
-                        done++
-                        if (done !== total) return
-                        Logger.log('DISCORD Disconnecting as user!')
-                        client
-                            .destroy()
-                            .then(() => Logger.log('DISCORD Disconnected!'))
-                    })
-                )
-        })
-        Logger.log('DISCORD Connecting as user!')
-        client.login(token)
     }
     startCron() {
         const isEnable = process.env.CRON_ENABLE
@@ -323,7 +321,7 @@ class DiscordClient {
         cron.on('message', msg => {
             Logger.log(`CRON Message: ${msg}`)
             const channels = Settings.Cron.KanColle
-            this.sendToChannels({ channels, message: msg })
+            this.sendAsBot({ channels, message: msg })
         })
         cron.start()
     }
