@@ -316,14 +316,14 @@ class DiscordClient {
     checkKanColleNewInfo(tweet) {
         const users = ['3383309523']
         const channels = [
-            // hito nuke > other
-            '462085619691290624',
-            // // kc-only
-            // '425302689887289344',
-            // vnkc > chat
-            '442409008788275200',
-            // dsz > general
-            '363267356308406272',
+            // // hito nuke > other
+            // '462085619691290624',
+            // // // kc-only
+            // // '425302689887289344',
+            // // vnkc > chat
+            // '442409008788275200',
+            // // dsz > general
+            // '363267356308406272',
         ]
         // const users = ['2591243785']
         // const channels = ['462085619691290624']
