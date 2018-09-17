@@ -167,10 +167,8 @@ module.exports = {
             '422709303376609290',
             // VN KC > #chat
             '442409008788275200',
-            // Quan nhau cua T > #kc-viet
-            '376294828608061440',
-            // Quan nhau cua T > #kc-eng
-            '421681074565939201',
+            // Quan nhau cua T > #general-viet
+            '413622936247992339',
         ],
     },
 }
