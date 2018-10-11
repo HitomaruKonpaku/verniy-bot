@@ -4,6 +4,7 @@ module.exports = class KCExpsCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'exps',
+            aliases: [],
             group: 'kc',
             memberName: 'exps',
             description: 'Check total exp of shipfu',

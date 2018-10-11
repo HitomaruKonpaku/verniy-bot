@@ -4,9 +4,10 @@ const KC = require('../../settings').KanColle
 module.exports = class KCLbasCommand extends Command {
     constructor(client) {
         super(client, {
-            name: 'lb',
+            name: 'lbas',
+            aliases: ['lb'],
             group: 'kc',
-            memberName: 'lb',
+            memberName: 'lbas',
             description: 'Land Base Aerial Support',
         })
     }

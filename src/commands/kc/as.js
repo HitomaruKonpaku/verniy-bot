@@ -1,10 +1,11 @@
 const { Command } = require('discord.js-commando')
 const KC = require('../../settings').KanColle
 
-module.exports = class KCAirCommand extends Command {
+module.exports = class KCAirPowerCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'as',
+            aliases: [],
             group: 'kc',
             memberName: 'as',
             description: 'AirPower of normal map',

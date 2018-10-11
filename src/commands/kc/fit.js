@@ -5,9 +5,10 @@ module.exports = class KCGunFitCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'fit',
+            aliases: [],
             group: 'kc',
             memberName: 'fit',
-            description: 'Gun fit table',
+            description: 'Large gun fit table',
         })
     }
 

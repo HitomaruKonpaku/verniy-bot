@@ -6,6 +6,7 @@ module.exports = class KCZuiCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'zui',
+            aliases: [],
             group: 'kc',
             memberName: 'zui',
             description: MESSAGE,

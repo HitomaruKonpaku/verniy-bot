@@ -169,9 +169,14 @@ module.exports = {
         Development: 'https://i.imgur.com/ZehPS8X.png',
         Akashi: 'http://akashi-list.me/',
         GunFit: 'https://i.imgur.com/RLiJubo.png',
-        EscortMod: 'https://i.imgur.com/f3U41DI.png',
-        OverKill: 'https://i.imgur.com/YG0ub7G.png',
-        Gun: 'https://i.imgur.com/wGdTdxu.jpg',
+        Bonus: {
+            All: 'https://imgur.com/a/Sz1hFpK',
+            SmallGun: 'https://i.imgur.com/i88R6Vf.png',
+            LargeGun: 'https://i.imgur.com/QOslKq8.png',
+            Torpedo: 'https://i.imgur.com/vrMGJcz.png',
+            Aircraft: 'https://i.imgur.com/KCpZfF1.png',
+            Other: 'https://i.imgur.com/t4w6OZU.png',
+        },
     },
     Cron: {
         KanColle: [

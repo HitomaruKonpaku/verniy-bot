@@ -1,12 +1,13 @@
 const { Command } = require('discord.js-commando')
 const KC = require('../../settings').KanColle
 
-module.exports = class KCDevCommand extends Command {
+module.exports = class KCDevelopmentCommand extends Command {
     constructor(client) {
         super(client, {
-            name: 'dev',
+            name: 'development',
+            aliases: ['dev'],
             group: 'kc',
-            memberName: 'dev',
+            memberName: 'development',
             description: 'Development quick guide',
         })
     }

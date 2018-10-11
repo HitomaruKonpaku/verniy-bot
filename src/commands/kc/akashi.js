@@ -5,6 +5,7 @@ module.exports = class KCAkashiCommand extends Command {
     constructor(client) {
         super(client, {
             name: 'akashi',
+            aliases: [],
             group: 'kc',
             memberName: 'akashi',
             description: 'Akashi List',
