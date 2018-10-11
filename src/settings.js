@@ -87,6 +87,18 @@ module.exports = {
                     '457599318996811776',
                 ],
             },
+            {
+                follows: [
+                    // @Battlefield
+                    '27855118',
+                    // @TheDivisionGame
+                    '1499636930',
+                ],
+                channels: [
+                    '499935977041821706',
+                    '499936001301544980',
+                ],
+            },
         ],
         NewAva: {
             // @HitomaruKonpaku
