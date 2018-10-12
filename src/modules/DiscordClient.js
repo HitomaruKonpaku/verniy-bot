@@ -212,7 +212,7 @@ class DiscordClient {
                                 return
                             case 'channels':
                                 data[id][key] = v[key] || []
-                                break
+                                return
                             default:
                                 data[id][key] = v[key]
                         }
