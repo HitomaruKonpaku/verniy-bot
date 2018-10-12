@@ -24,8 +24,9 @@ module.exports = {
                     // Hitomaru Nuke Zone > #other
                     '462085619691290624',
                 ],
-                retweet: undefined,
                 media: undefined,
+                retweet: undefined,
+                reply: undefined,
             },
             {
                 follows: [
@@ -98,6 +99,7 @@ module.exports = {
                     '499935977041821706',
                     '499936001301544980',
                 ],
+                reply: false,
             },
         ],
         NewAva: {
