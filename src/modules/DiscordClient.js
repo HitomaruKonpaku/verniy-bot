@@ -205,11 +205,18 @@ class DiscordClient {
                         data[id].channels = data[id].channels.concat(v.channels)
                         return
                     }
-                    data[id] = {
-                        channels: v.channels || [],
-                        retweet: v.retweet,
-                        media: v.media,
-                    }
+                    data[id] = {}
+                    Object.keys(v).forEach(key => {
+                        switch (key) {
+                            case 'follows':
+                                return
+                            case 'channels':
+                                data[id][key] = v[key] || []
+                                break
+                            default:
+                                data[id][key] = v[key]
+                        }
+                    })
                 })
             })
             return data
@@ -286,11 +293,21 @@ class DiscordClient {
                 const uid = tweet.user.id_str
                 const udata = newTweetData[uid]
                 // Check tweet source user
-                if (!newTweetFollowSet.has(uid)) return
-                // Check retweet
-                if (udata.retweet !== undefined && udata.retweet === !tweet.retweeted_status) return
+                if (!newTweetFollowSet.has(uid)) {
+                    return
+                }
                 // Check media
-                if (udata.media !== undefined && udata.media === !tweet.entities.media) return
+                if (udata.media !== undefined && udata.media !== !!tweet.entities.media) {
+                    return
+                }
+                // Check retweet
+                if (udata.retweet !== undefined && udata.retweet !== !!tweet.retweeted_status) {
+                    return
+                }
+                // Check reply
+                if (udata.reply !== undefined && udata.reply !== !!tweet.in_reply_to_screen_name) {
+                    return
+                }
                 // Send tweet
                 const channels = udata.channels
                 const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
