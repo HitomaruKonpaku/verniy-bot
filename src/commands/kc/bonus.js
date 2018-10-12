@@ -27,7 +27,7 @@ module.exports = class KCEquipmentBonusCommand extends Command {
             args: [
                 {
                     key: 'type',
-                    prompt: 'Equipment type?',
+                    prompt: `Equipment type must be: ${Object.keys(EquipmentType).join(', ')}`,
                     type: 'string',
                     wait: 10,
                     validate: ((val) => Object.keys(EquipmentType).includes(val)),
@@ -37,11 +37,11 @@ module.exports = class KCEquipmentBonusCommand extends Command {
     }
 
     async run(msg, args) {
-        const message = this.getBonusSource(args.type)
+        const message = this.getData(args.type)
         return msg.say(message)
     }
 
-    getBonusSource(type) {
+    getData(type) {
         switch (type) {
             case 'all':
                 return KC.Bonus.All
@@ -56,5 +56,6 @@ module.exports = class KCEquipmentBonusCommand extends Command {
             case 'o':
                 return KC.Bonus.Other
         }
+        return 'Invalid equipment type'
     }
 }

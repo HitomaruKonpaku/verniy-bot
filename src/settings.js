@@ -168,7 +168,11 @@ module.exports = {
         AirPower: 'https://i.imgur.com/SIIJdSz.png',
         Development: 'https://i.imgur.com/ZehPS8X.png',
         Akashi: 'http://akashi-list.me/',
-        GunFit: 'https://i.imgur.com/RLiJubo.png',
+        GunFit: {
+            Battleship: 'https://i.imgur.com/nKFi61q.png',
+            Cruiser: 'https://i.imgur.com/phWOAU2.png',
+            Destroyer: 'https://i.imgur.com/Vcljz6w.png',
+        },
         Bonus: {
             All: 'https://imgur.com/a/Sz1hFpK',
             SmallGun: 'https://i.imgur.com/i88R6Vf.png',
