@@ -18,12 +18,14 @@ module.exports = class DiscordGuildCommand extends Command {
         }
         const guilds = this.client.guilds.array()
         Logger.log(`Connected to ${guilds.length} guild${guilds.length > 1 ? 's' : ''}`)
-        guilds.forEach(v => {
-            Logger.log(`${prefix(1, '>')} ${v.name}`)
-            Logger.log(`${prefix(2)} Owner: ${v.owner.user.tag}`)
-            Logger.log(`${prefix(2)} Joined At: ${new Date(v.joinedAt).toCustomString(Settings.Global.TimezoneOffset)}`)
-            Logger.log(`${prefix(2)} Members: ${v.memberCount}`)
-            Logger.log(`${prefix(2)} Bots: ${v.members.filterArray(v => v.user.bot).length}`)
-        })
+        guilds
+            .sort((a, b) => a.joinedTimestamp - b.joinedTimestamp)
+            .forEach(v => {
+                Logger.log(`${prefix(1, '>')} ${v.name}`)
+                Logger.log(`${prefix(2)} Owner: ${v.owner.user.tag}`)
+                Logger.log(`${prefix(2)} Joined At: ${new Date(v.joinedAt).toCustomString(Settings.Global.TimezoneOffset)}`)
+                Logger.log(`${prefix(2)} Members: ${v.memberCount}`)
+                Logger.log(`${prefix(2)} Bots: ${v.members.filterArray(v => v.user.bot).length}`)
+            })
     }
 }
