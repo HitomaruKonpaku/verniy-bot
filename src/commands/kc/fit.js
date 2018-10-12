@@ -2,10 +2,10 @@ const { Command } = require('discord.js-commando')
 const KC = require('../../settings').KanColle
 
 const ShipType = {
-    bb: 'Battleship',
-    ca: 'Heavy cruiser',
-    cl: 'Light cruiser',
-    dd: 'Destroyer',
+    BB: 'Battleship',
+    CA: 'Heavy cruiser',
+    CL: 'Light cruiser',
+    DD: 'Destroyer',
 }
 
 module.exports = class KCGunFitCommand extends Command {
@@ -28,7 +28,7 @@ module.exports = class KCGunFitCommand extends Command {
                     prompt: `Ship type must be: ${Object.keys(ShipType).join(', ')}`,
                     type: 'string',
                     wait: 10,
-                    validate: ((val) => Object.keys(ShipType).includes(val)),
+                    validate: ((val) => Object.keys(ShipType).includes(val.toUpperCase())),
                 },
             ],
         })
@@ -40,13 +40,13 @@ module.exports = class KCGunFitCommand extends Command {
     }
 
     getData(type) {
-        switch (type) {
-            case 'bb':
+        switch (type.toUpperCase()) {
+            case 'BB':
                 return KC.GunFit.Battleship
-            case 'ca':
-            case 'cl':
+            case 'CA':
+            case 'CL':
                 return KC.GunFit.Cruiser
-            case 'dd':
+            case 'DD':
                 return KC.GunFit.Destroyer
         }
         return 'Invalid ship type'

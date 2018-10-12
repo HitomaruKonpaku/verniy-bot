@@ -2,12 +2,12 @@ const { Command } = require('discord.js-commando')
 const KC = require('../../settings').KanColle
 
 const EquipmentType = {
-    all: 'All',
-    sg: 'Small gun',
-    lg: 'Large gun',
-    tp: 'Torpedo',
-    ac: 'Aircraft',
-    o: 'Other',
+    ALL: 'All',
+    SG: 'Small gun',
+    LG: 'Large gun',
+    TP: 'Torpedo',
+    AC: 'Aircraft',
+    O: 'Other',
 }
 
 module.exports = class KCEquipmentBonusCommand extends Command {
@@ -30,7 +30,7 @@ module.exports = class KCEquipmentBonusCommand extends Command {
                     prompt: `Equipment type must be: ${Object.keys(EquipmentType).join(', ')}`,
                     type: 'string',
                     wait: 10,
-                    validate: ((val) => Object.keys(EquipmentType).includes(val)),
+                    validate: ((val) => Object.keys(EquipmentType).includes(val.toUpperCase())),
                 },
             ],
         })
@@ -42,18 +42,18 @@ module.exports = class KCEquipmentBonusCommand extends Command {
     }
 
     getData(type) {
-        switch (type) {
-            case 'all':
+        switch (type.toUpperCase()) {
+            case 'ALL':
                 return KC.Bonus.All
-            case 'sg':
+            case 'SG':
                 return KC.Bonus.SmallGun
-            case 'lg':
+            case 'LG':
                 return KC.Bonus.LargeGun
-            case 'tp':
+            case 'TP':
                 return KC.Bonus.Torpedo
-            case 'ac':
+            case 'AC':
                 return KC.Bonus.Aircraft
-            case 'o':
+            case 'O':
                 return KC.Bonus.Other
         }
         return 'Invalid equipment type'
