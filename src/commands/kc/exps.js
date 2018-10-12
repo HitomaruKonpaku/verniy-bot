@@ -7,7 +7,7 @@ module.exports = class KCExpsCommand extends Command {
             aliases: [],
             group: 'kc',
             memberName: 'exps',
-            description: 'Check total exp of shipfu',
+            description: 'Check total exp of all ships (For KC3 only)',
         })
     }
 
