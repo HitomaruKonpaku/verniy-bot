@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
-const Settings = require('../../settings')
-const Logger = require('../../modules/Logger')
+const Setting = require('../../setting')
+const Logger = require('../../module/Logger')
 
 module.exports = class DiscordGuildCommand extends Command {
     constructor(client) {
@@ -23,7 +23,7 @@ module.exports = class DiscordGuildCommand extends Command {
             .forEach(v => {
                 Logger.log(`${prefix(1, '>')} ${v.name}`)
                 Logger.log(`${prefix(2)} Owner: ${v.owner.user.tag}`)
-                Logger.log(`${prefix(2)} Joined At: ${new Date(v.joinedAt).toCustomString(Settings.Global.TimezoneOffset)}`)
+                Logger.log(`${prefix(2)} Joined At: ${new Date(v.joinedAt).toCustomString(Setting.Global.TimezoneOffset)}`)
                 Logger.log(`${prefix(2)} Members: ${v.memberCount}`)
                 Logger.log(`${prefix(2)} Bots: ${v.members.filterArray(v => v.user.bot).length}`)
             })

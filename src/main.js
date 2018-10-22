@@ -1,4 +1,4 @@
-const Logger = require('./modules/Logger')
+const Logger = require('./module/Logger')
 
 module.exports = {
     start: function () {
@@ -17,12 +17,12 @@ function loadProcessEnv() {
 
 function loadPrototype() {
     Logger.log('PROTOTYPE Loading...')
-    require('./modules/Prototype').load()
+    require('./module/Prototype').load()
     Logger.log('PROTOTYPE Load completed!')
 }
 
 function loadDiscord() {
-    const DiscordClient = require('./modules/DiscordClient')
+    const DiscordClient = require('./module/DiscordClient')
     const discord = new DiscordClient()
     discord.start()
 }

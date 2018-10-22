@@ -2,7 +2,7 @@ const { RichEmbed } = require('discord.js')
 const Commando = require('discord.js-commando')
 const path = require('path')
 const he = require('he')
-const Settings = require('../settings')
+const Setting = require('../setting')
 const Logger = require('./Logger')
 const TwitterClient = require('./TwitterClient')
 const CronKC = require('./CronKC')
@@ -88,13 +88,13 @@ class DiscordClient {
                 }
             })
             .on('guildCreate', guild => {
-                Logger.log(`GUILD JOINED: ${guild.name} at ${new Date().toCustomString(Settings.Global.TimezoneOffset)}`)
+                Logger.log(`GUILD JOINED: ${guild.name} at ${new Date().toCustomString(Setting.Global.TimezoneOffset)}`)
             })
             .on('guildDelete', guild => {
-                Logger.log(`GUILD LEAVE : ${guild.name} at ${new Date().toCustomString(Settings.Global.TimezoneOffset)}`)
+                Logger.log(`GUILD LEAVE : ${guild.name} at ${new Date().toCustomString(Setting.Global.TimezoneOffset)}`)
             })
             .on('guildUnavailable', guild => {
-                Logger.log(`GUILD UNAVAILABLE: ${guild.name} at ${new Date().toCustomString(Settings.Global.TimezoneOffset)}`)
+                Logger.log(`GUILD UNAVAILABLE: ${guild.name} at ${new Date().toCustomString(Setting.Global.TimezoneOffset)}`)
             })
 
         // Client registries
@@ -108,7 +108,7 @@ class DiscordClient {
                 ['kc', 'KanColle'],
                 ['fun', 'Funny'],
             ])
-            .registerCommandsIn(path.join(__dirname, '..', 'commands'))
+            .registerCommandsIn(path.join(__dirname, '..', 'command'))
     }
     start() {
         this.client
@@ -278,8 +278,8 @@ class DiscordClient {
         // #region Variables
 
         const twitter = new TwitterClient()
-        const newAvatarData = Settings.Twitter.NewAva
-        const newTweetData = decodeNewTweet(Settings.Twitter.NewTweet)
+        const newAvatarData = Setting.Twitter.NewAva
+        const newTweetData = decodeNewTweet(Setting.Twitter.NewTweet)
         const newTweetFollowList = Object.keys(newTweetData)
         const newTweetFollowSet = new Set(newTweetFollowList)
 
@@ -366,7 +366,7 @@ class DiscordClient {
         const cron = new CronKC()
         cron.on('message', msg => {
             Logger.log(`CRON Message: ${msg}`)
-            const channels = Settings.Cron.KanColle
+            const channels = Setting.Cron.KanColle
             this.sendAsBot({ channels, message: msg })
         })
         cron.start()

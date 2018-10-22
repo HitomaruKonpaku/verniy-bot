@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
-const Logger = require('../../modules/Logger')
-const Util = require('../../modules/Util')
+const Logger = require('../../module/Logger')
+const Util = require('../../module/Util')
 
 module.exports = class RandomCommand extends Command {
     constructor(client) {

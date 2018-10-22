@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando')
-const Settings = require('../../settings')
-const Logger = require('../../modules/Logger')
-const TwitterClient = require('../../modules/TwitterClient')
+const Setting = require('../../setting')
+const Logger = require('../../module/Logger')
+const TwitterClient = require('../../module/TwitterClient')
 
 module.exports = class TwitterRateLimitCommand extends Command {
     constructor(client) {
@@ -31,7 +31,7 @@ module.exports = class TwitterRateLimitCommand extends Command {
                 const json = JSON.stringify(resources, (key, value) =>
                     key !== 'reset'
                         ? value
-                        : new Date(Number(value) * 1000).toCustomString(Settings.Global.TimezoneOffset)
+                        : new Date(Number(value) * 1000).toCustomString(Setting.Global.TimezoneOffset)
                     , '  ')
                 const message = `\`\`\`json\n${json}\n\`\`\``
                 return msg.say(message)

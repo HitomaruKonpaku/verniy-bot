@@ -1,15 +1,15 @@
 const EventEmitter = require('events')
 const CronJob = require('cron').CronJob
-const Settings = require('../settings')
-const Logger = require('../modules/Logger')
+const Setting = require('../setting')
+const Logger = require('../module/Logger')
 
 class CronKC extends EventEmitter {
     constructor() {
         super()
         Logger.log('CRON CronKC constructor')
 
-        const Timezone = Settings.Global.Timezone
-        const TimezoneOffset = Settings.Global.TimezoneOffset
+        const Timezone = Setting.Global.Timezone
+        const TimezoneOffset = Setting.Global.TimezoneOffset
         const StartDefault = false
 
         const Message = {

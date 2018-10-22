@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const Discord = require('../../settings').Discord
+const Discord = require('../../setting').Discord
 
 module.exports = class BotInviteCommand extends Command {
     constructor(client) {

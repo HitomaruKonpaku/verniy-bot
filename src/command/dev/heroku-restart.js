@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const Heroku = require('heroku-client')
-const Logger = require('../../modules/Logger')
+const Logger = require('../../module/Logger')
 
 module.exports = class HerokuRestartCommand extends Command {
     constructor(client) {

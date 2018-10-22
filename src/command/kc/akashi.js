@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const KC = require('../../settings').KanColle
+const KC = require('../../setting').KanColle
 
 module.exports = class KCAkashiCommand extends Command {
     constructor(client) {

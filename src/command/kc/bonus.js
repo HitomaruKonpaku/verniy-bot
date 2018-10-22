@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando')
-const KC = require('../../settings').KanColle
+const KC = require('../../setting').KanColle
 
 const EquipmentType = {
     ALL: 'All',

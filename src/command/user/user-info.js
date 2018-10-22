@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando')
 const { RichEmbed } = require('discord.js')
-const Settings = require('../../settings')
+const Setting = require('../../setting')
 
 module.exports = class UserInfoCommand extends Command {
     constructor(client) {
@@ -32,7 +32,7 @@ module.exports = class UserInfoCommand extends Command {
             embed.addField('ID', user.id, true)
             embed.addField('Bot?', user.bot ? 'Yes' : 'No', true)
             embed.addField('Created At',
-                new Date(user.createdTimestamp).toCustomString(Settings.Global.TimezoneOffset)
+                new Date(user.createdTimestamp).toCustomString(Setting.Global.TimezoneOffset)
             )
             embed.addField('Avatar URL', user.avatarURL)
 
