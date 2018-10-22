@@ -131,8 +131,6 @@ module.exports = {
                 channelsAsUser: [
                     // KC Discord > #kc-only
                     '425302689887289344',
-                    // KanColle Wikia > #kancolle-chat
-                    '449024082529353739',
                     // KanColle Wiki > #kancolle
                     '165107321561808896',
                     // KC3 > #kancolle
@@ -192,6 +190,8 @@ module.exports = {
             '442409008788275200',
             // Quan nhau cua T > #general-viet
             '413622936247992339',
+            // Quan nhau cua T > #general-international
+            '467951157440937985',
         ],
     },
 }
