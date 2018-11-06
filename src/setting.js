@@ -125,6 +125,8 @@ module.exports = {
                     '442409008788275200',
                     // Quan nhau cua T > #dev-tweet
                     '451006611360710656',
+                    // Quan nhau cua T > general-international
+                    '467951157440937985',
                     // Dzeso > #general
                     '368557905718542338',
                 ],
