@@ -173,7 +173,7 @@ module.exports = {
         Development: 'https://i.imgur.com/ZehPS8X.png',
         Akashi: 'http://akashi-list.me/',
         GunFit: {
-            Battleship: 'https://i.imgur.com/nKFi61q.png',
+            Battleship: 'https://i.imgur.com/a5BatD9.png',
             Cruiser: 'https://i.imgur.com/phWOAU2.png',
             Destroyer: 'https://i.imgur.com/Vcljz6w.png',
         },
