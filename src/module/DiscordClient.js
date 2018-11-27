@@ -80,11 +80,17 @@ class DiscordClient {
                     return
                 }
 
-                // Autism
                 const content = msg.content
-                const wave = '👋'
-                if (content === wave) {
-                    msg.channel.send(wave)
+                const uid = msg.author.id
+
+                const kowaiMsg = 'Kowai'
+                if (content.includes(kowaiMsg) && uid === '379177718430040066') {
+                    msg.channel.send(kowaiMsg)
+                }
+
+                const waveMsg = '👋'
+                if (content === waveMsg) {
+                    msg.channel.send(waveMsg)
                 }
             })
             .on('guildCreate', guild => {
