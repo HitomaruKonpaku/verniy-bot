@@ -82,15 +82,22 @@ class DiscordClient {
 
                 const content = msg.content
                 const uid = msg.author.id
+                const gid = msg.guild.id
 
                 const kowaiMsg = 'Kowai'
-                if (content.includes(kowaiMsg) && uid === '379177718430040066') {
+                if (content.includes(kowaiMsg) && (
+                    (uid === '379177718430040066' && gid === '345295036809740289')
+                    ||
+                    (uid === '203518448771399680' && gid === '376294828184567810')
+                )) {
                     msg.channel.send(kowaiMsg)
+                    return
                 }
 
                 const waveMsg = '👋'
                 if (content === waveMsg) {
                     msg.channel.send(waveMsg)
+                    return
                 }
             })
             .on('guildCreate', guild => {
