@@ -87,6 +87,7 @@ module.exports = {
                     // lolis > #gf-news-feed
                     '457599318996811776',
                 ],
+                reply: false,
             },
             {
                 follows: [
