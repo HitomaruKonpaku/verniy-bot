@@ -180,7 +180,7 @@ module.exports = {
         },
         Bonus: {
             All: 'https://imgur.com/a/Sz1hFpK',
-            SmallGun: 'https://i.imgur.com/i88R6Vf.png',
+            SmallGun: 'https://i.imgur.com/pqz3F6v.png',
             LargeGun: 'https://i.imgur.com/QOslKq8.png',
             Torpedo: 'https://i.imgur.com/vrMGJcz.png',
             Aircraft: 'https://i.imgur.com/KCpZfF1.png',
