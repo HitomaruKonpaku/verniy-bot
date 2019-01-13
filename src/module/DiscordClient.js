@@ -82,7 +82,7 @@ class DiscordClient {
 
                 const content = msg.content
                 const uid = msg.author.id
-                const gid = msg.guild.id
+                const gid = (msg.guild || {}).id
 
                 const kowaiMsg = 'Kowai'
                 if (content.includes(kowaiMsg) && (
