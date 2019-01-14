@@ -205,6 +205,7 @@ function sendDiscord(msg, close) {
 module.exports = {
     start() {
         console.log('Running KC server watcher...')
+        sendDiscord('Starting...')
         test()
     },
 }
