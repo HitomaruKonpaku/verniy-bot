@@ -192,7 +192,7 @@ function sendTweet(msg) {
 function sendDiscord(msg, close) {
     let payload = { 'content': msg }
     request({
-        url: 'https://discordapp.com/api/webhooks/525316338235867166/6aMl6pKaPgCRD0IB1eDBDS7M00E_wTrbT_ZNzf8MKjbdoDXPOW1BTNYV92qZTw8txvpw',
+        url: process.env.KCSERVERWATCHER_DISCORD_WEBHOOK,
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

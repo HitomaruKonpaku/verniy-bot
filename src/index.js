@@ -1,3 +1,8 @@
 require('dotenv').config()
-require('./serverWatcher').start()
-require('./main').start()
+
+try {
+    require('./serverWatcher').start()
+    require('./main').start()
+} catch (err) {
+    console.trace(err)
+}
