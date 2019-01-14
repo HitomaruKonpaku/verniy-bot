@@ -3,16 +3,9 @@ const Logger = require('./module/Logger')
 module.exports = {
     start: function () {
         Logger.log('STARTING.....')
-        loadProcessEnv()
         loadPrototype()
         loadDiscord()
     },
-}
-
-function loadProcessEnv() {
-    Logger.log('PROCESSENV Loading...')
-    require('dotenv').config()
-    Logger.log('PROCESSENV Load completed!')
 }
 
 function loadPrototype() {
