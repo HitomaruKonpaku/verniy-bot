@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "node --stack-trace-limit=5 .",
+    "start": "node .",
     "test": "npm run lint",
     "lint": "eslint src",
     "log": "npm run log-folder && npm run log-file",
