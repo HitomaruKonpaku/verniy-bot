@@ -3,34 +3,34 @@ const Heroku = require('heroku-client')
 const Logger = require('../../module/Logger')
 
 module.exports = class HerokuRestartCommand extends Command {
-    constructor(client) {
-        super(client, {
-            name: 'restart',
-            group: 'dev',
-            memberName: 'restart',
-            description: '',
-            ownerOnly: true,
-        })
+  constructor(client) {
+    super(client, {
+      name: 'restart',
+      group: 'dev',
+      memberName: 'restart',
+      description: '',
+      ownerOnly: true
+    })
+  }
+
+  async run(msg) {
+    let isOwner = this.client.isOwner(msg.author)
+    if (!isOwner) return
+
+    const key = process.env.HEROKU_API_KEY
+    if (!key) {
+      Logger.warn('HEROKU_API_KEY not found')
+      return
     }
 
-    async run(msg) {
-        let isOwner = this.client.isOwner(msg.author)
-        if (!isOwner) return
+    Logger.log(`Restart all dynos request from ${msg.author.tag}`)
+    this.client.destroy()
 
-        const key = process.env.HEROKU_API_KEY
-        if (!key) {
-            Logger.warn('HEROKU_API_KEY not found')
-            return
-        }
-
-        Logger.log(`Restart all dynos request from ${msg.author.tag}`)
-        this.client.destroy()
-
-        const heroku = new Heroku({ token: process.env.HEROKU_API_KEY })
-        const appName = 'hito-verniy'
-        heroku
-            .delete(`/apps/${appName}/dynos`)
-            .then(() => Logger.log('Restarting all dynos'))
-            .catch(err => Logger.error(err))
-    }
+    const heroku = new Heroku({ token: process.env.HEROKU_API_KEY })
+    const appName = 'hito-verniy'
+    heroku
+      .delete(`/apps/${appName}/dynos`)
+      .then(() => Logger.log('Restarting all dynos'))
+      .catch(err => Logger.error(err))
+  }
 }
