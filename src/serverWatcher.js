@@ -2,6 +2,7 @@ const request = require('request')
 const http = require('http')
 const Twit = require('twit')
 
+const Logger = require('./module/Logger')
 const LOG_ENABLE = false
 
 const config = {
@@ -206,8 +207,9 @@ function sendDiscord(msg, close) {
 
 module.exports = {
   start() {
-    if (LOG_ENABLE) console.log('Running KC server watcher...')
-    sendDiscord('Starting...')
+    const msg = 'Starting KCServerWatcher...'
+    Logger.log(msg)
+    sendDiscord(msg)
     test()
   }
 }
