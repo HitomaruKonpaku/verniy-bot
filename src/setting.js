@@ -169,7 +169,7 @@ module.exports = {
     }
   },
   KanColle: {
-    LBAS: 'https://i.imgur.com/pmuBMki.png',
+    LBAS: 'https://i.imgur.com/bwlazjP.png',
     AirPower: 'https://i.imgur.com/SIIJdSz.png',
     Development: 'https://i.imgur.com/ZehPS8X.png',
     Akashi: 'http://akashi-list.me/',
