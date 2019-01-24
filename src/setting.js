@@ -179,12 +179,13 @@ module.exports = {
       Destroyer: 'https://i.imgur.com/Vcljz6w.png'
     },
     Bonus: {
-      All: 'https://imgur.com/a/Sz1hFpK',
-      SmallGun: 'https://i.imgur.com/pqz3F6v.png',
-      LargeGun: 'https://i.imgur.com/QOslKq8.png',
-      Torpedo: 'https://i.imgur.com/vrMGJcz.png',
-      Aircraft: 'https://i.imgur.com/KCpZfF1.png',
-      Other: 'https://i.imgur.com/t4w6OZU.png'
+      All: 'https://imgur.com/a/lq51ZDe',
+      SmallGun: 'https://i.imgur.com/tfY12uE.png',
+      MediumGun: 'https://i.imgur.com/a6xw8FR.png',
+      LargeGun: 'https://i.imgur.com/uYqae4A.png',
+      Torpedo: 'https://i.imgur.com/9bOrjJe.png',
+      Aircraft: 'https://i.imgur.com/3Hutf9d.png',
+      Other: 'https://i.imgur.com/CHbRRWi.png'
     }
   },
   Cron: {
