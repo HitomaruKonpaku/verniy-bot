@@ -3,8 +3,9 @@ const KC = require('../../setting').KanColle
 
 const EquipmentType = {
   ALL: 'All',
-  SG: 'Small gun',
-  LG: 'Large gun',
+  SG: 'Small Gun',
+  MG: 'Mediun Gun',
+  LG: 'Large Gun',
   TP: 'Torpedo',
   AC: 'Aircraft',
   O: 'Other'
@@ -47,6 +48,8 @@ module.exports = class KCEquipmentBonusCommand extends Command {
       return KC.Bonus.All
     case 'SG':
       return KC.Bonus.SmallGun
+    case 'MG':
+      return KC.Bonus.MediumGun
     case 'LG':
       return KC.Bonus.LargeGun
     case 'TP':
@@ -56,6 +59,6 @@ module.exports = class KCEquipmentBonusCommand extends Command {
     case 'O':
       return KC.Bonus.Other
     }
-    return 'Invalid equipment type'
+    return 'Invalid equipment type.'
   }
 }
