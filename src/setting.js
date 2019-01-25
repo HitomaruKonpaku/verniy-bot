@@ -170,13 +170,13 @@ module.exports = {
   },
   KanColle: {
     LBAS: 'https://i.imgur.com/bwlazjP.png',
-    AirPower: 'https://i.imgur.com/SIIJdSz.png',
+    AirPower: 'https://i.imgur.com/E66yfoG.png',
     Development: 'https://i.imgur.com/ZehPS8X.png',
     Akashi: 'http://akashi-list.me/',
     GunFit: {
       Battleship: 'https://i.imgur.com/a5BatD9.png',
-      Cruiser: 'https://i.imgur.com/phWOAU2.png',
-      Destroyer: 'https://i.imgur.com/Vcljz6w.png'
+      Cruiser: 'https://i.imgur.com/9IBzSMn.jpg',
+      Destroyer: 'https://i.imgur.com/wS6YLNP.jpg'
     },
     Bonus: {
       All: 'https://imgur.com/a/lq51ZDe',
