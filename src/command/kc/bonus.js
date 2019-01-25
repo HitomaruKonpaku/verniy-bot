@@ -45,7 +45,7 @@ module.exports = class KCEquipmentBonusCommand extends Command {
   getData(type) {
     switch (type.toUpperCase()) {
     case 'ALL':
-      return KC.Bonus.All
+      return `<${KC.Bonus.All}>`
     case 'SG':
       return KC.Bonus.SmallGun
     case 'MG':
