@@ -6,7 +6,9 @@ module.exports = {
     try {
       Logger.log('STARTING.....')
       require('./module/Prototype').load()
-      require('./serverWatcher').start()
+      if (process.env.KCSERVERWATCHER_ENABLE === '1') {
+        require('./serverWatcher').start()
+      }
       const DiscordClient = require('./module/DiscordClient')
       new DiscordClient().start()
     } catch (err) {
