@@ -35,7 +35,9 @@ module.exports = {
         ],
         channels: [
           // Hitomaru Nuke Zone > #spacex
-          '462085389327532033'
+          '462085389327532033',
+          // #chinostare-space-command-center
+          '464108896655638548'
         ]
       },
       {
