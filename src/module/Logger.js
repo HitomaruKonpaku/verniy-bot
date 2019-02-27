@@ -12,6 +12,9 @@ module.exports = {
   error: err => {
     const msg = err.message ? err.message : err
     console.log(`ERROR ${msg}`)
+    if (['ECONNRESET'].some(v => msg.includes(v))) {
+      return
+    }
     console.trace(err)
   }
 }
