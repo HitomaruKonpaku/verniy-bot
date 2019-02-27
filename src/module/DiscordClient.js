@@ -34,15 +34,15 @@ class DiscordClient {
     })
     // Client events
     this.client
-    // Emitted when the client becomes ready to start working
+      // Emitted when the client becomes ready to start working
       .on('ready', () => {
         this.runOnReady()
       })
-    // Emitted whenever the client tries to reconnect to the WebSocket
+      // Emitted whenever the client tries to reconnect to the WebSocket
       .on('reconnecting', () => {
         Logger.log('RECONNECTING')
       })
-    // Emitted for general debugging information
+      // Emitted for general debugging information
       .on('debug', info => {
         // Skip
         if ([
@@ -56,24 +56,24 @@ class DiscordClient {
         info = info.replace(/\.$/, '')
         Logger.debug(info)
       })
-    // Emitted for general warnings
+      // Emitted for general warnings
       .on('warn', info => {
         info = info.replace(/\.$/, '')
         Logger.warn(info)
       })
-    // Emitted whenever the client's WebSocket encounters a connection error
+      // Emitted whenever the client's WebSocket encounters a connection error
       .on('error', error => {
         Logger.error(error)
       })
-    // Emitted whenever a WebSocket resumes
+      // Emitted whenever a WebSocket resumes
       .on('resume', () => {
         Logger.log('RESUME')
       })
-    // Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect
+      // Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect
       .on('disconnect', () => {
         Logger.warn('DISCONNECT')
       })
-    // Emitted whenever a message is created
+      // Emitted whenever a message is created
       .on('message', msg => {
         // Ingore bot incoming message
         if (msg.author.bot) {
@@ -87,8 +87,8 @@ class DiscordClient {
         const kowaiMsg = 'Kowai'
         if (content.includes(kowaiMsg) && (
           (uid === '379177718430040066' && gid === '345295036809740289')
-                    ||
-                    (uid === '203518448771399680' && gid === '376294828184567810')
+          ||
+          (uid === '203518448771399680' && gid === '376294828184567810')
         )) {
           msg.channel.send(kowaiMsg)
           return
