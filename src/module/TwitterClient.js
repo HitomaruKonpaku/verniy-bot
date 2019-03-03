@@ -87,8 +87,11 @@ class TwitterClient extends EventEmitter {
     const twitter = this
     const api = 'users/show'
     const uidList = Object.keys(users)
+
     Logger.log('TWITTER Checking avatar...')
     Logger.log(`TWITTER Total request per 15 minutes: ${uidList.reduce((p, v) => p + 900 / users[v].interval, 0)}`)
+    Logger.log('TWITTER Checking avatar of users with interval: ' + uidList.map(v => v + '::' + users[v].interval).join(', '))
+
     uidList.filter(id => users[id].interval).forEach(id => {
       // #region Variables
 
@@ -126,7 +129,7 @@ class TwitterClient extends EventEmitter {
       // #endregion
 
       // Start to check
-      Logger.log(`TWITTER Checking avatar of user ${id} every ${interval}s`)
+      // Logger.log(`TWITTER Checking avatar of user ${id} every ${interval}s`)
       check()
       setInterval(() => check(), 1000 * interval)
     })
