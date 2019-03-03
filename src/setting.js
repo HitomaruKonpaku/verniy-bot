@@ -171,10 +171,11 @@ module.exports = {
     }
   },
   KanColle: {
+    Akashi: 'http://akashi-list.me/',
     LBAS: 'https://i.imgur.com/bwlazjP.png',
     AirPower: 'https://i.imgur.com/E66yfoG.png',
     Development: 'https://i.imgur.com/ZehPS8X.png',
-    Akashi: 'http://akashi-list.me/',
+    SpecialAttack: 'https://i.imgur.com/D2M2kjo.png',
     GunFit: {
       Battleship: 'https://i.imgur.com/a5BatD9.png',
       Cruiser: 'https://i.imgur.com/9IBzSMn.jpg',
