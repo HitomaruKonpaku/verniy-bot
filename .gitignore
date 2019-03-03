@@ -59,8 +59,8 @@ typings/
 
 # Custom Folders
 .vscode
-tmp
-temp
+*tmp
+*temp
 
 #Custom Files
 package-lock.json
