@@ -47,7 +47,9 @@ module.exports = {
         ],
         channels: [
           // Hitomaru Nuke Zone > #flatisnice
-          '462085771872960522'
+          '462085771872960522',
+          // Quan nhau cua T > #tibot
+          '551799151898394677'
         ]
       },
       {
