@@ -41,13 +41,13 @@ module.exports = class KCGunFitCommand extends Command {
 
   getData(type) {
     switch (type.toUpperCase()) {
-    case 'BB':
-      return KC.GunFit.Battleship
-    case 'CA':
-    case 'CL':
-      return KC.GunFit.Cruiser
-    case 'DD':
-      return KC.GunFit.Destroyer
+      case 'BB':
+        return KC.GunFit.Battleship
+      case 'CA':
+      case 'CL':
+        return KC.GunFit.Cruiser
+      case 'DD':
+        return KC.GunFit.Destroyer
     }
     return 'Invalid ship type'
   }

@@ -1,16 +1,22 @@
 const Logger = require('./Logger')
 
-module.exports = {
-  load: function () {
+class Prototype {
+
+  constructor() {
+    Logger.log('PROTOTYPE constructor')
     loadDatePrototype()
   }
+
 }
 
+module.exports = new Prototype()
+
 function loadDatePrototype() {
+
   /**
-     * Return date string with format [YYYY-MM-DD hh:mm:ss]
-     * @param {*} TimezoneOffset
-     */
+   * Return date string with format [YYYY-MM-DD hh:mm:ss]
+   * @param {*} TimezoneOffset
+   */
   Date.prototype.toCustomString = function (TimezoneOffset) {
     if (!TimezoneOffset || isNaN(TimezoneOffset)) {
       TimezoneOffset = this.getTimezoneOffset()
@@ -35,4 +41,5 @@ function loadDatePrototype() {
     return zd
   }
   Logger.log('PROTOTYPE Date.toCustomString()')
+
 }

@@ -1,17 +1,20 @@
 const EventEmitter = require('events')
 const CronJob = require('cron').CronJob
-const Setting = require('../setting')
-const Logger = require('../module/Logger')
+
+const Logger = require('./Logger')
+const ConfigVar = require('./ConfigVar')
+
+const Setting = ConfigVar.SETTINGS
 
 class CronKC extends EventEmitter {
+
   constructor() {
     super()
-    Logger.log('CRON CronKC constructor')
-
+    //
     const Timezone = Setting.Global.Timezone
     const TimezoneOffset = Setting.Global.TimezoneOffset
     const StartDefault = false
-
+    //
     const Message = {
       Daily: {
         0: {
@@ -43,13 +46,9 @@ class CronKC extends EventEmitter {
         }
       }
     }
-
+    //
     this.CronDaily = new CronJob({
-      cronTime: [
-        0,
-        '*', '*',
-        '*', '*', '*'
-      ].join(' '),
+      cronTime: [0, '*', '*', '*', '*', '*'].join(' '),
       onTick: () => {
         const date = new Date(new Date().getTime() + TimezoneOffset * 3600000)
         const hh = date.getUTCHours()
@@ -62,14 +61,17 @@ class CronKC extends EventEmitter {
       start: StartDefault
     })
   }
+
   start() {
-    Logger.log('CRON CronKC.CronDaily start')
+    Logger.log('CRONKC STARTED')
     this.CronDaily.start()
   }
+
   stop() {
-    Logger.log('CRON CronKC.CronDaily stop')
+    Logger.log('CRONKC STOPPED')
     this.CronDaily.stop()
   }
+
 }
 
-module.exports = CronKC
+module.exports = new CronKC()

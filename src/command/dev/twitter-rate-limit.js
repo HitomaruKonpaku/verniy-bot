@@ -1,7 +1,10 @@
 const { Command } = require('discord.js-commando')
-const Setting = require('../../setting')
+
 const Logger = require('../../module/Logger')
+const ConfigVar = require('../../module/ConfigVar')
 const TwitterClient = require('../../module/TwitterClient')
+
+const Setting = ConfigVar.SETTINGS
 
 module.exports = class TwitterRateLimitCommand extends Command {
   constructor(client) {
@@ -14,8 +17,7 @@ module.exports = class TwitterRateLimitCommand extends Command {
   }
 
   async run(msg) {
-    let twitter = new TwitterClient()
-    twitter
+    TwitterClient
       .checkRateLimit()
       .then(data => {
         const respResources = data.data.resources
@@ -24,15 +26,11 @@ module.exports = class TwitterRateLimitCommand extends Command {
         resources['users'] = users
         users['/users/show/:id'] = respResources.users['/users/show/:id']
         Logger.log(`TWITTER RATE LIMIT: ${JSON.stringify(resources)}`)
-
+        //
         const isOwner = this.client.isOwner(msg.author)
         if (!isOwner) return
-
-        const json = JSON.stringify(resources, (key, value) =>
-          key !== 'reset'
-            ? value
-            : new Date(Number(value) * 1000).toCustomString(Setting.Global.TimezoneOffset)
-          , '  ')
+        //
+        const json = JSON.stringify(resources, (key, value) => key !== 'reset' ? value : new Date(Number(value) * 1000).toCustomString(Setting.Global.TimezoneOffset), '  ')
         const message = `\`\`\`json\n${json}\n\`\`\``
         return msg.say(message)
       })

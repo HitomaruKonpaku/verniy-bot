@@ -3,27 +3,41 @@ module.exports = {
     Timezone: 'Asia/Ho_Chi_Minh',
     TimezoneOffset: 7
   },
-  Discord: {
-    ClientID: '422330233035948032',
-    InviteLink: 'https://discordapp.com/oauth2/authorize?scope=bot&client_id=422330233035948032'
+  Discord: {},
+  KanColle: {
+    Akashi: 'http://akashi-list.me/',
+    LBAS: 'https://i.imgur.com/bwlazjP.png',
+    AirPower: 'https://i.imgur.com/E66yfoG.png',
+    Development: 'https://i.imgur.com/ZehPS8X.png',
+    SpecialAttack: 'https://i.imgur.com/D2M2kjo.png',
+    GunFit: {
+      Battleship: 'https://i.imgur.com/a5BatD9.png',
+      Cruiser: 'https://i.imgur.com/9IBzSMn.jpg',
+      Destroyer: 'https://i.imgur.com/wS6YLNP.jpg'
+    },
+    Bonus: {
+      All: 'https://imgur.com/a/lq51ZDe',
+      SmallGun: 'https://i.imgur.com/tfY12uE.png',
+      MediumGun: 'https://i.imgur.com/a6xw8FR.png',
+      LargeGun: 'https://i.imgur.com/uYqae4A.png',
+      Torpedo: 'https://i.imgur.com/9bOrjJe.png',
+      Aircraft: 'https://i.imgur.com/3Hutf9d.png',
+      Other: 'https://i.imgur.com/CHbRRWi.png'
+    }
   },
   Twitter: {
-    NewTweet: [
-      // {
-      //     follows: [],
-      //     channels: [],
-      //     retweet: undefined,
-      //     media: undefined,
-      // },
+    Tweet: [
       {
         follows: [
           // @HitomaruKonpaku
           '2591243785'
         ],
-        channels: [
+        channels: {
           // Hitomaru Nuke Zone > #other
-          '462085619691290624'
-        ],
+          '462085619691290624': {},
+          // Hitomaru Nuke Zone > #other
+          '365111136095305730': {}
+        },
         media: undefined,
         retweet: undefined,
         reply: undefined
@@ -33,50 +47,52 @@ module.exports = {
           // @SpaceX
           '34743251'
         ],
-        channels: [
+        channels: {
           // Hitomaru Nuke Zone > #spacex
-          '462085389327532033',
+          '462085389327532033': {},
           // #chinostare-space-command-center
-          '464108896655638548'
-        ]
+          '464108896655638548': {}
+        }
       },
       {
         follows: [
           // @FlatIsNice | Tibi | Tibo442
           '3383309523'
         ],
-        channels: [
+        channels: {
           // Hitomaru Nuke Zone > #flatisnice
-          '462085771872960522',
+          '462085771872960522': {},
           // Quan nhau cua T > #tibot
-          '551799151898394677'
-        ]
+          '551799151898394677': {
+            retweet: false
+          }
+        }
       },
       {
         follows: [
           // @vnkeyfc
           '588402934'
         ],
-        channels: [
+        channels: {
           // VNKFC > #news-tweet
-          '469009635152494593',
+          '469009635152494593': {},
           // VNKFC > #chat
-          '466986657304936458'
-        ]
+          '466986657304936458': {}
+        }
       },
       {
         follows: [
           // @KanColle_STAFF
           '294025417'
         ],
-        channels: [
+        channels: {
           // Hitomaru Nuke Zone > #kancolle_staff
-          '462085551734915074',
+          '462085551734915074': {},
           // VN KC > #dev-tweet
-          '441955702781771806',
+          '441955702781771806': {},
           // Quan nhau cua T > #dev-tweet
-          '451006611360710656'
-        ]
+          '451006611360710656': {}
+        }
       },
       {
         follows: [
@@ -85,12 +101,12 @@ module.exports = {
           // @GirlsFrontlineE
           '958921874523607040'
         ],
-        channels: [
+        channels: {
           // Sad Panda > #gf-tweet
-          '458855845669634049',
+          '458855845669634049': {},
           // lolis > #gf-news-feed
-          '457599318996811776'
-        ],
+          '457599318996811776': {}
+        },
         reply: false
       },
       {
@@ -100,14 +116,14 @@ module.exports = {
           // @TheDivisionGame
           '1499636930'
         ],
-        channels: [
-          '499935977041821706',
-          '499936001301544980'
-        ],
+        channels: {
+          '499935977041821706': {},
+          '499936001301544980': {}
+        },
         reply: false
       }
     ],
-    NewAva: {
+    Profile: {
       // @HitomaruKonpaku
       '2591243785': {
         interval: 10,
@@ -170,27 +186,6 @@ module.exports = {
           '457599318996811776'
         ]
       }
-    }
-  },
-  KanColle: {
-    Akashi: 'http://akashi-list.me/',
-    LBAS: 'https://i.imgur.com/bwlazjP.png',
-    AirPower: 'https://i.imgur.com/E66yfoG.png',
-    Development: 'https://i.imgur.com/ZehPS8X.png',
-    SpecialAttack: 'https://i.imgur.com/D2M2kjo.png',
-    GunFit: {
-      Battleship: 'https://i.imgur.com/a5BatD9.png',
-      Cruiser: 'https://i.imgur.com/9IBzSMn.jpg',
-      Destroyer: 'https://i.imgur.com/wS6YLNP.jpg'
-    },
-    Bonus: {
-      All: 'https://imgur.com/a/lq51ZDe',
-      SmallGun: 'https://i.imgur.com/tfY12uE.png',
-      MediumGun: 'https://i.imgur.com/a6xw8FR.png',
-      LargeGun: 'https://i.imgur.com/uYqae4A.png',
-      Torpedo: 'https://i.imgur.com/9bOrjJe.png',
-      Aircraft: 'https://i.imgur.com/3Hutf9d.png',
-      Other: 'https://i.imgur.com/CHbRRWi.png'
     }
   },
   Cron: {

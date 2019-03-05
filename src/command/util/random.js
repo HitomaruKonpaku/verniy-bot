@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+
 const Logger = require('../../module/Logger')
 const Util = require('../../module/Util')
 
@@ -23,20 +24,20 @@ module.exports = class RandomCommand extends Command {
 
     let min, max, random
     switch (numbers.length) {
-    case 1:
-      min = 0
-      max = numbers[0] != '' ? numbers[0] : 1E6
-      break
-    case 2:
-      min = numbers[0]
-      max = numbers[1]
-      break
-    default:
-      min = 0
-      max = numbers.length - 1
-      random = Util.getRandomNumber(min, max)
-      Logger.log(`RNG > Index ${random} of array ${numbers.length} elements > Value ${numbers[random]}`)
-      return msg.say(this.message(numbers[random]))
+      case 1:
+        min = 0
+        max = numbers[0] != '' ? numbers[0] : 1E6
+        break
+      case 2:
+        min = numbers[0]
+        max = numbers[1]
+        break
+      default:
+        min = 0
+        max = numbers.length - 1
+        random = Util.getRandomNumber(min, max)
+        Logger.log(`RNG > Index ${random} of array ${numbers.length} elements > Value ${numbers[random]}`)
+        return msg.say(this.message(numbers[random]))
     }
 
     random = Util.getRandomNumber(min, max)

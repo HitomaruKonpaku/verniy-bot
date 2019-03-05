@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const Discord = require('../../setting').Discord
 
 module.exports = class BotInviteCommand extends Command {
   constructor(client) {
@@ -19,7 +18,7 @@ module.exports = class BotInviteCommand extends Command {
         this.client.owners.map(v => `\`${v.tag}\``).join(', '),
         'for more detail about the bot.'
       ].join(' '),
-      `<${Discord.InviteLink}>`
+      `<https://discordapp.com/oauth2/authorize?scope=bot&client_id=${this.client.user.id}>`
     ]
     const message = chunk.join('\n')
     return msg.say(message)

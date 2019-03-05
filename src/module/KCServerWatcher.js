@@ -2,14 +2,15 @@ const request = require('request')
 const http = require('http')
 const Twit = require('twit')
 
-const Logger = require('./module/Logger')
+const Logger = require('./Logger')
+const ConfigVar = require('./ConfigVar')
 const LOG_ENABLE = false
 
 const config = {
-  consumer_key: process.env.KCSERVERWATCHER_TWITTER_CONSUMER_KEY,
-  consumer_secret: process.env.KCSERVERWATCHER_TWITTER_CONSUMER_SECRET,
-  access_token: process.env.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN,
-  access_token_secret: process.env.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN_SECRET
+  consumer_key: ConfigVar.KCSERVERWATCHER_TWITTER_CONSUMER_KEY,
+  consumer_secret: ConfigVar.KCSERVERWATCHER_TWITTER_CONSUMER_SECRET,
+  access_token: ConfigVar.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN,
+  access_token_secret: ConfigVar.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN_SECRET
 }
 
 const T = new Twit(config)
@@ -193,7 +194,7 @@ function sendTweet(msg) {
 function sendDiscord(msg, close) {
   let payload = { 'content': msg }
   request({
-    url: process.env.KCSERVERWATCHER_DISCORD_WEBHOOK,
+    url: ConfigVar.KCSERVERWATCHER_DISCORD_WEBHOOK,
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
@@ -207,7 +208,7 @@ function sendDiscord(msg, close) {
 
 module.exports = {
   start() {
-    const msg = 'Starting KCServerWatcher...'
+    const msg = 'KCServerWatcher starting...'
     Logger.log(msg)
     sendDiscord(msg)
     test()
