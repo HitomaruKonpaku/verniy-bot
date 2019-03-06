@@ -2,8 +2,6 @@ const Logger = require('./Logger')
 const ConfigVar = require('./ConfigVar')
 const TwitterClient = require('./TwitterClient')
 
-const Setting = ConfigVar.SETTINGS
-
 class DiscordHelper {
 
   constructor() {
@@ -115,15 +113,15 @@ class DiscordHelper {
   }
 
   onGuildCreate(guild) {
-    Logger.log(`DISCORD GUILD JOINED: ${guild.name} at ${new Date().toCustomString(Setting.Global.TimezoneOffset)}`)
+    Logger.log(`DISCORD GUILD JOINED: ${guild.name} at ${new Date().toCustomString()}`)
   }
 
   onGuildDelete(guild) {
-    Logger.log(`DISCORD GUILD LEAVE : ${guild.name} at ${new Date().toCustomString(Setting.Global.TimezoneOffset)}`)
+    Logger.log(`DISCORD GUILD LEAVE : ${guild.name} at ${new Date().toCustomString()}`)
   }
 
   onGuildUnavailable(guild) {
-    Logger.log(`DISCORD GUILD UNAVAILABLE: ${guild.name} at ${new Date().toCustomString(Setting.Global.TimezoneOffset)}`)
+    Logger.log(`DISCORD GUILD UNAVAILABLE: ${guild.name} at ${new Date().toCustomString()}`)
   }
 
   getRegisterGroups() {
