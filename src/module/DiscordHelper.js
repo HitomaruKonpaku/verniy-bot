@@ -168,8 +168,8 @@ class DiscordHelper {
     const sendChannels = []
     Object.keys(setting[uid]).forEach(cid => {
       const channel = setting[uid][cid]
-      // Check reply
-      if (channel.reply !== undefined && channel.reply !== !!tweet.in_reply_to_screen_name) {
+      // Check reply exist, allow self reply
+      if (channel.reply !== undefined && channel.reply !== !!tweet.in_reply_to_screen_name && tweet.in_reply_to_screen_name !== tweet.user.screen_name) {
         return
       }
       // Check retweet
