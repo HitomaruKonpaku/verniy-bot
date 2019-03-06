@@ -44,6 +44,6 @@ module.exports = class RoleMembersCommand extends Command {
     msgBuilder.push(msgBlock)
     msgList.push(msgBuilder.join('\n'))
     // Send
-    msgList.forEach(async v => msg.direct(v))
+    msgList.forEach(async v => msg.say(v))
   }
 }
