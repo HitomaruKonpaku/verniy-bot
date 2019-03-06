@@ -34,9 +34,7 @@ module.exports = {
         ],
         channels: {
           // Hitomaru Nuke Zone > #other
-          '462085619691290624': {},
-          // Hitomaru Nuke Zone > #other
-          '365111136095305730': {}
+          '462085619691290624': {}
         },
         media: undefined,
         retweet: undefined,
