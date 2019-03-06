@@ -17,7 +17,7 @@ class TwitterHelper {
   }
 
   onReconnect(req, res, interval) {
-    Logger.log('TWITTER STREAM RECONNECT after ' + Math.floor(interval / 1000) + 's')
+    Logger.log('TWITTER STREAM RECONNECT after ' + interval + 'ms')
   }
 
   onWarning(warn) {

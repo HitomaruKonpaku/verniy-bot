@@ -166,7 +166,7 @@ class DiscordHelper {
     if (!Object.keys(setting).includes(uid)) {
       return
     }
-    //
+    // Which channels to send?
     const sendChannels = []
     Object.keys(setting[uid]).forEach(cid => {
       const channel = setting[uid][cid]
@@ -184,10 +184,12 @@ class DiscordHelper {
       }
       sendChannels.push(cid)
     })
-    //
+    // Skip
+    if (sendChannels.length === 0) { return }
+    // Log
     const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
     Logger.log('TWITTER TWEET ' + url)
-    //
+    // Make message, embed & send
     const message = url
     const embed = this.makeTweetEmbed(tweet)
     this.sendMessageAsBot({ discord, channels: sendChannels, message, embed })
