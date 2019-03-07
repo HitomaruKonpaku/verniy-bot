@@ -4,6 +4,7 @@ module.exports = class RoleMembersCommand extends Command {
   constructor(client) {
     super(client, {
       name: 'rm',
+      aliases: [],
       group: 'guild',
       memberName: 'rm',
       description: 'List of members by role',
@@ -22,28 +23,23 @@ module.exports = class RoleMembersCommand extends Command {
   async run(msg, args) {
     const role = args.role
     const members = role.members.array()
-    const msgMaxChar = 2000
     const msgHead = `Found **${members.length}** members with role **${role.name}**`
     const msgBlock = '```'
-    const msgList = []
-    const msgBuilder = [msgHead, msgBlock]
-    // Generate multi messages
-    members.forEach(v => {
-      const name = v.user.tag
-      const tmp = msgBuilder.concat(name, msgBlock).join('\n')
-      if (tmp.length <= msgMaxChar) {
-        msgBuilder.push(name)
-        return
-      }
-      msgBuilder.push(msgBlock)
-      msgList.push(msgBuilder.join('\n'))
-      msgBuilder.splice(0, msgBuilder.length)
-      msgBuilder.push(msgBlock, name)
-    })
-    // Append to last message
-    msgBuilder.push(msgBlock)
-    msgList.push(msgBuilder.join('\n'))
-    // Send
-    msgList.forEach(async v => msg.say(v))
+    const msgContent = [
+      msgHead,
+      msgBlock,
+      members.map(v => v.user.tag).join('\n'),
+      msgBlock
+    ].join('\n')
+    // Response
+    const res = await msg.direct(msgContent)
+    const resOpt = { timeout: 120000 }
+    // Delete single message
+    if (!res.length) {
+      await res.delete(resOpt)
+      return
+    }
+    // Delete multiple messages
+    res.forEach(async v => v.delete(resOpt))
   }
 }
