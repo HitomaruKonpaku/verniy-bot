@@ -44,7 +44,7 @@ class DiscordClient {
     }
     try {
       await this.client.login(token)
-      await Helper.runOnReady(this.client)
+      await Helper.onceReady(this.client)
     } catch (err) {
       Logger.error(err)
     }

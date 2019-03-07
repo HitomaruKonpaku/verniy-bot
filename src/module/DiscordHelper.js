@@ -10,8 +10,10 @@ class DiscordHelper {
     this.Twitter.Profile = this.transformTwitterProfileSetting(ConfigVar.SETTINGS.Twitter.Profile)
   }
 
-  runOnReady(client) {
+  onceReady(client) {
     //
+    this.client = client
+    ConfigVar.DISCORD_CLIENT_ID = client.user.id
     Logger.log(`DISCORD ${client.user.tag} online!`)
     client.user.setActivity(`Type ${client.commandPrefix}help for help`, { type: 'PLAYING' })
     //
