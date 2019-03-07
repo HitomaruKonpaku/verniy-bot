@@ -157,6 +157,8 @@ class DiscordHelper {
 
   transformTwitterProfileSetting(raw) {
     const o = raw
+    // Make sure interval exist as number
+    Object.keys(o).forEach(v => o[v].interval = Number(o[v].interval))
     return o
   }
 
