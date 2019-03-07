@@ -17,42 +17,15 @@ class MainProcess {
       require('./module/Prototype')
       await require('./module/DiscordClient').start()
     } catch (err) {
-      sendUrgentNotification(err)
+      // Send urgent mail
+      require('./module/Util').sendEmail({
+        email: ConfigVar.APP_OWNER_EMAIL_ADDRESS,
+        subject: 'Heroku App "hito-verniy" Urgent Notification',
+        content: err.stack || err.message
+      })
     }
   }
 
 }
 
 module.exports = new MainProcess()
-
-async function sendUrgentNotification(error) {
-  //
-  const orig = {
-    email: ConfigVar.APP_SYSTEM_EMAIL_ADDRESS,
-    pass: ConfigVar.APP_SYSTEM_EMAIL_PASSWORD
-  }
-  const dest = { to: ConfigVar.APP_OWNER_EMAIL_ADDRESS }
-  const mailSubject = 'Heroku App "hito-verniy" Urgent Notification'
-  const mailContent = error.stack
-  //
-  const nodemailer = require('nodemailer')
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: orig.email,
-      pass: orig.pass
-    }
-  })
-  const mailOptions = {
-    to: dest.to,
-    subject: mailSubject,
-    text: mailContent
-  }
-  //
-  try {
-    const res = await transporter.sendMail(mailOptions)
-    Logger.warn('EMAIL RES ' + JSON.stringify(res))
-  } catch (err) {
-    Logger.error(err)
-  }
-}
