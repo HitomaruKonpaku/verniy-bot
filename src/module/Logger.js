@@ -14,18 +14,18 @@ class Logger {
 
   warn(error) {
     if (!error) return
-    const msg = error.message ? error.message : error
+    const msg = error.message || error
     console.log('WARN ' + msg)
   }
 
   error(error) {
     if (!error) return
-    const msg = error.message ? error.message : error
+    const msg = error.message || error
     console.log('ERORR ' + msg)
     if (error.stack) {
       require('./Util').sendDiscordWebhook({
         url: ConfigVar.APP_NOTIFICATION_DISCORD_WEBHOOK,
-        message: error.stack || error.message
+        message: '```' + error.stack || error.message + '```'
       })
     }
     if (['ECONNRESET'].some(v => msg.includes(v))) {
