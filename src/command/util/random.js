@@ -36,7 +36,7 @@ module.exports = class RandomCommand extends Command {
         min = 0
         max = numbers.length - 1
         random = Util.getRandomNumber(min, max)
-        Logger.log(`RNG > Index ${random} of array ${numbers.length} elements > Value ${numbers[random]}`)
+        Logger.debug(`RNG > Index ${random} of array ${numbers.length} elements > Value ${numbers[random]}`)
         return msg.say(this.message(numbers[random]))
     }
 

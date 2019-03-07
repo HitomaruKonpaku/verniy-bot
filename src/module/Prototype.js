@@ -38,6 +38,6 @@ function loadDatePrototype() {
     const zd = zc.join(' ')
     return zd
   }
-  Logger.log('PROTOTYPE Date.toCustomString()')
+  Logger.debug('PROTOTYPE Date.toCustomString()')
 
 }

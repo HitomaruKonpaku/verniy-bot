@@ -118,7 +118,7 @@ class TwitterClient extends EventEmitter {
           self.emit('profile', user)
         } catch (err) {
           // Ignore?
-          Logger.log(err)
+          Logger.error(err)
         }
       }
     })

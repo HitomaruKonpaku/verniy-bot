@@ -36,7 +36,7 @@ class Util {
     // Send
     try {
       await transporter.sendMail(mailOptions)
-      Logger.warn('EMAIL SENT')
+      Logger.log('EMAIL SENT')
     } catch (err) {
       Logger.error(err)
     }
@@ -58,7 +58,7 @@ class Util {
     const wh = new WebhookClient(id, token)
     try {
       await wh.send(message, embed)
-      Logger.warn('WEBHOOK SENT')
+      Logger.log('WEBHOOK SENT')
     }
     catch (err) {
       Logger.error(err)
@@ -69,7 +69,7 @@ class Util {
     min = Number(min)
     max = Number(max)
     const random = Math.floor(Math.random() * (max - min + 1)) + min
-    Logger.log(`RNG > Min ${min} > Max ${max} > Random ${random}`)
+    Logger.debug(`RNG > Min ${min} > Max ${max} > Random ${random}`)
     return random
   }
 
