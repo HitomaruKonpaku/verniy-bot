@@ -23,9 +23,10 @@ class Logger {
     const msg = error.message || error
     console.log('ERORR ' + msg)
     if (error.stack) {
+      const block = '```'
       require('./Util').sendDiscordWebhook({
         url: ConfigVar.APP_NOTIFICATION_DISCORD_WEBHOOK,
-        message: '```\n' + error.stack || error.message + '\n```'
+        message: [block, error.stack || error.message, block].join('\n')
       })
     }
     if (['ECONNRESET'].some(v => msg.includes(v))) {
