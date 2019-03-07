@@ -25,7 +25,7 @@ class Logger {
     if (error.stack) {
       require('./Util').sendDiscordWebhook({
         url: ConfigVar.APP_NOTIFICATION_DISCORD_WEBHOOK,
-        message: '```' + error.stack || error.message + '```'
+        message: '```\n' + error.stack || error.message + '\n```'
       })
     }
     if (['ECONNRESET'].some(v => msg.includes(v))) {
