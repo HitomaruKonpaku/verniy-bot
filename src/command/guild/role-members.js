@@ -21,25 +21,32 @@ module.exports = class RoleMembersCommand extends Command {
   }
 
   async run(msg, args) {
+    //
     const role = args.role
     const members = role.members.array()
+    //
+    const msgMaxChar = 2000
     const msgHead = `Found **${members.length}** members with role **${role.name}**`
     const msgBlock = '```'
-    const msgContent = [
-      msgHead,
-      msgBlock,
-      members.map(v => v.user.tag).join('\n'),
-      msgBlock
-    ].join('\n')
-    // Response
-    const res = await msg.direct(msgContent)
-    const deleteTimeout = 120 * 1000
-    // Delete single message
-    if (!res.length) {
-      await res.delete(deleteTimeout)
-      return
-    }
-    // Delete multiple messages
-    res.forEach(v => v.delete(deleteTimeout))
+    const msgList = []
+    const msgBuilder = [msgHead, msgBlock]
+    // Generate multi messages
+    members.forEach(v => {
+      const name = v.user.tag
+      const tmp = msgBuilder.concat(name, msgBlock).join('\n')
+      if (tmp.length <= msgMaxChar) {
+        msgBuilder.push(name)
+        return
+      }
+      msgBuilder.push(msgBlock)
+      msgList.push(msgBuilder.join('\n'))
+      msgBuilder.splice(0, msgBuilder.length)
+      msgBuilder.push(msgBlock, name)
+    })
+    // Append to last message
+    msgBuilder.push(msgBlock)
+    msgList.push(msgBuilder.join('\n'))
+    // Send
+    msgList.forEach(v => msg.direct(v))
   }
 }
