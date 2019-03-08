@@ -33,13 +33,13 @@ module.exports = class RoleMembersCommand extends Command {
     ].join('\n')
     // Response
     const res = await msg.direct(msgContent)
-    const resOpt = { timeout: 120000 }
+    const deleteTimeout = 120 * 1000
     // Delete single message
     if (!res.length) {
-      await res.delete(resOpt)
+      await res.delete(deleteTimeout)
       return
     }
     // Delete multiple messages
-    res.forEach(async v => v.delete(resOpt))
+    res.forEach(v => v.delete(deleteTimeout))
   }
 }
