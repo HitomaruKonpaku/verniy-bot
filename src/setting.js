@@ -6,6 +6,7 @@ module.exports = {
   Discord: {},
   KanColle: {
     Akashi: 'http://akashi-list.me/',
+    TsunDB: 'https://tsundb.kc3.moe/',
     LBAS: 'https://i.imgur.com/bwlazjP.png',
     AirPower: 'https://i.imgur.com/E66yfoG.png',
     Development: 'https://i.imgur.com/ZehPS8X.png',
