@@ -15,7 +15,18 @@ module.exports = new Prototype()
 function loadDatePrototype() {
 
   /**
+   * Get Unix timestamp
+   *
+   * @tutorial https://www.unixtimestamp.com/
+   */
+  Date.prototype.getUnixTime = function () {
+    return this.getTime() / 1000 | 0
+  }
+  Logger.debug('PROTOTYPE Date.getUnixTime()')
+
+  /**
    * Return date string with format [YYYY-MM-DD hh:mm:ss]
+   *
    * @param {*} timezoneOffset
    */
   Date.prototype.toCustomString = function (timezoneOffset) {
