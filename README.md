@@ -1,30 +1,19 @@
 # Verniy
 
-Discord bot using NodeJS
+Discord bot using `discord.js`
 
 ## Requirement
 
 * NodeJS 10.x
 * Create `.env` file in root folder
-* Add following fields to `.env` file
-  * DISCORD_TOKEN_BOT = ""
-  * DISCORD_TOKEN_USER = ""
-  * DISCORD_PREFIX = ""
-  * DISCORD_OWNER = ""
-  * CRON_ENABLE = ""
-  * TWITTER_ENABLE = ""
-  * TWITTER_CONSUMER_KEY = ""
-  * TWITTER_CONSUMER_SECRET = ""
-  * TWITTER_ACCESS_TOKEN = ""
-  * TWITTER_ACCESS_TOKEN_SECRET = ""
-  * HEROKU_API_KEY = ""
+* Check `ConfigVar` file to add environment var
 
-## How to start the bot
+## Start the bot
 
 * npm install
 * npm start
 
-## Show logs
+## Show Heroku logs
 
 * Run Command Prompt
 * Type 1 of those below command
