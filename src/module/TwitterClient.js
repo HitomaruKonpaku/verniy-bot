@@ -66,6 +66,7 @@ class TwitterClient extends EventEmitter {
     const params = { follow: follows.join(',') }
     const stream = client.stream(api, params)
     //
+    // eslint-disable-next-line no-unused-vars
     stream.on('connect', req => Logger.log('TWITTER STREAM CONNECT Checking new tweet of ' + follows.join(', ')))
     stream.on('tweet', tweet => self.emit('tweet', tweet))
     stream.on('disconnect', msg => Helper.onDisconnect(msg, stream))

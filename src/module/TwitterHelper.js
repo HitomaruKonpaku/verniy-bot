@@ -12,6 +12,7 @@ class TwitterHelper {
     Logger.error(err)
   }
 
+  // eslint-disable-next-line no-unused-vars
   onConnected(res) {
     Logger.log('TWITTER STREAM CONNECTED')
   }

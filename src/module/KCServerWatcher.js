@@ -182,6 +182,7 @@ function sendTweet(msg) {
   let tweet = {
     status: msg
   }
+  // eslint-disable-next-line no-unused-vars
   T.post('statuses/update', tweet, function (e, d, r) {
     if (e) {
       if (LOG_ENABLE) console.log(e)
@@ -198,6 +199,7 @@ function sendDiscord(msg, close) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
+    // eslint-disable-next-line no-unused-vars
   }, (e, r, b) => {
     if (e && LOG_ENABLE) console.log(e)
     if (close) {
