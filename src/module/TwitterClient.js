@@ -56,6 +56,7 @@ class TwitterClient extends EventEmitter {
   async checkTweets(follows) {
     //
     if (!this.isClientAvailable()) return
+    if (!follows) return
     //
     Logger.log('TWITTER TWEET ENABLED')
     //
@@ -78,6 +79,7 @@ class TwitterClient extends EventEmitter {
   async checkProfiles(setting) {
     //
     if (!this.isClientAvailable()) return
+    if (!setting) return
     //
     Logger.log('TWITTER PROFILE ENABLED')
     //
