@@ -1,6 +1,8 @@
+require('./Prototype')
 const Logger = require('./Logger')
 const ConfigVar = require('./ConfigVar')
 const TwitterClient = require('./TwitterClient')
+const FacebookClient = require('./FacebookClient')
 
 class DiscordHelper {
 
@@ -36,6 +38,12 @@ class DiscordHelper {
         TwitterClient.checkTweets(follows)
         TwitterClient.on('tweet', tweet => this.onTwitterTweet({ tweet, setting, discord: client }))
       }
+    }
+    //  Facebook
+    if (ConfigVar.FACEBOOK_ENABLE) {
+      const pages = ConfigVar.SETTINGS.Facebook.Pages
+      FacebookClient.checkPages(pages)
+      FacebookClient.on('page', data => this.onFacebookPagePost({ data, pages, discord: client }))
     }
     // Cron
     if (ConfigVar.CRON_ENABLE) {
@@ -262,6 +270,49 @@ class DiscordHelper {
     const channels2 = userSetting.channelsAsUser
     this.sendMessageAsBot({ discord, channels, message: imgFull })
     this.sendMessageAsUser({ channels: channels2, message: imgFull })
+  }
+
+  async onFacebookPagePost({ data, pages, discord }) {
+    const pid = data.id
+    const channels = Object.keys(pages[pid].channels)
+    const posts = data.posts.reverse()
+    Logger.log(`FACEBOOK PAGE <${data.name}> posted ${posts.length} new posts`)
+    //
+    channels.forEach(async cid => {
+      const channel = pages[pid].channels[cid]
+      const msgPrefix = channel.prefix || ''
+      const msgSuffix = channel.suffix || ''
+      // Use "for" in order to send posts by time order
+      for (let i = 0; i < posts.length; i++) {
+        try {
+          const post = posts[i]
+          const message = [msgPrefix, post.permalink_url, msgSuffix].join('')
+          const embed = this.makeFacebookPagePostEmbed({ page: data, post })
+          await this.sendMessageAsBot({ discord, channels: [cid], message, embed })
+        } catch (err) {
+          Logger.error(err)
+        }
+      }
+    })
+  }
+
+  makeFacebookPagePostEmbed({ page, post }) {
+    const { RichEmbed } = require('discord.js')
+    const embed = new RichEmbed({
+      color: parseInt('007acc', 16),
+      author: {
+        name: page.name,
+        url: `https://www.facebook.com/${page.id}`,
+        icon_url: page.picture.data.url
+      },
+      description: post.message,
+      timestamp: new Date(post.created_time),
+      footer: { text: 'Facebook' }
+    })
+    if (post.full_picture) {
+      embed.setImage(post.full_picture)
+    }
+    return embed
   }
 
   async sendMessageAsBot({ discord, channels, message, embed }) {

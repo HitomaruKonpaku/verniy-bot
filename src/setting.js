@@ -185,6 +185,10 @@ module.exports = {
       }
     }
   },
+  Facebook: {
+    GraphAPI: { Version: '3.2' },
+    Pages: {}
+  },
   Cron: {
     KanColle: [
       // Hitomaru Nuke Zone > #bot-verniy
