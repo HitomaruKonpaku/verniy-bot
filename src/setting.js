@@ -12,7 +12,7 @@ module.exports = {
     Development: 'https://i.imgur.com/ZehPS8X.png',
     SpecialAttack: 'https://i.imgur.com/D2M2kjo.png',
     GunFit: {
-      Battleship: 'https://i.imgur.com/a5BatD9.png',
+      Battleship: 'https://i.imgur.com/0WqaBv5.png',
       Cruiser: 'https://i.imgur.com/9IBzSMn.jpg',
       Destroyer: 'https://i.imgur.com/wS6YLNP.jpg'
     },
