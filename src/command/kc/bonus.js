@@ -8,7 +8,9 @@ const EquipmentType = {
   LG: 'Large Gun',
   TP: 'Torpedo',
   AC: 'Aircraft',
-  O: 'Other'
+  O: 'Other',
+  LG36 : 'LargeGun36cm',
+  LG41 : 'LargeGun41cm'
 }
 
 module.exports = class KCEquipmentBonusCommand extends Command {
@@ -58,6 +60,10 @@ module.exports = class KCEquipmentBonusCommand extends Command {
         return KC.Bonus.Aircraft
       case 'O':
         return KC.Bonus.Other
+      case 'LG36':
+        return KC.Bonus.LargeGun36cm
+      case 'LG41':
+        return KC.Bonus.LargeGun41cm
     }
     return 'Invalid equipment type.'
   }

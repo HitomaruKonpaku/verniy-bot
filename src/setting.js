@@ -23,7 +23,9 @@ module.exports = {
       LargeGun: 'https://i.imgur.com/uYqae4A.png',
       Torpedo: 'https://i.imgur.com/9bOrjJe.png',
       Aircraft: 'https://i.imgur.com/3Hutf9d.png',
-      Other: 'https://i.imgur.com/CHbRRWi.png'
+      Other: 'https://i.imgur.com/CHbRRWi.png',
+      LargeGun36cm: 'https://i.imgur.com/Dmo6GYM.png' ,
+      LargeGun41cm: 'https://i.imgur.com/0o5QSIt.png'
     }
   },
   Twitter: {
