@@ -9,8 +9,8 @@ const EquipmentType = {
   TP: 'Torpedo',
   AC: 'Aircraft',
   O: 'Other',
-  LG36 : 'LargeGun36cm',
-  LG41 : 'LargeGun41cm'
+  LG36: 'LargeGun36cm',
+  LG41: 'LargeGun41cm'
 }
 
 module.exports = class KCEquipmentBonusCommand extends Command {
