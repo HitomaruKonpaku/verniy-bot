@@ -37,7 +37,11 @@ module.exports = {
         ],
         channels: {
           // Hitomaru Nuke Zone > #other
-          '462085619691290624': {}
+          '462085619691290624': {},
+          // Sad Panda > #jail
+          '373723523690135553': {
+            media: true
+          }
         },
         media: undefined,
         retweet: undefined,
