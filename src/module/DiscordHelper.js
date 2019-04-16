@@ -118,7 +118,6 @@ class DiscordHelper {
     const waveMsg = '👋'
     if (content === waveMsg) {
       msg.channel.send(waveMsg)
-      return
     }
   }
 
@@ -181,16 +180,23 @@ class DiscordHelper {
     Object.keys(setting[uid]).forEach(cid => {
       const channel = setting[uid][cid]
       // Check reply exist, allow self reply
-      if (channel.reply !== undefined && channel.reply !== !!tweet.in_reply_to_screen_name && tweet.in_reply_to_screen_name !== tweet.user.screen_name) {
-        return
+      if (channel.reply !== undefined) {
+        if (channel.reply !== !!tweet.in_reply_to_screen_name && tweet.in_reply_to_screen_name !== tweet.user.screen_name) {
+          return
+        }
       }
       // Check retweet
-      if (channel.retweet !== undefined && channel.retweet !== !!tweet.retweeted_status) {
-        return
+      if (channel.retweet !== undefined) {
+        if (channel.retweet !== !!tweet.retweeted_status) {
+          return
+        }
       }
       // Check media
-      if (channel.media !== undefined && channel.media !== !!tweet.entities.media) {
-        return
+      if (channel.media !== undefined) {
+        const media = this.getTweetMediaObject(tweet)
+        if (channel.media !== !!media) {
+          return
+        }
       }
       sendChannels.push(cid)
     })
@@ -205,11 +211,39 @@ class DiscordHelper {
     this.sendMessageAsBot({ discord, channels: sendChannels, message, embed })
   }
 
+  getTweetMediaObject(tweet) {
+    if (tweet.retweeted_status) {
+      if (tweet.retweeted_status.extended_tweet) {
+        return tweet.retweeted_status.extended_tweet.entities.media
+      }
+      return tweet.retweeted_status.entities.media
+    }
+    if (tweet.quoted_status) {
+      if (tweet.quoted_status.extended_tweet) {
+        return tweet.quoted_status.extended_tweet.entities.media
+      }
+      return tweet.quoted_status.entities.media
+    }
+    if (tweet.extended_tweet) {
+      return tweet.extended_tweet.entities.media
+    }
+    return tweet.entities.media
+  }
+
   makeTweetEmbed(tweet) {
+    function getDescription(tweet) {
+      return (tweet.extended_tweet || {}).full_text || tweet.text
+    }
+    function getMedia(tweet) {
+      const media = self.getTweetMediaObject(tweet)
+      const mediaUrl = media[0].media_url_https
+      return mediaUrl
+    }
     //
     const { RichEmbed } = require('discord.js')
     const he = require('he')
-    //
+    const self = this
+    // Init embed object
     const embed = new RichEmbed({
       color: parseInt(tweet.user.profile_background_color || '1DA1F2', 16),
       author: {
@@ -223,37 +257,9 @@ class DiscordHelper {
         icon_url: 'http://abs.twimg.com/icons/apple-touch-icon-192x192.png'
       }
     })
-    //
-    let description = tweet.text
-    let media
-    //
-    try {
-      if (tweet.extended_tweet) {
-        const ex = tweet.extended_tweet
-        if (ex.full_text) {
-          description = ex.full_text
-        }
-        if (ex.entities.media) {
-          media = ex.entities.media[0].media_url_https
-        }
-      } else if (tweet.entities.media) {
-        media = tweet.entities.media[0].media_url_https
-      }
-      if (!media && tweet.quoted_status) {
-        const qs = tweet.quoted_status
-        if (qs.extended_tweet) {
-          const ex = qs.extended_tweet
-          media = ex.entities.media[0].media_url_https
-        } else if (tweet.quoted_status.entities.media) {
-          media = qs.entities.media[0].media_url_https
-        }
-      }
-    } catch (err) {
-      Logger.warn(err)
-    }
     // Fix special char e.g. '&amp;' to '&'
-    description = he.decode(description)
-    //
+    const description = he.decode(getDescription(tweet))
+    const media = getMedia(tweet)
     embed.setDescription(description)
     embed.setImage(media)
     return embed
