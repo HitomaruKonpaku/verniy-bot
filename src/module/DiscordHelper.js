@@ -212,22 +212,18 @@ class DiscordHelper {
   }
 
   getTweetMediaObject(tweet) {
-    if (tweet.retweeted_status) {
-      if (tweet.retweeted_status.extended_tweet) {
-        return tweet.retweeted_status.extended_tweet.entities.media
+    function getRoot(tweet) {
+      if (tweet.retweeted_status) {
+        return tweet.retweeted_status.extended_tweet || tweet.retweeted_status
       }
-      return tweet.retweeted_status.entities.media
-    }
-    if (tweet.quoted_status) {
-      if (tweet.quoted_status.extended_tweet) {
-        return tweet.quoted_status.extended_tweet.entities.media
+      if (tweet.quoted_status) {
+        return tweet.quoted_status.extended_tweet || tweet.quoted_status
       }
-      return tweet.quoted_status.entities.media
+      return tweet.extended_tweet || tweet
     }
-    if (tweet.extended_tweet) {
-      return tweet.extended_tweet.entities.media
-    }
-    return tweet.entities.media
+    const root = getRoot(tweet)
+    const media = root.entities.media
+    return media
   }
 
   makeTweetEmbed(tweet) {
