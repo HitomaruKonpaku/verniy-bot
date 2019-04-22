@@ -205,10 +205,8 @@ class DiscordHelper {
     // Log
     const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
     Logger.log('TWITTER TWEET ' + url)
-    // Make message, embed & send
     const message = url
-    const embed = this.makeTweetEmbed(tweet)
-    this.sendMessageAsBot({ discord, channels: sendChannels, message, embed })
+    this.sendMessageAsBot({ discord, channels: sendChannels, message })
   }
 
   getTweetMediaObject(tweet) {
