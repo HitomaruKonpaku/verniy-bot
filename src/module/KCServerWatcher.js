@@ -127,8 +127,8 @@ for (let s of servers) {
 }
 
 function test() {
-  setTimeout(() => test(), 15 * 1000)
-  setTimeout(() => tweetQueue(), 12500)
+  setTimeout(() => test(), 20 * 1000)
+  setTimeout(() => tweetQueue(), 17500)
 
   for (let s of servers) {
     testServer(s.ip, (up) => {
@@ -142,7 +142,52 @@ function test() {
       lastState[s.en] = up
     })
   }
+
+  updateMaint()
 }
+
+let lastMaintLine = undefined
+function updateMaint() {
+  request({
+    url: 'http://203.104.209.7/gadget_html5/js/kcs_const.js',
+    method: 'GET'
+    // eslint-disable-next-line no-unused-vars
+  }, (e, r, b) => {
+    if (e) return
+
+    let maintInfo = {}
+    for (let line of r.body.split('\n')) {
+      if (line.indexOf('MaintenanceInfo.IsDoing') >= 0)
+        maintInfo.isDoing = !!parseInt(line.split('= ')[1].replace(';', '').trim())
+      else if (line.indexOf('MaintenanceInfo.IsEmergency') >= 0)
+        maintInfo.isEmergency = !!parseInt(line.split('= ')[1].replace(';', '').trim())
+      else if (line.indexOf('MaintenanceInfo.EndDateTime') >= 0)
+        maintInfo.endDateTime = line.split('parse("')[1].replace('");', '').trim()
+    }
+
+    let infoLine
+    if (maintInfo.isDoing) {
+      infoLine = [
+        [
+          '📉',
+          maintInfo.isEmergency ? '[Emergency]' : '',
+          'Maintenance ongoing'
+        ].join(' '),
+        'Expected end time: ' + maintInfo.endDateTime
+      ].join('\n')
+    } else {
+      infoLine = '📈 Maintenance ended'
+    }
+
+    if (lastMaintLine == undefined)
+      lastMaintLine = infoLine
+    else if (lastMaintLine != infoLine)
+      sendTweet(infoLine)
+
+    lastMaintLine = infoLine
+  })
+}
+
 
 function tweetQueue() {
   if (LOG_ENABLE) console.log('Tweeting ' + queue.length + ' lines')
@@ -162,13 +207,13 @@ function tweetQueue() {
 
 function testServer(server, callback) {
   if (LOG_ENABLE) console.log('Trying ' + server)
-  let options = { method: 'HEAD', host: server, port: 80, path: '/', timeout: 7500 }
+  let options = { method: 'HEAD', host: server, port: 80, path: '/', timeout: 15000 }
   let req = http.request(options, async function (res) {
     if (LOG_ENABLE) console.log(server, res.statusCode)
     callback(true)
   })
   req.on('socket', function (socket) {
-    socket.setTimeout(7500)
+    socket.setTimeout(15000)
     socket.on('timeout', function () {
       req.abort()
     })
