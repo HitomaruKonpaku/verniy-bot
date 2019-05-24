@@ -146,7 +146,7 @@ function test() {
   updateMaint()
 }
 
-let lastMaintLine = undefined
+let lastMaintLine = undefined, oldVersion = undefined
 function updateMaint() {
   request({
     url: 'http://203.104.209.7/gadget_html5/js/kcs_const.js',
@@ -156,6 +156,7 @@ function updateMaint() {
     if (e) return
 
     let maintInfo = {}
+    let newVersion = undefined
     for (let line of r.body.split('\n')) {
       if (line.indexOf('MaintenanceInfo.IsDoing') >= 0)
         maintInfo.isDoing = !!parseInt(line.split('= ')[1].replace(';', '').trim())
@@ -163,6 +164,8 @@ function updateMaint() {
         maintInfo.isEmergency = !!parseInt(line.split('= ')[1].replace(';', '').trim())
       else if (line.indexOf('MaintenanceInfo.EndDateTime') >= 0)
         maintInfo.endDateTime = line.split('parse("')[1].replace('");', '').trim()
+      else if (line.indexOf('VersionInfo.scriptVesion') >= 0)
+        newVersion = line.split('"')[1].replace('";', '').trim()
     }
 
     let infoLine
@@ -184,7 +187,11 @@ function updateMaint() {
     else if (lastMaintLine != infoLine)
       sendTweet(infoLine)
 
+    if (newVersion != oldVersion && newVersion != undefined && oldVersion != undefined)
+      sendTweet(`Game version changed from ${oldVersion} -> ${newVersion}`)
+
     lastMaintLine = infoLine
+    oldVersion = newVersion
   })
 }
 
