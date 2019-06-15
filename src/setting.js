@@ -61,6 +61,20 @@ module.exports = {
       },
       {
         follows: [
+          // @KanColle_STAFF
+          '294025417'
+        ],
+        channels: {
+          // Hitomaru Nuke Zone > #kancolle_staff
+          '462085551734915074': {},
+          // VN KC > #dev-tweet
+          '441955702781771806': {},
+          // Quan nhau cua T > #dev-tweet
+          '451006611360710656': {}
+        }
+      },
+      {
+        follows: [
           // @FlatIsNice | Tibi | Tibo442
           '3383309523'
         ],
@@ -73,6 +87,26 @@ module.exports = {
       },
       {
         follows: [
+          // Juuryoushin | juu_kanoya
+          '879740556833955840'
+        ],
+        channels: {
+          // Hitomaru Nuke Zone > #juuryoushin
+          '589502261902966785': {}
+        }
+      },
+      {
+        follows: [
+          // Jebzou
+          '840258961'
+        ],
+        channels: {
+          // Hitomaru Nuke Zone > #jebzou
+          '589502213030936586': {}
+        }
+      },
+      {
+        follows: [
           // @vnkeyfc
           '588402934'
         ],
@@ -81,20 +115,6 @@ module.exports = {
           '469009635152494593': {},
           // VNKFC
           '556758874812710923': {}
-        }
-      },
-      {
-        follows: [
-          // @KanColle_STAFF
-          '294025417'
-        ],
-        channels: {
-          // Hitomaru Nuke Zone > #kancolle_staff
-          '462085551734915074': {},
-          // VN KC > #dev-tweet
-          '441955702781771806': {},
-          // Quan nhau cua T > #dev-tweet
-          '451006611360710656': {}
         }
       },
       {
