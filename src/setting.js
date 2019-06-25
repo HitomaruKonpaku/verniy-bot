@@ -179,10 +179,12 @@ module.exports = {
         channelsAsUser: [
           // KC Discord > #kc-only
           '425302689887289344',
-          // KanColle Wiki > #kancolle
-          '165107321561808896',
           // KC3 > #kancolle
           '334800225191329792',
+          // KanColle Wiki > #kancolle
+          '165107321561808896',
+          // PhanCord > #general-kc
+          '503959337006399498',
           // lolis > #boatsluts-kc
           '345299518012653570',
           // Daxyn > #kancolle
