@@ -88,6 +88,7 @@ class TwitterClient extends EventEmitter {
     const client = this.client
     const api = 'users/show'
     const follows = Object.keys(setting).filter(v => setting[v].interval > 0)
+    let isServerDown = false
     //
     if (!follows.length) return
     Logger.log('TWITTER PROFILE Request per 15 minutes (Max 900): ' + follows.reduce((p, v) => p + 900 / setting[v].interval, 0))
@@ -104,6 +105,7 @@ class TwitterClient extends EventEmitter {
       async function checkProfile() {
         try {
           const res = await client.get(api, { user_id: id, include_entities: false })
+          isServerDown = false
           const user = res.data
           const avatar = user.profile_image_url_https
           // Init data
@@ -120,7 +122,19 @@ class TwitterClient extends EventEmitter {
           // Emit
           self.emit('profile', user)
         } catch (err) {
-          // Ignore?
+          // Server down
+          if (err.statusCode === 500) {
+            if (!isServerDown) {
+              Logger.error('TWITTER Internal Server Error')
+              Logger.error(err)
+            }
+            isServerDown = true
+            return
+          }
+          // Unknown error
+          if (err.statusCode) {
+            Logger.warn('StatusCode ' + err.statusCode)
+          }
           Logger.error(err)
         }
       }
