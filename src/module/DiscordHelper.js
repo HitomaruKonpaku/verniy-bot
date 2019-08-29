@@ -268,8 +268,9 @@ class DiscordHelper {
     const userSetting = setting[uid]
     const channels = userSetting.channels
     const channels2 = userSetting.channelsAsUser
-    this.sendMessageAsBot({ discord, channels, message: imgFull })
-    this.sendMessageAsUser({ channels: channels2, message: imgFull })
+    const msg = `**『** ${imgFull} **』 @${user.screen_name}**`
+    this.sendMessageAsBot({ discord, channels, message: msg })
+    this.sendMessageAsUser({ channels: channels2, message: msg })
   }
 
   async onFacebookPagePost({ data, pages, discord }) {
