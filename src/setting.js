@@ -149,7 +149,7 @@ module.exports = {
     Profile: {
       // @HitomaruKonpaku
       '2591243785': {
-        interval: 10,
+        interval: 20,
         channels: [
           // Hitomaru Nuke Zone > #other
           '462085619691290624'
@@ -157,10 +157,12 @@ module.exports = {
       },
       // @KanColle_STAFF
       '294025417': {
-        interval: 5,
+        interval: 6,
         channels: [
           // Hitomaru Nuke Zone > #kancolle_staff
           '462085551734915074',
+          // Tibi's shithole > #twitter-icon
+          '616589830599475216',
           // Sad Panda > #kancolle
           '474226940119613440',
           // VN KC > #dev-tweet
@@ -189,6 +191,14 @@ module.exports = {
           '345299518012653570',
           // Daxyn > #kancolle
           '98922706317103104'
+        ]
+      },
+      // @C2_STAFF
+      '105035479': {
+        interval: 10,
+        channels: [
+          // Tibi's shithole > #twitter-icon
+          '616589830599475216'
         ]
       },
       // @GirlsFrontline

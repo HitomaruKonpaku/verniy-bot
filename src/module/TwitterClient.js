@@ -91,7 +91,7 @@ class TwitterClient extends EventEmitter {
     let isServerDown = false
     //
     if (!follows.length) return
-    Logger.log('TWITTER PROFILE Request per 15 minutes (Max 900): ' + follows.reduce((p, v) => p + 900 / setting[v].interval, 0))
+    Logger.log('TWITTER PROFILE Request per 15 minutes (Max 900): ' + follows.reduce((p, v) => p + Math.floor(900 / setting[v].interval), 0))
     Logger.log('TWITTER PROFILE User<Interval>: ' + follows.map(v => v + '<' + setting[v].interval + '>').join(', '))
     //
     follows.forEach(async id => {
