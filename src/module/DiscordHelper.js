@@ -329,11 +329,11 @@ class DiscordHelper {
           const code = err.code
           const message = err.message
           if (code === 50013 || message === 'Missing Permissions') {
-            Logger.warn(`Missing Permissions > Send Message > ${v.guild.name} > #${v.name}`)
+            Logger.warn(`50013 > Missing Permissions > Send Message > ${v.guild.name} > #${v.name}`)
             return
           }
           if (code || message) {
-            Logger.warn(`${code} > ${message}`)
+            Logger.warn(`${code} > ${message} > ${v.guild.name} > #${v.name}`)
             return
           }
           Logger.warn(err)
