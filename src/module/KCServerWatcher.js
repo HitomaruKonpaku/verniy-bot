@@ -120,7 +120,7 @@ const servers = [
   }]
 
 const lastState = {}
-const queue = []
+const serverInfoQueue = []
 
 for (let s of servers) {
   if (lastState[s.en] == undefined) {
@@ -130,7 +130,7 @@ for (let s of servers) {
 
 function test() {
   setTimeout(() => test(), 20 * 1000)
-  setTimeout(() => tweetQueue(), 17500)
+  setTimeout(() => tweetServerInfoQueue(), 17500)
 
   for (let s of servers) {
     testServer(s.ip, (up) => {
@@ -139,7 +139,7 @@ function test() {
 
       if (LOG_ENABLE) console.log(`${s.en}\t${up}`)
       if (lastState[s.en] != up) {
-        queue.push(`${up ? '📈' : '📉'} ${s.jp} (${s.en}): ${up ? 'online' : 'offline'} @ ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`)
+        serverInfoQueue.push(`${up ? '📈' : '📉'} ${s.jp} (${s.en}): ${up ? 'online' : 'offline'} @ ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`)
       }
       lastState[s.en] = up
     })
@@ -188,13 +188,13 @@ function updateMaint() {
       lastMaintLine = infoLine
     else if (lastMaintLine != infoLine) {
       sendTweet(infoLine)
-      sendDiscord(infoLine, webhooks.MAINT_INFO)
+      sendDiscordWebhook(infoLine, webhooks.MAINT_INFO)
     }
 
     if (newVersion != oldVersion && newVersion != undefined && oldVersion != undefined) {
       let line = `Game version changed from ${oldVersion} -> ${newVersion}`
       sendTweet(line)
-      sendDiscord(line, webhooks.MAINT_INFO)
+      sendDiscordWebhook(line, webhooks.MAINT_INFO)
     }
 
     lastMaintLine = infoLine
@@ -202,12 +202,12 @@ function updateMaint() {
   })
 }
 
-function tweetQueue() {
-  if (LOG_ENABLE) console.log('Tweeting ' + queue.length + ' lines')
+function tweetServerInfoQueue() {
+  if (LOG_ENABLE) console.log('Tweeting ' + serverInfoQueue.length + ' lines')
   let currentTweet = ''
-  sendDiscord(queue.join('\n'), webhooks.SERVER_INFO)
-  while (queue.length > 0) {
-    let newTweet = queue.pop()
+  sendDiscordWebhook(serverInfoQueue.join('\n'), webhooks.SERVER_INFO)
+  while (serverInfoQueue.length > 0) {
+    let newTweet = serverInfoQueue.pop()
     if (currentTweet.length + newTweet.length > 130) {
       sendTweet(currentTweet)
       currentTweet = ''
@@ -250,7 +250,7 @@ function sendTweet(msg) {
   })
 }
 
-function sendDiscord(msg, webhookUrl) {
+function sendDiscordWebhook(msg, webhookUrl) {
   if (!webhookUrl) {
     Logger.warn('KCServerWatcher - Missing Webhook Url')
     return
