@@ -13,6 +13,8 @@ const config = {
   access_token_secret: ConfigVar.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN_SECRET
 }
 
+const webhooks = ConfigVar.KCSERVERWATCHER_DISCORD_WEBHOOKS
+
 const T = new Twit(config)
 
 const servers = [
@@ -184,21 +186,26 @@ function updateMaint() {
 
     if (lastMaintLine == undefined)
       lastMaintLine = infoLine
-    else if (lastMaintLine != infoLine)
+    else if (lastMaintLine != infoLine) {
       sendTweet(infoLine)
+      sendDiscord(infoLine, webhooks.MAINT_INFO)
+    }
 
-    if (newVersion != oldVersion && newVersion != undefined && oldVersion != undefined)
-      sendTweet(`Game version changed from ${oldVersion} -> ${newVersion}`)
+    if (newVersion != oldVersion && newVersion != undefined && oldVersion != undefined) {
+      let line = `Game version changed from ${oldVersion} -> ${newVersion}`
+      sendTweet(line)
+      sendDiscord(line, webhooks.MAINT_INFO)
+    }
 
     lastMaintLine = infoLine
     oldVersion = newVersion
   })
 }
 
-
 function tweetQueue() {
   if (LOG_ENABLE) console.log('Tweeting ' + queue.length + ' lines')
   let currentTweet = ''
+  sendDiscord(queue.join('\n'), webhooks.SERVER_INFO)
   while (queue.length > 0) {
     let newTweet = queue.pop()
     if (currentTweet.length + newTweet.length > 130) {
@@ -230,7 +237,6 @@ function testServer(server, callback) {
 }
 
 function sendTweet(msg) {
-  sendDiscord(msg)
   let tweet = {
     status: msg
   }
@@ -244,27 +250,28 @@ function sendTweet(msg) {
   })
 }
 
-function sendDiscord(msg, close) {
+function sendDiscord(msg, webhookUrl) {
+  if (!webhookUrl) {
+    Logger.warn('KCServerWatcher - Missing Webhook Url')
+    return
+  }
   let payload = { 'content': msg }
   request({
-    url: ConfigVar.KCSERVERWATCHER_DISCORD_WEBHOOK,
+    url: webhookUrl,
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
     // eslint-disable-next-line no-unused-vars
   }, (e, r, b) => {
     if (e && LOG_ENABLE) console.log(e)
-    if (close) {
-      // process.exit()
-    }
   })
 }
 
 module.exports = {
   start() {
-    const msg = 'KCServerWatcher starting...'
+    const msg = 'KCServerWatcher - Starting...'
     Logger.log(msg)
-    sendDiscord(msg)
+    // sendDiscord(msg)
     test()
   }
 }
