@@ -112,12 +112,6 @@ class DiscordHelper {
       (uid === '203518448771399680' && gid === '376294828184567810')
     )) {
       msg.channel.send(kowaiMsg)
-      return
-    }
-    //
-    const waveMsg = '👋'
-    if (content === waveMsg) {
-      msg.channel.send(waveMsg)
     }
   }
 
