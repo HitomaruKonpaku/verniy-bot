@@ -197,8 +197,38 @@ module.exports = {
       '105035479': {
         interval: 10,
         channels: [
+          // Hitomaru Nuke Zone > #kancolle_staff
+          '462085551734915074',
           // Tibi's shithole > #twitter-icon
-          '616589830599475216'
+          '616589830599475216',
+          // Sad Panda > #kancolle
+          '474226940119613440',
+          // VN KC > #dev-tweet
+          '441955702781771806',
+          // VN KC > #chat
+          '442409008788275200',
+          // Quan nhau cua T > #dev-tweet
+          '451006611360710656',
+          // Quan nhau cua T > general-viet
+          '413622936247992339',
+          // Quan nhau cua T > general-international
+          '467951157440937985',
+          // Dzeso > #general
+          '368557905718542338'
+        ],
+        channelsAsUser: [
+          // KC Discord > #kc-only
+          '425302689887289344',
+          // KC3 > #kancolle
+          '334800225191329792',
+          // KanColle Wiki > #kancolle
+          '165107321561808896',
+          // PhanCord > #general-kc
+          '503959337006399498',
+          // lolis > #boatsluts-kc
+          '345299518012653570',
+          // Daxyn > #kancolle
+          '98922706317103104'
         ]
       },
       // @GirlsFrontline
