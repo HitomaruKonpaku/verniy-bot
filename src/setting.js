@@ -7,7 +7,7 @@ module.exports = {
   KanColle: {
     Akashi: 'http://akashi-list.me/',
     TsunDB: 'https://tsundb.kc3.moe/',
-    LBAS: 'https://i.imgur.com/OvfQ1J3.png',
+    LBAS: 'https://i.imgur.com/OolACnz.png',
     AirPower: 'https://i.imgur.com/E66yfoG.png',
     Development: 'https://i.imgur.com/ZehPS8X.png',
     SpecialAttack: 'https://i.imgur.com/D2M2kjo.png',
