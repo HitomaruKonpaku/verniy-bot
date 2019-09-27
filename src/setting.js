@@ -13,7 +13,7 @@ module.exports = {
     SpecialAttack: 'https://i.imgur.com/D2M2kjo.png',
     GunFit: {
       Battleship: 'https://i.imgur.com/0WqaBv5.png',
-      Cruiser: 'https://i.imgur.com/9IBzSMn.jpg',
+      Cruiser: 'https://imgur.com/a/EVL6bvP',
       Destroyer: 'https://i.imgur.com/wS6YLNP.jpg'
     },
     Bonus: {
