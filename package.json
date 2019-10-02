@@ -23,13 +23,12 @@
     "npm": "6.1.0"
   },
   "dependencies": {
-    "cron": "^1.4.1",
-    "discord.js": "^11.4.2",
+    "cron": "^1.7.2",
+    "discord.js": "^11.5.1",
     "discord.js-commando": "^0.10.0",
-    "dotenv": "^5.0.1",
-    "eslint": "^4.19.1",
+    "dotenv": "^8.1.0",
     "he": "^1.2.0",
-    "heroku-client": "^3.0.6",
+    "heroku-client": "^3.0.7",
     "twit": "^2.2.11"
   }
 }
