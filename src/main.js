@@ -7,8 +7,10 @@ class Main {
     logger.info('Loaded Logger')
     global.AppConst = require('dotenv').config().parsed
     logger.info('Loaded AppConst')
+    logger.debug(global.AppConst)
     global.AppConfig = require('./config')
     logger.info('Loaded AppConfig')
+    logger.debug(global.AppConfig)
     require('./modules/Prototype')
     logger.info('Loaded Prototype')
 
