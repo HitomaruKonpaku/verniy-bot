@@ -1,31 +1,33 @@
-const Logger = require('./module/Logger')
-const ConfigVar = require('./module/ConfigVar')
+const logger = require('log4js').getLogger()
 
-class MainProcess {
+class Main {
 
-  constructor() { }
+  constructor() {
+    require('./modules/Logger')
+    logger.info('Loaded Logger')
+    global.AppConst = require('dotenv').config().parsed
+    logger.info('Loaded AppConst')
+    global.AppConfig = require('./config')
+    logger.info('Loaded AppConfig')
+    require('./modules/Prototype')
+    logger.info('Loaded Prototype')
 
-  async start() {
     try {
-      //
-      Logger.log('MAIN PROCESS STARTING...')
-      //
-      if (ConfigVar.KCSERVERWATCHER_ENABLE) {
-        require('./module/KCServerWatcher').start()
-      }
-      //
-      require('./module/Prototype')
-      await require('./module/DiscordClient').start()
+      if (AppConst.KCSERVERWATCHER_ENABLE) require('./modules.external/KCServerWatcher').start()
+      // require('./modules/Discord').login()
     } catch (err) {
-      // Send urgent mail
-      require('./module/Util').sendEmail({
-        email: ConfigVar.APP_OWNER_EMAIL_ADDRESS,
-        subject: 'Heroku App "hito-verniy" Urgent Notification',
-        content: err.stack || err.message
-      })
+      logger.error(err)
+      // Send urgent email
+      if (AppConst.APP_ERROR_EMAIL_ENABLE) {
+        require('./modules/Util').sendEmail({
+          email: AppConst.APP_OWNER_EMAIL_ADDRESS,
+          subject: 'Heroku App "hito-verniy" Urgent Notification',
+          content: err.stack || err.message
+        })
+      }
     }
   }
 
 }
 
-module.exports = new MainProcess()
+module.exports = new Main()

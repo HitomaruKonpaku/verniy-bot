@@ -3,7 +3,6 @@ module.exports = {
     Timezone: 'Asia/Ho_Chi_Minh',
     TimezoneOffset: 7
   },
-  Discord: {},
   KanColle: {
     Akashi: 'http://akashi-list.me/',
     TsunDB: 'https://tsundb.kc3.moe/',
@@ -252,10 +251,6 @@ module.exports = {
         ]
       }
     }
-  },
-  Facebook: {
-    GraphAPI: { Version: '3.2' },
-    Pages: {}
   },
   Cron: {
     KanColle: [

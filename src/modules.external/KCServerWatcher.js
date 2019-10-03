@@ -2,18 +2,19 @@ const request = require('request')
 const http = require('http')
 const Twit = require('twit')
 
-const Logger = require('./Logger')
-const ConfigVar = require('./ConfigVar')
-const LOG_ENABLE = false
+const logger = require('log4js').getLogger('KCServerWatcher')
 
 const config = {
-  consumer_key: ConfigVar.KCSERVERWATCHER_TWITTER_CONSUMER_KEY,
-  consumer_secret: ConfigVar.KCSERVERWATCHER_TWITTER_CONSUMER_SECRET,
-  access_token: ConfigVar.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN,
-  access_token_secret: ConfigVar.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN_SECRET
+  consumer_key: AppConst.KCSERVERWATCHER_TWITTER_CONSUMER_KEY,
+  consumer_secret: AppConst.KCSERVERWATCHER_TWITTER_CONSUMER_SECRET,
+  access_token: AppConst.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN,
+  access_token_secret: AppConst.KCSERVERWATCHER_TWITTER_ACCESS_TOKEN_SECRET
 }
 
-const webhooks = ConfigVar.KCSERVERWATCHER_DISCORD_WEBHOOKS
+const webhooks = {
+  SERVER_INFO: AppConst.KCSERVERWATCHER_DISCORD_WEBHOOK_SERVER_INFO,
+  MAINT_INFO: AppConst.KCSERVERWATCHER_DISCORD_WEBHOOK_MAINT_INFO
+}
 
 const T = new Twit(config)
 
@@ -137,7 +138,7 @@ function test() {
       let d = new Date()
       d.setTime(d.getTime() + 60 * 1000 * (d.getTimezoneOffset() + (9 * 60)))
 
-      if (LOG_ENABLE) console.log(`${s.en}\t${up}`)
+      logger.debug(`${s.en}\t${up}`)
       if (lastState[s.en] != up) {
         serverInfoQueue.push(`${up ? '📈' : '📉'} ${s.jp} (${s.en}): ${up ? 'online' : 'offline'} @ ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}:${('0' + d.getSeconds()).slice(-2)}`)
       }
@@ -203,7 +204,7 @@ function updateMaint() {
 }
 
 function tweetServerInfoQueue() {
-  if (LOG_ENABLE) console.log('Tweeting ' + serverInfoQueue.length + ' lines')
+  logger.debug('Tweeting ' + serverInfoQueue.length + ' lines')
   let currentTweet = ''
   sendDiscordWebhook(serverInfoQueue.join('\n'), webhooks.SERVER_INFO)
   while (serverInfoQueue.length > 0) {
@@ -220,15 +221,15 @@ function tweetServerInfoQueue() {
 }
 
 function testServer(server, callback) {
-  if (LOG_ENABLE) console.log('Trying ' + server)
+  logger.debug('Trying ' + server)
   let options = { method: 'HEAD', host: server, port: 80, path: '/', timeout: 15000 }
-  let req = http.request(options, async function (res) {
-    if (LOG_ENABLE) console.log(server, res.statusCode)
+  let req = http.request(options, async function(res) {
+    logger.debug(server, res.statusCode)
     callback(true)
   })
-  req.on('socket', function (socket) {
+  req.on('socket', function(socket) {
     socket.setTimeout(15000)
-    socket.on('timeout', function () {
+    socket.on('timeout', function() {
       req.abort()
     })
   })
@@ -241,18 +242,18 @@ function sendTweet(msg) {
     status: msg
   }
   // eslint-disable-next-line no-unused-vars
-  T.post('statuses/update', tweet, function (e, d, r) {
+  T.post('statuses/update', tweet, function(e, d, r) {
     if (e) {
-      if (LOG_ENABLE) console.log(e)
-    } else if (LOG_ENABLE) {
-      console.log('Tweeted ' + JSON.stringify(d))
+      logger.error(e)
+    } else {
+      logger.debug('Tweeted ' + JSON.stringify(d))
     }
   })
 }
 
 function sendDiscordWebhook(msg, webhookUrl) {
   if (!webhookUrl) {
-    Logger.warn('KCServerWatcher - Missing Webhook Url')
+    logger.warn('KCServerWatcher - Missing Webhook Url')
     return
   }
   let payload = { 'content': msg }
@@ -263,14 +264,16 @@ function sendDiscordWebhook(msg, webhookUrl) {
     body: JSON.stringify(payload)
     // eslint-disable-next-line no-unused-vars
   }, (e, r, b) => {
-    if (e && LOG_ENABLE) console.log(e)
+    if (e) {
+      logger.error(e)
+    }
   })
 }
 
 module.exports = {
   start() {
-    const msg = 'KCServerWatcher - Starting...'
-    Logger.log(msg)
+    const msg = 'Starting...'
+    logger.info(msg)
     // sendDiscord(msg)
     test()
   }
