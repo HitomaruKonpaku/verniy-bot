@@ -22,6 +22,9 @@ class Logger {
         DiscordCommand: { appenders: ['out'], level: 'debug' },
         Twitter: { appenders: ['out'], level: 'debug' },
         TwitterStream: { appenders: ['out'], level: 'debug' },
+        Discord4User: { appenders: ['out'], level: 'debug' },
+        Discord4UserMessage: { appenders: ['out'], level: 'debug' },
+        KCCron: { appenders: ['out'], level: 'debug' },
         KCServerWatcher: { appenders: ['out'], level: 'info' }
       }
     })

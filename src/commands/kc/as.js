@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const KC = require('../../setting').KanColle
 
 module.exports = class KCAirPowerCommand extends Command {
   constructor(client) {
@@ -13,6 +12,7 @@ module.exports = class KCAirPowerCommand extends Command {
   }
 
   async run(msg) {
+    const KC = AppConfig.KanColle
     const message = KC.AirPower
     return msg.say(message)
   }

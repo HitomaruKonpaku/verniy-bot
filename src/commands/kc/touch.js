@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const KC = require('../../setting').KanColle
 
 module.exports = class KCTouchCommand extends Command {
   constructor(client) {
@@ -13,6 +12,7 @@ module.exports = class KCTouchCommand extends Command {
   }
 
   async run(msg) {
+    const KC = AppConfig.KanColle
     const message = KC.SpecialAttack
     return msg.say(message)
   }

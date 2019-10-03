@@ -14,7 +14,7 @@ class Main {
 
     try {
       if (AppConst.KCSERVERWATCHER_ENABLE) require('./modules.external/KCServerWatcher').start()
-      // require('./modules/Discord').login()
+      require('./modules/Discord').login()
     } catch (err) {
       logger.error(err)
       // Send urgent email

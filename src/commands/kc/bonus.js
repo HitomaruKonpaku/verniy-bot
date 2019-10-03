@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const KC = require('../../setting').KanColle
 
 const EquipmentType = {
   ALL: 'All',
@@ -45,6 +44,7 @@ module.exports = class KCEquipmentBonusCommand extends Command {
   }
 
   getData(type) {
+    const KC = AppConfig.KanColle
     switch (type.toUpperCase()) {
       case 'ALL':
         return `<${KC.Bonus.All}>`

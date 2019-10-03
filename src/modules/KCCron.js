@@ -1,21 +1,17 @@
 const EventEmitter = require('events')
 const CronJob = require('cron').CronJob
 
-const Logger = require('./Logger')
-const ConfigVar = require('./ConfigVar')
+const logger = require('log4js').getLogger('KCCron')
 
-const Setting = ConfigVar.SETTINGS
-
-class CronKC extends EventEmitter {
+class KCCron extends EventEmitter {
 
   constructor() {
     super()
-    //
-    const Timezone = Setting.Global.Timezone
-    const TimezoneOffset = Setting.Global.TimezoneOffset
-    const StartDefault = false
-    //
-    const Message = {
+    const config = AppConfig.Global
+    const timeZone = config.TimeZone
+    const timeZoneOffset = config.TimeZoneOffset
+    const startDefault = false
+    const messages = {
       Daily: {
         0: {
           0: '60 minutes before PvP reset',
@@ -46,32 +42,32 @@ class CronKC extends EventEmitter {
         }
       }
     }
-    //
+
     this.CronDaily = new CronJob({
       cronTime: [0, '*', '*', '*', '*', '*'].join(' '),
       onTick: () => {
-        const date = new Date(new Date().getTime() + TimezoneOffset * 3600000)
+        const date = new Date(new Date().getTime() + timeZoneOffset * 3600000)
         const hh = date.getUTCHours()
         const mm = date.getUTCMinutes()
-        const msg = (Message.Daily[hh] || {})[mm]
+        const msg = (messages.Daily[hh] || {})[mm]
         if (!msg) return
         this.emit('message', msg)
       },
-      timeZone: Timezone,
-      start: StartDefault
+      timeZone: timeZone,
+      start: startDefault
     })
   }
 
   start() {
-    Logger.log('CRONKC STARTED')
+    logger.log('Started')
     this.CronDaily.start()
   }
 
   stop() {
-    Logger.log('CRONKC STOPPED')
+    logger.log('Stopped')
     this.CronDaily.stop()
   }
 
 }
 
-module.exports = new CronKC()
+module.exports = new KCCron()

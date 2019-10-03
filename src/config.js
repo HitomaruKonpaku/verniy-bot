@@ -1,7 +1,7 @@
 module.exports = {
   Global: {
-    Timezone: 'Asia/Ho_Chi_Minh',
-    TimezoneOffset: 7
+    TimeZone: 'Asia/Ho_Chi_Minh',
+    TimeZoneOffset: 7
   },
   KanColle: {
     Akashi: 'http://akashi-list.me/',
@@ -36,11 +36,7 @@ module.exports = {
         ],
         channels: {
           // Hitomaru Nuke Zone > #other
-          '462085619691290624': {},
-          // Sad Panda > #jail
-          '373723523690135553': {
-            media: true
-          }
+          '462085619691290624': {}
         },
         media: undefined,
         retweet: undefined,

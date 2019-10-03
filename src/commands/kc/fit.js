@@ -1,5 +1,4 @@
 const { Command } = require('discord.js-commando')
-const KC = require('../../setting').KanColle
 
 const ShipType = {
   BB: 'Battleship',
@@ -40,6 +39,7 @@ module.exports = class KCGunFitCommand extends Command {
   }
 
   getData(type) {
+    const KC = AppConfig.KanColle
     switch (type.toUpperCase()) {
       case 'BB':
         return KC.GunFit.Battleship
