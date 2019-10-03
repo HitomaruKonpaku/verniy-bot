@@ -20,8 +20,8 @@
   "author": "HitomaruKonpaku",
   "license": "ISC",
   "engines": {
-    "node": "10.15.3",
-    "npm": "6.9.0"
+    "node": "12.11.1",
+    "npm": "6.11.3"
   },
   "dependencies": {
     "cron": "^1.7.2",
