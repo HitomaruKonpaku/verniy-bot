@@ -5,16 +5,19 @@ class Main {
   constructor() {
     require('./modules/Logger')
     logger.info('Loaded Logger')
-    global.AppConst = require('dotenv').config().parsed || process.env
-    logger.info('Loaded AppConst')
-    logger.debug(AppConst)
-    global.AppConfig = require('./config')
-    logger.info('Loaded AppConfig')
-    logger.debug(AppConfig)
-    require('./modules/Prototype')
-    logger.info('Loaded Prototype')
 
     try {
+      global.AppConst = require('dotenv').config().parsed || process.env
+      logger.info('Loaded AppConst')
+      logger.debug(JSON.stringify(AppConst))
+
+      global.AppConfig = require('./config')
+      logger.info('Loaded AppConfig')
+      logger.debug(JSON.stringify(AppConfig))
+
+      require('./modules/Prototype')
+      logger.info('Loaded Prototype')
+
       if (AppConst.KCSERVERWATCHER_ENABLE) require('./modules.external/KCServerWatcher').start()
       require('./modules/Discord').login()
     } catch (err) {

@@ -9,12 +9,12 @@ class Logger {
           type: 'console',
           layout: {
             type: 'pattern',
-            pattern: '%[%p %c%] - %m'
+            pattern: process.env.NODE_ENV === 'production' ? '%p %c - %m' : '%[%p %c%] - %m'
           }
         }
       },
       categories: {
-        default: { appenders: ['out'], level: 'debug' },
+        default: { appenders: ['out'], level: process.env.LOGGER_DEFAULT_LEVEL || 'debug' },
         Util: { appenders: ['out'], level: 'debug' },
         Discord: { appenders: ['out'], level: 'debug' },
         DiscordGuild: { appenders: ['out'], level: 'debug' },
