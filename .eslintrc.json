@@ -6,7 +6,10 @@
     "es6": true,
     "node": true
   },
-  "globals": {},
+  "globals": {
+    "AppConst": true,
+    "AppConfig": true
+  },
   "extends": [
     "eslint:recommended"
   ],
@@ -17,10 +20,6 @@
       {
         "SwitchCase": 1
       }
-    ],
-    "semi": [
-      "error",
-      "never"
     ],
     "quotes": [
       "error",
@@ -63,9 +62,17 @@
     "no-unused-vars": "warn",
     "no-useless-return": "warn",
     "no-var": "error",
+    "semi": [
+      "error",
+      "never"
+    ],
     "semi-spacing": "error",
     "semi-style": "error",
     "space-before-blocks": "error",
+    "space-before-function-paren": [
+      "error",
+      "never"
+    ],
     "space-in-parens": "error",
     "spaced-comment": "error",
     "switch-colon-spacing": "error"
