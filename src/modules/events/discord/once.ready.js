@@ -11,7 +11,14 @@ module.exports = function(client) {
     logger.info('Owners')
     client.owners
       .filter(v => !!v)
-      .forEach(v => logger.info(`# ${v.id} >> ${v.tag}`))
+      .forEach(v => logger.info(`>> ${v.id} >> ${v.tag}`))
+
+    // Guilds, Channels, Users
+    logger.info(`Connected to ${client.guilds.size} guilds, ${client.channels.size} channels, ${client.users.size} users`)
+    client.guilds.array().forEach(guild => {
+      const botCount = guild.members.filter(member => member.user.bot).size
+      logger.info('>> ' + [guild.name, guild.owner.user.tag, guild.memberCount - botCount + ' users', botCount + ' bots'].join('; '))
+    })
 
     // Twitter
     if (AppConst.TWITTER_ENABLE) {

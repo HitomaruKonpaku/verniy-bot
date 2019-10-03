@@ -59,12 +59,12 @@ class KCCron extends EventEmitter {
   }
 
   start() {
-    logger.log('Started')
+    logger.info('Started')
     this.CronDaily.start()
   }
 
   stop() {
-    logger.log('Stopped')
+    logger.info('Stopped')
     this.CronDaily.stop()
   }
 
