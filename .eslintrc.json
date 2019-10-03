@@ -47,7 +47,7 @@
     "func-call-spacing": "error",
     "key-spacing": "error",
     "keyword-spacing": "error",
-    "no-console": "off",
+    "no-console": "error",
     "no-empty": "warn",
     "no-empty-function": "warn",
     "no-floating-decimal": "error",
