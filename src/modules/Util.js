@@ -83,8 +83,8 @@ class Util {
           logger.error({
             code: err.code,
             message: err.message,
-            guild: guild.name,
-            channel: channel.name
+            guild: { id: guild.id, name: guild.name },
+            channel: { id: channel.id, name: channel.name }
           })
           return
         }

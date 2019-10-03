@@ -9,11 +9,11 @@ class Main {
     try {
       global.AppConst = require('dotenv').config().parsed || process.env
       logger.info('Loaded AppConst')
-      logger.debug(JSON.stringify(AppConst))
+      logger.debug(AppConst)
 
       global.AppConfig = require('./config')
       logger.info('Loaded AppConfig')
-      logger.debug(JSON.stringify(AppConfig))
+      logger.debug(AppConfig)
 
       require('./modules/Prototype')
       logger.info('Loaded Prototype')
