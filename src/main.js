@@ -5,12 +5,12 @@ class Main {
   constructor() {
     require('./modules/Logger')
     logger.info('Loaded Logger')
-    global.AppConst = require('dotenv').config().parsed
+    global.AppConst = require('dotenv').config().parsed || process.env
     logger.info('Loaded AppConst')
-    logger.debug(global.AppConst)
+    logger.debug(AppConst)
     global.AppConfig = require('./config')
     logger.info('Loaded AppConfig')
-    logger.debug(global.AppConfig)
+    logger.debug(AppConfig)
     require('./modules/Prototype')
     logger.info('Loaded Prototype')
 
