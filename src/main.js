@@ -9,17 +9,21 @@ class Main {
     try {
       global.AppConst = require('dotenv').config().parsed || process.env
       logger.info('Loaded AppConst')
-      logger.debug(AppConst)
+      logger.trace(AppConst)
 
       global.AppConfig = require('./config')
       logger.info('Loaded AppConfig')
-      logger.debug(AppConfig)
+      logger.trace(AppConfig)
 
       require('./modules/Prototype')
       logger.info('Loaded Prototype')
 
+      require('./modules/FileManager')
+      logger.info('Loaded FileManager')
+
       if (AppConst.KCSERVERWATCHER_ENABLE) require('./modules.external/KCServerWatcher').start()
       require('./modules/Discord').login()
+      if (AppConst.FACEBOOK_MESS_BOT_ENABLE) require('./modules/FbMessBot')
     } catch (err) {
       logger.error(err)
       // Send urgent email

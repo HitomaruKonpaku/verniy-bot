@@ -59,6 +59,7 @@ typings/
 
 # Custom Folders
 .vscode
+.cache
 *tmp
 *temp
 
