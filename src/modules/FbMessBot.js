@@ -10,21 +10,26 @@ class FbMessBot {
     const options = { logLevel: 'silent', selfListen: true, forceLogin: true }
     const credentials = {}
 
-    logger.info('Loading credential')
-    if (fs.existsSync(FileManager.FbAppStateFile)) {
-      logger.debug('Using FbAppStateFile')
-      credentials.appState = JSON.parse(fs.readFileSync(FileManager.FbAppStateFile, 'utf8'))
-    } else if (AppConst.FB_MESS_APPSTATE) {
-      logger.debug('Using FB_MESS_APPSTATE')
-      credentials.appState = JSON.parse(AppConst.FB_MESS_APPSTATE)
-    } else {
-      logger.debug('Using email & password')
-      credentials.email = process.env.FACEBOOK_EMAIL
-      credentials.password = process.env.FACEBOOK_PASSWORD
-      if (!credentials.email || !credentials.password) {
-        logger.warn('Missing FACEBOOK_EMAIL or FACEBOOK_PASSWORD')
-        return
+    try {
+      logger.info('Loading credential')
+      if (fs.existsSync(FileManager.FbAppStateFile)) {
+        logger.debug('Using FbAppStateFile')
+        credentials.appState = JSON.parse(fs.readFileSync(FileManager.FbAppStateFile, 'utf8'))
+      } else if (AppConst.FB_MESS_APPSTATE) {
+        logger.debug('Using FB_MESS_APPSTATE')
+        credentials.appState = JSON.parse(AppConst.FB_MESS_APPSTATE)
+      } else {
+        logger.debug('Using email & password')
+        credentials.email = process.env.FB_EMAIL
+        credentials.password = process.env.FB_PASSWORD
+        if (!credentials.email || !credentials.password) {
+          logger.warn('Missing FB_EMAIL or FB_PASSWORD')
+          return
+        }
       }
+    } catch (err) {
+      logger.error(err)
+      return
     }
 
     login(credentials, options, loginCallback)
