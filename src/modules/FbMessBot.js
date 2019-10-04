@@ -7,7 +7,7 @@ const FileManager = require('./FileManager')
 class FbMessBot {
 
   constructor() {
-    const options = { forceLogin: true }
+    const options = { logLevel: 'silent', selfListen: true, forceLogin: true }
     const credentials = {}
 
     logger.info('Loading credential')
