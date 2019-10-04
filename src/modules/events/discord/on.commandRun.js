@@ -2,7 +2,7 @@ const logger = require('log4js').getLogger('DiscordCommand')
 
 module.exports = async function(command, promise, message) {
   const reply = await promise
-  if (Array.isArray(reply)) {
+  if (!reply || Array.isArray(reply)) {
     return
   }
   try {

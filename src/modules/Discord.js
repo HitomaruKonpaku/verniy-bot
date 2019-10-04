@@ -30,6 +30,7 @@ class Discord {
       .registerDefaultTypes()
       .registerGroups([
         ['admin', 'Admin'],
+        ['test', 'Test'],
         ['util', 'Utility'],
         ['user', 'User'],
         ['kc', 'KanColle'],

@@ -26,7 +26,7 @@ module.exports = class HelpCommand extends Command {
 
   async run(msg, args) {
     const registry = this.client.registry
-    const groups = registry.groups.filter(v => v.id != 'dev')
+    const groups = registry.groups.filter(v => !['dev', 'test'].includes(v))
     const commands = registry.findCommands(args.command, false, msg)
     let isShowAll = args.command && args.command.toLowerCase() === 'all'
     const messages = []
@@ -71,14 +71,14 @@ module.exports = class HelpCommand extends Command {
         `\nUse ${this.usage('<command>', null, null)} to view detailed information about a specific command.`
       ].join('\n').trim()
       const helpGroups =
-                (isShowAll ? groups : groups.filter(grp => grp.commands.some(cmd => cmd.isUsable(msg))))
-                  .map(grp => [
-                    `__**${grp.name}**__`,
-                    (isShowAll ? grp.commands : grp.commands.filter(cmd => cmd.isUsable(msg)))
-                      .map(cmd => `> **${cmd.name}:** ${cmd.description}`)
-                      .join('\n')
-                  ].join('\n'))
-                  .join('\n\n')
+        (isShowAll ? groups : groups.filter(grp => grp.commands.some(cmd => cmd.isUsable(msg))))
+          .map(grp => [
+            `__**${grp.name}**__`,
+            (isShowAll ? grp.commands : grp.commands.filter(cmd => cmd.isUsable(msg)))
+              .map(cmd => `> **${cmd.name}:** ${cmd.description}`)
+              .join('\n')
+          ].join('\n'))
+          .join('\n\n')
       const helpBody = [
         `__**${isShowAll ? 'All commands' : `Available commands in ${msg.guild || 'this DM'}`}**__\n`,
         helpGroups
