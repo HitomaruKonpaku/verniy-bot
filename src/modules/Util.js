@@ -80,11 +80,17 @@ class Util {
         logger.info(`Done >> ${guild.name} #${channel.name}`)
       } catch (err) {
         if (err.code) {
-          logger.error({
+          logger.warn({
             code: err.code,
             message: err.message,
-            guild: { id: guild.id, name: guild.name },
-            channel: { id: channel.id, name: channel.name }
+            guild: {
+              id: guild.id,
+              name: guild.name
+            },
+            channel: {
+              id: channel.id,
+              name: channel.name
+            }
           })
           return
         }
