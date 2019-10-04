@@ -23,7 +23,7 @@ class Main {
 
       if (AppConst.KCSERVERWATCHER_ENABLE) require('./modules.external/KCServerWatcher').start()
       require('./modules/Discord').login()
-      if (AppConst.FACEBOOK_MESS_BOT_ENABLE) require('./modules/FbMessBot')
+      if (AppConst.FB_MESS_ENABLE) require('./modules/FbMessBot')
     } catch (err) {
       logger.error(err)
       // Send urgent email

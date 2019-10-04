@@ -12,8 +12,11 @@ class FbMessBot {
 
     logger.info('Loading credential')
     if (fs.existsSync(FileManager.FbAppStateFile)) {
-      logger.debug('Using appState')
+      logger.debug('Using FbAppStateFile')
       credentials.appState = JSON.parse(fs.readFileSync(FileManager.FbAppStateFile, 'utf8'))
+    } else if (AppConst.FB_MESS_APPSTATE) {
+      logger.debug('Using FB_MESS_APPSTATE')
+      credentials.appState = JSON.parse(AppConst.FB_MESS_APPSTATE)
     } else {
       logger.debug('Using email & password')
       credentials.email = process.env.FACEBOOK_EMAIL
