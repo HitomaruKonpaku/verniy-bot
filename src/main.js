@@ -20,9 +20,15 @@ class Main {
 
       require('./modules/FileManager')
       logger.info('Loaded FileManager')
+    } catch (err) {
+      logger.error(err)
+    }
+  }
 
+  async start() {
+    try {
       if (AppConst.KCSERVERWATCHER_ENABLE) require('./modules.external/KCServerWatcher').start()
-      require('./modules/Discord').login()
+      await require('./modules/Discord').login()
       if (AppConst.FB_MESS_ENABLE) require('./modules/FbMessBot')
     } catch (err) {
       logger.error(err)
