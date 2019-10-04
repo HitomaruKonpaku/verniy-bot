@@ -1,23 +1,34 @@
 # Verniy
 
-Discord bot using `discord.js`
+Discord bot with mainly KanColle related commands.
 
-## Requirement
+## Usage
 
-* NodeJS 10.x
-* Create `.env` file in root folder
-* Check `ConfigVar` file to add environment var
+1. Install [Node](https://nodejs.org/en/)
+2. Install dependencies using `npm i`
+3. Set up `.env` file. See [Configuration](#Configuration) for more detail
+4. Start the bot using `npm start`
 
-## Start the bot
+## Configuration
 
-* npm install
-* npm start
+Create `.env` file in root folder & paste all below config
 
-## Show Heroku logs
+* APP_ERROR_EMAIL_ENABLE = ""
+* APP_OWNER_EMAIL_ADDRESS = ""
+* APP_SYSTEM_EMAIL_ADDRESS = ""
+* APP_SYSTEM_EMAIL_PASSWORD = ""
+* APP_NOTIFICATION_DISCORD_WEBHOOK = ""
+* DISCORD_TOKEN = ""
+* DISCORD_TOKEN_USER = ""
+* DISCORD_OWNERS = ""
+* DISCORD_PREFIX = ""
+* TWITTER_ENABLE = ""
+* TWITTER_TWEET_ENABLE = ""
+* TWITTER_PROFILE_ENABLE = ""
+* TWITTER_CONSUMER_KEY = ""
+* TWITTER_CONSUMER_SECRET = ""
+* TWITTER_ACCESS_TOKEN = ""
+* TWITTER_ACCESS_TOKEN_SECRET = ""
+* CRON_ENABLE = ""
 
-* Run Command Prompt
-* Type 1 of those below command
-  * `npm run log`
-  * `npm run logt`
-* New log file will be created in folder `./logs/`
-* Delete all regex `(\[\d+m)` if necessary
+Update `src/config.js` if necessary
