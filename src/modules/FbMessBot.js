@@ -81,6 +81,7 @@ function loginSuccess(api) {
     if (command) {
       const response = getCommandResponse(command)
       if (!response) return
+      logger.debug(`Running command ${command.name}`)
       api.sendMessage(response, message.threadID)
     }
   }
