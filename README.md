@@ -19,7 +19,6 @@ Create `.env` file in root folder & paste all below config
 * APP_SYSTEM_EMAIL_PASSWORD = ""
 * APP_NOTIFICATION_DISCORD_WEBHOOK = ""
 * DISCORD_TOKEN = ""
-* DISCORD_TOKEN_USER = ""
 * DISCORD_OWNERS = ""
 * DISCORD_PREFIX = ""
 * TWITTER_ENABLE = ""
@@ -30,5 +29,10 @@ Create `.env` file in root folder & paste all below config
 * TWITTER_ACCESS_TOKEN = ""
 * TWITTER_ACCESS_TOKEN_SECRET = ""
 * CRON_ENABLE = ""
+
+Discord token can be found [HERE](https://discordapp.com/developers/applications).
+
+Twitter key & token can be found [HERE](https://developer.twitter.com/en/apps).
+For more detail read [Authentication](https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens).
 
 Update `src/config.js` if necessary
