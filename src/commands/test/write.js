@@ -1,4 +1,5 @@
 const { Command } = require('discord.js-commando')
+const fs = require('fs')
 
 module.exports = class WriteFileCommand extends Command {
   constructor(client) {
@@ -11,6 +12,8 @@ module.exports = class WriteFileCommand extends Command {
   }
 
   async run(msg) {
-
+    const file = 'data.txt'
+    const data = msg.argString.trim()
+    fs.writeFileSync(file, data)
   }
 }
