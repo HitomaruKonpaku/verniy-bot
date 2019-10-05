@@ -13,13 +13,13 @@ class FbMessBot {
     try {
       logger.info('Loading credential')
       if (fs.existsSync(FileManager.FbAppStateFile)) {
-        logger.debug('Using FbAppStateFile')
+        logger.info('Using FbAppStateFile')
         credentials.appState = JSON.parse(fs.readFileSync(FileManager.FbAppStateFile, 'utf8'))
       } else if (AppConst.FB_MESS_APPSTATE) {
-        logger.debug('Using FB_MESS_APPSTATE')
+        logger.info('Using FB_MESS_APPSTATE')
         credentials.appState = JSON.parse(AppConst.FB_MESS_APPSTATE)
       } else {
-        logger.debug('Using email & password')
+        logger.info('Using email & password')
         credentials.email = process.env.FB_EMAIL
         credentials.password = process.env.FB_PASSWORD
         if (!credentials.email || !credentials.password) {
