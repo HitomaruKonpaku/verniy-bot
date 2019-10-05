@@ -36,6 +36,7 @@ class Logger {
         target.apply(thisArg, argList)
         const msg = [
           '```',
+          'Category: ' + thisArg.category,
           [
             'Error: ',
             argList[0].stack ? argList[0].stack.split('\n').filter(line => !['internal', 'node_modules'].some(v => line.includes(v))).join('\n') : argList[0]
