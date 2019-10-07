@@ -27,7 +27,7 @@ class Logger {
         Discord4User: { appenders: ['out'], level: 'debug' },
         Discord4UserMessage: { appenders: ['out'], level: 'debug' },
         KCCron: { appenders: ['out'], level: 'debug' },
-        FbMessenger: { appenders: ['out'], level: isProduction ? 'info' : 'debug' },
+        FbMessenger: { appenders: ['out'], level: isProduction ? 'debug' : 'trace' },
         KCServerWatcher: { appenders: ['out'], level: 'info' }
       }
     })
