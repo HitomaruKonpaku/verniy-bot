@@ -3,19 +3,21 @@ const log4js = require('log4js')
 class Logger {
 
   constructor() {
+    const isProduction = process.env.NODE_ENV === 'production'
+
     log4js.configure({
       appenders: {
         out: {
           type: 'console',
           layout: {
             type: 'pattern',
-            pattern: process.env.NODE_ENV === 'production' ? '%p %c - %m' : '%[%p %c%] - %m'
+            pattern: isProduction ? '%p %c - %m' : '%[%p %c%] - %m'
           }
         }
       },
       categories: {
         default: { appenders: ['out'], level: process.env.LOGGER_DEFAULT_LEVEL || 'debug' },
-        Util: { appenders: ['out'], level: 'info' },
+        Util: { appenders: ['out'], level: isProduction ? 'info' : 'debug' },
         Discord: { appenders: ['out'], level: 'debug' },
         DiscordGuild: { appenders: ['out'], level: 'debug' },
         DiscordMessage: { appenders: ['out'], level: 'debug' },
@@ -25,7 +27,7 @@ class Logger {
         Discord4User: { appenders: ['out'], level: 'debug' },
         Discord4UserMessage: { appenders: ['out'], level: 'debug' },
         KCCron: { appenders: ['out'], level: 'debug' },
-        FbMessenger: { appenders: ['out'], level: 'debug' },
+        FbMessenger: { appenders: ['out'], level: isProduction ? 'info' : 'debug' },
         KCServerWatcher: { appenders: ['out'], level: 'info' }
       }
     })
