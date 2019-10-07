@@ -34,7 +34,8 @@ class Main {
       logger.error(err)
       // Send urgent email
       if (AppConst.APP_ERROR_EMAIL_ENABLE) {
-        require('./modules/Util').sendEmail({
+        const Util = require('./modules/Util')
+        Util.sendEmail({
           email: AppConst.APP_OWNER_EMAIL_ADDRESS,
           subject: 'Heroku App "hito-verniy" Urgent Notification',
           content: err.stack || err.message

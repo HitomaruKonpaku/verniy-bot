@@ -15,7 +15,7 @@ module.exports = function(client, config) {
     const channels2 = userConfig.channelsAsUser
     const message = `**『** ${imgFull} **』 @${user.screen_name}**`
 
-    Util.sendDiscordMessageAsBot({ client, channels, message })
-    Util.sendDiscordMessageAsUser({ channels: channels2, message })
+    Util.Discord.sendMessageAsBot({ client, channels, message })
+    Util.Discord.sendMessageAsUser({ channels: channels2, message })
   }
 }

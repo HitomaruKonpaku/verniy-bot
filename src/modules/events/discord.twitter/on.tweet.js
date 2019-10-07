@@ -39,7 +39,7 @@ module.exports = function(client, config) {
     const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
     logger.info('Tweet: ' + url)
     const message = url
-    Util.sendDiscordMessageAsBot({ client, channels: sendChannels, message })
+    Util.Discord.sendMessageAsBot({ client, channels: sendChannels, message })
   }
 }
 

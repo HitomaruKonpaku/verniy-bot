@@ -15,7 +15,7 @@ class Logger {
       },
       categories: {
         default: { appenders: ['out'], level: process.env.LOGGER_DEFAULT_LEVEL || 'debug' },
-        Util: { appenders: ['out'], level: 'debug' },
+        Util: { appenders: ['out'], level: 'info' },
         Discord: { appenders: ['out'], level: 'debug' },
         DiscordGuild: { appenders: ['out'], level: 'debug' },
         DiscordMessage: { appenders: ['out'], level: 'debug' },
@@ -34,6 +34,7 @@ class Logger {
     logger.__proto__.error = new Proxy(logger.error, {
       async apply(target, thisArg, argList) {
         target.apply(thisArg, argList)
+        const Util = require('./Util')
         const msg = [
           '```',
           'Category: ' + thisArg.category,
@@ -43,7 +44,7 @@ class Logger {
           ].join(''),
           '```'
         ].join('\n')
-        await require('./Util').sendDiscordWebhook({
+        await Util.Discord.sendWebhook({
           url: AppConst.APP_NOTIFICATION_DISCORD_WEBHOOK,
           message: msg
         })
