@@ -110,7 +110,7 @@ function loginSuccess(api) {
       'dev': KC.Development
     }
     if (commandMapper[command.name]) {
-      return commandMapper[command.name]
+      return { url: commandMapper[command.name] }
     }
     switch (command.name) {
       case 'help':
