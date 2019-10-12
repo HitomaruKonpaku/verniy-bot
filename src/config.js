@@ -151,7 +151,9 @@ module.exports = {
         channels: [
           // Hitomaru Nuke Zone > #other
           '462085619691290624'
-        ]
+        ],
+        channelsAsUser: [],
+        messengerThreads: []
       },
       // @KanColle_STAFF
       '294025417': {
@@ -187,6 +189,12 @@ module.exports = {
           '345299518012653570',
           // Daxyn > #kancolle
           '98922706317103104'
+        ],
+        messengerThreads: [
+          // VNKC - Event de_vailoz
+          '2579750558730524',
+          // VNKC - For Newbie
+          '2645279262197235'
         ]
       },
       // @C2_STAFF
@@ -223,6 +231,12 @@ module.exports = {
           '345299518012653570',
           // Daxyn > #kancolle
           '98922706317103104'
+        ],
+        messengerThreads: [
+          // VNKC - Event de_vailoz
+          '2579750558730524',
+          // VNKC - For Newbie
+          '2645279262197235'
         ]
       },
       // @GirlsFrontline
