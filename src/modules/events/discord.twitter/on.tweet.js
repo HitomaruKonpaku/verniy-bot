@@ -35,6 +35,10 @@ module.exports = function(client, config) {
       sendChannels.push(cid)
     })
 
+    if (!sendChannels.length) {
+      return
+    }
+
     // Send
     const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
     logger.info('Tweet: ' + url)
