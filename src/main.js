@@ -29,7 +29,7 @@ class Main {
     try {
       if (AppConst.KCSERVERWATCHER_ENABLE) require('./modules.external/KCServerWatcher').start()
       await require('./modules/Discord').login()
-      if (AppConst.FB_MESS_ENABLE) require('./modules/FbMessBot')
+      if (AppConst.FB_MESS_ENABLE) await require('./modules/FbMessengerBot').start()
     } catch (err) {
       logger.error(err)
       // Send urgent email

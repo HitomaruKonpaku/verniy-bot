@@ -13,10 +13,6 @@ class FileManager {
     return '.cache'
   }
 
-  get FbAppStateFile() {
-    return path.join(this.CacheDir, 'FbAppState.json')
-  }
-
 }
 
 module.exports = new FileManager()
