@@ -1,5 +1,5 @@
 const logger = require('log4js').getLogger('TwitterStream')
 
 module.exports = function() {
-  logger.info('CONNECTED')
+  logger.info('Connected!')
 }

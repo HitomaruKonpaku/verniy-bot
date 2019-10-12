@@ -85,8 +85,8 @@ class Twitter extends EventEmitter {
     let isServerDown = false
     //
     if (!follows.length) return
-    logger.info('CheckProfiles >> Request per 15 minutes (Max 900): ' + follows.reduce((p, v) => p + Math.floor(900 / config[v].interval), 0))
-    logger.info('CheckProfiles >> User<Interval>: ' + follows.map(v => v + '<' + config[v].interval + '>').join(', '))
+    logger.info('API requests every 15 minutes (Max 900): ' + follows.reduce((p, v) => p + Math.floor(900 / config[v].interval), 0))
+    logger.info('User<Interval>: ' + follows.map(v => v + '<' + config[v].interval + '>').join(', '))
     follows.forEach(async id => {
       const interval = config[id].interval
       const profile = {}
