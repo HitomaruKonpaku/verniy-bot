@@ -6,7 +6,19 @@ class FbMessBot {
 
   constructor() {
     logger.info('Constructor')
-    this.client = new Client({ selfListen: true })
+    this.client = new Client({
+      selfListen: true,
+      session: {
+        deviceId: {
+          clientId: 'b2f08501-0761-4c89-a',
+          deviceId: 'b2f08501-0761-4c89-a3b3-89b497020618',
+          mqttId: 4242538554481811
+        },
+        tokens: {
+          machine_id: '5hGjXSk-a8nKpq4QQT3ulWvA'
+        }
+      }
+    })
   }
 
   async start() {
