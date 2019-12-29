@@ -1,8 +1,8 @@
 const logger = require('log4js').getLogger('Discord')
 const Util = require('../../Util')
 
-module.exports = function(client, config) {
-  return function(tweet) {
+module.exports = function (client, config) {
+  return function (tweet) {
     // Tweet's author
     const uid = tweet.user.id_str
     if (!Object.keys(config).includes(uid)) {

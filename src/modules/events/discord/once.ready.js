@@ -1,8 +1,8 @@
 const logger = require('log4js').getLogger('Discord')
 const Util = require('../../Util')
 
-module.exports = function(client) {
-  return function() {
+module.exports = function (client) {
+  return function () {
     // Client
     logger.info(`${client.user.tag} ONLINE!`)
     client.user.setActivity('.help', { type: 'PLAYING' })

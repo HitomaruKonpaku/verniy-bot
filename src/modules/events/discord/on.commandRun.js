@@ -1,7 +1,7 @@
 const logger = require('log4js').getLogger('DiscordCommand')
 const { Permissions } = require('discord.js')
 
-module.exports = async function(command, promise, message) {
+module.exports = async function (command, promise, message) {
   if (!message.channel.permissionsFor(this.user).has(Permissions.FLAGS.ADD_REACTIONS)) return
 
   const res = await promise

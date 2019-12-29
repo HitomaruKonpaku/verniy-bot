@@ -223,13 +223,13 @@ function tweetServerInfoQueue() {
 function testServer(server, callback) {
   logger.debug('Trying ' + server)
   let options = { method: 'HEAD', host: server, port: 80, path: '/', timeout: 15000 }
-  let req = http.request(options, async function(res) {
+  let req = http.request(options, async function (res) {
     logger.debug(server, res.statusCode)
     callback(true)
   })
-  req.on('socket', function(socket) {
+  req.on('socket', function (socket) {
     socket.setTimeout(15000)
-    socket.on('timeout', function() {
+    socket.on('timeout', function () {
       req.abort()
     })
   })
@@ -242,7 +242,7 @@ function sendTweet(msg) {
     status: msg
   }
   // eslint-disable-next-line no-unused-vars
-  T.post('statuses/update', tweet, function(e, d, r) {
+  T.post('statuses/update', tweet, function (e, d, r) {
     if (e) {
       logger.error(e)
     } else {

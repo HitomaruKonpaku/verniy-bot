@@ -1,7 +1,7 @@
 const logger = require('log4js').getLogger('FbMessenger')
 
-module.exports = function(client) {
-  return function(message, command) {
+module.exports = function (client) {
+  return function (message, command) {
     const response = getResponse(command)
     if (!response) {
       return

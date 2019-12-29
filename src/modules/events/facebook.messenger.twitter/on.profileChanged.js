@@ -1,7 +1,7 @@
 const logger = require('log4js').getLogger('FbMessenger')
 
-module.exports = function(client, config) {
-  return function(user) {
+module.exports = function (client, config) {
+  return function (user) {
     const imgSource = user.profile_image_url_https
     if (!imgSource) return
 
