@@ -9,14 +9,15 @@ module.exports = function (client, config) {
     const imgFull = imgSource.replace('_normal', '')
     logger.info(`Twitter Ava @${user.screen_name} >> ${imgFull}`)
 
-    const message = `**@${user.screen_name}\n『** ${imgFull} **』**`
-
     const uid = user.id_str
     const userConfig = config[uid]
     const channels = userConfig.channels || []
     const channels2 = userConfig.channelsAsUser || []
 
-    Util.Discord.sendMessageAsBot({ client, channels, message })
-    Util.Discord.sendMessageAsUser({ channels: channels2, message })
+    const message = `**@${user.screen_name}**`
+    const options = { files: [imgFull] }
+
+    Util.Discord.sendMessageAsBot({ client, channels, message, options })
+    Util.Discord.sendMessageAsUser({ channels: channels2, message, options })
   }
 }
