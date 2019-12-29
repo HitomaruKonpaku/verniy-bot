@@ -25,19 +25,19 @@ class DiscordUtil {
     }
   }
 
-  async sendMessageAsBot({ client, channels, message, embed }) {
+  async sendMessageAsBot({ client, channels, message, options }) {
     if ((channels || []).length === 0) {
       return
     }
 
     const logger = require('log4js').getLogger('DiscordMessage')
-    channels.forEach(async(cid) => {
+    channels.forEach(async (cid) => {
       const channel = client.channels.get(cid)
       if (!channel) return
       const guild = channel.guild
 
       try {
-        await channel.send(message, embed)
+        await channel.send(message, options)
         logger.info(`Done >> ${guild.name} #${channel.name}`)
       } catch (err) {
         if (err.code) {
@@ -60,7 +60,7 @@ class DiscordUtil {
     })
   }
 
-  async sendMessageAsUser({ channels, message, embed }) {
+  async sendMessageAsUser({ channels, message, options }) {
     if ((channels || []).length === 0) return
     const token = AppConst.DISCORD_TOKEN_USER
     if (!token) return
@@ -73,13 +73,13 @@ class DiscordUtil {
 
     client.on('ready', () => {
       logger.info(`${client.user.tag} ONLINE!`)
-      channels.forEach(async(cid) => {
+      channels.forEach(async (cid) => {
         const channel = client.channels.get(cid)
         if (!channel) return
         const guild = channel.guild
 
         try {
-          await channel.send(message, embed)
+          await channel.send(message, options)
           loggerMessage.info(`Done >> ${guild.name} #${channel.name}`)
         } catch (err) {
           loggerMessage.error(err)
