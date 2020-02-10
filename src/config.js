@@ -11,7 +11,7 @@ module.exports = {
     AntiInstallation: 'https://i.imgur.com/gfgYvDg.png',
     Plane: 'https://i.imgur.com/QzpG8NB.png',
     AirPower: 'https://i.imgur.com/E66yfoG.png',
-    Development: 'https://i.imgur.com/ZehPS8X.png',
+    Development: 'https://i.imgur.com/NMQZpge.png',
     SpecialAttack: 'https://i.imgur.com/D2M2kjo.png',
     GunFit: {
       Battleship: 'https://i.imgur.com/0WqaBv5.png',
