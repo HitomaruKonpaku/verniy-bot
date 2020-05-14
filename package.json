@@ -14,7 +14,7 @@
     "log-file": "heroku logs -a hito-verniy -n 1500 > logs/%date%.log",
     "log-file-stream": "heroku logs -a hito-verniy -n 1500 -t > logs/%date%.log",
     "heroku-prebuild": "echo Heroku Prebuild",
-    "heroku-postbuild": "echo Heroku Postbuild && npm audit fix",
+    "heroku-postbuild": "echo Heroku Postbuild",
     "": ""
   },
   "author": "HitomaruKonpaku",
