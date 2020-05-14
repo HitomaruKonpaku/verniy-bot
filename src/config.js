@@ -73,6 +73,16 @@ module.exports = {
       },
       {
         follows: [
+          // @ArknightsEN
+          '1126470462777610241'
+        ],
+        channels: {
+          // Loli Group > #general
+          '397334905253527556': {}
+        }
+      },
+      {
+        follows: [
           // @FlatIsNice | Tibi | Tibo442
           '3383309523'
         ],
