@@ -74,7 +74,9 @@ module.exports = {
       {
         follows: [
           // @ArknightsEN
-          '1126470462777610241'
+          '1126470462777610241',
+          // @ArknightsStaff
+          '1027065272371372033'
         ],
         channels: {
           // Loli Group > #general
