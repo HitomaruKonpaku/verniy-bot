@@ -79,8 +79,8 @@ module.exports = {
           '1027065272371372033'
         ],
         channels: {
-          // Loli Group > #general
-          '397334905253527556': {}
+          // Loli Group > #bot
+          '412994199848353803': {}
         }
       },
       {
