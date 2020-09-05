@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv'
 @Injectable()
 export class EnvironmentService {
   public get isProd(): boolean {
-    const nodeEnv = this.getValue('NODE_ENV').toLowerCase()
+    const nodeEnv = this.getValue('NODE_ENV')?.toLowerCase()
     const isProd = nodeEnv === 'production'
     return isProd
   }
@@ -19,7 +19,7 @@ export class EnvironmentService {
   }
 
   public getValue(key: string): string {
-    const value = String(process.env[key])
+    const value = process.env[key]
     return value
   }
 
