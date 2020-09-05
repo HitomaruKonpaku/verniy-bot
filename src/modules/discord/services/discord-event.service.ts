@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
-import { Client, Message, TextChannel } from 'discord.js'
-import { DiscordService } from './discord.service'
+import { Client, Guild, Message, TextChannel } from 'discord.js'
 import { TwitterService } from '../../twitter/services/twitter.service'
+import { DiscordService } from './discord.service'
 
 @Injectable()
 export class DiscordEventService {
@@ -25,9 +25,21 @@ export class DiscordEventService {
       .on('ready', () => this.onReady())
       .once('ready', () => this.onceReady())
       .on('message', message => this.onMessage(message))
+      .on('guildUnavailable', guild => this.onGuildUnavailable(guild))
+      .on('guildCreate', guild => this.onGuildCreate(guild))
+      .on('guildDelete', guild => this.onGuildDelete(guild))
   }
 
   private onDebug(info: string) {
+    const skipMessages = [
+      'Authenticated using token',
+      'Sending a heartbeat',
+      'Heartbeat acknowledged',
+      'READY'
+    ]
+    if (skipMessages.some(v => info.includes(v))) {
+      return
+    }
     this._logger.debug(info)
   }
 
@@ -69,6 +81,21 @@ export class DiscordEventService {
       ].map(v => `[${v}]`).join(''),
       ` > ${content}`,
     ].join('')
+    this._logger.log(msg)
+  }
+
+  private onGuildUnavailable(guild: Guild) {
+    const msg = `[Guild] Unavailable: ${guild.name}`
+    this._logger.warn(msg)
+  }
+
+  private onGuildCreate(guild: Guild) {
+    const msg = `[Guild] Joined: ${guild.name}`
+    this._logger.log(msg)
+  }
+
+  private onGuildDelete(guild: Guild) {
+    const msg = `[Guild] Leave: ${guild.name}`
     this._logger.log(msg)
   }
 }
