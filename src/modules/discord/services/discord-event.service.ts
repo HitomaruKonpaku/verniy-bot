@@ -53,7 +53,7 @@ export class DiscordEventService {
     const content = message.cleanContent
 
     const ignoreAuthorIds = ['742677218471313488']
-    if (ignoreAuthorIds.some(id => id === author.id)) {
+    if (author.bot || ignoreAuthorIds.some(id => id === author.id)) {
       return
     }
 
