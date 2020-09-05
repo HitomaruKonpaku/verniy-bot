@@ -25,8 +25,12 @@ export class TwitterService {
       return
     }
 
-    this.initClient()
-    this.checkTweets()
+    try {
+      this.initClient()
+      this.checkTweets()
+    } catch (error) {
+      this._logger.error(error.message)
+    }
   }
 
   private initClient() {
@@ -40,6 +44,10 @@ export class TwitterService {
       this._logger.debug(consumerSecret)
       this._logger.debug(accessToken)
       this._logger.debug(accessTokenSecret)
+    }
+
+    if ([consumerKey, consumerSecret, accessToken, accessTokenSecret].some(v => v)) {
+      throw new Error('Missing config keys')
     }
 
     this._client = new Twit({
