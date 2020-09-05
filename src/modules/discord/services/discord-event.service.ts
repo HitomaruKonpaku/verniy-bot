@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
 import { Client, Message, TextChannel } from 'discord.js'
 import { DiscordService } from './discord.service'
+import { TwitterService } from '../../twitter/services/twitter.service'
 
 @Injectable()
 export class DiscordEventService {
@@ -13,6 +14,7 @@ export class DiscordEventService {
   constructor(
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
+    private readonly twitterService: TwitterService,
   ) { }
 
   public attachEvents() {
@@ -26,11 +28,11 @@ export class DiscordEventService {
   }
 
   private onDebug(info: string) {
-    this._logger.log(info)
+    this._logger.debug(info)
   }
 
   private onWarn(info: string) {
-    this._logger.log(info)
+    this._logger.warn(info)
   }
 
   private onError(error: Error) {
@@ -44,6 +46,7 @@ export class DiscordEventService {
 
   private onceReady() {
     // TODO
+    this.twitterService.start()
   }
 
   private onMessage(message: Message) {
