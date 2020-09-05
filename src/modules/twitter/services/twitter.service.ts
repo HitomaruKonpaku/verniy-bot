@@ -40,13 +40,13 @@ export class TwitterService {
     const accessTokenSecret = this.environmentService.getValue(TwitterConstants.ACCESS_TOKEN_SECRET)
 
     if (this.environmentService.isDev) {
-      this._logger.debug(consumerKey)
-      this._logger.debug(consumerSecret)
-      this._logger.debug(accessToken)
-      this._logger.debug(accessTokenSecret)
+      this._logger.debug(`ConsumerKey: ${consumerKey}`)
+      this._logger.debug(`ConsumerSecret: ${consumerSecret}`)
+      this._logger.debug(`AccessToken: ${accessToken}`)
+      this._logger.debug(`AccessTokenSecret: ${accessTokenSecret}`)
     }
 
-    if ([consumerKey, consumerSecret, accessToken, accessTokenSecret].some(v => v)) {
+    if ([consumerKey, consumerSecret, accessToken, accessTokenSecret].some(v => !v)) {
       throw new Error('Missing config keys')
     }
 
