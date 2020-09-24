@@ -7,8 +7,8 @@ module.exports = function (info) {
     'Heartbeat acknowledged',
     'READY'
   ]
-  if (skipMessages.some(v => info.includes(v))) {
-    return
-  }
-  logger.debug(info)
+  // if (skipMessages.some(v => info.includes(v))) {
+  //   return
+  // }
+  // logger.debug(info)
 }
