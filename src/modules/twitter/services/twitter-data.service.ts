@@ -22,8 +22,8 @@ export class TwitterDataService {
         channels: {
           // Hitomaru Nuke Zone > #other
           '462085619691290624': {},
-          // Hitomaru Nuke Zone > #bot-eveee
-          '445769415309524994': {},
+          // // Hitomaru Nuke Zone > #bot-eveee
+          // '445769415309524994': {},
         },
         media: undefined,
         retweet: undefined,

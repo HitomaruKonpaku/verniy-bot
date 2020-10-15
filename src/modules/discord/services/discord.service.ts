@@ -36,7 +36,7 @@ export class DiscordService implements OnModuleInit {
       await channel.send(options)
       this._logger.log(`Message was sent to [${channel.guild.name}][${channel.name}]`)
     } catch (error) {
-      this._logger.log(`Unable to send message to [${channel.guild.name}][${channel.name}]`)
+      this._logger.error(`Unable to send message to [${channel.guild.name}][${channel.name}]`)
       this._logger.error(error.message)
     }
   }
