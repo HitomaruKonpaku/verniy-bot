@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
 import { Client, Guild, Message, TextChannel } from 'discord.js'
 import * as Twit from 'twit'
+import { EnvironmentService } from '../../environment/services/environment.service'
 import { TwitterEventConstants } from '../../twitter/constants/twitter-event.constants'
 import { TwitterService } from '../../twitter/services/twitter.service'
 import { DiscordService } from './discord.service'
@@ -14,6 +15,7 @@ export class DiscordEventService {
   }
 
   constructor(
+    private readonly environmentService: EnvironmentService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
     private readonly twitterService: TwitterService,
@@ -70,6 +72,10 @@ export class DiscordEventService {
   }
 
   private onMessage(message: Message) {
+    if (!this.environmentService.isDev) {
+      return
+    }
+
     const guild = message.guild
     const channel = message.channel as TextChannel
     const author = message.author
