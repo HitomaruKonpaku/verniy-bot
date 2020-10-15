@@ -24,15 +24,15 @@ export class EnvironmentService {
   }
 
   public getBoolean(key: string): boolean {
+    const booleanTrueValues = ['true', '1', 1]
     const value = this.getValue(key)
-    const boolValues = ['true', '1']
-    const isBool = boolValues.some(v => v === value)
-    return isBool
+    const booleanValue = booleanTrueValues.some(v => v === value)
+    return booleanValue
   }
 
   public getNumber(key: string): number {
     const value = this.getValue(key)
-    const numb = Number(value)
-    return numb
+    const numberValue = Number(value)
+    return numberValue
   }
 }

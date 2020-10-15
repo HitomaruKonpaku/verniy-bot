@@ -1,5 +1,7 @@
 import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common'
 import { Client, Guild, Message, TextChannel } from 'discord.js'
+import * as Twit from 'twit'
+import { TwitterEventConstants } from '../../twitter/constants/twitter-event.constants'
 import { TwitterService } from '../../twitter/services/twitter.service'
 import { DiscordService } from './discord.service'
 
@@ -35,7 +37,7 @@ export class DiscordEventService {
       'Authenticated using token',
       'Sending a heartbeat',
       'Heartbeat acknowledged',
-      'READY'
+      'READY',
     ]
     if (skipMessages.some(v => info.includes(v))) {
       return
@@ -57,7 +59,10 @@ export class DiscordEventService {
   }
 
   private onceReady() {
-    // TODO
+    this.twitterService.on(TwitterEventConstants.TWEET, (tweet, config) => {
+      this.onTwitterTweet(tweet, config)
+    })
+    //
     this.twitterService.start()
   }
 
@@ -98,4 +103,67 @@ export class DiscordEventService {
     const msg = `[Guild] Leave: ${guild.name}`
     this._logger.log(msg)
   }
+
+  //#region Twitter events
+
+  private onTwitterTweet(tweet: Twit.Twitter.Status, config) {
+    // Tweet author
+    const uid = tweet.user.id_str
+    if (!Object.keys(config).includes(uid)) {
+      return
+    }
+    // Which channels to send?
+    const channelIds = []
+    Object.keys(config[uid]).forEach(cid => {
+      const channel = config[uid][cid]
+      // Check reply exist, allow self reply
+      if (channel.reply !== undefined) {
+        if (channel.reply !== !!tweet.in_reply_to_screen_name && tweet.in_reply_to_screen_name !== tweet.user.screen_name) {
+          return
+        }
+      }
+      // Check retweet
+      if (channel.retweet !== undefined) {
+        if (channel.retweet !== !!tweet.retweeted_status) {
+          return
+        }
+      }
+      // Check media
+      if (channel.media !== undefined) {
+        const media = getTweetMediaObject(tweet)
+        if (channel.media !== !!media) {
+          return
+        }
+      }
+      // Add channel
+      channelIds.push(cid)
+    })
+
+    if (!channelIds.length) {
+      return
+    }
+
+    // Send
+    const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+    this._logger.log(`Tweet: ${url}`)
+    const content = url
+    this.discordService.sendChannels(channelIds, { content })
+
+    function getTweetMediaObject(tweet) {
+      function getRoot(tweet) {
+        if (tweet.retweeted_status) {
+          return tweet.retweeted_status.extended_tweet || tweet.retweeted_status
+        }
+        if (tweet.quoted_status) {
+          return tweet.quoted_status.extended_tweet || tweet.quoted_status
+        }
+        return tweet.extended_tweet || tweet
+      }
+      const root = getRoot(tweet)
+      const media = root.entities.media
+      return media
+    }
+  }
+
+  //#endregion
 }

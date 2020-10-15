@@ -1,11 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { EventEmitter } from 'events'
 import * as Twit from 'twit'
+import { TwitterEventConstants } from '../constants/twitter-event.constants'
 
 @Injectable()
-export class TwitterEventService {
+export class TwitterEventService extends EventEmitter {
   private readonly _logger = new Logger(TwitterEventService.name)
 
-  public attachStreamEvents(stream: Twit.Stream) {
+  public attachStreamEvents(stream: Twit.Stream, config) {
     stream
       .on('warning', message => this.onStreamWarning(message))
       .on('error', error => this.onStreamEror(error))
@@ -14,7 +16,7 @@ export class TwitterEventService {
       .on('connected', response => this.onStreamConnected(response))
       .on('reconnect', (request, response, connectInterval) => this.onStreamReconnect(request, response, connectInterval))
       .on('disconnect', message => this.onStreamDisconnect(message))
-      .on('tweet', tweet => this.onStreamTweet(tweet))
+      .on('tweet', tweet => this.onStreamTweet(tweet, config))
   }
 
   private onStreamWarning(message: string) {
@@ -49,8 +51,7 @@ export class TwitterEventService {
     this._logger.error(msg)
   }
 
-  private onStreamTweet(tweet: Twit.Twitter.Status) {
-    console.log(tweet)
-    // TODO
+  private onStreamTweet(tweet: Twit.Twitter.Status, config) {
+    this.emit(TwitterEventConstants.TWEET, tweet, config)
   }
 }
