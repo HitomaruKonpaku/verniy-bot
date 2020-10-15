@@ -62,6 +62,9 @@ export class DiscordEventService {
     this.twitterService.on(TwitterEventConstants.TWEET, (tweet, config) => {
       this.onTwitterTweet(tweet, config)
     })
+    this.twitterService.on(TwitterEventConstants.PROFILE_IMAGE_CHANGED, (user: Twit.Twitter.User, config) => {
+      this.onTwitterUserProfileImageChanged(user, config)
+    })
     //
     this.twitterService.start()
   }
@@ -163,6 +166,16 @@ export class DiscordEventService {
       const media = root.entities.media
       return media
     }
+  }
+
+  private onTwitterUserProfileImageChanged(user: Twit.Twitter.User, config) {
+    const channelIds = config.channels
+    const content = `**@${user.screen_name}**`
+    const imageUrl = user.profile_image_url_https.replace('_normal', '')
+    this.discordService.sendChannels(channelIds, {
+      content,
+      files: [imageUrl],
+    })
   }
 
   //#endregion

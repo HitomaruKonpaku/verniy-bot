@@ -6,4 +6,5 @@ export class TwitterConstants {
 
   public static readonly ENABLED_KEY = 'TWITTER_ENABLED'
   public static readonly CHECK_TWEETS_ENABLED_KEY = 'TWITTER_TWEETS_ENABLED'
+  public static readonly CHECK_PROFILES_ENABLED_KEY = 'TWITTER_PROFILES_ENABLED'
 }

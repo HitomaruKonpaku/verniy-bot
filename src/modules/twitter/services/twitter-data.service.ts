@@ -7,6 +7,11 @@ export class TwitterDataService {
     return config
   }
 
+  public getProfileConfig() {
+    const config = this.transformProfileConfig(this.getProfileData())
+    return config
+  }
+
   private getTweetsData() {
     const data = [
       {
@@ -273,5 +278,90 @@ export class TwitterDataService {
       })
     }))
     return obj
+  }
+
+  private getProfileData() {
+    const data = {
+      // @HitomaruKonpaku
+      '2591243785': {
+        interval: 30,
+        channels: [
+          // Hitomaru Nuke Zone > #other
+          '462085619691290624',
+        ],
+      },
+      // @KanColle_STAFF
+      '294025417': {
+        interval: 6,
+        channels: [
+          // Hitomaru Nuke Zone > #kancolle_staff
+          '462085551734915074',
+          // Tibi's shithole > #twitter-icon
+          '616589830599475216',
+          // Sad Panda > #kancolle
+          '474226940119613440',
+          // VN KC > #dev-tweet
+          '441955702781771806',
+          // VN KC > #chat
+          '442409008788275200',
+          // Quan nhau cua T > #dev-tweet
+          '451006611360710656',
+          // Quan nhau cua T > general-international
+          '467951157440937985',
+          // Dzeso > #general
+          '368557905718542338',
+        ],
+      },
+      // @C2_STAFF
+      '105035479': {
+        interval: 30,
+        channels: [
+          // Hitomaru Nuke Zone > #kancolle_staff
+          '462085551734915074',
+          // Tibi's shithole > #twitter-icon
+          '616589830599475216',
+          // Sad Panda > #kancolle
+          '474226940119613440',
+          // VN KC > #dev-tweet
+          '441955702781771806',
+          // VN KC > #chat
+          '442409008788275200',
+          // Quan nhau cua T > #dev-tweet
+          '451006611360710656',
+          // Quan nhau cua T > general-international
+          '467951157440937985',
+          // Dzeso > #general
+          '368557905718542338',
+        ],
+      },
+      // @GirlsFrontline
+      '3247835011': {
+        interval: 60,
+        channels: [
+          // Sad Panda > #gf-tweet
+          '458855845669634049',
+          // lolis > #gf-news-feed
+          '457599318996811776',
+        ],
+      },
+      // @GirlsFrontlineE
+      '958921874523607040': {
+        interval: 60,
+        channels: [
+          // Sad Panda > #gf-tweet
+          '458855845669634049',
+          // lolis > #gf-news-feed
+          '457599318996811776',
+        ],
+      },
+    }
+    return data
+  }
+
+  private transformProfileConfig(raw) {
+    const o = raw
+    // Make sure interval exist as number
+    Object.keys(o).forEach(v => o[v].interval = Number(o[v].interval))
+    return o
   }
 }
