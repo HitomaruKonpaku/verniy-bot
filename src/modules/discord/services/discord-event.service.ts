@@ -61,7 +61,7 @@ export class DiscordEventService {
   }
 
   private onceReady() {
-    process.once('SIGINT', async () => {
+    process.once('SIGTERM', async () => {
       await this.sendLogFile()
     })
 
