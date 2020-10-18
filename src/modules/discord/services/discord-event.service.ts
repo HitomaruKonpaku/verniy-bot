@@ -61,6 +61,10 @@ export class DiscordEventService {
   }
 
   private onceReady() {
+    process.once('SIGINT', async () => {
+      await this.sendLogFile()
+    })
+
     this.twitterService.on(TwitterEventConstants.TWEET, (tweet, config) => {
       this.onTwitterTweet(tweet, config)
     })
@@ -74,20 +78,7 @@ export class DiscordEventService {
   private async onMessage(message: Message) {
     if (message.author.id === '153363129915539457') {
       if (message.content.trim() === '.log') {
-        const time = new Date()
-          .toISOString()
-          .split(/[TZ\-:.]/g)
-          .filter((v, i) => i < 6)
-          .map(v => v.padStart(2, '0'))
-          .join('_')
-        const name = `log_${time}.txt`
-        const logs = this._logger['getInstance']().logs as string[]
-        const content = logs.join('\n')
-        const file = {
-          name,
-          attachment: Buffer.from(content, 'utf8'),
-        }
-        await message.channel.send({ files: [file] })
+        await this.sendLogFile()
       }
     }
 
@@ -130,6 +121,25 @@ export class DiscordEventService {
   private onGuildDelete(guild: Guild) {
     const msg = `[Guild] Leave: ${guild.name}`
     this._logger.log(msg)
+  }
+
+  private async sendLogFile() {
+    const id = '550253945985957898'
+    const channel = await this.client.channels.fetch(id) as TextChannel
+    const time = new Date()
+      .toISOString()
+      .split(/[TZ\-:.]/g)
+      .filter((v, i) => i < 6)
+      .map(v => v.padStart(2, '0'))
+      .join('_')
+    const name = `log_${time}.txt`
+    const logs = this._logger['getInstance']().logs as string[]
+    const content = logs.join('\n')
+    const file = {
+      name,
+      attachment: Buffer.from(content, 'utf8'),
+    }
+    await channel.send({ files: [file] })
   }
 
   //#region Twitter events
