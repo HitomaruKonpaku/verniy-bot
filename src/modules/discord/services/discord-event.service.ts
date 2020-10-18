@@ -71,7 +71,26 @@ export class DiscordEventService {
     this.twitterService.start()
   }
 
-  private onMessage(message: Message) {
+  private async onMessage(message: Message) {
+    if (message.author.id === '153363129915539457') {
+      if (message.content.trim() === '.log') {
+        const time = new Date()
+          .toISOString()
+          .split(/[TZ\-:.]/g)
+          .filter((v, i) => i < 6)
+          .map(v => v.padStart(2, '0'))
+          .join('_')
+        const name = `log_${time}.txt`
+        const logs = this._logger['getInstance']().logs as string[]
+        const content = logs.join('\n')
+        const file = {
+          name,
+          attachment: Buffer.from(content, 'utf8'),
+        }
+        await message.channel.send({ files: [file] })
+      }
+    }
+
     if (!this.environmentService.isDev) {
       return
     }
