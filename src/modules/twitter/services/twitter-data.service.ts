@@ -31,6 +31,8 @@ export class TwitterDataService {
       },
       {
         follows: [
+          // @hololive_En
+          '1198438560224829442',
           // Tokino Sora
           // @tokino_sora
           '880317891249188864',
