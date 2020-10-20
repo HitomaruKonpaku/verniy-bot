@@ -145,6 +145,22 @@ export class DiscordEventService {
   //#region Twitter events
 
   private onTwitterTweet(tweet: Twit.Twitter.Status, config) {
+    function getTweetMediaObject(tweet) {
+      function getRoot(tweet) {
+        if (tweet.retweeted_status) {
+          return tweet.retweeted_status.extended_tweet || tweet.retweeted_status
+        }
+        if (tweet.quoted_status) {
+          return tweet.quoted_status.extended_tweet || tweet.quoted_status
+        }
+        return tweet.extended_tweet || tweet
+      }
+
+      const root = getRoot(tweet)
+      const media = root.entities.media
+      return media
+    }
+
     // Tweet author
     const uid = tweet.user.id_str
     if (!Object.keys(config).includes(uid)) {
@@ -182,25 +198,14 @@ export class DiscordEventService {
     }
 
     // Send
-    const url = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+    const user = tweet.user
+    const url = `https://twitter.com/${user.screen_name}/status/${tweet.id_str}`
     this._logger.log(`Tweet: ${url}`)
-    const content = url
+    const content = [
+      `**@${user.screen_name}**`,
+      url,
+    ].join('\n')
     this.discordService.sendChannels(channelIds, { content })
-
-    function getTweetMediaObject(tweet) {
-      function getRoot(tweet) {
-        if (tweet.retweeted_status) {
-          return tweet.retweeted_status.extended_tweet || tweet.retweeted_status
-        }
-        if (tweet.quoted_status) {
-          return tweet.quoted_status.extended_tweet || tweet.quoted_status
-        }
-        return tweet.extended_tweet || tweet
-      }
-      const root = getRoot(tweet)
-      const media = root.entities.media
-      return media
-    }
   }
 
   private onTwitterUserProfileImageChanged(user: Twit.Twitter.User, config) {
