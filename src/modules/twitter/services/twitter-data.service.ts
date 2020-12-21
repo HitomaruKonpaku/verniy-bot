@@ -33,21 +33,37 @@ export class TwitterDataService {
         follows: [
           // @hololive_En
           '1198438560224829442',
+        ],
+        channels: {
+          // #hololive-official
+          '766345212548218911': {},
+        },
+      },
+      {
+        follows: [
           // Tokino Sora
           // @tokino_sora
           '880317891249188864',
           // Roboco
           // @robocosan
           '960340787782299648',
-          // Hoshimachi Suisei
-          // @suisei_hosimati
-          '975275878673408001',
           // Sakura Miko
           // @sakuramiko35
           '979891380616019968',
+          // Hoshimachi Suisei
+          // @suisei_hosimati
+          '975275878673408001',
           // AZKi
           // @AZKi_VDiVA
           '1062499145267605504',
+        ],
+        channels: {
+          // #hololive-jp-0
+          '790548156420194305': {},
+        },
+      },
+      {
+        follows: [
           // Yozora Mel
           // @yozoramel
           '985703615758123008',
@@ -63,6 +79,14 @@ export class TwitterDataService {
           // Akai Haato
           // @akaihaato
           '998336069992001537',
+        ],
+        channels: {
+          // #hololive-jp-1
+          '790548190532599820': {},
+        },
+      },
+      {
+        follows: [
           // Minato Aqua
           // @minatoaqua
           '1024528894940987392',
@@ -78,6 +102,14 @@ export class TwitterDataService {
           // Oozora Subaru
           // @oozorasubaru
           '1027853566780698624',
+        ],
+        channels: {
+          // #hololive-jp-2
+          '790548893812654091': {},
+        },
+      },
+      {
+        follows: [
           // Ookami Mio
           // @ookamimio
           '1063337246231687169',
@@ -87,6 +119,14 @@ export class TwitterDataService {
           // Inugami Korone
           // @inugamikorone
           '1109748792721432577',
+        ],
+        channels: {
+          // #hololive-jp-gamers
+          '790549160537096192': {},
+        },
+      },
+      {
+        follows: [
           // Usada Pekora
           // @usadapekora
           '1133215093246664706',
@@ -102,6 +142,14 @@ export class TwitterDataService {
           // Houshou Marine
           // @houshoumarine
           '1153192638645821440',
+        ],
+        channels: {
+          // #hololive-jp-3
+          '790548982031843328': {},
+        },
+      },
+      {
+        follows: [
           // Amane Kanata
           // @amanekanatach
           '1200396304360206337',
@@ -117,6 +165,14 @@ export class TwitterDataService {
           // Himemori Luna
           // @himemoriluna
           '1200396798281445376',
+        ],
+        channels: {
+          // #hololive-jp-4
+          '790549012449198111': {},
+        },
+      },
+      {
+        follows: [
           // Yukihana Lamy
           // @yukihanalamy
           '1255013740799356929',
@@ -129,6 +185,14 @@ export class TwitterDataService {
           // Omaru Polka
           // @omarupolka
           '1270551806993547265',
+        ],
+        channels: {
+          // #hololive-jp-5
+          '790549096602533901': {},
+        },
+      },
+      {
+        follows: [
           // Mori Calliope
           // @moricalliope
           '1283653858510598144',
@@ -146,10 +210,18 @@ export class TwitterDataService {
           '1283656034305769472',
         ],
         channels: {
-          // Hitomaru Nuke Zone > #hololive
-          '766345212548218911': {},
+          // #hololive-en
+          '790549123483828274': {},
         },
       },
+      // {
+      //   follows: [
+      //   ],
+      //   channels: {
+      //     // #hololive-id
+      //     '790549357203161088': {},
+      //   },
+      // },
       {
         follows: [
           // @SpaceX
