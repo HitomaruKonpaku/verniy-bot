@@ -133,7 +133,7 @@ export class DiscordEventService {
       .map(v => v.padStart(2, '0'))
       .join('_')
     const name = `log_${time}.txt`
-    const logs = this._logger['getInstance']().logs as string[]
+    const logs = this._logger['getInstance']()['logs'] as string[]
     const content = logs.join('\n')
     const file = {
       name,
