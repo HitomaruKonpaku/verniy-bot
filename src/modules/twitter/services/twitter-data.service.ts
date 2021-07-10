@@ -385,10 +385,6 @@ export class TwitterDataService {
           '616589830599475216',
           // Sad Panda > #kancolle
           '474226940119613440',
-          // VN KC > #dev-tweet
-          '441955702781771806',
-          // VN KC > #chat
-          '442409008788275200',
           // Quan nhau cua T > #dev-tweet
           '451006611360710656',
           // Quan nhau cua T > general-international
@@ -407,10 +403,6 @@ export class TwitterDataService {
           '616589830599475216',
           // Sad Panda > #kancolle
           '474226940119613440',
-          // VN KC > #dev-tweet
-          '441955702781771806',
-          // VN KC > #chat
-          '442409008788275200',
           // Quan nhau cua T > #dev-tweet
           '451006611360710656',
           // Quan nhau cua T > general-international
