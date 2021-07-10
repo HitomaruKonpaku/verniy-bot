@@ -66,7 +66,7 @@ export class TwitterDataService {
           '1062499145267605504',
           // IRyS
           // @irys_en
-          '1062499145267605504',
+          '1363705980261855232',
         ],
         channels: {
           // #hololive-diva
