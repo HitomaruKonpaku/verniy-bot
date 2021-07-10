@@ -53,13 +53,24 @@ export class TwitterDataService {
           // Hoshimachi Suisei
           // @suisei_hosimati
           '975275878673408001',
-          // AZKi
-          // @AZKi_VDiVA
-          '1062499145267605504',
         ],
         channels: {
           // #hololive-jp-0
           '790548156420194305': {},
+        },
+      },
+      {
+        follows: [
+          // AZKi
+          // @AZKi_VDiVA
+          '1062499145267605504',
+          // IRyS
+          // @irys_en
+          '1062499145267605504',
+        ],
+        channels: {
+          // #hololive-diva
+          '863479216761733130': {},
         },
       },
       {
