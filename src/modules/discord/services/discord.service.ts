@@ -27,11 +27,19 @@ export class DiscordService implements OnModuleInit {
   }
 
   public async sendChannel(id: string, options: MessageOptions) {
-    const channel = await this.client.channels.fetch(id) as TextChannel
+    let channel: TextChannel
+    try {
+      channel = await this.client.channels.fetch(id) as TextChannel
+    } catch (error) {
+      this._logger.error(`Unable to fetch channel ${id}`)
+      this._logger.error(error.message)
+    }
+
     if (!channel) {
       this._logger.warn(`Channel ${id} not found!`)
       return
     }
+
     try {
       await channel.send(options)
       this._logger.log(`Message was sent to [${channel.guild.name}][${channel.name}]`)
