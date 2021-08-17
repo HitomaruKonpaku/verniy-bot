@@ -41,6 +41,17 @@ export class TwitterDataService {
       },
       {
         follows: [
+          // A-chan
+          // @achan_UGA
+          '1064352899705143297',
+        ],
+        channels: {
+          // #hololive-mane
+          '877067509247914044': {},
+        },
+      },
+      {
+        follows: [
           // Tokino Sora
           // @tokino_sora
           '880317891249188864',
@@ -221,8 +232,31 @@ export class TwitterDataService {
           '1283656034305769472',
         ],
         channels: {
-          // #hololive-en
+          // #hololive-en-1
           '790549123483828274': {},
+        },
+      },
+      {
+        follows: [
+          // Tsukumo Sana
+          // @tsukumosana
+          '1409819816194576394',
+          // Ceres Fauna
+          // @ceresfauna
+          '1409784760805650436',
+          // Ouro Kronii
+          // @ourokronii
+          '1409817096523968513',
+          // Nanashi Mumei
+          // @nanashimumei_en
+          '1409817941705515015',
+          // Hakos Baelz
+          // @hakosbaelz
+          '1409783149211443200',
+        ],
+        channels: {
+          // #hololive-en-2
+          '877065331284267009': {},
         },
       },
       // {
