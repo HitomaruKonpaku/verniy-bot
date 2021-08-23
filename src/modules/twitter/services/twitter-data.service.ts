@@ -44,6 +44,9 @@ export class TwitterDataService {
           // A-chan
           // @achan_UGA
           '1064352899705143297',
+          // Omegaα
+          // @omegaalpha_en
+          '1397148959798226945',
         ],
         channels: {
           // #hololive-mane
