@@ -1,0 +1,59 @@
+{
+  "discord": {},
+  "twitter": {
+    "active": true,
+    "tweet": {
+      "active": true,
+      "follows": [
+        {
+          "users": [
+            "HitomaruKonpaku"
+          ],
+          "channels": [
+            {
+              "_comment": "#test",
+              "id": "892862742388691004"
+            }
+          ]
+        }
+      ]
+    },
+    "profile": {
+      "active": true,
+      "interval": 60000,
+      "users": [
+        {
+          "username": "HitomaruKonpaku"
+        },
+        {
+          "username": "KanColle_STAFF",
+          "interval": 10000
+        }
+      ],
+      "follows": [
+        {
+          "users": [
+            "HitomaruKonpaku"
+          ],
+          "channels": [
+            {
+              "_comment": "#test",
+              "id": "892862742388691004"
+            }
+          ]
+        },
+        {
+          "users": [
+            "KanColle_STAFF"
+          ],
+          "channels": [
+            {
+              "_comment": "#test",
+              "id": "892862742388691004"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
