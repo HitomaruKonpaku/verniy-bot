@@ -132,6 +132,10 @@ class Twitter {
   }
 
   private onTweet(tweet: Twit.Twitter.Status) {
+    if (!this.users.some((v) => v.id_str === tweet.user.id_str)) {
+      return
+    }
+
     const tweetUrl = TwitterUtil.getTweetUrl(tweet)
     this.logger.debug(`onTweet: ${tweetUrl}`)
 
