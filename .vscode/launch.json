@@ -5,15 +5,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach",
-      "port": 9229,
-      "request": "attach",
       "type": "pwa-node",
-      "restart": true,
-      "timeout": 100000,
+      "request": "launch",
+      "name": "Worker",
+      "program": "${workspaceFolder}/src/index.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outputCapture": "std",
+      "outFiles": [
+        "${workspaceFolder}/dist/**/*.js"
+      ],
       "skipFiles": [
         "<node_internals>/**"
-      ],
-    }
+      ]
+    },
   ]
 }
