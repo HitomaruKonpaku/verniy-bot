@@ -183,7 +183,7 @@ class Twitter {
         return
       }
       this.logger.info(`Tweet: ${tweetUrl}`)
-      this.logger.info(`Channel ids: ${channelIds.join(',')}`)
+      this.logger.debug(`Channel ids: ${channelIds.join(',')}`)
       channelIds.forEach((channelId) => {
         discord.sendToChannel(channelId, { content: tweetUrl })
       })

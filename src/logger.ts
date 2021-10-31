@@ -24,7 +24,7 @@ const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console({
-      level: 'silly',
+      level: 'verbose',
       format: format.combine(
         format.colorize(),
         getPrintFormat(),
