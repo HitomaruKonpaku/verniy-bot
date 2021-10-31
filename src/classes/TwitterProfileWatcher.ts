@@ -19,10 +19,10 @@ export class TwitterProfileWatcher extends EventEmitter {
   public watch(users: ConfigTwitterProfileUser[]) {
     // eslint-disable-next-line max-len
     const lookupUsers = users?.filter((user) => !user.interval || user.interval >= TwitterUtil.getProfileDefaultInterval()) || []
-    this.logger.info(`Lookup users ${JSON.stringify(lookupUsers)}`)
+    this.logger.info(`Lookup users ${lookupUsers.map((v) => v.username).join(',')}`)
     // eslint-disable-next-line max-len
     const showUsers = users?.filter((user) => !lookupUsers.some((v) => v.username === user.username)) || []
-    this.logger.info(`Show user ${JSON.stringify(showUsers)}`)
+    this.logger.info(`Show users ${showUsers.map((v) => `${v.username}@${v.interval}`).join(',')}`)
 
     const lookupChunks = Util.splitArrayIntoChunk(lookupUsers, TWITTER_API_LIST_SIZE)
     lookupChunks.forEach((chunk) => this.runLookupUsers(chunk))
@@ -31,7 +31,7 @@ export class TwitterProfileWatcher extends EventEmitter {
 
   private async runLookupUsers(users: ConfigTwitterProfileUser[]) {
     try {
-      this.logger.debug(`Run lookup users ${JSON.stringify(users)}`)
+      this.logger.debug(`Run lookup users ${users.map((v) => v.username).join(',')}`)
       const data = await twitter.getUsersLookup(users.map((v) => v.username)) as Twit.Twitter.User[]
       data.forEach((v) => this.checkUserProfileUpdate(v))
     } catch (error) {
@@ -42,7 +42,7 @@ export class TwitterProfileWatcher extends EventEmitter {
 
   private async runShowUser(user: ConfigTwitterProfileUser) {
     try {
-      this.logger.debug(`Run show user ${JSON.stringify(user)}`)
+      this.logger.debug(`Run show user ${user.username}@${user.interval}`)
       const data = await twitter.getUsersShow(user.username) as Twit.Twitter.User
       this.checkUserProfileUpdate(data)
     } catch (error) {
