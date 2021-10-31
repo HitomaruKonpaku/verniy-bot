@@ -59,7 +59,7 @@ class Discord {
       this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}#[${channel.name}]`)
       return message
     } catch (error) {
-      this.logger.error(error.message)
+      this.logger.error(error.message, { channelId })
     }
     return null
   }
