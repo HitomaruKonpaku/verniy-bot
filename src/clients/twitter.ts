@@ -132,6 +132,9 @@ class Twitter {
   }
 
   private onTweet(tweet: Twit.Twitter.Status) {
+    const tweetUrl = TwitterUtil.getTweetUrl(tweet)
+    this.logger.debug(`onTweet: ${tweetUrl}`)
+
     const getChannelIds = () => {
       try {
         const channelIds = []
@@ -170,13 +173,11 @@ class Twitter {
       }
     }
 
-    this.logger.debug('onTweet')
     try {
       const channelIds = getChannelIds()
       if (!channelIds.length) {
         return
       }
-      const tweetUrl = TwitterUtil.getTweetUrl(tweet)
       this.logger.info(`Tweet: ${tweetUrl}`)
       this.logger.info(`Channel ids: ${channelIds.join(',')}`)
       channelIds.forEach((channelId) => {
