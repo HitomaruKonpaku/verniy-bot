@@ -212,25 +212,25 @@ class Twitter {
           .replace('_normal', '')
         const oldProfileImageUrl = oldUser.profile_image_url_https
           .replace('_normal', '')
-        this.logger.info(`❌ profile image: ${oldProfileImageUrl}`)
-        this.logger.info(`🆕 profile image: ${newProfileImageUrl}`)
+        this.logger.info(`Old profile image: ${oldProfileImageUrl}`)
+        this.logger.info(`New profile image: ${newProfileImageUrl}`)
         messageOptionsList.push({
           content: [
             baseContent,
-            `❌ profile image: <${oldProfileImageUrl}>`,
-            `🆕 profile image: <${newProfileImageUrl}>`,
+            `Old profile image: <${oldProfileImageUrl}>`,
+            `New profile image: <${newProfileImageUrl}>`,
           ].join('\n'),
           files: [newProfileImageUrl],
         })
       }
       if (newUser.profile_banner_url !== oldUser.profile_banner_url) {
-        this.logger.info(`❌ profile banner: ${oldUser.profile_banner_url}`)
-        this.logger.info(`🆕 profile banner: ${newUser.profile_banner_url}`)
+        this.logger.info(`Old profile banner: ${oldUser.profile_banner_url}`)
+        this.logger.info(`New profile banner: ${newUser.profile_banner_url}`)
         messageOptionsList.push({
           content: [
             baseContent,
-            `❌ profile banner: <${oldUser.profile_banner_url}>`,
-            `🆕 profile banner: ${newUser.profile_banner_url}`,
+            `Old profile banner: <${oldUser.profile_banner_url}>`,
+            `New profile banner: ${newUser.profile_banner_url}`,
           ].join('\n'),
         })
       }
