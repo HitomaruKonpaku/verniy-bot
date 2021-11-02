@@ -30,25 +30,29 @@ export class TwitterProfileWatcher extends EventEmitter {
   }
 
   private async runLookupUsers(users: ConfigTwitterProfileUser[]) {
+    const interval = TwitterUtil.getProfileDefaultInterval()
     try {
-      this.logger.debug(`Run lookup users ${users.map((v) => v.username).join(',')}`)
+      this.logger.debug('Run lookup users', { length: users.length, users: users.map((v) => v.username) })
       const data = await twitter.getUsersLookup(users.map((v) => v.username)) as Twit.Twitter.User[]
       data.forEach((v) => this.checkUserProfileUpdate(v))
     } catch (error) {
       this.logger.error(error.message)
     }
-    setTimeout(() => this.runLookupUsers(users), TwitterUtil.getProfileDefaultInterval())
+    this.logger.debug(`New lookup users in ${interval}ms`)
+    setTimeout(() => this.runLookupUsers(users), interval)
   }
 
   private async runShowUser(user: ConfigTwitterProfileUser) {
+    const interval = Number(user.interval)
     try {
-      this.logger.debug(`Run show user ${user.username}@${user.interval}`)
+      this.logger.debug('Run show user', { user: user.username })
       const data = await twitter.getUsersShow(user.username) as Twit.Twitter.User
       this.checkUserProfileUpdate(data)
     } catch (error) {
       this.logger.error(error.message)
     }
-    setTimeout(() => this.runShowUser(user), Number(user.interval))
+    this.logger.debug(`New show user ${user.username} in ${interval}ms`)
+    setTimeout(() => this.runShowUser(user), interval)
   }
 
   private checkUserProfileUpdate(newUser: Twit.Twitter.User) {
