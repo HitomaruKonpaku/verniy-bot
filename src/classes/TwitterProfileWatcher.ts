@@ -17,12 +17,13 @@ export class TwitterProfileWatcher extends EventEmitter {
   }
 
   public watch(users: ConfigTwitterProfileUser[]) {
+    const defaultRefreshInterval = TwitterUtil.getProfileDefaultInterval()
     // eslint-disable-next-line max-len
-    const lookupUsers = users?.filter((user) => !user.interval || user.interval >= TwitterUtil.getProfileDefaultInterval()) || []
-    this.logger.info(`Lookup users ${lookupUsers.map((v) => v.username).join(',')}`)
+    const lookupUsers = users?.filter((user) => !user.interval || user.interval >= defaultRefreshInterval) || []
+    this.logger.info(`Lookup ${lookupUsers.length} users ${lookupUsers.map((v) => v.username).join(', ')}`)
     // eslint-disable-next-line max-len
     const showUsers = users?.filter((user) => !lookupUsers.some((v) => v.username === user.username)) || []
-    this.logger.info(`Show users ${showUsers.map((v) => `${v.username}@${v.interval}`).join(',')}`)
+    this.logger.info(`Show ${showUsers.length} users ${showUsers.map((v) => `${v.username} @ ${v.interval}`).join(', ')}`)
 
     const lookupChunks = Util.splitArrayIntoChunk(lookupUsers, TWITTER_API_LIST_SIZE)
     lookupChunks.forEach((chunk) => this.runLookupUsers(chunk))
