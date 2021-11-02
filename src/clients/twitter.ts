@@ -10,6 +10,8 @@ import { Util } from '../utils/Util'
 import { discord } from './discord'
 
 class Twitter {
+  private readonly TWEET_COUNT_LOG_INTERVAL = 30E3
+
   private logger: winston.Logger
   private twit: Twit
   private users: Twit.Twitter.User[]
@@ -252,7 +254,7 @@ class Twitter {
 
   private logTweetCount() {
     this.logger.debug(`Found ${this.tweetCount} tweets`)
-    setTimeout(() => this.logTweetCount(), 10000)
+    setTimeout(() => this.logTweetCount(), this.TWEET_COUNT_LOG_INTERVAL)
   }
 }
 
