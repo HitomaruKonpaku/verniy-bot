@@ -14,6 +14,8 @@ class Twitter {
   private twit: Twit
   private users: Twit.Twitter.User[]
 
+  private tweetCount = 0
+
   constructor() {
     this.logger = baseLogger.child({ label: '[Twitter]' })
     this.users = []
@@ -84,6 +86,7 @@ class Twitter {
     const config = TwitterUtil.getConfig()
     if (config?.tweet?.active) {
       await this.watchTweet()
+      this.logTweetCount()
     }
     if (config?.profile?.active) {
       await this.watchProfile()
@@ -132,6 +135,8 @@ class Twitter {
   }
 
   private onTweet(tweet: Twit.Twitter.Status) {
+    // eslint-disable-next-line no-plusplus
+    this.tweetCount++
     if (!this.users.some((v) => v.id_str === tweet.user.id_str)) {
       return
     }
@@ -243,6 +248,11 @@ class Twitter {
     } catch (error) {
       this.logger.error(error.message)
     }
+  }
+
+  private logTweetCount() {
+    this.logger.debug(`Found ${this.tweetCount} tweets`)
+    setTimeout(() => this.logTweetCount(), 10000)
   }
 }
 
