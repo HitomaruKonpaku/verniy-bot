@@ -56,7 +56,7 @@ class Discord {
         ? await this.client.guilds.fetch(channel.guildId)
         : null
       const message = await channel.send(options)
-      this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}#[${channel.name}]`)
+      this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}#[${channel.name}] (${channelId})`)
       return message
     } catch (error) {
       this.logger.error(error.message, { channelId })
