@@ -145,47 +145,8 @@ class Twitter {
 
     const tweetUrl = TwitterUtil.getTweetUrl(tweet)
     this.logger.debug(`onTweet: ${tweetUrl}`)
-
-    const getChannelIds = () => {
-      try {
-        const channelIds = []
-        const config = TwitterUtil.getTweetConfig()
-        config.follows
-          .filter((v) => v.users?.includes(tweet.user.screen_name))
-          .forEach((follow) => {
-            follow.channels?.forEach((channel) => {
-              // eslint-disable-next-line no-nested-ternary
-              const isSkipReply = channel.skipReply !== undefined
-                ? !!channel.skipReply
-                : follow.skipReply !== undefined
-                  ? !!follow.skipReply
-                  : false
-              if (isSkipReply
-                && tweet.in_reply_to_screen_name
-                && tweet.in_reply_to_screen_name !== tweet.user.screen_name) {
-                return
-              }
-              // eslint-disable-next-line no-nested-ternary
-              const isSkipRetweet = channel.skipRetweet !== undefined
-                ? !!channel.skipRetweet
-                : follow.skipRetweet !== undefined
-                  ? !!follow.skipRetweet
-                  : false
-              if (isSkipRetweet && tweet.retweeted_status) {
-                return
-              }
-              channelIds.push(channel.id)
-            })
-          })
-        return channelIds
-      } catch (error) {
-        this.logger.error(error.message)
-        return []
-      }
-    }
-
     try {
-      const channelIds = getChannelIds()
+      const channelIds = this.getTweetReceiverChannelIds(tweet)
       if (!channelIds.length) {
         return
       }
@@ -197,6 +158,58 @@ class Twitter {
     } catch (error) {
       this.logger.error(error.message)
     }
+  }
+
+  private getTweetReceiverChannelIds(tweet: Twit.Twitter.Status) {
+    try {
+      const channelIds = []
+      const config = TwitterUtil.getTweetConfig()
+      config.follows
+        ?.filter((v) => v.users?.includes(tweet.user.screen_name))
+        ?.forEach((follow) => follow.channels?.forEach((channel) => {
+          // eslint-disable-next-line no-nested-ternary
+          const isSkipReply = channel.skipReply !== undefined
+            ? !!channel.skipReply
+            : follow.skipReply !== undefined
+              ? !!follow.skipReply
+              : false
+          // eslint-disable-next-line max-len
+          if (isSkipReply && tweet.in_reply_to_screen_name && tweet.in_reply_to_screen_name !== tweet.user.screen_name) {
+            return
+          }
+          // eslint-disable-next-line no-nested-ternary
+          const isSkipRetweet = channel.skipRetweet !== undefined
+            ? !!channel.skipRetweet
+            : follow.skipRetweet !== undefined
+              ? !!follow.skipRetweet
+              : false
+          if (isSkipRetweet && tweet.retweeted_status) {
+            return
+          }
+          if (follow.filters?.length) {
+            const isMatch = follow.filters.some((filter) => {
+              if (!filter || typeof filter !== 'object' || Array.isArray(filter) || !Object.keys(filter).length) {
+                return true
+              }
+              const checks = [
+                filter.urls?.length
+                  // eslint-disable-next-line max-len
+                  ? tweet.entities.urls.some((entity) => filter.urls.some((v) => entity.expanded_url.includes(v)))
+                  : true,
+              ]
+              return checks.every((v) => v)
+            })
+            if (!isMatch) {
+              return
+            }
+          }
+          channelIds.push(channel.id)
+        }))
+      return channelIds
+    } catch (error) {
+      this.logger.error(error.message)
+    }
+    return []
   }
 
   private onProfileUpdate(newUser: Twit.Twitter.User, oldUser: Twit.Twitter.User) {
