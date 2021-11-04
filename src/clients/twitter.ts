@@ -161,8 +161,8 @@ class Twitter {
   }
 
   private getTweetReceiverChannelIds(tweet: Twit.Twitter.Status) {
+    const channelIds = []
     try {
-      const channelIds = []
       const config = TwitterUtil.getTweetConfig()
       config.follows
         ?.filter((v) => v.users?.includes(tweet.user.screen_name))
@@ -187,14 +187,20 @@ class Twitter {
             return
           }
           if (follow.filters?.length) {
+            const extendedTweet = (tweet as any).extended_tweet
+            const text = (extendedTweet?.full_text || tweet.text) as string
+            const entities = (extendedTweet || tweet).entities as Twit.Twitter.Entities
             const isMatch = follow.filters.some((filter) => {
               if (!filter || typeof filter !== 'object' || Array.isArray(filter) || !Object.keys(filter).length) {
                 return true
               }
               const checks = [
+                filter.keywords?.length
+                  ? filter.keywords.some((keyword: string) => text.includes(keyword))
+                  : true,
                 filter.urls?.length
                   // eslint-disable-next-line max-len
-                  ? tweet.entities.urls.some((entity) => filter.urls.some((v) => entity.expanded_url.includes(v)))
+                  ? filter.urls.some((url: string) => entities.urls.some((v) => v.expanded_url.includes(url)))
                   : true,
               ]
               return checks.every((v) => v)
@@ -209,7 +215,7 @@ class Twitter {
     } catch (error) {
       this.logger.error(error.message)
     }
-    return []
+    return channelIds
   }
 
   private onProfileUpdate(newUser: Twit.Twitter.User, oldUser: Twit.Twitter.User) {
