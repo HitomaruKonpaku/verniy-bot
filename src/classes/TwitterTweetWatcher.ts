@@ -13,13 +13,14 @@ export class TwitterTweetWatcher extends EventEmitter {
     this.twit = twit
   }
 
-  public watch(userIds: string[]) {
-    this.logger.info(`Id count: ${userIds?.length || 0}`)
-    if (!userIds?.length) {
+  public watch(users: Twit.Twitter.User[]) {
+    this.logger.info(`User count: ${users?.length || 0}`)
+    if (!users?.length) {
       return
     }
-
     this.logger.info('Watching...')
+    this.logger.info(`Usernames: ${users.map((v) => v.screen_name).join(',')}`)
+    const userIds = users.map((v) => v.id_str)
     const streamPath = 'statuses/filter'
     const streamParams = { follow: userIds.join(',') }
     this.logger.info(`Stream path: ${streamPath}`)

@@ -85,10 +85,10 @@ class Twitter {
   private async watchTweet() {
     this.logger.silly('watchTweet')
     await this.initTwitterUsers()
-    const userIds = Object.keys(this.users)
+    const users = Object.values(this.users)
     const watcher = new TwitterTweetWatcher(this.twit)
     watcher.on('tweet', (tweet) => this.onTweet(tweet))
-    watcher.watch(userIds)
+    watcher.watch(users)
   }
 
   private async watchProfile() {
