@@ -61,11 +61,10 @@ export class TwitterProfileWatcher extends EventEmitter {
       return
     }
     const oldUser = twitter.getUser(newUser.id_str)
+    twitter.updateUser(newUser)
     if (!oldUser) {
-      twitter.addUser(newUser)
       return
     }
-    twitter.updateUser(newUser)
     const detectConditions = [
       newUser.profile_image_url_https !== oldUser.profile_image_url_https,
       newUser.profile_banner_url !== oldUser.profile_banner_url,

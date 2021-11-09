@@ -14,13 +14,13 @@ class Twitter {
 
   private logger: winston.Logger
   private twit: Twit
-  private users: Twit.Twitter.User[]
+  private users: Record<string, Twit.Twitter.User>
 
   private tweetCount = 0
 
   constructor() {
     this.logger = baseLogger.child({ label: '[Twitter]' })
-    this.users = []
+    this.users = {}
   }
 
   public start() {
@@ -45,25 +45,12 @@ class Twitter {
     return data
   }
 
-  public existUser(id: string) {
-    return !!this.getUser(id)
-  }
-
   public getUser(id: string) {
-    return this.users.find((user) => user.id_str === id)
-  }
-
-  public addUser(user: Twit.Twitter.User) {
-    this.users.push(user)
+    return this.users[id]
   }
 
   public updateUser(user: Twit.Twitter.User) {
-    const index = this.users.findIndex((v) => v.id_str === user.id_str)
-    if (index < 0) {
-      this.addUser(user)
-      return
-    }
-    this.users[index] = user
+    this.users[user.id_str] = user
   }
 
   private initTwit() {
@@ -98,7 +85,7 @@ class Twitter {
   private async watchTweet() {
     this.logger.silly('watchTweet')
     await this.initTwitterUsers()
-    const userIds = this.users.map((v) => v.id_str)
+    const userIds = Object.keys(this.users)
     const watcher = new TwitterTweetWatcher(this.twit)
     watcher.on('tweet', (tweet) => this.onTweet(tweet))
     watcher.watch(userIds)
@@ -139,7 +126,7 @@ class Twitter {
   private onTweet(tweet: Twit.Twitter.Status) {
     // eslint-disable-next-line no-plusplus
     this.tweetCount++
-    if (!this.users.some((v) => v.id_str === tweet.user.id_str)) {
+    if (!this.getUser(tweet.user.id_str)) {
       return
     }
 
