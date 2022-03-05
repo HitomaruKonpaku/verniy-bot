@@ -29,7 +29,7 @@ class Discord {
   public async getChannel<T extends Channel>(id: string) {
     this.logger.debug(`Get channel: ${id}`)
     try {
-      const channel = await this.client.channels.fetch(id) as T
+      const channel = await this.client.channels.fetch(id) as any as T
       if (channel instanceof TextChannel) {
         this.logger.debug('TextChannel', { id, name: channel.name })
       } else {
