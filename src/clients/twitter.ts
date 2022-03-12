@@ -138,9 +138,16 @@ class Twitter {
         return
       }
       this.logger.info(`Tweet: ${tweetUrl}`)
+      const contentList = [tweetUrl]
+      if (tweet.in_reply_to_screen_name) {
+        const inReplyToTweetUrl = TwitterUtil.getInReplyToTweetUrl(tweet)
+        this.logger.info(`InReplyToTweet: ${inReplyToTweetUrl}`)
+        contentList.push(` in reply to ${inReplyToTweetUrl}`)
+      }
+      const content = contentList.filter((v) => v).join('').trim()
       this.logger.debug(`Channel ids: ${channelIds.join(',')}`)
       channelIds.forEach((channelId) => {
-        discord.sendToChannel(channelId, { content: tweetUrl })
+        discord.sendToChannel(channelId, { content })
       })
     } catch (error) {
       this.logger.error(error.message)
