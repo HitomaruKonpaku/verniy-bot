@@ -230,37 +230,43 @@ class Twitter {
       const messageOptionsList: MessageOptions[] = []
 
       if (newUser.profile_image_url_https !== oldUser.profile_image_url_https) {
-        const newProfileImageUrl = newUser.profile_image_url_https
-          .replace('_normal', '')
-        const oldProfileImageUrl = oldUser.profile_image_url_https
-          .replace('_normal', '')
-        this.logger.info(`Old profile image: ${oldProfileImageUrl}`)
-        this.logger.info(`New profile image: ${newProfileImageUrl}`)
-        messageOptionsList.push({
-          content: [
-            baseContent,
-            `Old profile image: <${oldProfileImageUrl}>`,
-            `New profile image: <${newProfileImageUrl}>`,
-          ].join('\n'),
-          files: [newProfileImageUrl],
-        })
+        try {
+          const newProfileImageUrl = newUser.profile_image_url_https.replace('_normal', '')
+          const oldProfileImageUrl = oldUser.profile_image_url_https.replace('_normal', '')
+          this.logger.info(`Old profile image: ${oldProfileImageUrl}`)
+          this.logger.info(`New profile image: ${newProfileImageUrl}`)
+          messageOptionsList.push({
+            content: [
+              baseContent,
+              `Old profile image: <${oldProfileImageUrl}>`,
+              `New profile image: <${newProfileImageUrl}>`,
+            ].join('\n'),
+            files: [newProfileImageUrl],
+          })
+        } catch (error) {
+          this.logger.error(`onProfileUpdate#newProfileImage: ${error.message}`)
+        }
       }
 
       if (newUser.profile_banner_url !== oldUser.profile_banner_url) {
-        this.logger.info(`Old profile banner: ${oldUser.profile_banner_url}`)
-        this.logger.info(`New profile banner: ${newUser.profile_banner_url}`)
-        const fileName = `${new URL(newUser.profile_banner_url).pathname.split('/').reverse()[0]}.jpg`
-        messageOptionsList.push({
-          content: [
-            baseContent,
-            `Old profile banner: <${oldUser.profile_banner_url}>`,
-            `New profile banner: <${newUser.profile_banner_url}>`,
-          ].join('\n'),
-          files: [{
-            attachment: newUser.profile_banner_url,
-            name: fileName,
-          }],
-        })
+        try {
+          this.logger.info(`Old profile banner: ${oldUser.profile_banner_url}`)
+          this.logger.info(`New profile banner: ${newUser.profile_banner_url}`)
+          const fileName = `${new URL(newUser.profile_banner_url).pathname.split('/').reverse()[0]}.jpg`
+          messageOptionsList.push({
+            content: [
+              baseContent,
+              `Old profile banner: <${oldUser.profile_banner_url}>`,
+              `New profile banner: <${newUser.profile_banner_url}>`,
+            ].join('\n'),
+            files: [{
+              attachment: newUser.profile_banner_url,
+              name: fileName,
+            }],
+          })
+        } catch (error) {
+          this.logger.error(`onProfileUpdate#newProfileBanner: ${error.message}`)
+        }
       }
 
       this.logger.info(`Channel ids: ${channelIds.join(',')}`)
