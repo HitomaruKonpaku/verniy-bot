@@ -225,8 +225,10 @@ class Twitter {
       if (!channelIds.length) {
         return
       }
+
       const baseContent = `**@${newUser.screen_name}**`
       const messageOptionsList: MessageOptions[] = []
+
       if (newUser.profile_image_url_https !== oldUser.profile_image_url_https) {
         const newProfileImageUrl = newUser.profile_image_url_https
           .replace('_normal', '')
@@ -243,17 +245,24 @@ class Twitter {
           files: [newProfileImageUrl],
         })
       }
+
       if (newUser.profile_banner_url !== oldUser.profile_banner_url) {
         this.logger.info(`Old profile banner: ${oldUser.profile_banner_url}`)
         this.logger.info(`New profile banner: ${newUser.profile_banner_url}`)
+        const fileName = `${new URL(newUser.profile_banner_url).pathname.split('/').reverse()[0]}.jpg`
         messageOptionsList.push({
           content: [
             baseContent,
             `Old profile banner: <${oldUser.profile_banner_url}>`,
-            `New profile banner: ${newUser.profile_banner_url}`,
+            `New profile banner: <${newUser.profile_banner_url}>`,
           ].join('\n'),
+          files: [{
+            attachment: newUser.profile_banner_url,
+            name: fileName,
+          }],
         })
       }
+
       this.logger.info(`Channel ids: ${channelIds.join(',')}`)
       channelIds.forEach((channelId) => {
         messageOptionsList.forEach((messageOptions) => {
