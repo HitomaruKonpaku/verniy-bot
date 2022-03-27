@@ -63,7 +63,7 @@ class Twitter {
         access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
       })
     } catch (error) {
-      this.logger.error(error.message)
+      this.logger.error(`initTwit: ${error.message}`)
     }
   }
 
@@ -118,7 +118,7 @@ class Twitter {
         })
       })
     } catch (error) {
-      this.logger.error(error.message)
+      this.logger.error(`initTwitterUsers: ${error.message}`)
       await this.initTwitterUsers()
     }
   }
@@ -150,7 +150,7 @@ class Twitter {
         discord.sendToChannel(channelId, { content })
       })
     } catch (error) {
-      this.logger.error(error.message)
+      this.logger.error(`onTweet: ${error.message}`)
     }
   }
 
@@ -207,7 +207,7 @@ class Twitter {
         }))
       return channelIds
     } catch (error) {
-      this.logger.error(error.message)
+      this.logger.error(`getTweetReceiverChannelIds: ${error.message}`)
     }
     return channelIds
   }
@@ -276,7 +276,7 @@ class Twitter {
         })
       })
     } catch (error) {
-      this.logger.error(error.message)
+      this.logger.error(`onProfileUpdate: ${error.message}`)
     }
   }
 
