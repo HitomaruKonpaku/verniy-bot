@@ -30,8 +30,10 @@ class Db {
         DiscordChannel,
       ],
       synchronize: true,
-      logging: process.env.NODE_ENV !== 'production',
-      logger: new WinstonAdaptor(this.logger, 'all'),
+      logger: new WinstonAdaptor(
+        this.logger,
+        process.env.NODE_ENV !== 'production' ? 'all' : ['schema', 'error', 'warn'],
+      ),
     })
   }
 }
