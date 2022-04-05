@@ -2,10 +2,12 @@ import {
   Channel, Client, MessageOptions, MessagePayload, TextChannel
 } from 'discord.js'
 import winston from 'winston'
-import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'
-import { logger as baseLogger } from '../logger'
-import { TwitterUtil } from '../utils/TwitterUtil'
-import { twitter } from './twitter'
+import { DISCORD_CLIENT_OPTIONS } from '../../constants/discord.constant'
+import { logger as baseLogger } from '../../logger'
+import { configManager } from '../config/ConfigManager'
+import { discordChannelController } from '../database/controllers/DiscordChannelController'
+import { discordGuildController } from '../database/controllers/DiscordGuildController'
+import { twitter } from '../twitter/Twitter'
 
 class Discord {
   private logger: winston.Logger
@@ -57,6 +59,21 @@ class Discord {
         : null
       const message = await channel.send(options)
       this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}#[${channel.name}] (${channelId})`)
+
+      discordChannelController.update({
+        id: channel.id,
+        createdAt: new Date(channel.createdTimestamp),
+        guildId: channel.guildId,
+        name: channel.name,
+      })
+      if (guild) {
+        discordGuildController.update({
+          id: guild.id,
+          createdAt: new Date(guild.createdTimestamp),
+          name: guild.name,
+        })
+      }
+
       return message
     } catch (error) {
       this.logger.error(error.message, { channelId })
@@ -95,9 +112,10 @@ class Discord {
       this.logger.info(`${user.tag} ready!`)
     })
     client.once('ready', () => {
-      if (TwitterUtil.getConfig().active) {
-        twitter.start()
+      if (!configManager.twitterActive) {
+        return
       }
+      twitter.start()
     })
   }
 }

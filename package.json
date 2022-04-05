@@ -20,12 +20,17 @@
   "homepage": "https://github.com/HitomaruKonpaku/verniy-bot#readme",
   "dependencies": {
     "discord.js": "^13.6.0",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.0",
+    "js-yaml": "^4.1.0",
+    "sqlite3": "^5.0.2",
     "twit": "^2.2.11",
-    "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.5"
+    "typeorm": "^0.3.5",
+    "typeorm-logger-adaptor": "^1.1.0",
+    "winston": "^3.7.2",
+    "winston-daily-rotate-file": "^4.6.1"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.5",
     "@types/node": "^16.11.6",
     "@types/twit": "^2.2.30",
     "@typescript-eslint/eslint-plugin": "^5.2.0",

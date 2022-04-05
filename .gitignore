@@ -1,4 +1,5 @@
 node_modules/
+db/
 dist/
 logs/
 .idea/
@@ -7,3 +8,4 @@ logs/
 
 .env
 config.json
+config.yaml

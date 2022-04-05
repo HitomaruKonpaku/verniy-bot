@@ -1,19 +1,7 @@
 import Twit from 'twit'
-import { Util } from './Util'
+import { configManager } from '../modules/config/ConfigManager'
 
 export class TwitterUtil {
-  public static getConfig() {
-    return Util.getConfig().twitter || {}
-  }
-
-  public static getTweetConfig() {
-    return TwitterUtil.getConfig().tweet || {}
-  }
-
-  public static getProfileConfig() {
-    return TwitterUtil.getConfig().profile || {}
-  }
-
   public static getTweetUrl(tweet: Twit.Twitter.Status): string {
     // Fix retweet not show embed by discord
     const host = tweet.retweeted_status && tweet.text?.startsWith?.('RT @')
@@ -29,8 +17,8 @@ export class TwitterUtil {
     return url
   }
 
-  public static getProfileDefaultInterval(): number {
-    const interval = Number(TwitterUtil.getProfileConfig().interval) || 30000
+  public static getProfileRefreshInterval(): number {
+    const interval = Number(configManager.twitterProfileInterval) || 60000
     return interval
   }
 }

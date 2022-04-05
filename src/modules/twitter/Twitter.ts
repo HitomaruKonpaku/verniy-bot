@@ -1,13 +1,17 @@
 import { MessageOptions } from 'discord.js'
 import Twit from 'twit'
 import winston from 'winston'
-import { TwitterProfileWatcher } from '../classes/TwitterProfileWatcher'
-import { TwitterTweetWatcher } from '../classes/TwitterTweetWatcher'
-import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
-import { logger as baseLogger } from '../logger'
-import { TwitterUtil } from '../utils/TwitterUtil'
-import { Util } from '../utils/Util'
-import { discord } from './discord'
+import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
+import { logger as baseLogger } from '../../logger'
+import { TwitterUtil } from '../../utils/TwitterUtil'
+import { Util } from '../../utils/Util'
+import { configManager } from '../config/ConfigManager'
+import { twitterDiscordProfileController } from '../database/controllers/TwitterDiscordProfileController'
+import { twitterDiscordTweetController } from '../database/controllers/TwitterDiscordTweetController'
+import { twitterUserController } from '../database/controllers/TwitterUserController'
+import { discord } from '../discord/Discord'
+import { TwitterProfileWatcher } from './TwitterProfileWatcher'
+import { TwitterTweetWatcher } from './TwitterTweetWatcher'
 
 class Twitter {
   private readonly TWEET_COUNT_LOG_INTERVAL = 30E3
@@ -29,20 +33,20 @@ class Twitter {
     this.initWatchers()
   }
 
-  public async getUsersLookup(usernames: string[]) {
+  public async fetchUsers(usernames: string[]) {
     const { data } = await this.twit.post(
       'users/lookup',
       { screen_name: usernames.join(',') },
     )
-    return data
+    return data as Twit.Twitter.User[]
   }
 
-  public async getUsersShow(username: string) {
+  public async fetchUser(username: string) {
     const { data } = await this.twit.get(
       'users/show',
       { screen_name: username },
     )
-    return data
+    return data as Twit.Twitter.User
   }
 
   public getUser(id: string) {
@@ -51,6 +55,14 @@ class Twitter {
 
   public updateUser(user: Twit.Twitter.User) {
     this.users[user.id_str] = user
+    twitterUserController.update({
+      id: user.id_str,
+      createdAt: new Date(user.created_at),
+      username: user.screen_name,
+      name: user.name,
+      profileImageUrl: user.profile_image_url_https?.replace?.('_normal', ''),
+      profileBannerUrl: user.profile_banner_url,
+    })
   }
 
   private initTwit() {
@@ -72,12 +84,11 @@ class Twitter {
     if (!this.twit) {
       return
     }
-    const config = TwitterUtil.getConfig()
-    if (config?.tweet?.active) {
+    if (configManager.twitterTweetActive) {
       await this.watchTweet()
       this.logTweetCount()
     }
-    if (config?.profile?.active) {
+    if (configManager.twitterProfileActive) {
       await this.watchProfile()
     }
   }
@@ -93,25 +104,18 @@ class Twitter {
 
   private async watchProfile() {
     this.logger.silly('watchProfile')
-    const config = TwitterUtil.getProfileConfig()
-    const users = config?.users || []
     const watcher = new TwitterProfileWatcher()
     watcher.on('profileUpdate', (newUser, oldUser) => this.onProfileUpdate(newUser, oldUser))
-    watcher.watch(users)
+    watcher.watch()
   }
 
   private async initTwitterUsers() {
     this.logger.silly('initTwitterUsers')
     try {
-      const config = TwitterUtil.getTweetConfig()
-      const usernameSet = Array.from(config?.follows || [])
-        .reduce((pv: Set<string>, cv: any) => {
-          Array.from(cv?.users || []).forEach((v: string) => pv.add(v))
-          return pv
-        }, new Set<string>()) as Set<string>
-      const usernameChunks = Util.splitArrayIntoChunk([...usernameSet], TWITTER_API_LIST_SIZE)
+      const usernames = await twitterDiscordTweetController.getTwitterUsernames()
+      const usernameChunks = Util.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
       // eslint-disable-next-line max-len
-      const userChunks = await Promise.all(usernameChunks.map((chunk) => this.getUsersLookup(chunk))) as Twit.Twitter.User[][]
+      const userChunks = await Promise.all(usernameChunks.map((chunk) => this.fetchUsers(chunk))) as Twit.Twitter.User[][]
       userChunks.forEach((userChunk) => {
         userChunk.forEach((user) => {
           this.updateUser(user)
@@ -119,11 +123,11 @@ class Twitter {
       })
     } catch (error) {
       this.logger.error(`initTwitterUsers: ${error.message}`)
-      await this.initTwitterUsers()
+      setTimeout(() => this.initTwitterUsers(), 10000)
     }
   }
 
-  private onTweet(tweet: Twit.Twitter.Status) {
+  private async onTweet(tweet: Twit.Twitter.Status) {
     // eslint-disable-next-line no-plusplus
     this.tweetCount++
     if (!this.getUser(tweet.user.id_str)) {
@@ -133,10 +137,11 @@ class Twitter {
     const tweetUrl = TwitterUtil.getTweetUrl(tweet)
     this.logger.debug(`onTweet: ${tweetUrl}`)
     try {
-      const channelIds = this.getTweetReceiverChannelIds(tweet)
+      const channelIds = await this.getTweetReceiverChannelIds(tweet)
       if (!channelIds.length) {
         return
       }
+
       this.logger.info(`Tweet: ${tweetUrl}`)
       const contentList = [tweetUrl]
       if (tweet.in_reply_to_screen_name) {
@@ -145,6 +150,7 @@ class Twitter {
         contentList.push(` in reply to ${inReplyToTweetUrl}`)
       }
       const content = contentList.filter((v) => v).join('').trim()
+
       this.logger.debug(`Channel ids: ${channelIds.join(',')}`)
       channelIds.forEach((channelId) => {
         discord.sendToChannel(channelId, { content })
@@ -154,74 +160,10 @@ class Twitter {
     }
   }
 
-  private getTweetReceiverChannelIds(tweet: Twit.Twitter.Status) {
-    const channelIds = []
-    try {
-      const config = TwitterUtil.getTweetConfig()
-      config.follows
-        ?.filter((v) => v.users?.includes(tweet.user.screen_name))
-        ?.forEach((follow) => follow.channels?.forEach((channel) => {
-          // eslint-disable-next-line no-nested-ternary
-          const isSkipReply = channel.skipReply !== undefined
-            ? !!channel.skipReply
-            : follow.skipReply !== undefined
-              ? !!follow.skipReply
-              : false
-          // eslint-disable-next-line max-len
-          if (isSkipReply && tweet.in_reply_to_screen_name && tweet.in_reply_to_screen_name !== tweet.user.screen_name) {
-            return
-          }
-          // eslint-disable-next-line no-nested-ternary
-          const isSkipRetweet = channel.skipRetweet !== undefined
-            ? !!channel.skipRetweet
-            : follow.skipRetweet !== undefined
-              ? !!follow.skipRetweet
-              : false
-          if (isSkipRetweet && tweet.retweeted_status) {
-            return
-          }
-          if (follow.filters?.length) {
-            const extendedTweet = (tweet as any).extended_tweet
-            const text = (extendedTweet?.full_text || tweet.text) as string
-            const entities = (extendedTweet || tweet).entities as Twit.Twitter.Entities
-            const isMatch = follow.filters.some((filter) => {
-              if (!filter || typeof filter !== 'object' || Array.isArray(filter) || !Object.keys(filter).length) {
-                return true
-              }
-              const checks = [
-                filter.keywords?.length
-                  ? filter.keywords.some((keyword: string) => text.includes(keyword))
-                  : true,
-                filter.urls?.length
-                  // eslint-disable-next-line max-len
-                  ? filter.urls.some((url: string) => entities.urls.some((v) => v.expanded_url.includes(url)))
-                  : true,
-              ]
-              return checks.every((v) => v)
-            })
-            if (!isMatch) {
-              return
-            }
-          }
-          channelIds.push(channel.id)
-        }))
-      return channelIds
-    } catch (error) {
-      this.logger.error(`getTweetReceiverChannelIds: ${error.message}`)
-    }
-    return channelIds
-  }
-
-  private onProfileUpdate(newUser: Twit.Twitter.User, oldUser: Twit.Twitter.User) {
+  private async onProfileUpdate(newUser: Twit.Twitter.User, oldUser: Twit.Twitter.User) {
     this.logger.debug('onProfileUpdate')
     try {
-      const config = TwitterUtil.getProfileConfig()
-      const channelIds = [
-        ...new Set(config.follows
-          .filter((v) => v.users?.includes(newUser.screen_name))
-          .flatMap((v) => v.channels)
-          .map((v) => v.id))
-      ] as string[]
+      const channelIds = await this.getProfileReceiverChannelIds(oldUser)
       if (!channelIds.length) {
         return
       }
@@ -278,6 +220,50 @@ class Twitter {
     } catch (error) {
       this.logger.error(`onProfileUpdate: ${error.message}`)
     }
+  }
+
+  private async getTweetReceiverChannelIds(tweet: Twit.Twitter.Status) {
+    let channelIds = []
+    try {
+      const isReply = !!tweet.in_reply_to_screen_name
+      const isRetweet = !!tweet.retweeted_status
+      const records = await twitterDiscordTweetController.getByTwitterUsername(
+        tweet.user.screen_name,
+        {
+          allowReply: isReply,
+          allowRetweet: isRetweet,
+        },
+      )
+      channelIds = records
+        .filter((record) => {
+          if (!record?.filterKeywords?.length) {
+            return true
+          }
+          const extendedTweet = (tweet as any).extended_tweet
+          const entities = (extendedTweet || tweet).entities as Twit.Twitter.Entities
+          const text = (extendedTweet?.full_text || tweet.text || '') as string
+          const urls = entities?.urls?.map?.((v) => v?.expanded_url) || []
+          const contents = [text, ...urls].filter((v) => v).map((v) => v.toLowerCase())
+          // eslint-disable-next-line max-len
+          const hasKeywords = record.filterKeywords.some((keyword) => contents.some((v) => v.includes(keyword.toLowerCase())))
+          return hasKeywords
+        })
+        .map((v) => v.discordChannelId)
+    } catch (error) {
+      this.logger.error(`getTweetReceiverChannelIds: ${error.message}`)
+    }
+    return channelIds
+  }
+
+  private async getProfileReceiverChannelIds(user: Twit.Twitter.User) {
+    let channelIds = []
+    try {
+      const records = await twitterDiscordProfileController.getByTwitterUsername(user.screen_name)
+      channelIds = records.map((v) => v.discordChannelId)
+    } catch (error) {
+      this.logger.error(`getProfileReceiverChannelIds: ${error.message}`)
+    }
+    return channelIds
   }
 
   private logTweetCount() {

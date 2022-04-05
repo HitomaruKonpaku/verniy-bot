@@ -1,0 +1,7 @@
+twitter:
+  active: true
+  tweet:
+    active: true
+  profile:
+    active: true
+    interval: 30000

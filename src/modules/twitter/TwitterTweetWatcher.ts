@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 import Twit from 'twit'
 import winston from 'winston'
-import { logger as baseLogger } from '../logger'
+import { logger as baseLogger } from '../../logger'
 
 export class TwitterTweetWatcher extends EventEmitter {
   private logger: winston.Logger
