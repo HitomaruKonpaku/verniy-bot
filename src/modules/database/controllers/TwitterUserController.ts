@@ -15,14 +15,17 @@ class TwitterUserController {
     return db.connection.getRepository(TwitterUser)
   }
 
-  public async update(data: {
-    id: string,
-    createdAt: Date,
-    username: string,
-    name?: string,
-    profileImageUrl?: string,
-    profileBannerUrl?: string,
-  }): Promise<TwitterUser> {
+  public async getOneById(id: string) {
+    const user = await this.repository.findOne({ where: { id } })
+    return user
+  }
+
+  public async getAll() {
+    const users = await this.repository.find()
+    return users
+  }
+
+  public async update(data: TwitterUser): Promise<TwitterUser> {
     if (!data) return null
     try {
       const user = await this.repository.save(data)

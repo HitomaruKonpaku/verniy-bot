@@ -15,7 +15,7 @@ class TwitterDiscordTweetController {
     return db.connection.getRepository(TwitterDiscordTweet)
   }
 
-  public async getTwitterUsernames() {
+  public async getAllTwitterUsernames() {
     const records = await this.repository
       .createQueryBuilder()
       .select('twitter_username')
@@ -26,14 +26,14 @@ class TwitterDiscordTweetController {
     return usernames
   }
 
-  public async getByTwitterUsername(
+  public async getManyByTwitterUsername(
     username: string,
     config?: { allowReply?: boolean, allowRetweet?: boolean },
   ) {
     const query = this.repository
       .createQueryBuilder()
-      .andWhere('twitter_username LIKE :username', { username })
       .andWhere('is_active = TRUE')
+      .andWhere('twitter_username LIKE :username', { username })
     if (config?.allowReply) {
       query.andWhere('allow_reply = TRUE')
     }
@@ -42,6 +42,16 @@ class TwitterDiscordTweetController {
     }
     const records = await query.getMany()
     return records
+  }
+
+  public async existTwitterUsername(username: string) {
+    const count = await this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .andWhere('twitter_username LIKE :username', { username })
+      .getCount()
+    const isExist = count > 0
+    return isExist
   }
 
   public async add(

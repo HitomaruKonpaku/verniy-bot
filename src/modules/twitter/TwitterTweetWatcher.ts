@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import Twit from 'twit'
 import winston from 'winston'
 import { logger as baseLogger } from '../../logger'
+import { twitterUserController } from '../database/controllers/TwitterUserController'
 
 export class TwitterTweetWatcher extends EventEmitter {
   private logger: winston.Logger
@@ -13,18 +14,20 @@ export class TwitterTweetWatcher extends EventEmitter {
     this.twit = twit
   }
 
-  public watch(users: Twit.Twitter.User[]) {
+  public async watch() {
+    const users = await twitterUserController.getAll()
     this.logger.info(`User count: ${users?.length || 0}`)
     if (!users?.length) {
       return
     }
+
     this.logger.info('Watching...')
-    this.logger.info(`Usernames: ${users.map((v) => v.screen_name).join(',')}`)
-    const userIds = users.map((v) => v.id_str)
+    this.logger.info('Users', { userCount: users.length, usernames: users.map((v) => v.username) })
+    const userIds = users.map((v) => v.id)
     const streamPath = 'statuses/filter'
     const streamParams = { follow: userIds.join(',') }
-    this.logger.info(`Stream path: ${streamPath}`)
-    this.logger.info(`Stream pararms: ${JSON.stringify(streamParams)}`)
+    this.logger.debug(`Stream path: ${streamPath}`)
+    this.logger.debug(`Stream pararms: ${JSON.stringify(streamParams)}`)
     const stream = this.twit.stream(streamPath, streamParams)
     this.stream = stream
 

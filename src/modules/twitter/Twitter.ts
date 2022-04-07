@@ -9,22 +9,17 @@ import { configManager } from '../config/ConfigManager'
 import { twitterDiscordProfileController } from '../database/controllers/TwitterDiscordProfileController'
 import { twitterDiscordTweetController } from '../database/controllers/TwitterDiscordTweetController'
 import { twitterUserController } from '../database/controllers/TwitterUserController'
+import { TwitterUser } from '../database/models/TwitterUser'
 import { discord } from '../discord/Discord'
 import { TwitterProfileWatcher } from './TwitterProfileWatcher'
 import { TwitterTweetWatcher } from './TwitterTweetWatcher'
 
 class Twitter {
-  private readonly TWEET_COUNT_LOG_INTERVAL = 30E3
-
   private logger: winston.Logger
   private twit: Twit
-  private users: Record<string, Twit.Twitter.User>
-
-  private tweetCount = 0
 
   constructor() {
     this.logger = baseLogger.child({ label: '[Twitter]' })
-    this.users = {}
   }
 
   public start() {
@@ -49,13 +44,15 @@ class Twitter {
     return data as Twit.Twitter.User
   }
 
-  public getUser(id: string) {
-    return this.users[id]
+  // eslint-disable-next-line class-methods-use-this
+  public async getUser(id: string) {
+    const twitterUser = await twitterUserController.getOneById(id)
+    return twitterUser
   }
 
-  public updateUser(user: Twit.Twitter.User) {
-    this.users[user.id_str] = user
-    twitterUserController.update({
+  // eslint-disable-next-line class-methods-use-this
+  public async updateUser(user: Twit.Twitter.User) {
+    const twitterUser = await twitterUserController.update({
       id: user.id_str,
       createdAt: new Date(user.created_at),
       username: user.screen_name,
@@ -63,6 +60,7 @@ class Twitter {
       profileImageUrl: user.profile_image_url_https?.replace?.('_normal', ''),
       profileBannerUrl: user.profile_banner_url,
     })
+    return twitterUser
   }
 
   private initTwit() {
@@ -86,7 +84,6 @@ class Twitter {
     }
     if (configManager.twitterTweetActive) {
       await this.watchTweet()
-      this.logTweetCount()
     }
     if (configManager.twitterProfileActive) {
       await this.watchProfile()
@@ -96,10 +93,9 @@ class Twitter {
   private async watchTweet() {
     this.logger.silly('watchTweet')
     await this.initTwitterUsers()
-    const users = Object.values(this.users)
     const watcher = new TwitterTweetWatcher(this.twit)
     watcher.on('tweet', (tweet) => this.onTweet(tweet))
-    watcher.watch(users)
+    watcher.watch()
   }
 
   private async watchProfile() {
@@ -112,15 +108,12 @@ class Twitter {
   private async initTwitterUsers() {
     this.logger.silly('initTwitterUsers')
     try {
-      const usernames = await twitterDiscordTweetController.getTwitterUsernames()
+      const usernames = await twitterDiscordTweetController.getAllTwitterUsernames()
       const usernameChunks = Util.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
       // eslint-disable-next-line max-len
       const userChunks = await Promise.all(usernameChunks.map((chunk) => this.fetchUsers(chunk))) as Twit.Twitter.User[][]
-      userChunks.forEach((userChunk) => {
-        userChunk.forEach((user) => {
-          this.updateUser(user)
-        })
-      })
+      const users = userChunks.flat()
+      await Promise.all(users.map((v) => this.updateUser(v)))
     } catch (error) {
       this.logger.error(`initTwitterUsers: ${error.message}`)
       setTimeout(() => this.initTwitterUsers(), 10000)
@@ -128,9 +121,9 @@ class Twitter {
   }
 
   private async onTweet(tweet: Twit.Twitter.Status) {
-    // eslint-disable-next-line no-plusplus
-    this.tweetCount++
-    if (!this.getUser(tweet.user.id_str)) {
+    // eslint-disable-next-line max-len
+    const isAuthorExist = await twitterDiscordTweetController.existTwitterUsername(tweet.user.screen_name)
+    if (!isAuthorExist) {
       return
     }
 
@@ -160,7 +153,7 @@ class Twitter {
     }
   }
 
-  private async onProfileUpdate(newUser: Twit.Twitter.User, oldUser: Twit.Twitter.User) {
+  private async onProfileUpdate(newUser: TwitterUser, oldUser: TwitterUser) {
     this.logger.debug('onProfileUpdate')
     try {
       const channelIds = await this.getProfileReceiverChannelIds(oldUser)
@@ -168,13 +161,13 @@ class Twitter {
         return
       }
 
-      const baseContent = `**@${newUser.screen_name}**`
+      const baseContent = `**@${newUser.username}**`
       const messageOptionsList: MessageOptions[] = []
 
-      if (newUser.profile_image_url_https !== oldUser.profile_image_url_https) {
+      if (newUser.profileImageUrl !== oldUser.profileImageUrl) {
         try {
-          const newProfileImageUrl = newUser.profile_image_url_https.replace('_normal', '')
-          const oldProfileImageUrl = oldUser.profile_image_url_https.replace('_normal', '')
+          const newProfileImageUrl = newUser.profileImageUrl
+          const oldProfileImageUrl = oldUser.profileImageUrl
           this.logger.info(`Old profile image: ${oldProfileImageUrl}`)
           this.logger.info(`New profile image: ${newProfileImageUrl}`)
           messageOptionsList.push({
@@ -190,21 +183,22 @@ class Twitter {
         }
       }
 
-      if (newUser.profile_banner_url !== oldUser.profile_banner_url) {
+      if (newUser.profileBannerUrl !== oldUser.profileBannerUrl) {
         try {
-          this.logger.info(`Old profile banner: ${oldUser.profile_banner_url}`)
-          this.logger.info(`New profile banner: ${newUser.profile_banner_url}`)
-          const fileName = `${new URL(newUser.profile_banner_url).pathname.split('/').reverse()[0]}.jpg`
+          this.logger.info(`Old profile banner: ${oldUser.profileBannerUrl}`)
+          this.logger.info(`New profile banner: ${newUser.profileBannerUrl}`)
+          const fileName = newUser.profileBannerUrl
+            ? `${new URL(newUser.profileBannerUrl).pathname.split('/').reverse()[0]}.jpg`
+            : null
           messageOptionsList.push({
             content: [
               baseContent,
-              `Old profile banner: <${oldUser.profile_banner_url}>`,
-              `New profile banner: <${newUser.profile_banner_url}>`,
+              `Old profile banner: <${oldUser.profileBannerUrl}>`,
+              `New profile banner: <${newUser.profileBannerUrl}>`,
             ].join('\n'),
-            files: [{
-              attachment: newUser.profile_banner_url,
-              name: fileName,
-            }],
+            files: newUser.profileBannerUrl
+              ? [{ attachment: newUser.profileBannerUrl, name: fileName }]
+              : null,
           })
         } catch (error) {
           this.logger.error(`onProfileUpdate#newProfileBanner: ${error.message}`)
@@ -227,7 +221,7 @@ class Twitter {
     try {
       const isReply = !!tweet.in_reply_to_screen_name
       const isRetweet = !!tweet.retweeted_status
-      const records = await twitterDiscordTweetController.getByTwitterUsername(
+      const records = await twitterDiscordTweetController.getManyByTwitterUsername(
         tweet.user.screen_name,
         {
           allowReply: isReply,
@@ -255,20 +249,15 @@ class Twitter {
     return channelIds
   }
 
-  private async getProfileReceiverChannelIds(user: Twit.Twitter.User) {
+  private async getProfileReceiverChannelIds(user: TwitterUser) {
     let channelIds = []
     try {
-      const records = await twitterDiscordProfileController.getByTwitterUsername(user.screen_name)
+      const records = await twitterDiscordProfileController.getByTwitterUsername(user.username)
       channelIds = records.map((v) => v.discordChannelId)
     } catch (error) {
       this.logger.error(`getProfileReceiverChannelIds: ${error.message}`)
     }
     return channelIds
-  }
-
-  private logTweetCount() {
-    this.logger.debug(`Found ${this.tweetCount} tweets`)
-    setTimeout(() => this.logTweetCount(), this.TWEET_COUNT_LOG_INTERVAL)
   }
 }
 

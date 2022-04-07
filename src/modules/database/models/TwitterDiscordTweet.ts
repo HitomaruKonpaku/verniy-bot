@@ -34,8 +34,8 @@ export class TwitterDiscordTweet {
     type: 'text',
     nullable: true,
     transformer: {
-      to: (value: string[]) => value?.join?.(','),
-      from: (value: string) => value?.split?.(','),
+      to: (value: string[]) => (Array.isArray(value) ? JSON.stringify(value) : null),
+      from: (value: string) => JSON.parse(value),
     },
   })
   filterKeywords?: string[]

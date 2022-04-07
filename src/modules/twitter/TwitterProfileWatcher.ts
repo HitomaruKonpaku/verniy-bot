@@ -17,8 +17,8 @@ export class TwitterProfileWatcher extends EventEmitter {
     this.logger = baseLogger.child({ label: '[TwitterProfileWatcher]' })
   }
 
-  public watch() {
-    this.execute()
+  public async watch() {
+    await this.execute()
   }
 
   private async execute() {
@@ -48,29 +48,34 @@ export class TwitterProfileWatcher extends EventEmitter {
     }
   }
 
-  private checkUserProfileUpdate(newUser: Twit.Twitter.User) {
-    if (!newUser?.id_str) {
+  private async checkUserProfileUpdate(user: Twit.Twitter.User) {
+    if (!user) {
       return
     }
 
-    const oldUser = twitter.getUser(newUser.id_str)
-    twitter.updateUser(newUser)
-    if (!oldUser) {
-      return
-    }
+    try {
+      const oldUser = await twitter.getUser(user.id_str)
+      const newUser = await twitter.updateUser(user)
+      if (!oldUser || !newUser) {
+        return
+      }
 
-    const detectConditions = [
-      newUser.profile_image_url_https !== oldUser.profile_image_url_https,
-      newUser.profile_banner_url !== oldUser.profile_banner_url,
-    ]
-    const isProfileUpdate = detectConditions.some((v) => v)
-    if (!isProfileUpdate) {
-      return
-    }
+      const detectConditions = [
+        newUser.profileImageUrl !== oldUser.profileImageUrl,
+        newUser.profileBannerUrl !== oldUser.profileBannerUrl,
+        newUser.name !== oldUser.name,
+      ]
+      const isProfileChanged = detectConditions.some((v) => v)
+      if (!isProfileChanged) {
+        return
+      }
 
-    this.logger.info(`User update: ${newUser.screen_name}`)
-    this.logger.debug('New user', newUser)
-    this.logger.debug('Old user', oldUser)
-    this.emit('profileUpdate', newUser, oldUser)
+      this.logger.info(`User update: ${user.screen_name}`)
+      this.logger.debug('New user', newUser)
+      this.logger.debug('Old user', oldUser)
+      this.emit('profileUpdate', newUser, oldUser)
+    } catch (error) {
+      this.logger.error(`checkUserProfileUpdate: ${error.message}`, { user })
+    }
   }
 }

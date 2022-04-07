@@ -1,5 +1,9 @@
 import {
-  Channel, Client, MessageOptions, MessagePayload, TextChannel
+  Channel,
+  Client,
+  MessageOptions,
+  MessagePayload,
+  TextChannel,
 } from 'discord.js'
 import winston from 'winston'
 import { DISCORD_CLIENT_OPTIONS } from '../../constants/discord.constant'
