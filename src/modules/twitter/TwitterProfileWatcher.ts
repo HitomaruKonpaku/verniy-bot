@@ -18,6 +18,7 @@ export class TwitterProfileWatcher extends EventEmitter {
   }
 
   public async watch() {
+    this.logger.info('Watching...')
     await this.execute()
   }
 
