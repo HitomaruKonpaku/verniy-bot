@@ -57,6 +57,10 @@ class Twitter {
       createdAt: new Date(user.created_at),
       username: user.screen_name,
       name: user.name,
+      location: user.location,
+      description: user.description,
+      protected: user.protected,
+      verified: user.verified,
       profileImageUrl: user.profile_image_url_https?.replace?.('_normal', ''),
       profileBannerUrl: user.profile_banner_url,
     })
