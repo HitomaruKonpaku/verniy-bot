@@ -168,6 +168,80 @@ class Twitter {
       const baseContent = `**@${newUser.username}**`
       const messageOptionsList: MessageOptions[] = []
 
+      if (newUser.name !== oldUser.name) {
+        try {
+          this.logger.info(`Old name: ${oldUser.name}`)
+          this.logger.info(`New name: ${newUser.name}`)
+          messageOptionsList.push({
+            content: [
+              baseContent,
+              `❌ Old name: \`${oldUser.name}\``,
+              `➡️ New name: \`${newUser.name}\``,
+            ].join('\n'),
+          })
+        } catch (error) {
+          this.logger.error(`onProfileUpdate#name: ${error.message}`)
+        }
+      }
+
+      if (newUser.location !== oldUser.location) {
+        try {
+          this.logger.info(`Old location: ${oldUser.location}`)
+          this.logger.info(`New location: ${newUser.location}`)
+          messageOptionsList.push({
+            content: [
+              baseContent,
+              `❌ Old location: \`${oldUser.location}\``,
+              `➡️ New location: \`${newUser.location}\``,
+            ].join('\n'),
+          })
+        } catch (error) {
+          this.logger.error(`onProfileUpdate#location: ${error.message}`)
+        }
+      }
+
+      if (newUser.description !== oldUser.description) {
+        try {
+          this.logger.info(`Old description: ${oldUser.description}`)
+          this.logger.info(`New description: ${newUser.description}`)
+          messageOptionsList.push({
+            content: [
+              baseContent,
+              `❌ Old description: \`${oldUser.description}\``,
+              `➡️ New description: \`${newUser.description}\``,
+            ].join('\n'),
+          })
+        } catch (error) {
+          this.logger.error(`onProfileUpdate#description: ${error.message}`)
+        }
+      }
+
+      if (newUser.protected !== oldUser.protected) {
+        try {
+          messageOptionsList.push({
+            content: [
+              baseContent,
+              `Protected: ${newUser.protected ? '✅' : '❌'}`,
+            ].join('\n'),
+          })
+        } catch (error) {
+          this.logger.error(`onProfileUpdate#protected: ${error.message}`)
+        }
+      }
+
+      if (newUser.verified !== oldUser.verified) {
+        try {
+          messageOptionsList.push({
+            content: [
+              baseContent,
+              `Verified: ${newUser.verified ? '✅' : '❌'}`,
+            ].join('\n'),
+          })
+        } catch (error) {
+          this.logger.error(`onProfileUpdate#verified: ${error.message}`)
+        }
+      }
+
       if (newUser.profileImageUrl !== oldUser.profileImageUrl) {
         try {
           const newProfileImageUrl = newUser.profileImageUrl
@@ -183,7 +257,7 @@ class Twitter {
             files: [newProfileImageUrl],
           })
         } catch (error) {
-          this.logger.error(`onProfileUpdate#newProfileImage: ${error.message}`)
+          this.logger.error(`onProfileUpdate#profileImageUrl: ${error.message}`)
         }
       }
 
@@ -205,7 +279,7 @@ class Twitter {
               : null,
           })
         } catch (error) {
-          this.logger.error(`onProfileUpdate#newProfileBanner: ${error.message}`)
+          this.logger.error(`onProfileUpdate#profileBannerUrl: ${error.message}`)
         }
       }
 

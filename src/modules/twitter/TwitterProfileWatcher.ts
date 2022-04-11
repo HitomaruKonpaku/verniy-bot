@@ -62,9 +62,13 @@ export class TwitterProfileWatcher extends EventEmitter {
       }
 
       const detectConditions = [
+        newUser.name !== oldUser.name,
+        newUser.location !== oldUser.location,
+        newUser.description !== oldUser.description,
+        newUser.protected !== oldUser.protected,
+        newUser.verified !== oldUser.verified,
         newUser.profileImageUrl !== oldUser.profileImageUrl,
         newUser.profileBannerUrl !== oldUser.profileBannerUrl,
-        newUser.name !== oldUser.name,
       ]
       const isProfileChanged = detectConditions.some((v) => v)
       if (!isProfileChanged) {
