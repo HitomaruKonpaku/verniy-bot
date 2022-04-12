@@ -174,7 +174,7 @@ class Twitter {
           this.logger.info(`${newUser.username} name`, { to: newUser.name, from: oldUser.name })
           messageOptionsList.push({
             content: [
-              `$${baseContent}'s name changed`,
+              `${baseContent}'s name changed`,
               `❌ ${inlineCode(oldUser.name)}`,
               `➡️ ${inlineCode(newUser.name)}`,
             ].join('\n'),
@@ -189,7 +189,7 @@ class Twitter {
           this.logger.info(`${newUser.username} location`, { to: newUser.location, from: oldUser.location })
           messageOptionsList.push({
             content: [
-              `$${baseContent}'s location changed`,
+              `${baseContent}'s location changed`,
               `❌ ${inlineCode(oldUser.location)}`,
               `➡️ ${inlineCode(newUser.location)}`,
             ].join('\n'),
@@ -204,7 +204,7 @@ class Twitter {
           this.logger.info(`${newUser.username} description`, { to: newUser.description, from: oldUser.description })
           messageOptionsList.push({
             content: [
-              `$${baseContent}'s description changed`,
+              `${baseContent}'s description changed`,
               `❌ ${inlineCode(oldUser.description)}`,
               `➡️ ${inlineCode(newUser.description)}`,
             ].join('\n'),
@@ -249,7 +249,7 @@ class Twitter {
           this.logger.info(`${newUser.username} profile image`, { to: newProfileImageUrl, from: oldProfileImageUrl })
           messageOptionsList.push({
             content: [
-              `$${baseContent}'s profile image changed`,
+              `${baseContent}'s profile image changed`,
               `❌ ${hideLinkEmbed(oldUser.profileImageUrl)}`,
               `➡️ ${hideLinkEmbed(newUser.profileImageUrl)}`,
             ].join('\n'),
@@ -268,7 +268,7 @@ class Twitter {
             : null
           messageOptionsList.push({
             content: [
-              `$${baseContent}'s profile banner changed`,
+              `${baseContent}'s profile banner changed`,
               `❌ ${hideLinkEmbed(oldUser.profileBannerUrl)}`,
               `➡️ ${hideLinkEmbed(newUser.profileBannerUrl)}`,
             ].join('\n'),
