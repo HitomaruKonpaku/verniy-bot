@@ -1,3 +1,4 @@
+import { bold, hideLinkEmbed, inlineCode } from '@discordjs/builders'
 import { MessageOptions } from 'discord.js'
 import Twit from 'twit'
 import winston from 'winston'
@@ -158,25 +159,24 @@ class Twitter {
   }
 
   private async onProfileUpdate(newUser: TwitterUser, oldUser: TwitterUser) {
-    this.logger.debug('onProfileUpdate')
+    this.logger.debug('onProfileUpdate', { newUser, oldUser })
     try {
       const channelIds = await this.getProfileReceiverChannelIds(oldUser)
       if (!channelIds.length) {
         return
       }
 
-      const baseContent = `**@${newUser.username}**`
+      const baseContent = bold(`@${newUser.username}`)
       const messageOptionsList: MessageOptions[] = []
 
       if (newUser.name !== oldUser.name) {
         try {
-          this.logger.info(`Old name: ${oldUser.name}`)
-          this.logger.info(`New name: ${newUser.name}`)
+          this.logger.info(`${newUser.username} name`, { to: newUser.name, from: oldUser.name })
           messageOptionsList.push({
             content: [
-              baseContent,
-              `❌ Old name: \`${oldUser.name}\``,
-              `➡️ New name: \`${newUser.name}\``,
+              `$${baseContent}'s name changed`,
+              `❌ ${inlineCode(oldUser.name)}`,
+              `➡️ ${inlineCode(newUser.name)}`,
             ].join('\n'),
           })
         } catch (error) {
@@ -186,13 +186,12 @@ class Twitter {
 
       if (newUser.location !== oldUser.location) {
         try {
-          this.logger.info(`Old location: ${oldUser.location}`)
-          this.logger.info(`New location: ${newUser.location}`)
+          this.logger.info(`${newUser.username} location`, { to: newUser.location, from: oldUser.location })
           messageOptionsList.push({
             content: [
-              baseContent,
-              `❌ Old location: \`${oldUser.location}\``,
-              `➡️ New location: \`${newUser.location}\``,
+              `$${baseContent}'s location changed`,
+              `❌ ${inlineCode(oldUser.location)}`,
+              `➡️ ${inlineCode(newUser.location)}`,
             ].join('\n'),
           })
         } catch (error) {
@@ -202,13 +201,12 @@ class Twitter {
 
       if (newUser.description !== oldUser.description) {
         try {
-          this.logger.info(`Old description: ${oldUser.description}`)
-          this.logger.info(`New description: ${newUser.description}`)
+          this.logger.info(`${newUser.username} description`, { to: newUser.description, from: oldUser.description })
           messageOptionsList.push({
             content: [
-              baseContent,
-              `❌ Old description: \`${oldUser.description}\``,
-              `➡️ New description: \`${newUser.description}\``,
+              `$${baseContent}'s description changed`,
+              `❌ ${inlineCode(oldUser.description)}`,
+              `➡️ ${inlineCode(newUser.description)}`,
             ].join('\n'),
           })
         } catch (error) {
@@ -218,6 +216,7 @@ class Twitter {
 
       if (newUser.protected !== oldUser.protected) {
         try {
+          this.logger.info(`${newUser.username} protected: ${newUser.protected ? '✅' : '❌'}`)
           messageOptionsList.push({
             content: [
               baseContent,
@@ -231,6 +230,7 @@ class Twitter {
 
       if (newUser.verified !== oldUser.verified) {
         try {
+          this.logger.info(`${newUser.username} verified: ${newUser.verified ? '✅' : '❌'}`)
           messageOptionsList.push({
             content: [
               baseContent,
@@ -246,13 +246,12 @@ class Twitter {
         try {
           const newProfileImageUrl = newUser.profileImageUrl
           const oldProfileImageUrl = oldUser.profileImageUrl
-          this.logger.info(`Old profile image: ${oldProfileImageUrl}`)
-          this.logger.info(`New profile image: ${newProfileImageUrl}`)
+          this.logger.info(`${newUser.username} profile image`, { to: newProfileImageUrl, from: oldProfileImageUrl })
           messageOptionsList.push({
             content: [
-              baseContent,
-              `Old profile image: <${oldProfileImageUrl}>`,
-              `New profile image: <${newProfileImageUrl}>`,
+              `$${baseContent}'s profile image changed`,
+              `❌ ${hideLinkEmbed(oldUser.profileImageUrl)}`,
+              `➡️ ${hideLinkEmbed(newUser.profileImageUrl)}`,
             ].join('\n'),
             files: [newProfileImageUrl],
           })
@@ -263,16 +262,15 @@ class Twitter {
 
       if (newUser.profileBannerUrl !== oldUser.profileBannerUrl) {
         try {
-          this.logger.info(`Old profile banner: ${oldUser.profileBannerUrl}`)
-          this.logger.info(`New profile banner: ${newUser.profileBannerUrl}`)
+          this.logger.info(`${newUser.username} profile banner`, { to: newUser.profileBannerUrl, from: oldUser.profileBannerUrl })
           const fileName = newUser.profileBannerUrl
             ? `${new URL(newUser.profileBannerUrl).pathname.split('/').reverse()[0]}.jpg`
             : null
           messageOptionsList.push({
             content: [
-              baseContent,
-              `Old profile banner: <${oldUser.profileBannerUrl}>`,
-              `New profile banner: <${newUser.profileBannerUrl}>`,
+              `$${baseContent}'s profile banner changed`,
+              `❌ ${hideLinkEmbed(oldUser.profileBannerUrl)}`,
+              `➡️ ${hideLinkEmbed(newUser.profileBannerUrl)}`,
             ].join('\n'),
             files: newUser.profileBannerUrl
               ? [{ attachment: newUser.profileBannerUrl, name: fileName }]
