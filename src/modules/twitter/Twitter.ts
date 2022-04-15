@@ -134,6 +134,7 @@ class Twitter {
 
     const tweetUrl = TwitterUtil.getTweetUrl(tweet)
     this.logger.debug(`onTweet: ${tweetUrl}`)
+
     try {
       const channelIds = await this.getTweetReceiverChannelIds(tweet)
       if (!channelIds.length) {
@@ -141,13 +142,20 @@ class Twitter {
       }
 
       this.logger.info(`Tweet: ${tweetUrl}`)
-      const contentList = [tweetUrl]
-      if (tweet.in_reply_to_screen_name) {
-        const inReplyToTweetUrl = TwitterUtil.getInReplyToTweetUrl(tweet)
-        this.logger.info(`InReplyToTweet: ${inReplyToTweetUrl}`)
-        contentList.push(` in reply to ${inReplyToTweetUrl}`)
+      let content: string = tweetUrl
+      if (tweet.in_reply_to_screen_name && tweet.in_reply_to_status_id_str) {
+        const mainTweetUrl = TwitterUtil.getInReplyToTweetUrl(tweet)
+        content = [
+          tweetUrl,
+          `💬 ${mainTweetUrl}`,
+        ].join('\n')
+      } else if (tweet.retweeted_status) {
+        const mainTweetUrl = TwitterUtil.getTweetUrl(tweet.retweeted_status)
+        content = [
+          hideLinkEmbed(tweetUrl),
+          `🔁 ${mainTweetUrl}`,
+        ].join('\n')
       }
-      const content = contentList.filter((v) => v).join('').trim()
 
       this.logger.debug(`Channel ids: ${channelIds.join(',')}`)
       channelIds.forEach((channelId) => {
