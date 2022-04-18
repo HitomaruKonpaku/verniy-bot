@@ -59,7 +59,7 @@ class Twitter {
       username: user.screen_name,
       name: user.name,
       location: user.location,
-      description: user.description,
+      description: TwitterUtil.getUserDescription(user),
       protected: user.protected,
       verified: user.verified,
       profileImageUrl: user.profile_image_url_https?.replace?.('_normal', ''),
