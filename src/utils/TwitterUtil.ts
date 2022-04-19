@@ -18,14 +18,14 @@ export class TwitterUtil {
   }
 
   public static getUserDescription(user: Twit.Twitter.User): string {
-    const entities = user?.entities as any
-    const urls = entities?.description?.urls as Twit.Twitter.UrlEntity[] || []
-    let desc = user?.description || ''
-    if (urls.length) {
-      urls.forEach((v) => {
-        desc = desc.replace(v.url, v.expanded_url)
-      })
-    }
+    const desc = user?.description || ''
+    // const entities = user?.entities as any
+    // const urls = entities?.description?.urls as Twit.Twitter.UrlEntity[] || []
+    // if (urls.length) {
+    //   urls.forEach((v) => {
+    //     desc = desc.replace(v.url, v.expanded_url)
+    //   })
+    // }
     return desc
   }
 }
