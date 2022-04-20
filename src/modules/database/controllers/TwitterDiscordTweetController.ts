@@ -15,12 +15,13 @@ class TwitterDiscordTweetController {
     return db.connection.getRepository(TwitterDiscordTweet)
   }
 
-  public async getAllTwitterUsernames() {
+  public async getTwitterUsernames() {
     const records = await this.repository
       .createQueryBuilder()
       .select('twitter_username')
       .distinct()
       .andWhere('is_active = TRUE')
+      .addOrderBy('twitter_username')
       .getRawMany()
     const usernames = records.map((v) => v.twitter_username) as string[]
     return usernames

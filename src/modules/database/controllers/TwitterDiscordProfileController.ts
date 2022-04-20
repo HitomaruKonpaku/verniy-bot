@@ -21,12 +21,13 @@ class TwitterDiscordProfileController {
       .select('twitter_username')
       .distinct()
       .andWhere('is_active = TRUE')
+      .addOrderBy('twitter_username')
       .getRawMany()
     const usernames = records.map((v) => v.twitter_username) as string[]
     return usernames
   }
 
-  public async getByTwitterUsername(username: string) {
+  public async getManyByTwitterUsername(username: string) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('twitter_username LIKE :username', { username })

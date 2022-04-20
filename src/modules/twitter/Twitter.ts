@@ -113,7 +113,7 @@ class Twitter {
   private async initTwitterUsers() {
     this.logger.silly('initTwitterUsers')
     try {
-      const usernames = await twitterDiscordTweetController.getAllTwitterUsernames()
+      const usernames = await twitterDiscordTweetController.getTwitterUsernames()
       const usernameChunks = Util.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
       // eslint-disable-next-line max-len
       const userChunks = await Promise.all(usernameChunks.map((chunk) => this.fetchUsers(chunk))) as Twit.Twitter.User[][]
@@ -336,7 +336,7 @@ class Twitter {
   private async getProfileReceiverChannelIds(user: TwitterUser) {
     let channelIds = []
     try {
-      const records = await twitterDiscordProfileController.getByTwitterUsername(user.username)
+      const records = await twitterDiscordProfileController.getManyByTwitterUsername(user.username)
       channelIds = records.map((v) => v.discordChannelId)
     } catch (error) {
       this.logger.error(`getProfileReceiverChannelIds: ${error.message}`)

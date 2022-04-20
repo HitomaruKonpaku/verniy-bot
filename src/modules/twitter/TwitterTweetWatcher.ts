@@ -15,19 +15,23 @@ export class TwitterTweetWatcher extends EventEmitter {
   }
 
   public async watch() {
-    const users = await twitterUserController.getAll()
-    this.logger.info(`User count: ${users?.length || 0}`)
+    const users = await twitterUserController.getManyForTweet()
     if (!users?.length) {
       return
     }
 
     this.logger.info('Watching...')
-    this.logger.info('Users', { userCount: users.length, usernames: users.map((v) => v.username) })
+    this.logger.info('Users', {
+      count: users.length,
+      usernames: users.map((v) => v.username.toLowerCase()),
+    })
     const userIds = users.map((v) => v.id)
+    this.initStream(userIds)
+  }
+
+  private initStream(userIds: string[]) {
     const streamPath = 'statuses/filter'
     const streamParams = { follow: userIds.join(',') }
-    this.logger.debug(`Stream path: ${streamPath}`)
-    this.logger.debug(`Stream pararms: ${JSON.stringify(streamParams)}`)
     const stream = this.twit.stream(streamPath, streamParams)
     this.stream = stream
 

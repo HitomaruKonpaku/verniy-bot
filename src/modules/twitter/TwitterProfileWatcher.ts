@@ -18,7 +18,12 @@ export class TwitterProfileWatcher extends EventEmitter {
   }
 
   public async watch() {
+    const usernames = await twitterDiscordProfileController.getTwitterUsernames()
     this.logger.info('Watching...')
+    this.logger.info('Users', {
+      count: usernames.length,
+      usernames,
+    })
     await this.execute()
   }
 

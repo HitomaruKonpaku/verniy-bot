@@ -25,6 +25,19 @@ class TwitterUserController {
     return users
   }
 
+  public async getManyForTweet() {
+    const users = await this.repository
+      .createQueryBuilder('tu')
+      .innerJoin(
+        'twitter_discord_tweet',
+        'tdt',
+        'tdt.twitter_username LIKE tu.username AND tdt.is_active = TRUE',
+      )
+      .addOrderBy('tu.username')
+      .getMany()
+    return users
+  }
+
   public async update(data: TwitterUser): Promise<TwitterUser> {
     if (!data) return null
     try {
