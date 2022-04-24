@@ -174,7 +174,7 @@ class Twitter {
         return
       }
 
-      const baseContent = bold(`@${newUser.username}`)
+      const baseContent = bold(inlineCode(`@${newUser.username}`))
       const messageOptionsList: MessageOptions[] = []
 
       if (newUser.name !== oldUser.name) {
