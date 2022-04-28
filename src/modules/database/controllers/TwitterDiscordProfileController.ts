@@ -2,6 +2,7 @@ import winston from 'winston'
 import { logger as baseLogger } from '../../../logger'
 import { db } from '../Database'
 import { TwitterDiscordProfile } from '../models/TwitterDiscordProfile'
+import { StringUtils } from '../utils/StringUtils'
 
 class TwitterDiscordProfileController {
   private logger: winston.Logger
@@ -30,8 +31,11 @@ class TwitterDiscordProfileController {
   public async getManyByTwitterUsername(username: string) {
     const query = this.repository
       .createQueryBuilder()
-      .andWhere('twitter_username LIKE :username', { username })
       .andWhere('is_active = TRUE')
+      .andWhere('twitter_username LIKE :username ESCAPE :escapeChar', {
+        username: StringUtils.getEscapeValue(username),
+        escapeChar: '!',
+      })
     const records = await query.getMany()
     return records
   }
