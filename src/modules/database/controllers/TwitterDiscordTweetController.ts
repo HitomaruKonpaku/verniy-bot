@@ -2,7 +2,6 @@ import winston from 'winston'
 import { logger as baseLogger } from '../../../logger'
 import { db } from '../Database'
 import { TwitterDiscordTweet } from '../models/TwitterDiscordTweet'
-import { StringUtils } from '../utils/StringUtils'
 
 class TwitterDiscordTweetController {
   private logger: winston.Logger
@@ -35,10 +34,7 @@ class TwitterDiscordTweetController {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere('twitter_username LIKE :username ESCAPE :escapeChar', {
-        username: StringUtils.getEscapeValue(username),
-        escapeChar: '!',
-      })
+      .andWhere('LOWER(twitter_username) = LOWER(:username)', { username })
     if (config?.allowReply) {
       query.andWhere('allow_reply = TRUE')
     }
@@ -53,10 +49,7 @@ class TwitterDiscordTweetController {
     const count = await this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere('twitter_username LIKE :username ESCAPE :escapeChar', {
-        username: StringUtils.getEscapeValue(username),
-        escapeChar: '!',
-      })
+      .andWhere('LOWER(twitter_username) = LOWER(:username)', { username })
       .getCount()
     const isExist = count > 0
     return isExist

@@ -31,7 +31,7 @@ class TwitterUserController {
       .innerJoin(
         'twitter_discord_tweet',
         'tdt',
-        'tdt.twitter_username LIKE tu.username AND tdt.is_active = TRUE',
+        'LOWER(tdt.twitter_username) = LOWER(tu.username) AND tdt.is_active = TRUE',
       )
       .addOrderBy('tu.username')
       .getMany()
