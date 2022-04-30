@@ -1,25 +1,29 @@
 import { randomUUID } from 'crypto'
 import EventEmitter from 'events'
 import Twit from 'twit'
-import winston from 'winston'
-import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
-import { logger as baseLogger } from '../../logger'
-import { TwitterUtil } from '../../utils/TwitterUtil'
-import { Util } from '../../utils/Util'
-import { twitterDiscordProfileController } from '../database/controllers/TwitterDiscordProfileController'
-import { twitter } from './Twitter'
+import { logger as baseLogger } from '../../../logger'
+import { Utils } from '../../../utils/Utils'
+import { ConfigService } from '../../config/services/config.service'
+import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
+import { TwitterUserService } from '../../database/services/twitter-user.service'
+import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
+import { TwitterService } from '../services/twitter.service'
 
 export class TwitterProfileWatcher extends EventEmitter {
-  private logger: winston.Logger
+  private readonly logger = baseLogger.child({ context: TwitterProfileWatcher.name })
 
-  constructor() {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly twitterService: TwitterService,
+    private readonly twitterUserService: TwitterUserService,
+    private readonly twitterDiscordProfileService: TwitterDiscordProfileService,
+  ) {
     super()
-    this.logger = baseLogger.child({ label: '[TwitterProfileWatcher]' })
   }
 
-  public async watch() {
-    const usernames = await twitterDiscordProfileController.getTwitterUsernames()
-    this.logger.info('Watching...')
+  public async start() {
+    const usernames = await this.twitterDiscordProfileService.getTwitterUsernames()
+    this.logger.info('Starting...')
     this.logger.info('Users', {
       count: usernames.length,
       usernames,
@@ -29,16 +33,16 @@ export class TwitterProfileWatcher extends EventEmitter {
 
   private async execute() {
     try {
-      const usernames = await twitterDiscordProfileController.getTwitterUsernames()
+      const usernames = await this.twitterDiscordProfileService.getTwitterUsernames()
       if (usernames.length) {
-        const usernameChunks = Util.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
+        const usernameChunks = Utils.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(usernameChunks.map((v) => this.runLookupUsers(v)))
       }
     } catch (error) {
       this.logger.error(`execute: ${error.message}`)
     }
 
-    const interval = TwitterUtil.getProfileRefreshInterval()
+    const interval = this.configService.twitterProfileInterval
     setTimeout(() => this.execute(), interval)
   }
 
@@ -46,7 +50,7 @@ export class TwitterProfileWatcher extends EventEmitter {
     const requestId = randomUUID()
     try {
       this.logger.debug('--> getUsersLookup', { requestId, usernameCount: usernames.length, usernames })
-      const users = await twitter.fetchUsers(usernames)
+      const users = await this.twitterService.fetchUsers(usernames)
       this.logger.debug('<-- getUsersLookup', { requestId })
       users.forEach((v) => this.checkUserProfileUpdate(v))
     } catch (error) {
@@ -60,8 +64,8 @@ export class TwitterProfileWatcher extends EventEmitter {
     }
 
     try {
-      const oldUser = await twitter.getUser(user.id_str)
-      const newUser = await twitter.updateUser(user)
+      const oldUser = await this.twitterUserService.getOneById(user.id_str)
+      const newUser = await this.twitterUserService.updateByTwitterUser(user)
       if (!oldUser || !newUser) {
         return
       }

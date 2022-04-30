@@ -1,16 +1,17 @@
+import { Injectable } from '@nestjs/common'
 import { readFileSync } from 'fs'
 import yaml from 'js-yaml'
-import winston from 'winston'
-import { logger as baseLogger } from '../../logger'
+import { logger as baseLogger } from '../../../logger'
 
-class ConfigManager {
+@Injectable()
+export class ConfigService {
   public config: any
 
-  private logger: winston.Logger
+  private readonly logger = baseLogger.child({ context: ConfigService.name })
 
   constructor() {
-    this.logger = baseLogger.child({ label: '[ConfigManager]' })
     this.config = {}
+    this.load()
   }
 
   public get twitterActive() {
@@ -52,5 +53,3 @@ class ConfigManager {
     return this.config
   }
 }
-
-export const configManager = new ConfigManager()

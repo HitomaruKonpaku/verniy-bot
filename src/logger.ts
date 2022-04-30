@@ -3,9 +3,18 @@ import DailyRotateFile from 'winston-daily-rotate-file'
 import { LOGGER_DATE_PATTERN, LOGGER_DIR } from './constants/logger.constant'
 
 function getPrintFormat() {
-  return format.printf((info) => (Object.keys(info.metadata).length
-    ? `${info.timestamp} | [${info.level}] ${[info.label, info.message].filter((v) => v).join(' ')} | ${JSON.stringify(info.metadata)}`
-    : `${info.timestamp} | [${info.level}] ${[info.label, info.message].filter((v) => v).join(' ')}`))
+  return format.printf((info) => {
+    const content = [
+      info.timestamp,
+      [
+        `[${info.level}]`,
+        info.context ? `[${info.context}]` : '',
+        info.message,
+      ].filter((v) => v).join(' '),
+      Object.keys(info.metadata).length ? JSON.stringify(info.metadata) : '',
+    ].filter((v) => v).join(' | ')
+    return content
+  })
 }
 
 function getFileName() {
@@ -27,9 +36,9 @@ const logger = winston.createLogger({
     format((info) => Object.assign(info, { level: info.level.toUpperCase() }))(),
     format((info) => {
       const { metadata } = info
-      if (metadata.label) {
-        Object.assign(info, { label: metadata.label })
-        delete metadata.label
+      if (metadata.context) {
+        Object.assign(info, { context: metadata.context })
+        delete metadata.context
       }
       return info
     })(),

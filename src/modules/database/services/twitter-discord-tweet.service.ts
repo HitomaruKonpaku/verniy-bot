@@ -1,19 +1,15 @@
-import winston from 'winston'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 import { logger as baseLogger } from '../../../logger'
-import { db } from '../Database'
-import { TwitterDiscordTweet } from '../models/TwitterDiscordTweet'
+import { TwitterDiscordTweet } from '../models/twitter-discord-tweet'
 
-class TwitterDiscordTweetController {
-  private logger: winston.Logger
+export class TwitterDiscordTweetService {
+  private readonly logger = baseLogger.child({ context: TwitterDiscordTweetService.name })
 
-  constructor() {
-    this.logger = baseLogger.child({ label: '[TwitterDiscordTweetController]' })
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  private get repository() {
-    return db.connection.getRepository(TwitterDiscordTweet)
-  }
+  constructor(
+    @InjectRepository(TwitterDiscordTweet)
+    private readonly repository: Repository<TwitterDiscordTweet>,
+  ) { }
 
   public async getTwitterUsernames() {
     const records = await this.repository
@@ -108,5 +104,3 @@ class TwitterDiscordTweetController {
     }
   }
 }
-
-export const twitterDiscordTweetController = new TwitterDiscordTweetController()

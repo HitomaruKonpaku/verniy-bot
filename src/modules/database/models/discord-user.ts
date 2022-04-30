@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm'
 
-@Entity('discord_guild')
-export class DiscordGuild {
+@Entity('discord_user')
+export class DiscordUser {
   @PrimaryColumn({ type: 'text' })
   id: string
 
@@ -9,5 +9,11 @@ export class DiscordGuild {
   createdAt: Date;
 
   @Column({ type: 'text' })
-  name: string
+  username: string
+
+  @Column({ type: 'text' })
+  discriminator: string
+
+  @Column({ type: 'text' })
+  tag: string
 }

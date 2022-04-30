@@ -1,10 +1,13 @@
 import Twit from 'twit'
-import { configManager } from '../modules/config/ConfigManager'
 
-export class TwitterUtil {
-  public static getProfileRefreshInterval(): number {
-    const interval = Number(configManager.twitterProfileInterval) || 60000
-    return interval
+export class TwitterUtils {
+  /**
+    * Returns the URL of a Twitter user, provided their username
+    * @param {string} username - Username
+    * @returns {string} User URL
+    */
+  public static getUserUrl(username: string): string {
+    return `https://twitter.com/${username}`
   }
 
   public static getTweetUrl(tweet: Twit.Twitter.Status): string {
@@ -27,5 +30,10 @@ export class TwitterUtil {
     //   })
     // }
     return desc
+  }
+
+  public static getUserProfileImageUrl(user: Twit.Twitter.User): string {
+    const url = user?.profile_image_url_https?.replace?.('_normal', '')
+    return url
   }
 }

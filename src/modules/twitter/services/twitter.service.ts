@@ -1,31 +1,45 @@
 import { bold, hideLinkEmbed, inlineCode } from '@discordjs/builders'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { MessageOptions } from 'discord.js'
 import Twit from 'twit'
-import winston from 'winston'
-import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
-import { logger as baseLogger } from '../../logger'
-import { TwitterUtil } from '../../utils/TwitterUtil'
-import { Util } from '../../utils/Util'
-import { configManager } from '../config/ConfigManager'
-import { twitterDiscordProfileController } from '../database/controllers/TwitterDiscordProfileController'
-import { twitterDiscordTweetController } from '../database/controllers/TwitterDiscordTweetController'
-import { twitterUserController } from '../database/controllers/TwitterUserController'
-import { TwitterUser } from '../database/models/TwitterUser'
-import { discord } from '../discord/Discord'
-import { TwitterProfileWatcher } from './TwitterProfileWatcher'
-import { TwitterTweetWatcher } from './TwitterTweetWatcher'
+import { logger as baseLogger } from '../../../logger'
+import { Utils } from '../../../utils/Utils'
+import { ConfigService } from '../../config/services/config.service'
+import { TwitterUser } from '../../database/models/twitter-user'
+import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
+import { TwitterDiscordTweetService } from '../../database/services/twitter-discord-tweet.service'
+import { TwitterUserService } from '../../database/services/twitter-user.service'
+import { DiscordService } from '../../discord/services/discord.service'
+import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
+import { TwitterUtils } from '../utils/TwitterUtils'
+import { TwitterProfileWatcher } from '../watchers/twitter-profile-watcher'
+import { TwitterTweetWatcher } from '../watchers/twitter-tweet-watcher'
 
-class Twitter {
-  private logger: winston.Logger
+@Injectable()
+export class TwitterService {
+  private readonly logger = baseLogger.child({ context: TwitterService.name })
+
   private twit: Twit
+  private tweetWatcher: TwitterTweetWatcher
+  private profileWatcher: TwitterProfileWatcher
 
-  constructor() {
-    this.logger = baseLogger.child({ label: '[Twitter]' })
+  constructor(
+    @Inject(ConfigService)
+    private readonly configService: ConfigService,
+    @Inject(TwitterUserService)
+    private readonly twitterUserService: TwitterUserService,
+    @Inject(TwitterDiscordTweetService)
+    private readonly twitterDiscordTweetService: TwitterDiscordTweetService,
+    @Inject(TwitterDiscordProfileService)
+    private readonly twitterDiscordProfileService: TwitterDiscordProfileService,
+    @Inject(forwardRef(() => DiscordService))
+    private readonly discordService: DiscordService,
+  ) {
+    this.initTwit()
   }
 
-  public start() {
+  public async start() {
     this.logger.info('Starting...')
-    this.initTwit()
     this.initWatchers()
   }
 
@@ -45,31 +59,7 @@ class Twitter {
     return data as Twit.Twitter.User
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  public async getUser(id: string) {
-    const twitterUser = await twitterUserController.getOneById(id)
-    return twitterUser
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  public async updateUser(user: Twit.Twitter.User) {
-    const twitterUser = await twitterUserController.update({
-      id: user.id_str,
-      createdAt: new Date(user.created_at),
-      username: user.screen_name,
-      name: user.name,
-      location: user.location,
-      description: TwitterUtil.getUserDescription(user),
-      protected: user.protected,
-      verified: user.verified,
-      profileImageUrl: user.profile_image_url_https?.replace?.('_normal', ''),
-      profileBannerUrl: user.profile_banner_url,
-    })
-    return twitterUser
-  }
-
   private initTwit() {
-    this.logger.silly('initTwit')
     try {
       this.twit = new Twit({
         consumer_key: process.env.TWITTER_CONSUMER_KEY,
@@ -83,56 +73,62 @@ class Twitter {
   }
 
   private async initWatchers() {
-    this.logger.silly('initWatchers')
     if (!this.twit) {
+      this.logger.warn('twit not found')
       return
     }
-    if (configManager.twitterTweetActive) {
+    if (this.configService.twitterTweetActive) {
       await this.watchTweet()
     }
-    if (configManager.twitterProfileActive) {
+    if (this.configService.twitterProfileActive) {
       await this.watchProfile()
     }
   }
 
-  private async watchTweet() {
-    this.logger.silly('watchTweet')
-    await this.initTwitterUsers()
-    const watcher = new TwitterTweetWatcher(this.twit)
-    watcher.on('tweet', (tweet) => this.onTweet(tweet))
-    watcher.watch()
-  }
-
-  private async watchProfile() {
-    this.logger.silly('watchProfile')
-    const watcher = new TwitterProfileWatcher()
-    watcher.on('profileUpdate', (newUser, oldUser) => this.onProfileUpdate(newUser, oldUser))
-    watcher.watch()
-  }
-
   private async initTwitterUsers() {
-    this.logger.silly('initTwitterUsers')
     try {
-      const usernames = await twitterDiscordTweetController.getTwitterUsernames()
-      const usernameChunks = Util.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
+      const usernames = await this.twitterDiscordTweetService.getTwitterUsernames()
+      const usernameChunks = Utils.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
       // eslint-disable-next-line max-len
       const userChunks = await Promise.all(usernameChunks.map((chunk) => this.fetchUsers(chunk))) as Twit.Twitter.User[][]
       const users = userChunks.flat()
-      await Promise.all(users.map((v) => this.updateUser(v)))
+      await Promise.all(users.map((v) => this.twitterUserService.updateByTwitterUser(v)))
     } catch (error) {
       this.logger.error(`initTwitterUsers: ${error.message}`)
-      setTimeout(() => this.initTwitterUsers(), 10000)
     }
+  }
+
+  private async watchTweet() {
+    await this.initTwitterUsers()
+    const watcher = new TwitterTweetWatcher(
+      this.twit,
+      this.twitterUserService,
+    )
+    this.tweetWatcher = watcher
+    watcher.on('tweet', (tweet) => this.onTweet(tweet))
+    watcher.start()
+  }
+
+  private async watchProfile() {
+    const watcher = new TwitterProfileWatcher(
+      this.configService,
+      this,
+      this.twitterUserService,
+      this.twitterDiscordProfileService,
+    )
+    this.profileWatcher = watcher
+    watcher.on('profileUpdate', (newUser, oldUser) => this.onProfileUpdate(newUser, oldUser))
+    watcher.start()
   }
 
   private async onTweet(tweet: Twit.Twitter.Status) {
     // eslint-disable-next-line max-len
-    const isAuthorExist = await twitterDiscordTweetController.existTwitterUsername(tweet.user.screen_name)
+    const isAuthorExist = await this.twitterDiscordTweetService.existTwitterUsername(tweet.user.screen_name)
     if (!isAuthorExist) {
       return
     }
 
-    const tweetUrl = TwitterUtil.getTweetUrl(tweet)
+    const tweetUrl = TwitterUtils.getTweetUrl(tweet)
     this.logger.debug(`onTweet: ${tweetUrl}`)
 
     try {
@@ -144,13 +140,13 @@ class Twitter {
       this.logger.info(`Tweet: ${tweetUrl}`)
       let content: string = tweetUrl
       if (tweet.in_reply_to_screen_name && tweet.in_reply_to_status_id_str) {
-        const mainTweetUrl = TwitterUtil.getInReplyToTweetUrl(tweet)
+        const mainTweetUrl = TwitterUtils.getInReplyToTweetUrl(tweet)
         content = [
           tweetUrl,
           `💬 ${mainTweetUrl}`,
         ].join('\n')
       } else if (tweet.retweeted_status) {
-        const mainTweetUrl = TwitterUtil.getTweetUrl(tweet.retweeted_status)
+        const mainTweetUrl = TwitterUtils.getTweetUrl(tweet.retweeted_status)
         content = [
           hideLinkEmbed(tweetUrl),
           `🔁 ${mainTweetUrl}`,
@@ -159,7 +155,7 @@ class Twitter {
 
       this.logger.debug(`Channel ids: ${channelIds.join(',')}`)
       channelIds.forEach((channelId) => {
-        discord.sendToChannel(channelId, { content })
+        this.discordService.sendToChannel(channelId, { content })
       })
     } catch (error) {
       this.logger.error(`onTweet: ${error.message}`)
@@ -292,7 +288,7 @@ class Twitter {
       this.logger.info(`Channel ids: ${channelIds.join(',')}`)
       channelIds.forEach((channelId) => {
         messageOptionsList.forEach((messageOptions) => {
-          discord.sendToChannel(channelId, messageOptions)
+          this.discordService.sendToChannel(channelId, messageOptions)
         })
       })
     } catch (error) {
@@ -305,7 +301,7 @@ class Twitter {
     try {
       const isReply = !!tweet.in_reply_to_screen_name
       const isRetweet = !!tweet.retweeted_status
-      const records = await twitterDiscordTweetController.getManyByTwitterUsername(
+      const records = await this.twitterDiscordTweetService.getManyByTwitterUsername(
         tweet.user.screen_name,
         {
           allowReply: isReply,
@@ -336,7 +332,8 @@ class Twitter {
   private async getProfileReceiverChannelIds(user: TwitterUser) {
     let channelIds = []
     try {
-      const records = await twitterDiscordProfileController.getManyByTwitterUsername(user.username)
+      // eslint-disable-next-line max-len
+      const records = await this.twitterDiscordProfileService.getManyByTwitterUsername(user.username)
       channelIds = records.map((v) => v.discordChannelId)
     } catch (error) {
       this.logger.error(`getProfileReceiverChannelIds: ${error.message}`)
@@ -344,5 +341,3 @@ class Twitter {
     return channelIds
   }
 }
-
-export const twitter = new Twitter()

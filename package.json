@@ -20,12 +20,17 @@
   "homepage": "https://github.com/HitomaruKonpaku/verniy-bot#readme",
   "dependencies": {
     "@discordjs/builders": "^0.12.0",
+    "@discordjs/rest": "^0.4.1",
+    "@nestjs/common": "^8.4.4",
+    "@nestjs/core": "^8.4.4",
+    "@nestjs/typeorm": "^8.0.3",
+    "discord-api-types": "^0.32.0",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "js-yaml": "^4.1.0",
     "sqlite3": "^5.0.2",
     "twit": "^2.2.11",
-    "typeorm": "^0.3.5",
+    "typeorm": "^0.3.6",
     "typeorm-logger-adaptor": "^1.1.0",
     "winston": "^3.7.2",
     "winston-daily-rotate-file": "^4.6.1"

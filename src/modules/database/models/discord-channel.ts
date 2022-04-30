@@ -11,6 +11,6 @@ export class DiscordChannel {
   @Column({ name: 'guild_id', type: 'text', nullable: true })
   guildId?: string
 
-  @Column({ type: 'text', nullable: true })
-  name?: string
+  @Column({ type: 'text' })
+  name: string
 }

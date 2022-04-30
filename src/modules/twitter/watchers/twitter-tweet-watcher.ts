@@ -1,32 +1,38 @@
 import EventEmitter from 'events'
 import Twit from 'twit'
-import winston from 'winston'
-import { logger as baseLogger } from '../../logger'
-import { twitterUserController } from '../database/controllers/TwitterUserController'
+import { logger as baseLogger } from '../../../logger'
+import { TwitterUserService } from '../../database/services/twitter-user.service'
 
 export class TwitterTweetWatcher extends EventEmitter {
-  private logger: winston.Logger
+  private readonly logger = baseLogger.child({ context: TwitterTweetWatcher.name })
+
   private stream: Twit.Stream
 
-  constructor(private twit: Twit) {
+  constructor(
+    private readonly twit: Twit,
+    private readonly twitterUserService: TwitterUserService,
+  ) {
     super()
-    this.logger = baseLogger.child({ label: '[TwitterTweetWatcher]' })
-    this.twit = twit
   }
 
-  public async watch() {
-    const users = await twitterUserController.getManyForTweet()
+  public async start() {
+    const users = await this.twitterUserService.getManyForTweet()
     if (!users?.length) {
       return
     }
 
-    this.logger.info('Watching...')
+    this.logger.info('Starting...')
     this.logger.info('Users', {
       count: users.length,
       usernames: users.map((v) => v.username.toLowerCase()),
     })
     const userIds = users.map((v) => v.id)
     this.initStream(userIds)
+  }
+
+  public stop() {
+    this.logger.info('Stop')
+    this.stream.stop()
   }
 
   private initStream(userIds: string[]) {

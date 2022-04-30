@@ -7,13 +7,10 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "Worker",
-      "program": "${workspaceFolder}/src/index.ts",
+      "name": "[src] worker",
+      "program": "${workspaceFolder}/src/main.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outputCapture": "std",
-      "outFiles": [
-        "${workspaceFolder}/dist/**/*.js"
-      ],
       "skipFiles": [
         "<node_internals>/**"
       ]
