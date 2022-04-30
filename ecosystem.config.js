@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'verniy-bot',
       namespace: 'bot',
-      script: './dist/index.js',
+      script: './dist/main.js',
       env: {
         NODE_ENV: 'production',
       },
