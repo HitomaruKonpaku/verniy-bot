@@ -15,5 +15,16 @@
         "<node_internals>/**"
       ]
     },
+    {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "[src] deploy-commands",
+      "program": "${workspaceFolder}/src/deploy-commands.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outputCapture": "std",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
   ]
 }
