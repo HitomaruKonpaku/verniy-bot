@@ -62,16 +62,14 @@ export class TwitterDiscordProfileService {
       return
     }
     try {
-      await this.repository.upsert(
+      await this.repository.update(
         {
-          isActive: false,
-          updatedAt: new Date(),
           twitterUsername: twitterUsername.toLowerCase(),
           discordChannelId,
         },
         {
-          conflictPaths: ['twitterUsername', 'discordChannelId'],
-          skipUpdateIfNoValuesChanged: true,
+          isActive: false,
+          updatedAt: new Date(),
         },
       )
     } catch (error) {
