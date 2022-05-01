@@ -32,6 +32,7 @@ export class TwitterTweetWatcher extends EventEmitter {
 
   public stop() {
     this.logger.info('Stop')
+    this.stream.removeAllListeners()
     this.stream.stop()
   }
 
