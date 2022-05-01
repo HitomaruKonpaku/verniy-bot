@@ -237,6 +237,7 @@ export class DiscordService {
       createdAt: new Date(guild.createdTimestamp),
       ownerId: guild.ownerId,
       name: guild.name,
+      joinedAt: new Date(guild.joinedAt),
     })
 
     const owner = await guild.fetchOwner()

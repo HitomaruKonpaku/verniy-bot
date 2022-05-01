@@ -13,4 +13,7 @@ export class DiscordGuild {
 
   @Column({ type: 'text' })
   name: string
+
+  @Column({ name: 'joined_at', type: 'numeric', nullable: true })
+  joinedAt?: Date;
 }
