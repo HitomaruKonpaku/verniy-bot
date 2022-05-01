@@ -12,7 +12,7 @@
 
 ```
 git clone https://github.com/HitomaruKonpaku/verniy-bot.git
-cd evobot
+cd verniy-bot
 npm install
 ```
 
