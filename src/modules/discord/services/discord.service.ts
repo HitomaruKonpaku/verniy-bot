@@ -135,6 +135,16 @@ export class DiscordService {
       this.logger.debug(`[Shard ${shardId}] resume`)
     })
 
+    client.on('ready', () => {
+      this.client.guilds.cache.forEach(async (guild) => {
+        try {
+          await this.saveGuild(guild)
+        } catch (error) {
+          // Ignore
+        }
+      })
+    })
+
     client.once('ready', () => {
       const { user } = client
       this.logger.info(`${user.tag} ready!`)
@@ -159,10 +169,6 @@ export class DiscordService {
       const guild = await this.getGuild(channel.guildId)
       if (guild) {
         await this.saveGuild(guild)
-        const owner = await guild.fetchOwner()
-        if (owner?.user) {
-          await this.saveUser(owner.user)
-        }
       }
     } catch (error) {
       this.logger.warn(
@@ -224,6 +230,11 @@ export class DiscordService {
       ownerId: guild.ownerId,
       name: guild.name,
     })
+
+    const owner = await guild.fetchOwner()
+    if (owner?.user) {
+      await this.saveUser(owner.user)
+    }
   }
 
   private async saveTextChannel(channel: TextChannel) {
