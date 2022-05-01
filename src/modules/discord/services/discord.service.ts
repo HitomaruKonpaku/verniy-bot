@@ -135,6 +135,14 @@ export class DiscordService {
       this.logger.debug(`[Shard ${shardId}] resume`)
     })
 
+    client.on('guildCreate', async (guild) => {
+      try {
+        await this.saveGuild(guild)
+      } catch (error) {
+        // Ignore
+      }
+    })
+
     client.on('ready', () => {
       this.client.guilds.cache.forEach(async (guild) => {
         try {
