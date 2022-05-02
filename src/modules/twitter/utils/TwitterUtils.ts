@@ -33,7 +33,12 @@ export class TwitterUtils {
   }
 
   public static getUserProfileImageUrl(user: Twit.Twitter.User): string {
-    const url = user?.profile_image_url_https?.replace?.('_normal', '')
+    const url = user?.profile_image_url_https?.replace?.('_normal', '') || null
+    return url
+  }
+
+  public static getUserProfileBannerUrl(user: Twit.Twitter.User): string {
+    const url = user?.profile_banner_url || null
     return url
   }
 }

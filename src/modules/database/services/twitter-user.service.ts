@@ -66,7 +66,7 @@ export class TwitterUserService {
       protected: user.protected,
       verified: user.verified,
       profileImageUrl: TwitterUtils.getUserProfileImageUrl(user),
-      profileBannerUrl: user.profile_banner_url,
+      profileBannerUrl: TwitterUtils.getUserProfileBannerUrl(user),
     })
     return twitterUser
   }
