@@ -34,9 +34,9 @@ export class TwitterProfileService {
 
   private async execute() {
     try {
-      const usernames = await this.twitterDiscordProfileService.getTwitterUsernames()
-      if (usernames.length) {
-        await this.checkUsers(usernames)
+      const userIds = await this.twitterDiscordProfileService.getTwitterUserIds()
+      if (userIds.length) {
+        await this.checkUsers(userIds)
       }
     } catch (error) {
       this.logger.error(`execute: ${error.message}`)
@@ -46,9 +46,9 @@ export class TwitterProfileService {
     setTimeout(() => this.execute(), interval)
   }
 
-  private async checkUsers(usernames: string[]) {
+  private async checkUsers(userIds: string[]) {
     try {
-      const users = await this.twitterApiService.getAllUsersByUsernames(usernames)
+      const users = await this.twitterApiService.getAllUsersByUserIds(userIds)
       users.forEach((v) => this.checkUserProfile(v))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
@@ -223,7 +223,7 @@ export class TwitterProfileService {
     let channelIds = []
     try {
       // eslint-disable-next-line max-len
-      const records = await this.twitterDiscordProfileService.getManyByTwitterUsername(user.username)
+      const records = await this.twitterDiscordProfileService.getManyByTwitterUserId(user.id)
       channelIds = records.map((v) => v.discordChannelId)
     } catch (error) {
       this.logger.error(`getDiscordChannelIds: ${error.message}`, { user })

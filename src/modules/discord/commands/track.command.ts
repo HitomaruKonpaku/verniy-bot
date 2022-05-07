@@ -68,12 +68,12 @@ export class TrackCommand {
       const username = interaction.options.getString('username', true)
       const allowReply = interaction.options.getBoolean('allow_reply') ?? true
       const allowRetweet = interaction.options.getBoolean('allow_retweet') ?? true
-      const twitterUser = await this.twitterUserService.getOneByUsername(username)
+      let twitterUser = await this.twitterUserService.getOneByUsername(username)
       if (!twitterUser) {
         const user = await this.twitterApiService.getUserByUsername(username)
-        await this.twitterUserService.updateByTwitterUser(user)
+        twitterUser = await this.twitterUserService.updateByTwitterUser(user)
       }
-      await this.twitterDiscordTweetService.add(username, channelId, allowReply, allowRetweet)
+      await this.twitterDiscordTweetService.add(twitterUser.id, channelId, allowReply, allowRetweet)
       this.logger.info('Tracking tweet', { username, channelId })
       await interaction.editReply({
         embeds: [{
@@ -91,12 +91,12 @@ export class TrackCommand {
     try {
       const { channelId } = interaction
       const username = interaction.options.getString('username', true)
-      const twitterUser = await this.twitterUserService.getOneByUsername(username)
+      let twitterUser = await this.twitterUserService.getOneByUsername(username)
       if (!twitterUser) {
         const user = await this.twitterApiService.getUserByUsername(username)
-        await this.twitterUserService.updateByTwitterUser(user)
+        twitterUser = await this.twitterUserService.updateByTwitterUser(user)
       }
-      await this.twitterDiscordProfileService.add(username, channelId)
+      await this.twitterDiscordProfileService.add(twitterUser.id, channelId)
       this.logger.info('Tracking profile', { username, channelId })
       await interaction.editReply({
         embeds: [{

@@ -19,6 +19,32 @@ export class TwitterApiService {
     return this.twitterClientService.roClient
   }
 
+  public async getAllUsersByUserIds(userIds: string[]): Promise<UserV1[]> {
+    if (!userIds?.length) {
+      return []
+    }
+    const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+    const results = await Promise.allSettled(chunks.map((v) => this.getUsersByUserIds(v)))
+    const users = results.filter((v) => v.status === 'fulfilled').flatMap((v: any) => v.value)
+    return users
+  }
+
+  public async getUsersByUserIds(userIds: string[]): Promise<UserV1[]> {
+    if (!userIds?.length) {
+      return []
+    }
+    const requestId = randomUUID()
+    try {
+      this.logger.debug('--> getUsersByUserIds', { requestId, userCount: userIds.length, userIds })
+      const users = await this.client.v1.users({ user_id: userIds })
+      this.logger.debug('<-- getUsersByUserIds', { requestId })
+      return users
+    } catch (error) {
+      this.logger.error(`getUsersByUserIds: ${error.message}`, { requestId })
+    }
+    return []
+  }
+
   public async getAllUsersByUsernames(usernames: string[]): Promise<UserV1[]> {
     if (!usernames?.length) {
       return []
@@ -35,7 +61,7 @@ export class TwitterApiService {
     }
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getUsersByUsernames', { requestId, usernameCount: usernames.length, usernames })
+      this.logger.debug('--> getUsersByUsernames', { requestId, userCount: usernames.length, usernames })
       const users = await this.client.v1.users({ screen_name: usernames })
       this.logger.debug('<-- getUsersByUsernames', { requestId })
       return users

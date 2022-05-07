@@ -2,7 +2,6 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { logger as baseLogger } from '../../../logger'
 import { TwitterDiscordTweet } from '../models/twitter-discord-tweet'
-import { TwitterUser } from '../models/twitter-user'
 
 export class TwitterDiscordTweetService {
   private readonly logger = baseLogger.child({ context: TwitterDiscordTweetService.name })
@@ -12,26 +11,40 @@ export class TwitterDiscordTweetService {
     private readonly repository: Repository<TwitterDiscordTweet>,
   ) { }
 
-  public async getTwitterUsernames() {
+  public async getTwitterUserIds() {
     const records = await this.repository
       .createQueryBuilder()
-      .select('twitter_username')
+      .select('twitter_user_id')
       .distinct()
       .andWhere('is_active = TRUE')
-      .addOrderBy('twitter_username')
+      .addOrderBy('LENGTH(twitter_user_id)')
+      .addOrderBy('twitter_user_id')
       .getRawMany()
-    const usernames = records.map((v) => v.twitter_username) as string[]
+    const ids = records.map((v) => v.twitter_user_id) as string[]
+    return ids
+  }
+
+  public async getTwitterUsernames() {
+    const query = `
+SELECT DISTINCT (tu.username)
+FROM twitter_discord_tweet AS td
+  JOIN twitter_user AS tu ON tu.id = td.twitter_user_id
+WHERE td.is_active = TRUE
+ORDER BY LOWER(tu.username)
+    `
+    const records = await this.repository.query(query)
+    const usernames = records.map((v) => v.username) as string[]
     return usernames
   }
 
-  public async getManyByTwitterUsername(
-    username: string,
+  public async getManyByTwitterUserId(
+    twitterUserId: string,
     config?: { allowReply?: boolean, allowRetweet?: boolean },
   ) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere('LOWER(twitter_username) = LOWER(:username)', { username })
+      .andWhere('twitter_user_id = :twitterUserId', { twitterUserId })
     if (config?.allowReply) {
       query.andWhere('allow_reply = TRUE')
     }
@@ -42,40 +55,25 @@ export class TwitterDiscordTweetService {
     return records
   }
 
-  public async existTwitterId(id: string) {
-    const count = await this.repository
-      .createQueryBuilder('tdt')
-      .leftJoinAndMapOne(
-        'tdt.twitterUser',
-        TwitterUser,
-        'tu',
-        'LOWER(tu.username) = LOWER(twitter_username)',
-      )
-      .andWhere('tdt.is_active = TRUE')
-      .andWhere('tu.id = :id', { id })
-      .getCount()
-    const isExist = count > 0
-    return isExist
-  }
-
-  public async existTwitterUsername(username: string) {
-    const count = await this.repository
-      .createQueryBuilder()
-      .andWhere('is_active = TRUE')
-      .andWhere('LOWER(twitter_username) = LOWER(:username)', { username })
-      .getCount()
+  public async existTwitterUserId(twitterUserId: string) {
+    const count = await this.repository.count({
+      where: {
+        isActive: true,
+        twitterUserId,
+      },
+    })
     const isExist = count > 0
     return isExist
   }
 
   public async add(
-    twitterUsername: string,
+    twitterUserId: string,
     discordChannelId: string,
     allowReply = true,
     allowRetweet = true,
     filterKeywords?: string[],
   ) {
-    if (!twitterUsername || !discordChannelId) {
+    if (!twitterUserId || !discordChannelId) {
       return
     }
     try {
@@ -83,30 +81,30 @@ export class TwitterDiscordTweetService {
         {
           isActive: true,
           updatedAt: new Date(),
-          twitterUsername: twitterUsername.toLowerCase(),
+          twitterUserId,
           discordChannelId,
           allowReply,
           allowRetweet,
           filterKeywords,
         },
         {
-          conflictPaths: ['twitterUsername', 'discordChannelId'],
+          conflictPaths: ['twitterUserId', 'discordChannelId'],
           skipUpdateIfNoValuesChanged: true,
         },
       )
     } catch (error) {
-      this.logger.error(`add: ${error.message}`, { twitterUsername, discordChannelId })
+      this.logger.error(`add: ${error.message}`, { twitterUserId, discordChannelId })
     }
   }
 
-  public async remove(twitterUsername: string, discordChannelId: string) {
-    if (!twitterUsername || !discordChannelId) {
+  public async remove(twitterUserId: string, discordChannelId: string) {
+    if (!twitterUserId || !discordChannelId) {
       return
     }
     try {
       await this.repository.update(
         {
-          twitterUsername: twitterUsername.toLowerCase(),
+          twitterUserId,
           discordChannelId,
         },
         {
@@ -115,7 +113,7 @@ export class TwitterDiscordTweetService {
         },
       )
     } catch (error) {
-      this.logger.error(`remove: ${error.message}`, { twitterUsername, discordChannelId })
+      this.logger.error(`remove: ${error.message}`, { twitterUserId, discordChannelId })
     }
   }
 }

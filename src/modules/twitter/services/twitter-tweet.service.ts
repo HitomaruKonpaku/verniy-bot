@@ -78,33 +78,38 @@ export class TwitterTweetService {
     const { stream } = this
     const ev = ETwitterStreamEvent
     stream.on(ev.Error, (error) => this.onError(error))
+    stream.on(ev.ConnectError, (error) => this.logger.error(`ConnectError: ${error}`))
     stream.on(ev.Connected, () => this.logger.info('Connected'))
-    stream.on(ev.ConnectionClosed, () => this.logger.info('ConnectionClosed'))
+    stream.on(ev.ConnectionLost, () => this.logger.error('ConnectionLost'))
+    stream.on(ev.ConnectionClosed, () => this.logger.error('ConnectionClosed'))
+    stream.on(ev.ReconnectError, (error) => this.logger.error(`ReconnectError: ${error}`))
+    stream.on(ev.ReconnectAttempt, (tries) => this.logger.warn(`ReconnectAttempt: ${tries}`))
+    stream.on(ev.ReconnectLimitExceeded, () => this.logger.error('ReconnectLimitExceeded'))
     stream.on(ev.Reconnected, () => this.logger.info('Reconnected'))
     stream.on(ev.Data, (data) => this.onData(data))
   }
 
   private async initUsers() {
     try {
-      const usernames = await this.twitterDiscordTweetService.getTwitterUsernames()
-      const chunks = Utils.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
+      const userIds = await this.twitterDiscordTweetService.getTwitterUserIds()
+      const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((v) => this.getUsers(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)
     }
   }
 
-  private async getUsers(usernames: string[], retryCount = 0) {
-    if (!usernames?.length) {
+  private async getUsers(userIds: string[], retryCount = 0) {
+    if (!userIds?.length) {
       return
     }
     try {
-      const users = await this.twitterApiService.getUsersByUsernames(usernames)
+      const users = await this.twitterApiService.getUsersByUserIds(userIds)
       if (!users.length) {
         const ms = ([10, 20][retryCount] || 30) * 1000
-        this.logger.warn(`getUsers: Users not found, retry in ${ms}ms`, { usernameCount: usernames.length, usernames })
+        this.logger.warn(`getUsers: Users not found, retry in ${ms}ms`, { userCount: userIds.length, userIds })
         await Utils.sleep(ms)
-        this.getUsers(usernames, retryCount + 1)
+        this.getUsers(userIds, retryCount + 1)
         return
       }
       await Promise.allSettled(users.map((v) => this.twitterUserService.updateByTwitterUser(v)))
@@ -162,7 +167,7 @@ export class TwitterTweetService {
   private async onData(data: TweetV2SingleStreamResult) {
     try {
       const { author_id: authorId } = data.data
-      const isAuthorExist = await this.twitterDiscordTweetService.existTwitterId(authorId)
+      const isAuthorExist = await this.twitterDiscordTweetService.existTwitterUserId(authorId)
       if (!isAuthorExist) {
         return
       }
@@ -204,8 +209,8 @@ export class TwitterTweetService {
       const author = TwitterUtils.getIncludesUserById(data, data.data.author_id)
       const isReply = TwitterUtils.isReplyStatus(data)
       const isRetweet = TwitterUtils.isRetweetStatus(data)
-      const records = await this.twitterDiscordTweetService.getManyByTwitterUsername(
-        author.username,
+      const records = await this.twitterDiscordTweetService.getManyByTwitterUserId(
+        author.id,
         {
           allowReply: isReply,
           allowRetweet: isRetweet,

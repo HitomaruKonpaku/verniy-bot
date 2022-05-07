@@ -3,7 +3,7 @@ import {
 } from 'typeorm'
 
 @Entity('twitter_discord_profile')
-@Unique(['twitterUsername', 'discordChannelId'])
+@Unique(['twitterUserId', 'discordChannelId'])
 export class TwitterDiscordProfile {
   @PrimaryGeneratedColumn('uuid')
   id: string
@@ -17,8 +17,8 @@ export class TwitterDiscordProfile {
   @UpdateDateColumn({ name: 'updated_at', type: 'numeric', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @Column({ name: 'twitter_username', type: 'text' })
-  twitterUsername: string
+  @Column({ name: 'twitter_user_id', type: 'text' })
+  twitterUserId: string
 
   @Column({ name: 'discord_channel_id', type: 'text' })
   discordChannelId: string

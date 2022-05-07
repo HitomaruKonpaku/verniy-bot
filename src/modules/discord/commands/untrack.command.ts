@@ -4,6 +4,7 @@ import { CommandInteraction } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
 import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
 import { TwitterDiscordTweetService } from '../../database/services/twitter-discord-tweet.service'
+import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { TwitterUtils } from '../../twitter/utils/TwitterUtils'
 
 @Injectable()
@@ -11,6 +12,8 @@ export class UntrackCommand {
   private readonly logger = baseLogger.child({ context: UntrackCommand.name })
 
   constructor(
+    @Inject(TwitterUserService)
+    private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterDiscordTweetService)
     private readonly twitterDiscordTweetService: TwitterDiscordTweetService,
     @Inject(TwitterDiscordProfileService)
@@ -54,7 +57,12 @@ export class UntrackCommand {
     try {
       const { channelId } = interaction
       const username = interaction.options.getString('username', true)
-      await this.twitterDiscordTweetService.remove(username, channelId)
+      const twitterUser = await this.twitterUserService.getOneByUsername(username)
+      if (!twitterUser) {
+        await interaction.editReply('User not found')
+        return
+      }
+      await this.twitterDiscordTweetService.remove(twitterUser.id, channelId)
       this.logger.info('Untrack tweet', { username, channelId })
       await interaction.editReply({
         embeds: [{
@@ -72,7 +80,12 @@ export class UntrackCommand {
     try {
       const { channelId } = interaction
       const username = interaction.options.getString('username', true)
-      await this.twitterDiscordProfileService.remove(username, channelId)
+      const twitterUser = await this.twitterUserService.getOneByUsername(username)
+      if (!twitterUser) {
+        await interaction.editReply('User not found')
+        return
+      }
+      await this.twitterDiscordProfileService.remove(twitterUser.id, channelId)
       this.logger.info('Untrack profile', { username, channelId })
       await interaction.editReply({
         embeds: [{
