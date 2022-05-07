@@ -43,13 +43,13 @@ export class TwitterTweetService {
   public async start() {
     this.logger.info('Starting...')
     await this.initUsers()
-    await this.connect()
     await this.initStreamRules()
+    await this.connect()
   }
 
   public async connect(retryCount = 0) {
     try {
-      this.logger.debug('Connecting')
+      this.logger.info('Connecting')
       await this.stream.connect({ autoReconnect: true })
     } catch (error) {
       this.logger.error(`connect: ${error.message}`)
@@ -121,6 +121,8 @@ export class TwitterTweetService {
         usernames,
         this.configService.twitterTweetRuleLength,
       )
+      this.logger.info('curStreamRules', { length: curStreamRules.length })
+      this.logger.info('newStreamRules', { length: newStreamRules.length })
       if (newStreamRules.length > this.configService.twitterTweetRuleLimit) {
         this.logger.error(`initStreamRules: Rule size (${newStreamRules.length}) exceed maximum limit (${this.configService.twitterTweetRuleLimit})`)
         this.logger.error('initStreamRules: Cancelled')
@@ -149,7 +151,7 @@ export class TwitterTweetService {
       const ms = ([10, 20, 30][retryCount] || 60) * 1000
       this.logger.info(`initStreamRules: Retry in ${ms}ms`)
       await Utils.sleep(ms)
-      this.connect(retryCount + 1)
+      await this.initStreamRules(retryCount + 1)
     }
   }
 
