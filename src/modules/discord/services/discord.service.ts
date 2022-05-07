@@ -148,11 +148,13 @@ export class DiscordService {
     })
 
     client.on('ready', () => {
-      this.client.guilds.cache.forEach(async (guild) => {
-        try {
-          await this.saveGuild(guild)
-        } catch (error) {
-          // Ignore
+      this.client.guilds.cache.forEach((guild) => {
+        this.saveGuild(guild).catch()
+      })
+
+      this.client.channels.cache.forEach((channel) => {
+        if ((channel instanceof TextChannel)) {
+          this.saveTextChannel(channel).catch()
         }
       })
     })
