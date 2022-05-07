@@ -17,6 +17,8 @@ import { ConfigService } from '../../config/services/config.service'
 import { DiscordChannelService } from '../../database/services/discord-channel.service'
 import { DiscordGuildService } from '../../database/services/discord-guild.service'
 import { DiscordUserService } from '../../database/services/discord-user.service'
+import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
+import { TwitterDiscordTweetService } from '../../database/services/twitter-discord-tweet.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
 import { DISCORD_COMMANDS } from '../constants/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'
@@ -39,6 +41,10 @@ export class DiscordService {
     private readonly discordGuildService: DiscordGuildService,
     @Inject(DiscordChannelService)
     private readonly discordChannelService: DiscordChannelService,
+    @Inject(forwardRef(() => TwitterDiscordTweetService))
+    private readonly twitterDiscordTweetService: TwitterDiscordTweetService,
+    @Inject(forwardRef(() => TwitterDiscordProfileService))
+    private readonly twitterDiscordProfileService: TwitterDiscordProfileService,
     @Inject(forwardRef(() => TwitterService))
     private readonly twitterService: TwitterService,
   ) {
@@ -147,13 +153,21 @@ export class DiscordService {
       }
     })
 
-    client.on('ready', () => {
+    client.on('ready', async () => {
       this.client.guilds.cache.forEach((guild) => {
         this.saveGuild(guild).catch()
       })
 
+      const channelIds = (await Promise.allSettled([
+        this.twitterDiscordTweetService.getDiscordChannelIds(),
+        this.twitterDiscordProfileService.getDiscordChannelIds(),
+      ]))
+        .filter((v) => v.status === 'fulfilled')
+        .map((v: any) => v.value as string[])
+        .flat()
+
       this.client.channels.cache.forEach((channel) => {
-        if ((channel instanceof TextChannel)) {
+        if (channelIds.includes(channel.id) && channel instanceof TextChannel) {
           this.saveTextChannel(channel).catch()
         }
       })

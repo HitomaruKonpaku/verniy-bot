@@ -24,6 +24,16 @@ export class TwitterDiscordTweetService {
     return ids
   }
 
+  public async getDiscordChannelIds() {
+    const records = await this.repository
+      .createQueryBuilder()
+      .select('discord_channel_id')
+      .distinct()
+      .getRawMany()
+    const ids = records.map((v) => v.discord_channel_id) as string[]
+    return ids
+  }
+
   public async getTwitterUsernames() {
     const query = `
 SELECT DISTINCT (tu.username)
