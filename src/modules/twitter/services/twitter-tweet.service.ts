@@ -121,11 +121,11 @@ export class TwitterTweetService {
   private async initStreamRules(retryCount = 0) {
     try {
       const usernames = await this.twitterDiscordTweetService.getTwitterUsernames()
-      const curStreamRules = (await this.client.v2.streamRules()).data || []
       const newStreamRules = TwitterRuleUtils.buildStreamRulesByUsernames(
         usernames,
         this.configService.twitterTweetRuleLength,
       )
+      const curStreamRules = (await this.client.v2.streamRules()).data || []
       this.logger.info('curStreamRules', { length: curStreamRules.length })
       this.logger.info('newStreamRules', { length: newStreamRules.length })
       if (newStreamRules.length > this.configService.twitterTweetRuleLimit) {
