@@ -41,13 +41,17 @@ export class DiscordService {
     private readonly discordChannelService: DiscordChannelService,
     @Inject(forwardRef(() => TwitterService))
     private readonly twitterService: TwitterService,
-  ) { }
+  ) {
+    this.initClient()
+  }
 
   public async start() {
     this.logger.info('Starting...')
-    this.initClient()
     try {
       const token = process.env.DISCORD_TOKEN
+      if (!token) {
+        this.logger.warn('Token not found')
+      }
       await this.client.login(token)
     } catch (error) {
       this.logger.error(`start: ${error.message}`)
@@ -89,7 +93,7 @@ export class DiscordService {
         : null
       this.saveDiscordChannelData(channel)
       const message = await channel.send(options)
-      this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}#[${channel.name}] (${channelId})`)
+      this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
       return message
     } catch (error) {
       this.logger.error(`sendToChannel: ${error.message}`, { channelId })

@@ -5,7 +5,7 @@ import { logger as baseLogger } from '../../../logger'
 import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
 import { TwitterDiscordTweetService } from '../../database/services/twitter-discord-tweet.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
-import { TwitterService } from '../../twitter/services/twitter.service'
+import { TwitterApiService } from '../../twitter/services/twitter-api.service'
 import { TwitterUtils } from '../../twitter/utils/TwitterUtils'
 
 @Injectable()
@@ -13,8 +13,8 @@ export class TrackCommand {
   private readonly logger = baseLogger.child({ context: TrackCommand.name })
 
   constructor(
-    @Inject(TwitterService)
-    private readonly twitterService: TwitterService,
+    @Inject(TwitterApiService)
+    private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterDiscordTweetService)
@@ -70,7 +70,7 @@ export class TrackCommand {
       const allowRetweet = interaction.options.getBoolean('allow_retweet') ?? true
       const twitterUser = await this.twitterUserService.getOneByUsername(username)
       if (!twitterUser) {
-        const user = await this.twitterService.fetchUser(username)
+        const user = await this.twitterApiService.getUserByUsername(username)
         await this.twitterUserService.updateByTwitterUser(user)
       }
       await this.twitterDiscordTweetService.add(username, channelId, allowReply, allowRetweet)
@@ -93,7 +93,7 @@ export class TrackCommand {
       const username = interaction.options.getString('username', true)
       const twitterUser = await this.twitterUserService.getOneByUsername(username)
       if (!twitterUser) {
-        const user = await this.twitterService.fetchUser(username)
+        const user = await this.twitterApiService.getUserByUsername(username)
         await this.twitterUserService.updateByTwitterUser(user)
       }
       await this.twitterDiscordProfileService.add(username, channelId)

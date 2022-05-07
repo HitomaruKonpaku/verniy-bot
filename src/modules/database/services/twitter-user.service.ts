@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm'
-import Twit from 'twit'
+import { UserV1 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
 import { logger as baseLogger } from '../../../logger'
 import { TwitterUtils } from '../../twitter/utils/TwitterUtils'
@@ -39,13 +39,15 @@ export class TwitterUserService {
         'tdt',
         'LOWER(tdt.twitter_username) = LOWER(tu.username) AND tdt.is_active = TRUE',
       )
-      .addOrderBy('tu.username')
+      .addOrderBy('LOWER(tu.username)')
       .getMany()
     return users
   }
 
   public async update(data: TwitterUser): Promise<TwitterUser> {
-    if (!data) return null
+    if (!data) {
+      return null
+    }
     try {
       const user = await this.repository.save(data)
       return user
@@ -55,7 +57,10 @@ export class TwitterUserService {
     return null
   }
 
-  public async updateByTwitterUser(user: Twit.Twitter.User) {
+  public async updateByTwitterUser(user: UserV1) {
+    if (!user) {
+      return null
+    }
     const twitterUser = await this.update({
       id: user.id_str,
       createdAt: new Date(user.created_at),

@@ -2,6 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { logger as baseLogger } from '../../../logger'
 import { TwitterDiscordTweet } from '../models/twitter-discord-tweet'
+import { TwitterUser } from '../models/twitter-user'
 
 export class TwitterDiscordTweetService {
   private readonly logger = baseLogger.child({ context: TwitterDiscordTweetService.name })
@@ -39,6 +40,22 @@ export class TwitterDiscordTweetService {
     }
     const records = await query.getMany()
     return records
+  }
+
+  public async existTwitterId(id: string) {
+    const count = await this.repository
+      .createQueryBuilder('tdt')
+      .leftJoinAndMapOne(
+        'tdt.twitterUser',
+        TwitterUser,
+        'tu',
+        'LOWER(tu.username) = LOWER(twitter_username)',
+      )
+      .andWhere('tdt.is_active = TRUE')
+      .andWhere('tu.id = :id', { id })
+      .getCount()
+    const isExist = count > 0
+    return isExist
   }
 
   public async existTwitterUsername(username: string) {

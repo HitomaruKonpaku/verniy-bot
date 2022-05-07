@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { readFileSync } from 'fs'
 import yaml from 'js-yaml'
 import { logger as baseLogger } from '../../../logger'
+import { TWITTER_STREAM_RULE_LENGTH, TWITTER_STREAM_RULE_LIMIT } from '../../twitter/constants/twitter.constant'
 
 @Injectable()
 export class ConfigService {
-  public config: any
+  public config: Record<string, any>
 
   private readonly logger = baseLogger.child({ context: ConfigService.name })
 
@@ -22,12 +23,26 @@ export class ConfigService {
     return !!this.config.twitter?.tweet?.active
   }
 
+  /**
+   * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
+   */
+  public get twitterTweetRuleLimit() {
+    return this.getNumber(this.config.twitter?.tweet?.ruleLimit, TWITTER_STREAM_RULE_LIMIT)
+  }
+
+  /**
+   * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
+   */
+  public get twitterTweetRuleLength() {
+    return this.getNumber(this.config.twitter?.tweet?.ruleLength, TWITTER_STREAM_RULE_LENGTH)
+  }
+
   public get twitterProfileActive() {
     return !!this.config.twitter?.profile?.active
   }
 
   public get twitterProfileInterval() {
-    return Number(this.config.twitter?.profile?.interval) || 60000
+    return this.getNumber(this.config.twitter?.profile?.interval, 60000)
   }
 
   public load() {
@@ -51,5 +66,10 @@ export class ConfigService {
 
     this.config = config || {}
     return this.config
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private getNumber(value: string, defaultValue = 0) {
+    return Number(value || defaultValue) || defaultValue
   }
 }
