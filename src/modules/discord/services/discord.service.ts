@@ -153,7 +153,7 @@ export class DiscordService {
       }
     })
 
-    client.on('ready', async () => {
+    client.once('ready', async () => {
       this.client.guilds.cache.forEach((guild) => {
         this.saveGuild(guild).catch()
       })
