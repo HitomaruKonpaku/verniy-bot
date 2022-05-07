@@ -14,8 +14,8 @@ import { TwitterApiService } from './twitter-api.service'
 import { TwitterClientService } from './twitter-client.service'
 
 @Injectable()
-export class TwitterTweetService {
-  private readonly logger = baseLogger.child({ context: TwitterTweetService.name })
+export class TwitterTweetTrackingService {
+  private readonly logger = baseLogger.child({ context: TwitterTweetTrackingService.name })
 
   private stream: TweetStream<TweetV2SingleStreamResult>;
 

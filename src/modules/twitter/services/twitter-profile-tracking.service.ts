@@ -11,8 +11,8 @@ import { DiscordService } from '../../discord/services/discord.service'
 import { TwitterApiService } from './twitter-api.service'
 
 @Injectable()
-export class TwitterProfileService {
-  private readonly logger = baseLogger.child({ context: TwitterProfileService.name })
+export class TwitterProfileTrackingService {
+  private readonly logger = baseLogger.child({ context: TwitterProfileTrackingService.name })
 
   constructor(
     @Inject(ConfigService)

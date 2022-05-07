@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { logger as baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
-import { TwitterProfileService } from './twitter-profile.service'
-import { TwitterTweetService } from './twitter-tweet.service'
+import { TwitterProfileTrackingService } from './twitter-profile-tracking.service'
+import { TwitterTweetTrackingService } from './twitter-tweet-tracking.service'
 
 @Injectable()
 export class TwitterService {
@@ -11,19 +11,19 @@ export class TwitterService {
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
-    @Inject(TwitterTweetService)
-    private readonly twitterTweetService: TwitterTweetService,
-    @Inject(TwitterProfileService)
-    private readonly twitterProfileService: TwitterProfileService,
+    @Inject(TwitterTweetTrackingService)
+    private readonly twitterTweetTrackingService: TwitterTweetTrackingService,
+    @Inject(TwitterProfileTrackingService)
+    private readonly twitterProfileTrackingService: TwitterProfileTrackingService,
   ) { }
 
   public async start() {
     this.logger.info('Starting...')
     if (this.configService.twitterTweetActive) {
-      await this.twitterTweetService.start()
+      await this.twitterTweetTrackingService.start()
     }
     if (this.configService.twitterProfileActive) {
-      await this.twitterProfileService.start()
+      await this.twitterProfileTrackingService.start()
     }
   }
 }

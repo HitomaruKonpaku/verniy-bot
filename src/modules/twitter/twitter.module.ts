@@ -4,8 +4,8 @@ import { DatabaseModule } from '../database/database.module'
 import { DiscordModule } from '../discord/discord.module'
 import { TwitterApiService } from './services/twitter-api.service'
 import { TwitterClientService } from './services/twitter-client.service'
-import { TwitterProfileService } from './services/twitter-profile.service'
-import { TwitterTweetService } from './services/twitter-tweet.service'
+import { TwitterProfileTrackingService } from './services/twitter-profile-tracking.service'
+import { TwitterTweetTrackingService } from './services/twitter-tweet-tracking.service'
 import { TwitterService } from './services/twitter.service'
 
 @Module({
@@ -18,8 +18,8 @@ import { TwitterService } from './services/twitter.service'
     TwitterService,
     TwitterClientService,
     TwitterApiService,
-    TwitterTweetService,
-    TwitterProfileService,
+    TwitterTweetTrackingService,
+    TwitterProfileTrackingService,
   ],
   exports: [
     TwitterService,
