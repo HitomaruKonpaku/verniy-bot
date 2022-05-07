@@ -63,6 +63,7 @@ export class TwitterUserService {
     }
     const twitterUser = await this.update({
       id: user.id_str,
+      isActive: true,
       createdAt: new Date(user.created_at),
       username: user.screen_name,
       name: user.name,
