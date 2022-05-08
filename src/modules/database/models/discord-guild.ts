@@ -1,13 +1,8 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm'
+import { Column, Entity } from 'typeorm'
+import { BaseEntity } from './_base.entity'
 
 @Entity('discord_guild')
-export class DiscordGuild {
-  @PrimaryColumn({ type: 'text' })
-  id: string
-
-  @Column({ name: 'created_at', type: 'numeric' })
-  createdAt: Date;
-
+export class DiscordGuild extends BaseEntity {
   @Column({ name: 'owner_id', type: 'text' })
   ownerId: string
 
@@ -15,5 +10,8 @@ export class DiscordGuild {
   name: string
 
   @Column({ name: 'joined_at', type: 'numeric', nullable: true })
-  joinedAt?: Date;
+  joinedAt?: Date
+
+  @Column({ name: 'left_at', type: 'numeric', nullable: true })
+  leftAt?: Date
 }

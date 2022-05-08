@@ -1,13 +1,8 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm'
+import { Column, Entity } from 'typeorm'
+import { BaseEntity } from './_base.entity'
 
 @Entity('discord_user')
-export class DiscordUser {
-  @PrimaryColumn({ type: 'text' })
-  id: string
-
-  @Column({ name: 'created_at', type: 'numeric' })
-  createdAt: Date;
-
+export class DiscordUser extends BaseEntity {
   @Column({ type: 'text' })
   username: string
 

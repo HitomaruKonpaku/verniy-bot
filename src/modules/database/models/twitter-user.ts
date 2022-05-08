@@ -1,16 +1,8 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm'
+import { Column, Entity } from 'typeorm'
+import { BaseEntity } from './_base.entity'
 
 @Entity('twitter_user')
-export class TwitterUser {
-  @PrimaryColumn({ type: 'text' })
-  id: string
-
-  @Column({ name: 'is_active', type: 'boolean', default: true })
-  isActive: boolean
-
-  @Column({ name: 'created_at', type: 'numeric' })
-  createdAt: Date;
-
+export class TwitterUser extends BaseEntity {
   @Column({ type: 'text' })
   username: string
 
