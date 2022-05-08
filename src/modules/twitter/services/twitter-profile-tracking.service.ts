@@ -48,21 +48,45 @@ export class TwitterProfileTrackingService {
 
   private async checkUsers(userIds: string[]) {
     try {
+      const inactiveUserIdSet = new Set(userIds)
       const users = await this.twitterApiService.getAllUsersByUserIds(userIds)
-      users.forEach((v) => this.checkUserProfile(v))
+      users.forEach((user) => {
+        inactiveUserIdSet.delete(user.id_str)
+        this.checkActiveUserProfile(user)
+      })
+      inactiveUserIdSet.forEach((id) => {
+        this.checkInactiveUserProfile(id)
+      })
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }
   }
 
-  private async checkUserProfile(user: UserV1) {
+  private async checkInactiveUserProfile(id: string) {
+    try {
+      const oldUser = await this.twitterUserService.getOneById(id)
+      const newUser = await this.twitterUserService.updateIsActive(id, false)
+      await this.checkUserProfile(newUser, oldUser)
+    } catch (error) {
+      this.logger.error(`checkInactiveUserProfile: ${error.message}`, { id })
+    }
+  }
+
+  private async checkActiveUserProfile(user: UserV1) {
     try {
       const oldUser = await this.twitterUserService.getOneById(user.id_str)
       const newUser = await this.twitterUserService.updateByTwitterUser(user)
-      if (!oldUser || !newUser) {
-        return
-      }
+      await this.checkUserProfile(newUser, oldUser)
+    } catch (error) {
+      this.logger.error(`checkActiveUserProfile: ${error.message}`, { id: user.id_str })
+    }
+  }
 
+  private async checkUserProfile(newUser: TwitterUser, oldUser: TwitterUser) {
+    if (!newUser || !oldUser) {
+      return
+    }
+    try {
       const detectConditions = [
         newUser.isActive !== oldUser.isActive,
         newUser.username !== oldUser.username,
@@ -79,12 +103,12 @@ export class TwitterProfileTrackingService {
         return
       }
 
-      this.logger.info(`User changed: ${user.screen_name}`)
+      this.logger.info(`User changed: ${oldUser.username}`)
       this.logger.debug('New user', newUser)
       this.logger.debug('Old user', oldUser)
       this.onProfileChange(newUser, oldUser)
     } catch (error) {
-      this.logger.error(`checkUserProfile: ${error.message}`, { id: user.id_str })
+      this.logger.error(`checkUserProfile: ${error.message}`, { id: oldUser.id })
     }
   }
 
@@ -98,9 +122,23 @@ export class TwitterProfileTrackingService {
       const baseContent = bold(inlineCode(`@${oldUser.username}`))
       const messageOptionsList: MessageOptions[] = []
 
+      if (newUser.isActive !== oldUser.isActive) {
+        try {
+          this.logger.warn(`${oldUser.username} isActive: ${newUser.isActive ? '✅' : '❌'}`)
+          messageOptionsList.push({
+            content: [
+              baseContent,
+              `Active: ${newUser.isActive ? '✅' : '❌'}`,
+            ].join('\n'),
+          })
+        } catch (error) {
+          this.logger.error(`onProfileChange#isActive: ${error.message}`)
+        }
+      }
+
       if (newUser.username !== oldUser.username) {
         try {
-          this.logger.info(`${oldUser.username} username`, { to: newUser.username, from: oldUser.username })
+          this.logger.warn(`${oldUser.username} username`, { to: newUser.username, from: oldUser.username })
           messageOptionsList.push({
             content: [
               `${baseContent}'s username changed`,

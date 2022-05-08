@@ -76,4 +76,11 @@ export class TwitterUserService {
     })
     return twitterUser
   }
+
+  public async updateIsActive(id: string, isActive: boolean) {
+    const twitterUser = await this.repository.findOneByOrFail({ id })
+    await this.repository.update({ id }, { isActive })
+    Object.assign(twitterUser, { isActive })
+    return twitterUser
+  }
 }
