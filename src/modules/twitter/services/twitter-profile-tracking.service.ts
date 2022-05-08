@@ -64,6 +64,8 @@ export class TwitterProfileTrackingService {
       }
 
       const detectConditions = [
+        newUser.isActive !== oldUser.isActive,
+        newUser.username !== oldUser.username,
         newUser.name !== oldUser.name,
         newUser.location !== oldUser.location,
         newUser.description !== oldUser.description,
@@ -93,12 +95,27 @@ export class TwitterProfileTrackingService {
         return
       }
 
-      const baseContent = bold(inlineCode(`@${newUser.username}`))
+      const baseContent = bold(inlineCode(`@${oldUser.username}`))
       const messageOptionsList: MessageOptions[] = []
+
+      if (newUser.username !== oldUser.username) {
+        try {
+          this.logger.info(`${oldUser.username} username`, { to: newUser.username, from: oldUser.username })
+          messageOptionsList.push({
+            content: [
+              `${baseContent}'s username changed`,
+              `❌ ${inlineCode(oldUser.username)}`,
+              `➡️ ${inlineCode(newUser.username)}`,
+            ].join('\n'),
+          })
+        } catch (error) {
+          this.logger.error(`onProfileChange#username: ${error.message}`)
+        }
+      }
 
       if (newUser.name !== oldUser.name) {
         try {
-          this.logger.info(`${newUser.username} name`, { to: newUser.name, from: oldUser.name })
+          this.logger.info(`${oldUser.username} name`, { to: newUser.name, from: oldUser.name })
           messageOptionsList.push({
             content: [
               `${baseContent}'s name changed`,
@@ -113,7 +130,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.location !== oldUser.location) {
         try {
-          this.logger.info(`${newUser.username} location`, { to: newUser.location, from: oldUser.location })
+          this.logger.info(`${oldUser.username} location`, { to: newUser.location, from: oldUser.location })
           messageOptionsList.push({
             content: [
               `${baseContent}'s location changed`,
@@ -128,7 +145,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.description !== oldUser.description) {
         try {
-          this.logger.info(`${newUser.username} description`, { to: newUser.description, from: oldUser.description })
+          this.logger.info(`${oldUser.username} description`, { to: newUser.description, from: oldUser.description })
           messageOptionsList.push({
             content: [
               `${baseContent}'s description changed`,
@@ -143,7 +160,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.protected !== oldUser.protected) {
         try {
-          this.logger.info(`${newUser.username} protected: ${newUser.protected ? '✅' : '❌'}`)
+          this.logger.info(`${oldUser.username} protected: ${newUser.protected ? '✅' : '❌'}`)
           messageOptionsList.push({
             content: [
               baseContent,
@@ -157,7 +174,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.verified !== oldUser.verified) {
         try {
-          this.logger.info(`${newUser.username} verified: ${newUser.verified ? '✅' : '❌'}`)
+          this.logger.info(`${oldUser.username} verified: ${newUser.verified ? '✅' : '❌'}`)
           messageOptionsList.push({
             content: [
               baseContent,
@@ -173,7 +190,7 @@ export class TwitterProfileTrackingService {
         try {
           const newProfileImageUrl = newUser.profileImageUrl
           const oldProfileImageUrl = oldUser.profileImageUrl
-          this.logger.info(`${newUser.username} profile image`, { to: newProfileImageUrl, from: oldProfileImageUrl })
+          this.logger.info(`${oldUser.username} profile image`, { to: newProfileImageUrl, from: oldProfileImageUrl })
           messageOptionsList.push({
             content: [
               `${baseContent}'s profile image changed`,
@@ -189,7 +206,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.profileBannerUrl !== oldUser.profileBannerUrl) {
         try {
-          this.logger.info(`${newUser.username} profile banner`, { to: newUser.profileBannerUrl, from: oldUser.profileBannerUrl })
+          this.logger.info(`${oldUser.username} profile banner`, { to: newUser.profileBannerUrl, from: oldUser.profileBannerUrl })
           const fileName = newUser.profileBannerUrl
             ? `${new URL(newUser.profileBannerUrl).pathname.split('/').reverse()[0]}.jpg`
             : null
