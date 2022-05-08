@@ -21,4 +21,11 @@ export class DiscordGuildService {
     }
     return null
   }
+
+  public async updateLeftAt(id: string) {
+    await this.repository.update(
+      { id },
+      { leftAt: new Date() },
+    )
+  }
 }

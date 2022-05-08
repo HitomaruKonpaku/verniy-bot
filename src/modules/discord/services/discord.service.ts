@@ -153,6 +153,14 @@ export class DiscordService {
       }
     })
 
+    client.on('guildDelete', async (guild) => {
+      try {
+        await this.discordGuildService.updateLeftAt(guild.id)
+      } catch (error) {
+        // Ignore
+      }
+    })
+
     client.once('ready', async () => {
       this.client.guilds.cache.forEach((guild) => {
         this.saveGuild(guild).catch()
@@ -259,7 +267,8 @@ export class DiscordService {
       createdAt: new Date(guild.createdTimestamp),
       ownerId: guild.ownerId,
       name: guild.name,
-      joinedAt: new Date(guild.joinedAt),
+      joinedAt: new Date(guild.joinedTimestamp),
+      leftAt: null,
     })
 
     const owner = await guild.fetchOwner()
