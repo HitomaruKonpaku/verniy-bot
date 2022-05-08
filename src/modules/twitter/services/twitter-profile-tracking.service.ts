@@ -153,7 +153,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.name !== oldUser.name) {
         try {
-          this.logger.info(`${oldUser.username} name`, { to: newUser.name, from: oldUser.name })
+          this.logger.warn(`${oldUser.username} name`, { to: newUser.name, from: oldUser.name })
           messageOptionsList.push({
             content: [
               `${baseContent}'s name changed`,
@@ -168,7 +168,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.location !== oldUser.location) {
         try {
-          this.logger.info(`${oldUser.username} location`, { to: newUser.location, from: oldUser.location })
+          this.logger.warn(`${oldUser.username} location`, { to: newUser.location, from: oldUser.location })
           messageOptionsList.push({
             content: [
               `${baseContent}'s location changed`,
@@ -183,7 +183,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.description !== oldUser.description) {
         try {
-          this.logger.info(`${oldUser.username} description`, { to: newUser.description, from: oldUser.description })
+          this.logger.warn(`${oldUser.username} description`, { to: newUser.description, from: oldUser.description })
           messageOptionsList.push({
             content: [
               `${baseContent}'s description changed`,
@@ -198,7 +198,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.protected !== oldUser.protected) {
         try {
-          this.logger.info(`${oldUser.username} protected: ${newUser.protected ? '✅' : '❌'}`)
+          this.logger.warn(`${oldUser.username} protected: ${newUser.protected ? '✅' : '❌'}`)
           messageOptionsList.push({
             content: [
               baseContent,
@@ -212,7 +212,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.verified !== oldUser.verified) {
         try {
-          this.logger.info(`${oldUser.username} verified: ${newUser.verified ? '✅' : '❌'}`)
+          this.logger.warn(`${oldUser.username} verified: ${newUser.verified ? '✅' : '❌'}`)
           messageOptionsList.push({
             content: [
               baseContent,
@@ -228,7 +228,7 @@ export class TwitterProfileTrackingService {
         try {
           const newProfileImageUrl = newUser.profileImageUrl
           const oldProfileImageUrl = oldUser.profileImageUrl
-          this.logger.info(`${oldUser.username} profile image`, { to: newProfileImageUrl, from: oldProfileImageUrl })
+          this.logger.warn(`${oldUser.username} profile image`, { to: newProfileImageUrl, from: oldProfileImageUrl })
           messageOptionsList.push({
             content: [
               `${baseContent}'s profile image changed`,
@@ -244,7 +244,7 @@ export class TwitterProfileTrackingService {
 
       if (newUser.profileBannerUrl !== oldUser.profileBannerUrl) {
         try {
-          this.logger.info(`${oldUser.username} profile banner`, { to: newUser.profileBannerUrl, from: oldUser.profileBannerUrl })
+          this.logger.warn(`${oldUser.username} profile banner`, { to: newUser.profileBannerUrl, from: oldUser.profileBannerUrl })
           const fileName = newUser.profileBannerUrl
             ? `${new URL(newUser.profileBannerUrl).pathname.split('/').reverse()[0]}.jpg`
             : null
