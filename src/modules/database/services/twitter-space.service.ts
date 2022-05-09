@@ -20,6 +20,7 @@ export class TwitterSpaceService {
   public async updateByTwitterUser(data: SpaceV2) {
     const space = await this.update({
       id: data.id,
+      isActive: true,
       createdAt: new Date(data.created_at),
       updatedAt: new Date(data.updated_at),
       creatorId: data.creator_id,

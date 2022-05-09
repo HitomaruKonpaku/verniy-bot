@@ -10,7 +10,7 @@ export abstract class BaseEntity {
   id: string
 
   @Column({ name: 'is_active', type: 'boolean', default: true })
-  isActive?: boolean
+  isActive: boolean
 
   @CreateDateColumn({ name: 'created_at', type: 'numeric', default: () => 'CURRENT_TIMESTAMP' })
   createdAt?: Date

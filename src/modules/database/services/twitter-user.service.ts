@@ -39,6 +39,7 @@ export class TwitterUserService {
   public async updateByTwitterUser(data: UserV1) {
     const user = await this.update({
       id: data.id_str,
+      isActive: true,
       createdAt: new Date(data.created_at),
       username: data.screen_name,
       name: data.name,
