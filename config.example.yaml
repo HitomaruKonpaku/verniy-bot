@@ -6,4 +6,7 @@ twitter:
     ruleLength: 512
   profile:
     active: true
-    interval: 30000
+    interval: 60000
+  space:
+    active: true
+    interval: 60000
