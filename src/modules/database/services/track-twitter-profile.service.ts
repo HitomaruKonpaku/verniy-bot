@@ -1,14 +1,14 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { logger as baseLogger } from '../../../logger'
-import { TwitterDiscordProfile } from '../models/twitter-discord-profile'
+import { TrackTwitterProfile } from '../models/track-twitter-profile'
 
-export class TwitterDiscordProfileService {
-  private readonly logger = baseLogger.child({ context: TwitterDiscordProfileService.name })
+export class TrackTwitterProfileService {
+  private readonly logger = baseLogger.child({ context: TrackTwitterProfileService.name })
 
   constructor(
-    @InjectRepository(TwitterDiscordProfile)
-    private readonly repository: Repository<TwitterDiscordProfile>,
+    @InjectRepository(TrackTwitterProfile)
+    private readonly repository: Repository<TrackTwitterProfile>,
   ) { }
 
   public async getTwitterUserIds() {
@@ -47,44 +47,30 @@ export class TwitterDiscordProfileService {
     twitterUserId: string,
     discordChannelId: string,
   ) {
-    if (!twitterUserId || !discordChannelId) {
-      return
-    }
-    try {
-      await this.repository.upsert(
-        {
-          isActive: true,
-          updatedAt: new Date(),
-          twitterUserId,
-          discordChannelId,
-        },
-        {
-          conflictPaths: ['twitterUserId', 'discordChannelId'],
-          skipUpdateIfNoValuesChanged: true,
-        },
-      )
-    } catch (error) {
-      this.logger.error(`add: ${error.message}`, { twitterUserId, discordChannelId })
-    }
+    await this.repository.upsert(
+      {
+        isActive: true,
+        updatedAt: new Date(),
+        twitterUserId,
+        discordChannelId,
+      },
+      {
+        conflictPaths: ['twitterUserId', 'discordChannelId'],
+        skipUpdateIfNoValuesChanged: true,
+      },
+    )
   }
 
   public async remove(twitterUserId: string, discordChannelId: string) {
-    if (!twitterUserId || !discordChannelId) {
-      return
-    }
-    try {
-      await this.repository.update(
-        {
-          twitterUserId,
-          discordChannelId,
-        },
-        {
-          isActive: false,
-          updatedAt: new Date(),
-        },
-      )
-    } catch (error) {
-      this.logger.error(`remove: ${error.message}`, { twitterUserId, discordChannelId })
-    }
+    await this.repository.update(
+      {
+        twitterUserId,
+        discordChannelId,
+      },
+      {
+        isActive: false,
+        updatedAt: new Date(),
+      },
+    )
   }
 }

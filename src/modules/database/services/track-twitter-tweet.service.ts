@@ -1,14 +1,14 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { logger as baseLogger } from '../../../logger'
-import { TwitterDiscordTweet } from '../models/twitter-discord-tweet'
+import { TrackTwitterTweet } from '../models/track-twitter-tweet'
 
-export class TwitterDiscordTweetService {
-  private readonly logger = baseLogger.child({ context: TwitterDiscordTweetService.name })
+export class TrackTwitterTweetService {
+  private readonly logger = baseLogger.child({ context: TrackTwitterTweetService.name })
 
   constructor(
-    @InjectRepository(TwitterDiscordTweet)
-    private readonly repository: Repository<TwitterDiscordTweet>,
+    @InjectRepository(TrackTwitterTweet)
+    private readonly repository: Repository<TrackTwitterTweet>,
   ) { }
 
   public async getTwitterUserIds() {
@@ -37,9 +37,9 @@ export class TwitterDiscordTweetService {
   public async getTwitterUsernames() {
     const query = `
 SELECT DISTINCT (tu.username)
-FROM twitter_discord_tweet AS td
-  JOIN twitter_user AS tu ON tu.id = td.twitter_user_id
-WHERE td.is_active = TRUE
+FROM track_twitter_tweet AS tt
+  JOIN twitter_user AS tu ON tu.id = tt.twitter_user_id
+WHERE tt.is_active = TRUE
 ORDER BY LOWER(tu.username)
     `
     const records = await this.repository.query(query)
@@ -83,47 +83,33 @@ ORDER BY LOWER(tu.username)
     allowRetweet = true,
     filterKeywords?: string[],
   ) {
-    if (!twitterUserId || !discordChannelId) {
-      return
-    }
-    try {
-      await this.repository.upsert(
-        {
-          isActive: true,
-          updatedAt: new Date(),
-          twitterUserId,
-          discordChannelId,
-          allowReply,
-          allowRetweet,
-          filterKeywords,
-        },
-        {
-          conflictPaths: ['twitterUserId', 'discordChannelId'],
-          skipUpdateIfNoValuesChanged: true,
-        },
-      )
-    } catch (error) {
-      this.logger.error(`add: ${error.message}`, { twitterUserId, discordChannelId })
-    }
+    await this.repository.upsert(
+      {
+        isActive: true,
+        updatedAt: new Date(),
+        twitterUserId,
+        discordChannelId,
+        allowReply,
+        allowRetweet,
+        filterKeywords,
+      },
+      {
+        conflictPaths: ['twitterUserId', 'discordChannelId'],
+        skipUpdateIfNoValuesChanged: true,
+      },
+    )
   }
 
   public async remove(twitterUserId: string, discordChannelId: string) {
-    if (!twitterUserId || !discordChannelId) {
-      return
-    }
-    try {
-      await this.repository.update(
-        {
-          twitterUserId,
-          discordChannelId,
-        },
-        {
-          isActive: false,
-          updatedAt: new Date(),
-        },
-      )
-    } catch (error) {
-      this.logger.error(`remove: ${error.message}`, { twitterUserId, discordChannelId })
-    }
+    await this.repository.update(
+      {
+        twitterUserId,
+        discordChannelId,
+      },
+      {
+        isActive: false,
+        updatedAt: new Date(),
+      },
+    )
   }
 }

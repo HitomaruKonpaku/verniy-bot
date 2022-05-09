@@ -12,13 +12,7 @@ export class DiscordChannelService {
   ) { }
 
   public async update(data: DiscordChannel): Promise<DiscordChannel> {
-    if (!data) return null
-    try {
-      const channel = await this.repository.save(data)
-      return channel
-    } catch (error) {
-      this.logger.error(`update: ${error.message}`, data)
-    }
-    return null
+    const record = await this.repository.save(data)
+    return record
   }
 }

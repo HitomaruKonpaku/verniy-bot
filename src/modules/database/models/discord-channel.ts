@@ -1,8 +1,8 @@
 import { Column, Entity } from 'typeorm'
-import { BaseEntity } from './_base.entity'
+import { BaseExternalEntity } from './base/base-external.entity'
 
 @Entity('discord_channel')
-export class DiscordChannel extends BaseEntity {
+export class DiscordChannel extends BaseExternalEntity {
   @Column({ name: 'guild_id', type: 'text', nullable: true })
   guildId?: string
 

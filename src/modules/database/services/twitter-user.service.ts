@@ -31,56 +31,32 @@ export class TwitterUserService {
     return users
   }
 
-  public async getManyForTweet() {
-    const users = await this.repository
-      .createQueryBuilder('tu')
-      .innerJoin(
-        'twitter_discord_tweet',
-        'tdt',
-        'LOWER(tdt.twitter_username) = LOWER(tu.username) AND tdt.is_active = TRUE',
-      )
-      .addOrderBy('LOWER(tu.username)')
-      .getMany()
-    return users
-  }
-
   public async update(data: TwitterUser): Promise<TwitterUser> {
-    if (!data) {
-      return null
-    }
-    try {
-      const user = await this.repository.save(data)
-      return user
-    } catch (error) {
-      this.logger.error(`update: ${error.message}`, data)
-    }
-    return null
+    const user = await this.repository.save(data)
+    return user
   }
 
-  public async updateByTwitterUser(user: UserV1) {
-    if (!user) {
-      return null
-    }
-    const twitterUser = await this.update({
-      id: user.id_str,
+  public async updateByTwitterUser(data: UserV1) {
+    const user = await this.update({
+      id: data.id_str,
       isActive: true,
-      createdAt: new Date(user.created_at),
-      username: user.screen_name,
-      name: user.name,
-      location: user.location,
-      description: TwitterUtils.getUserDescription(user),
-      protected: user.protected,
-      verified: user.verified,
-      profileImageUrl: TwitterUtils.getUserProfileImageUrl(user),
-      profileBannerUrl: TwitterUtils.getUserProfileBannerUrl(user),
+      createdAt: new Date(data.created_at),
+      username: data.screen_name,
+      name: data.name,
+      location: data.location,
+      description: TwitterUtils.getUserDescription(data),
+      protected: data.protected,
+      verified: data.verified,
+      profileImageUrl: TwitterUtils.getUserProfileImageUrl(data),
+      profileBannerUrl: TwitterUtils.getUserProfileBannerUrl(data),
     })
-    return twitterUser
+    return user
   }
 
   public async updateIsActive(id: string, isActive: boolean) {
-    const twitterUser = await this.repository.findOneByOrFail({ id })
+    const user = await this.repository.findOneByOrFail({ id })
     await this.repository.update({ id }, { isActive })
-    Object.assign(twitterUser, { isActive })
-    return twitterUser
+    Object.assign(user, { isActive })
+    return user
   }
 }

@@ -12,13 +12,7 @@ export class DiscordUserService {
   ) { }
 
   public async update(data: DiscordUser): Promise<DiscordUser> {
-    if (!data) return null
-    try {
-      const user = await this.repository.save(data)
-      return user
-    } catch (error) {
-      this.logger.error(`update: ${error.message}`, data)
-    }
-    return null
+    const record = await this.repository.save(data)
+    return record
   }
 }

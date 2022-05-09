@@ -4,7 +4,7 @@ import { ETwitterStreamEvent, TweetStream, TweetV2SingleStreamResult } from 'twi
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
 import { ConfigService } from '../../config/services/config.service'
-import { TwitterDiscordTweetService } from '../../database/services/twitter-discord-tweet.service'
+import { TrackTwitterTweetService } from '../../database/services/track-twitter-tweet.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
@@ -17,13 +17,13 @@ import { TwitterClientService } from './twitter-client.service'
 export class TwitterTweetTrackingService {
   private readonly logger = baseLogger.child({ context: TwitterTweetTrackingService.name })
 
-  private stream: TweetStream<TweetV2SingleStreamResult>;
+  private stream: TweetStream<TweetV2SingleStreamResult>
 
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
-    @Inject(TwitterDiscordTweetService)
-    private readonly twitterDiscordTweetService: TwitterDiscordTweetService,
+    @Inject(TrackTwitterTweetService)
+    private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterClientService)
@@ -91,7 +91,7 @@ export class TwitterTweetTrackingService {
 
   private async initUsers() {
     try {
-      const userIds = await this.twitterDiscordTweetService.getTwitterUserIds()
+      const userIds = await this.trackTwitterTweetService.getTwitterUserIds()
       const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((v) => this.getUsers(v)))
     } catch (error) {
@@ -117,7 +117,7 @@ export class TwitterTweetTrackingService {
 
   private async initStreamRules(retryCount = 0) {
     try {
-      const usernames = await this.twitterDiscordTweetService.getTwitterUsernames()
+      const usernames = await this.trackTwitterTweetService.getTwitterUsernames()
       const newStreamRules = TwitterRuleUtils.buildStreamRulesByUsernames(
         usernames,
         this.configService.twitterTweetRuleLength,
@@ -164,7 +164,7 @@ export class TwitterTweetTrackingService {
   private async onData(data: TweetV2SingleStreamResult) {
     try {
       const { author_id: authorId } = data.data
-      const isAuthorExist = await this.twitterDiscordTweetService.existTwitterUserId(authorId)
+      const isAuthorExist = await this.trackTwitterTweetService.existTwitterUserId(authorId)
       if (!isAuthorExist) {
         return
       }
@@ -206,7 +206,7 @@ export class TwitterTweetTrackingService {
       const author = TwitterUtils.getIncludesUserById(data, data.data.author_id)
       const isReply = TwitterUtils.isReplyStatus(data)
       const isRetweet = TwitterUtils.isRetweetStatus(data)
-      const records = await this.twitterDiscordTweetService.getManyByTwitterUserId(
+      const records = await this.trackTwitterTweetService.getManyByTwitterUserId(
         author.id,
         {
           allowReply: isReply,

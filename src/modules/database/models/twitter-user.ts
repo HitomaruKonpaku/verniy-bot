@@ -1,8 +1,8 @@
 import { Column, Entity } from 'typeorm'
-import { BaseEntity } from './_base.entity'
+import { BaseExternalEntity } from './base/base-external.entity'
 
 @Entity('twitter_user')
-export class TwitterUser extends BaseEntity {
+export class TwitterUser extends BaseExternalEntity {
   @Column({ type: 'text' })
   username: string
 

@@ -2,8 +2,8 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
-import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
-import { TwitterDiscordTweetService } from '../../database/services/twitter-discord-tweet.service'
+import { TrackTwitterProfileService } from '../../database/services/track-twitter-profile.service'
+import { TrackTwitterTweetService } from '../../database/services/track-twitter-tweet.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { TwitterUtils } from '../../twitter/utils/TwitterUtils'
 
@@ -14,10 +14,10 @@ export class UntrackCommand {
   constructor(
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
-    @Inject(TwitterDiscordTweetService)
-    private readonly twitterDiscordTweetService: TwitterDiscordTweetService,
-    @Inject(TwitterDiscordProfileService)
-    private readonly twitterDiscordProfileService: TwitterDiscordProfileService,
+    @Inject(TrackTwitterTweetService)
+    private readonly trackTwitterTweetService: TrackTwitterTweetService,
+    @Inject(TrackTwitterProfileService)
+    private readonly trackTwitterProfileService: TrackTwitterProfileService,
   ) { }
 
   public static readonly command = new SlashCommandBuilder()
@@ -62,7 +62,7 @@ export class UntrackCommand {
         await interaction.editReply('User not found')
         return
       }
-      await this.twitterDiscordTweetService.remove(twitterUser.id, channelId)
+      await this.trackTwitterTweetService.remove(twitterUser.id, channelId)
       this.logger.info('Untrack tweet', { username, channelId })
       await interaction.editReply({
         embeds: [{
@@ -85,7 +85,7 @@ export class UntrackCommand {
         await interaction.editReply('User not found')
         return
       }
-      await this.twitterDiscordProfileService.remove(twitterUser.id, channelId)
+      await this.trackTwitterProfileService.remove(twitterUser.id, channelId)
       this.logger.info('Untrack profile', { username, channelId })
       await interaction.editReply({
         embeds: [{

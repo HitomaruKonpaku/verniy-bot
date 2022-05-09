@@ -2,8 +2,8 @@ import { SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
-import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
-import { TwitterDiscordTweetService } from '../../database/services/twitter-discord-tweet.service'
+import { TrackTwitterProfileService } from '../../database/services/track-twitter-profile.service'
+import { TrackTwitterTweetService } from '../../database/services/track-twitter-tweet.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { TwitterApiService } from '../../twitter/services/twitter-api.service'
 import { TwitterUtils } from '../../twitter/utils/TwitterUtils'
@@ -17,10 +17,10 @@ export class TrackCommand {
     private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
-    @Inject(TwitterDiscordTweetService)
-    private readonly twitterDiscordTweetService: TwitterDiscordTweetService,
-    @Inject(TwitterDiscordProfileService)
-    private readonly twitterDiscordProfileService: TwitterDiscordProfileService,
+    @Inject(TrackTwitterTweetService)
+    private readonly trackTwitterTweetService: TrackTwitterTweetService,
+    @Inject(TrackTwitterProfileService)
+    private readonly trackTwitterProfileService: TrackTwitterProfileService,
   ) { }
 
   public static readonly command = new SlashCommandBuilder()
@@ -73,7 +73,7 @@ export class TrackCommand {
         const user = await this.twitterApiService.getUserByUsername(username)
         twitterUser = await this.twitterUserService.updateByTwitterUser(user)
       }
-      await this.twitterDiscordTweetService.add(twitterUser.id, channelId, allowReply, allowRetweet)
+      await this.trackTwitterTweetService.add(twitterUser.id, channelId, allowReply, allowRetweet)
       this.logger.info('Tracking tweet', { username, channelId })
       await interaction.editReply({
         embeds: [{
@@ -96,7 +96,7 @@ export class TrackCommand {
         const user = await this.twitterApiService.getUserByUsername(username)
         twitterUser = await this.twitterUserService.updateByTwitterUser(user)
       }
-      await this.twitterDiscordProfileService.add(twitterUser.id, channelId)
+      await this.trackTwitterProfileService.add(twitterUser.id, channelId)
       this.logger.info('Tracking profile', { username, channelId })
       await interaction.editReply({
         embeds: [{

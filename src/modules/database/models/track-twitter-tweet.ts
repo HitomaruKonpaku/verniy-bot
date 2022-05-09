@@ -1,22 +1,9 @@
-import {
-  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, Unique } from 'typeorm'
+import { BaseEntity } from './base/base.entity'
 
-@Entity('twitter_discord_tweet')
+@Entity('track_twitter_tweet')
 @Unique(['twitterUserId', 'discordChannelId'])
-export class TwitterDiscordTweet {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
-
-  @Column({ name: 'is_active', type: 'boolean', default: true })
-  isActive: boolean
-
-  @CreateDateColumn({ name: 'created_at', type: 'numeric', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at', type: 'numeric', default: () => 'CURRENT_TIMESTAMP' })
-  updatedAt: Date;
-
+export class TrackTwitterTweet extends BaseEntity {
   @Column({ name: 'twitter_user_id', type: 'text' })
   twitterUserId: string
 

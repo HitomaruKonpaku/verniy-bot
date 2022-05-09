@@ -12,14 +12,8 @@ export class DiscordGuildService {
   ) { }
 
   public async update(data: DiscordGuild): Promise<DiscordGuild> {
-    if (!data) return null
-    try {
-      const guild = await this.repository.save(data)
-      return guild
-    } catch (error) {
-      this.logger.error(`update: ${error.message}`, data)
-    }
-    return null
+    const record = await this.repository.save(data)
+    return record
   }
 
   public async updateLeftAt(id: string) {

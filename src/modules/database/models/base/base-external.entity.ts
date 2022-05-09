@@ -1,6 +1,6 @@
 import { Column, PrimaryColumn } from 'typeorm'
 
-export abstract class BaseEntity {
+export abstract class BaseExternalEntity {
   @PrimaryColumn({ type: 'text' })
   id: string
 

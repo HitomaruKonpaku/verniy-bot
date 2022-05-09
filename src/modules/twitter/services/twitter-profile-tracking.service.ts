@@ -6,7 +6,7 @@ import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
 import { ConfigService } from '../../config/services/config.service'
 import { TwitterUser } from '../../database/models/twitter-user'
-import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
+import { TrackTwitterProfileService } from '../../database/services/track-twitter-profile.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
@@ -19,8 +19,8 @@ export class TwitterProfileTrackingService {
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
-    @Inject(TwitterDiscordProfileService)
-    private readonly twitterDiscordProfileService: TwitterDiscordProfileService,
+    @Inject(TrackTwitterProfileService)
+    private readonly trackTwitterProfileService: TrackTwitterProfileService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterApiService)
@@ -36,7 +36,7 @@ export class TwitterProfileTrackingService {
 
   private async execute() {
     try {
-      const userIds = await this.twitterDiscordProfileService.getTwitterUserIds()
+      const userIds = await this.trackTwitterProfileService.getTwitterUserIds()
       if (userIds.length) {
         const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.checkUsers(v)))
@@ -280,8 +280,7 @@ export class TwitterProfileTrackingService {
   private async getDiscordChannelIds(user: TwitterUser) {
     let channelIds = []
     try {
-      // eslint-disable-next-line max-len
-      const records = await this.twitterDiscordProfileService.getManyByTwitterUserId(user.id)
+      const records = await this.trackTwitterProfileService.getManyByTwitterUserId(user.id)
       channelIds = records.map((v) => v.discordChannelId)
     } catch (error) {
       this.logger.error(`getDiscordChannelIds: ${error.message}`, { user })
