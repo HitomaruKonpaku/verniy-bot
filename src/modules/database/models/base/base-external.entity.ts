@@ -5,8 +5,8 @@ export abstract class BaseExternalEntity {
   id: string
 
   @Column({ name: 'is_active', type: 'boolean', default: true })
-  isActive: boolean
+  isActive?: boolean
 
   @Column({ name: 'created_at', type: 'numeric', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date
+  createdAt?: Date
 }

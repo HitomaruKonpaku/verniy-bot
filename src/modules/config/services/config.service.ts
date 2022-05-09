@@ -15,34 +15,31 @@ export class ConfigService {
     this.load()
   }
 
-  public get twitterActive() {
-    return !!this.config.twitter?.active
-  }
-
-  public get twitterTweetActive() {
-    return !!this.config.twitter?.tweet?.active
-  }
-
-  /**
-   * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
-   */
-  public get twitterTweetRuleLimit() {
-    return this.getNumber(this.config.twitter?.tweet?.ruleLimit, TWITTER_STREAM_RULE_LIMIT)
-  }
-
-  /**
-   * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
-   */
-  public get twitterTweetRuleLength() {
-    return this.getNumber(this.config.twitter?.tweet?.ruleLength, TWITTER_STREAM_RULE_LENGTH)
-  }
-
-  public get twitterProfileActive() {
-    return !!this.config.twitter?.profile?.active
-  }
-
-  public get twitterProfileInterval() {
-    return this.getNumber(this.config.twitter?.profile?.interval, 60000)
+  public get twitter() {
+    const config = {
+      active: false,
+      tweet: {
+        active: false,
+        /**
+         * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
+         */
+        ruleLimit: TWITTER_STREAM_RULE_LIMIT,
+        /**
+         * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
+         */
+        ruleLength: TWITTER_STREAM_RULE_LENGTH,
+      },
+      profile: {
+        active: false,
+        interval: 60000,
+      },
+      space: {
+        active: false,
+        interval: 60000,
+      },
+    }
+    Object.assign(config, this.config.twitter || {})
+    return config
   }
 
   public load() {

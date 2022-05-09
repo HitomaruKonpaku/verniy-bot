@@ -45,7 +45,7 @@ export class TwitterProfileTrackingService {
       this.logger.error(`execute: ${error.message}`)
     }
 
-    const interval = this.configService.twitterProfileInterval
+    const { interval } = this.configService.twitter.profile
     setTimeout(() => this.execute(), interval)
   }
 

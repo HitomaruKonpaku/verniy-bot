@@ -120,13 +120,13 @@ export class TwitterTweetTrackingService {
       const usernames = await this.trackTwitterTweetService.getTwitterUsernames()
       const newStreamRules = TwitterRuleUtils.buildStreamRulesByUsernames(
         usernames,
-        this.configService.twitterTweetRuleLength,
+        this.configService.twitter.tweet.ruleLength,
       )
       const curStreamRules = (await this.client.v2.streamRules()).data || []
       this.logger.info('curStreamRules', { length: curStreamRules.length })
       this.logger.info('newStreamRules', { length: newStreamRules.length })
-      if (newStreamRules.length > this.configService.twitterTweetRuleLimit) {
-        this.logger.error(`initStreamRules: Rule size (${newStreamRules.length}) exceed maximum limit (${this.configService.twitterTweetRuleLimit})`)
+      if (newStreamRules.length > this.configService.twitter.tweet.ruleLimit) {
+        this.logger.error(`initStreamRules: Rule size (${newStreamRules.length}) exceed maximum limit (${this.configService.twitter.tweet.ruleLimit})`)
         this.logger.error('initStreamRules: Cancelled')
         return
       }

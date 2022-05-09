@@ -195,7 +195,7 @@ export class DiscordService {
     })
 
     client.once('ready', () => {
-      if (!this.configService.twitterActive) {
+      if (!this.configService.twitter.active) {
         return
       }
       this.twitterService.start()
@@ -260,7 +260,6 @@ export class DiscordService {
   private async saveUser(user: User) {
     this.discordUserService.update({
       id: user.id,
-      isActive: true,
       createdAt: new Date(user.createdTimestamp),
       username: user.username,
       discriminator: user.discriminator,
@@ -271,7 +270,6 @@ export class DiscordService {
   private async saveGuild(guild: Guild) {
     await this.discordGuildService.update({
       id: guild.id,
-      isActive: true,
       createdAt: new Date(guild.createdTimestamp),
       ownerId: guild.ownerId,
       name: guild.name,
@@ -288,7 +286,6 @@ export class DiscordService {
   private async saveTextChannel(channel: TextChannel) {
     await this.discordChannelService.update({
       id: channel.id,
-      isActive: true,
       createdAt: new Date(channel.createdTimestamp),
       guildId: channel.guildId,
       name: channel.name,
