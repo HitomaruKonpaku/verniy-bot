@@ -105,16 +105,13 @@ export class TwitterTweetTrackingService {
     }
     try {
       const users = await this.twitterApiService.getUsersByUserIds(userIds)
-      if (!users.length) {
-        const ms = ([10, 20][retryCount] || 30) * 1000
-        this.logger.warn(`getUsers: Users not found, retry in ${ms}ms`, { userCount: userIds.length, userIds })
-        await Utils.sleep(ms)
-        this.getUsers(userIds, retryCount + 1)
-        return
-      }
       await Promise.allSettled(users.map((v) => this.twitterUserService.updateByTwitterUser(v)))
     } catch (error) {
       this.logger.error(`getUsers: ${error.message}`)
+      const ms = ([10, 20][retryCount] || 30) * 1000
+      this.logger.warn(`getUsers: Users not found, retry in ${ms}ms`, { userCount: userIds.length, userIds })
+      await Utils.sleep(ms)
+      this.getUsers(userIds, retryCount + 1)
     }
   }
 

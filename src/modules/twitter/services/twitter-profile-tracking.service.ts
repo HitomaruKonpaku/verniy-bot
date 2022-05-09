@@ -3,11 +3,13 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { MessageOptions } from 'discord.js'
 import { UserV1 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
+import { Utils } from '../../../utils/Utils'
 import { ConfigService } from '../../config/services/config.service'
 import { TwitterUser } from '../../database/models/twitter-user'
 import { TwitterDiscordProfileService } from '../../database/services/twitter-discord-profile.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { DiscordService } from '../../discord/services/discord.service'
+import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { TwitterApiService } from './twitter-api.service'
 
 @Injectable()
@@ -36,7 +38,8 @@ export class TwitterProfileTrackingService {
     try {
       const userIds = await this.twitterDiscordProfileService.getTwitterUserIds()
       if (userIds.length) {
-        await this.checkUsers(userIds)
+        const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+        await Promise.allSettled(chunks.map((v) => this.checkUsers(v)))
       }
     } catch (error) {
       this.logger.error(`execute: ${error.message}`)
@@ -48,8 +51,8 @@ export class TwitterProfileTrackingService {
 
   private async checkUsers(userIds: string[]) {
     try {
+      const users = await this.twitterApiService.getUsersByUserIds(userIds)
       const inactiveUserIdSet = new Set(userIds)
-      const users = await this.twitterApiService.getAllUsersByUserIds(userIds)
       users.forEach((user) => {
         inactiveUserIdSet.delete(user.id_str)
         this.checkActiveUserProfile(user)

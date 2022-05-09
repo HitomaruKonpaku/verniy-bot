@@ -20,9 +20,6 @@ export class TwitterApiService {
   }
 
   public async getAllUsersByUserIds(userIds: string[]): Promise<UserV1[]> {
-    if (!userIds?.length) {
-      return []
-    }
     const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
     const results = await Promise.allSettled(chunks.map((v) => this.getUsersByUserIds(v)))
     const users = results.filter((v) => v.status === 'fulfilled').flatMap((v: any) => v.value)
@@ -30,9 +27,6 @@ export class TwitterApiService {
   }
 
   public async getUsersByUserIds(userIds: string[]): Promise<UserV1[]> {
-    if (!userIds?.length) {
-      return []
-    }
     const requestId = randomUUID()
     try {
       this.logger.debug('--> getUsersByUserIds', { requestId, userCount: userIds.length, userIds })
@@ -41,14 +35,11 @@ export class TwitterApiService {
       return users
     } catch (error) {
       this.logger.error(`getUsersByUserIds: ${error.message}`, { requestId })
+      throw error
     }
-    return []
   }
 
   public async getAllUsersByUsernames(usernames: string[]): Promise<UserV1[]> {
-    if (!usernames?.length) {
-      return []
-    }
     const chunks = Utils.splitArrayIntoChunk(usernames, TWITTER_API_LIST_SIZE)
     const results = await Promise.allSettled(chunks.map((v) => this.getUsersByUsernames(v)))
     const users = results.filter((v) => v.status === 'fulfilled').flatMap((v: any) => v.value)
@@ -56,9 +47,6 @@ export class TwitterApiService {
   }
 
   public async getUsersByUsernames(usernames: string[]): Promise<UserV1[]> {
-    if (!usernames?.length) {
-      return []
-    }
     const requestId = randomUUID()
     try {
       this.logger.debug('--> getUsersByUsernames', { requestId, userCount: usernames.length, usernames })
@@ -67,8 +55,8 @@ export class TwitterApiService {
       return users
     } catch (error) {
       this.logger.error(`getUsersByUsernames: ${error.message}`, { requestId })
+      throw error
     }
-    return []
   }
 
   public async getUserByUsername(username: string): Promise<UserV1> {
