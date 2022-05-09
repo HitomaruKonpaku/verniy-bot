@@ -46,11 +46,13 @@ export class TrackTwitterProfileService {
   public async add(
     twitterUserId: string,
     discordChannelId: string,
+    updatedBy?: string,
   ) {
     await this.repository.upsert(
       {
         isActive: true,
         updatedAt: new Date(),
+        updatedBy,
         twitterUserId,
         discordChannelId,
       },
@@ -61,7 +63,11 @@ export class TrackTwitterProfileService {
     )
   }
 
-  public async remove(twitterUserId: string, discordChannelId: string) {
+  public async remove(
+    twitterUserId: string,
+    discordChannelId: string,
+    updatedBy?: string,
+  ) {
     await this.repository.update(
       {
         twitterUserId,
@@ -70,6 +76,7 @@ export class TrackTwitterProfileService {
       {
         isActive: false,
         updatedAt: new Date(),
+        updatedBy,
       },
     )
   }

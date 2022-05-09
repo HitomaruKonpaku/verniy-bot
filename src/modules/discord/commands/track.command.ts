@@ -73,7 +73,8 @@ export class TrackCommand {
         const user = await this.twitterApiService.getUserByUsername(username)
         twitterUser = await this.twitterUserService.updateByTwitterUser(user)
       }
-      await this.trackTwitterTweetService.add(twitterUser.id, channelId, allowReply, allowRetweet)
+      // eslint-disable-next-line max-len
+      await this.trackTwitterTweetService.add(twitterUser.id, channelId, allowReply, allowRetweet, null, interaction.user.id)
       this.logger.info('Tracking tweet', { username, channelId })
       await interaction.editReply({
         embeds: [{
@@ -96,7 +97,7 @@ export class TrackCommand {
         const user = await this.twitterApiService.getUserByUsername(username)
         twitterUser = await this.twitterUserService.updateByTwitterUser(user)
       }
-      await this.trackTwitterProfileService.add(twitterUser.id, channelId)
+      await this.trackTwitterProfileService.add(twitterUser.id, channelId, interaction.user.id)
       this.logger.info('Tracking profile', { username, channelId })
       await interaction.editReply({
         embeds: [{

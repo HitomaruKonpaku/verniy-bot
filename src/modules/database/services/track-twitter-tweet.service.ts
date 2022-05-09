@@ -82,11 +82,13 @@ ORDER BY LOWER(tu.username)
     allowReply = true,
     allowRetweet = true,
     filterKeywords?: string[],
+    updatedBy?: string,
   ) {
     await this.repository.upsert(
       {
         isActive: true,
         updatedAt: new Date(),
+        updatedBy,
         twitterUserId,
         discordChannelId,
         allowReply,
@@ -100,7 +102,11 @@ ORDER BY LOWER(tu.username)
     )
   }
 
-  public async remove(twitterUserId: string, discordChannelId: string) {
+  public async remove(
+    twitterUserId: string,
+    discordChannelId: string,
+    updatedBy?: string,
+  ) {
     await this.repository.update(
       {
         twitterUserId,
@@ -109,6 +115,7 @@ ORDER BY LOWER(tu.username)
       {
         isActive: false,
         updatedAt: new Date(),
+        updatedBy,
       },
     )
   }

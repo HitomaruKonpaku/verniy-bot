@@ -62,7 +62,7 @@ export class UntrackCommand {
         await interaction.editReply('User not found')
         return
       }
-      await this.trackTwitterTweetService.remove(twitterUser.id, channelId)
+      await this.trackTwitterTweetService.remove(twitterUser.id, channelId, interaction.user.id)
       this.logger.info('Untrack tweet', { username, channelId })
       await interaction.editReply({
         embeds: [{
@@ -85,7 +85,7 @@ export class UntrackCommand {
         await interaction.editReply('User not found')
         return
       }
-      await this.trackTwitterProfileService.remove(twitterUser.id, channelId)
+      await this.trackTwitterProfileService.remove(twitterUser.id, channelId, interaction.user.id)
       this.logger.info('Untrack profile', { username, channelId })
       await interaction.editReply({
         embeds: [{
