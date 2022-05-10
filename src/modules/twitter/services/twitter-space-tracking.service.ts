@@ -36,7 +36,13 @@ export class TwitterSpaceTrackingService {
       const userIds = await this.trackTwitterSpaceService.getTwitterUserIds()
       if (userIds.length) {
         const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
-        await Promise.allSettled(chunks.map((v) => this.getSpaces(v)))
+        await Promise.allSettled(chunks.map((v) => this.getSpacesByUserIds(v)))
+      }
+
+      const spaceIds = await this.twitterSpaceService.getLiveSpaceIds()
+      if (spaceIds.length) {
+        const chunks = Utils.splitArrayIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
+        await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
       }
     } catch (error) {
       this.logger.error(`execute: ${error.message}`)
@@ -46,7 +52,19 @@ export class TwitterSpaceTrackingService {
     setTimeout(() => this.execute(), interval)
   }
 
-  private async getSpaces(userIds: string[]) {
+  private async getSpacesByIds(ids: string[]) {
+    try {
+      const result = await this.twitterApiService.getSpacesByIds(ids)
+      const spaces = result.data || []
+      spaces.forEach(async (space) => {
+        await this.updateSpace(space)
+      })
+    } catch (error) {
+      this.logger.error(`getSpacesByIds: ${error.message}`)
+    }
+  }
+
+  private async getSpacesByUserIds(userIds: string[]) {
     try {
       const result = await this.twitterApiService.getSpacesByCreatorIds(userIds)
       const spaces = result.data || []
@@ -54,7 +72,7 @@ export class TwitterSpaceTrackingService {
         await this.updateSpace(space)
       })
     } catch (error) {
-      this.logger.error(`getSpaces: ${error.message}`)
+      this.logger.error(`getSpacesByUserIds: ${error.message}`)
     }
   }
 

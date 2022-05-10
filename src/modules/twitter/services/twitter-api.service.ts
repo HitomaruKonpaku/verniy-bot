@@ -72,6 +72,30 @@ export class TwitterApiService {
     }
   }
 
+  public async getSpacesByIds(ids: string[]) {
+    const requestId = randomUUID()
+    try {
+      this.logger.debug('--> getSpacesByIds', { requestId, idCount: ids.length, ids })
+      const result = await this.client.v2.spaces(
+        ids,
+        {
+          expansions: ['creator_id'],
+          'space.fields': [
+            'id', 'created_at', 'updated_at',
+            'creator_id', 'state', 'is_ticketed',
+            'scheduled_start', 'started_at', 'ended_at',
+            'lang', 'title',
+          ],
+        },
+      )
+      this.logger.debug('<-- getSpacesByIds', { requestId })
+      return result
+    } catch (error) {
+      this.logger.error(`getSpacesByIds: ${error.message}`, { requestId })
+      throw error
+    }
+  }
+
   public async getSpacesByCreatorIds(userIds: string[]) {
     const requestId = randomUUID()
     try {

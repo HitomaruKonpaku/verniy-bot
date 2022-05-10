@@ -12,6 +12,12 @@ export class TwitterSpaceService {
     private readonly repository: Repository<TwitterSpace>,
   ) { }
 
+  public async getLiveSpaceIds() {
+    const records = await this.repository.find({ where: { state: 'live' } })
+    const ids = records.map((v) => v.id)
+    return ids
+  }
+
   public async update(data: TwitterSpace): Promise<TwitterSpace> {
     const space = await this.repository.save(data)
     return space
