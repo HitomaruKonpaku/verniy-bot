@@ -261,7 +261,7 @@ export class DiscordService {
     this.discordUserService.update({
       id: user.id,
       isActive: true,
-      createdAt: new Date(user.createdTimestamp),
+      createdAt: user.createdTimestamp,
       username: user.username,
       discriminator: user.discriminator,
       tag: user.tag,
@@ -272,10 +272,10 @@ export class DiscordService {
     await this.discordGuildService.update({
       id: guild.id,
       isActive: true,
-      createdAt: new Date(guild.createdTimestamp),
+      createdAt: guild.createdTimestamp,
       ownerId: guild.ownerId,
       name: guild.name,
-      joinedAt: new Date(guild.joinedTimestamp),
+      joinedAt: guild.joinedTimestamp,
       leftAt: null,
     })
 
@@ -289,7 +289,7 @@ export class DiscordService {
     await this.discordChannelService.update({
       id: channel.id,
       isActive: true,
-      createdAt: new Date(channel.createdTimestamp),
+      createdAt: channel.createdTimestamp,
       guildId: channel.guildId,
       name: channel.name,
     })

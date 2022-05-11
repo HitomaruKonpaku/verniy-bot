@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { DATABASE_ENTITIES } from './constants/database.constant'
+import { DB_ENTITIES } from './constants/database-entities.constant'
 import { DiscordChannelService } from './services/discord-channel.service'
 import { DiscordGuildService } from './services/discord-guild.service'
 import { DiscordUserService } from './services/discord-user.service'
@@ -25,7 +25,7 @@ const services = [
 ]
 
 @Module({
-  imports: [TypeOrmModule.forFeature(DATABASE_ENTITIES)],
+  imports: [TypeOrmModule.forFeature(DB_ENTITIES)],
   providers: [...services],
   exports: [...services],
 })

@@ -1,14 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { logger as baseLogger } from '../../../logger'
 import { TrackTwitterProfile } from '../models/track-twitter-profile'
 
 export class TrackTwitterProfileService {
-  private readonly logger = baseLogger.child({ context: TrackTwitterProfileService.name })
-
   constructor(
     @InjectRepository(TrackTwitterProfile)
-    private readonly repository: Repository<TrackTwitterProfile>,
+    public readonly repository: Repository<TrackTwitterProfile>,
   ) { }
 
   public async getTwitterUserIds() {
@@ -51,7 +48,7 @@ export class TrackTwitterProfileService {
     await this.repository.upsert(
       {
         isActive: true,
-        updatedAt: new Date(),
+        updatedAt: Date.now(),
         updatedBy,
         twitterUserId,
         discordChannelId,
@@ -75,7 +72,7 @@ export class TrackTwitterProfileService {
       },
       {
         isActive: false,
-        updatedAt: new Date(),
+        updatedAt: Date.now(),
         updatedBy,
       },
     )

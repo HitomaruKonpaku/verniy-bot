@@ -1,16 +1,13 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserV1 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
-import { logger as baseLogger } from '../../../logger'
 import { TwitterUtils } from '../../twitter/utils/TwitterUtils'
 import { TwitterUser } from '../models/twitter-user'
 
 export class TwitterUserService {
-  private readonly logger = baseLogger.child({ context: TwitterUserService.name })
-
   constructor(
     @InjectRepository(TwitterUser)
-    private readonly repository: Repository<TwitterUser>,
+    public readonly repository: Repository<TwitterUser>,
   ) { }
 
   public async getOneById(id: string) {
@@ -40,7 +37,7 @@ export class TwitterUserService {
     const user = await this.update({
       id: data.id_str,
       isActive: true,
-      createdAt: new Date(data.created_at),
+      createdAt: new Date(data.created_at).getTime(),
       username: data.screen_name,
       name: data.name,
       location: data.location,

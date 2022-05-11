@@ -1,10 +1,11 @@
 import { Column, Entity } from 'typeorm'
+import { DB_CURRENT_TIMESTAMP } from '../constants/database.constant'
 import { BaseExternalEntity } from './base/base-external.entity'
 
 @Entity('twitter_space')
 export class TwitterSpace extends BaseExternalEntity {
-  @Column({ name: 'updated_at', type: 'numeric', default: () => 'CURRENT_TIMESTAMP' })
-  updatedAt?: Date
+  @Column({ name: 'updated_at', type: 'numeric', default: () => DB_CURRENT_TIMESTAMP })
+  updatedAt?: number
 
   @Column({ name: 'creator_id', type: 'text' })
   creatorId: string
@@ -16,13 +17,13 @@ export class TwitterSpace extends BaseExternalEntity {
   isTicketed?: boolean
 
   @Column({ name: 'scheduled_start', type: 'numeric', nullable: true })
-  scheduledStart?: Date
+  scheduledStart?: number
 
   @Column({ name: 'started_at', type: 'numeric', nullable: true })
-  startedAt?: Date
+  startedAt?: number
 
   @Column({ name: 'ended_at', type: 'numeric', nullable: true })
-  endedAt?: Date
+  endedAt?: number
 
   @Column({ name: 'lang', type: 'text', nullable: true })
   lang?: string

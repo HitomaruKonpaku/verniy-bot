@@ -10,8 +10,8 @@ export class DiscordGuild extends BaseExternalEntity {
   name: string
 
   @Column({ name: 'joined_at', type: 'numeric', nullable: true })
-  joinedAt?: Date
+  joinedAt?: number
 
   @Column({ name: 'left_at', type: 'numeric', nullable: true })
-  leftAt?: Date
+  leftAt?: number
 }
