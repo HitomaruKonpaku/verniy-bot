@@ -7,6 +7,7 @@ import { TrackTwitterSpaceService } from '../../database/services/track-twitter-
 import { TwitterSpaceService } from '../../database/services/twitter-space.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
+import { twitterSpacesByCreatorIdsLimiter, twitterSpacesByIdsLimiter } from '../twitter.limiter'
 import { TwitterApiService } from './twitter-api.service'
 
 @Injectable()
@@ -54,7 +55,8 @@ export class TwitterSpaceTrackingService {
 
   private async getSpacesByIds(ids: string[]) {
     try {
-      const result = await this.twitterApiService.getSpacesByIds(ids)
+      // eslint-disable-next-line max-len
+      const result = await twitterSpacesByIdsLimiter.schedule(() => this.twitterApiService.getSpacesByIds(ids))
       const spaces = result.data || []
       await Promise.allSettled(spaces.map((space) => this.updateSpace(space)))
     } catch (error) {
@@ -64,7 +66,8 @@ export class TwitterSpaceTrackingService {
 
   private async getSpacesByUserIds(userIds: string[]) {
     try {
-      const result = await this.twitterApiService.getSpacesByCreatorIds(userIds)
+      // eslint-disable-next-line max-len
+      const result = await twitterSpacesByCreatorIdsLimiter.schedule(() => this.twitterApiService.getSpacesByCreatorIds(userIds))
       const spaces = result.data || []
       await Promise.allSettled(spaces.map((space) => this.updateSpace(space)))
     } catch (error) {
