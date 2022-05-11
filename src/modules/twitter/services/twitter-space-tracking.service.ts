@@ -56,9 +56,7 @@ export class TwitterSpaceTrackingService {
     try {
       const result = await this.twitterApiService.getSpacesByIds(ids)
       const spaces = result.data || []
-      spaces.forEach(async (space) => {
-        await this.updateSpace(space)
-      })
+      await Promise.allSettled(spaces.map((space) => this.updateSpace(space)))
     } catch (error) {
       this.logger.error(`getSpacesByIds: ${error.message}`)
     }
@@ -68,9 +66,7 @@ export class TwitterSpaceTrackingService {
     try {
       const result = await this.twitterApiService.getSpacesByCreatorIds(userIds)
       const spaces = result.data || []
-      spaces.forEach(async (space) => {
-        await this.updateSpace(space)
-      })
+      await Promise.allSettled(spaces.map((space) => this.updateSpace(space)))
     } catch (error) {
       this.logger.error(`getSpacesByUserIds: ${error.message}`)
     }
