@@ -112,7 +112,7 @@ export class TwitterSpaceTrackingService {
       if (newSpace.state === oldSpace?.state) {
         return
       }
-      this.notifySpace(newSpace)
+      this.notifySpace(Object.assign(oldSpace || {}, newSpace))
     } catch (error) {
       this.logger.error(`updateSpace: ${error.message}`, { space })
     }
@@ -133,7 +133,7 @@ export class TwitterSpaceTrackingService {
         this.discordService.sendToChannel(channelId, { content })
       })
     } catch (error) {
-      this.logger.error(`onProfileChange: ${error.message}`, { space })
+      this.logger.error(`notifySpace: ${error.message}`, { space })
     }
   }
 
