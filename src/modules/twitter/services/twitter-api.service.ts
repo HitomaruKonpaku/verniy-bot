@@ -19,6 +19,19 @@ export class TwitterApiService {
     return this.twitterClientService.roClient
   }
 
+  public async getUserById(id: string): Promise<UserV1> {
+    const requestId = randomUUID()
+    try {
+      this.logger.debug('--> getUserById', { requestId, id })
+      const user = await this.client.v1.user({ user_id: id })
+      this.logger.debug('<-- getUserById', { requestId })
+      return user
+    } catch (error) {
+      this.logger.error(`getUserById: ${error.message}`, { requestId, id })
+      throw error
+    }
+  }
+
   public async getUserByUsername(username: string): Promise<UserV1> {
     const requestId = randomUUID()
     try {

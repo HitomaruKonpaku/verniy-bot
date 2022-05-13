@@ -1,4 +1,4 @@
-import { codeBlock, SlashCommandBuilder } from '@discordjs/builders'
+import { codeBlock, inlineCode, SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
@@ -29,9 +29,11 @@ export class GetCommand {
         .setName('user')
         .setDescription('User')
         .addStringOption((option) => option
+          .setName('id')
+          .setDescription('Id'))
+        .addStringOption((option) => option
           .setName('username')
-          .setDescription('Username')
-          .setRequired(true))
+          .setDescription('Username'))
         .addBooleanOption((option) => option
           .setName('refresh')
           .setDescription('Refresh?')))
@@ -76,11 +78,20 @@ export class GetCommand {
   }
 
   private async executeTwitterUserCommand(interaction: CommandInteraction) {
-    const username = interaction.options.getString('username', true)
+    const id = interaction.options.getString('id')
+    const username = interaction.options.getString('username')
+    if (!id || !username) {
+      await interaction.editReply(`Required ${inlineCode('id')} or ${inlineCode('username')}`)
+      return
+    }
     const refresh = interaction.options.getBoolean('refresh')
-    let twitterUser = await this.twitterUserService.getOneByUsername(username)
+    let twitterUser = id
+      ? await this.twitterUserService.getOneById(id)
+      : await this.twitterUserService.getOneByUsername(username)
     if (!twitterUser || refresh) {
-      const user = await this.twitterApiService.getUserByUsername(username)
+      const user = id
+        ? await this.twitterApiService.getUserById(id)
+        : await this.twitterApiService.getUserByUsername(username)
       twitterUser = await this.twitterUserService.updateByUserObject(user)
     }
     await this.replyData(interaction, twitterUser)
