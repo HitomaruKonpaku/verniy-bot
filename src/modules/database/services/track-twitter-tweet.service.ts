@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { TrackTwitterTweet } from '../models/track-twitter-tweet'
+import { TrackTwitterTweet } from '../models/track-twitter-tweet.entity'
 
 export class TrackTwitterTweetService {
   constructor(

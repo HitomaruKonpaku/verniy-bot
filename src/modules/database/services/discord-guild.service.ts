@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { DiscordGuild } from '../models/discord-guild'
+import { DiscordGuild } from '../models/discord-guild.entity'
 
 export class DiscordGuildService {
   constructor(

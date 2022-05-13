@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { DiscordUser } from '../models/discord-user'
+import { DiscordUser } from '../models/discord-user.entity'
 
 export class DiscordUserService {
   constructor(

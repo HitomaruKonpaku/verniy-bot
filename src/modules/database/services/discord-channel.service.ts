@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { DiscordChannel } from '../models/discord-channel'
+import { DiscordChannel } from '../models/discord-channel.entity'
 
 export class DiscordChannelService {
   constructor(

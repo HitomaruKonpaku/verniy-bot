@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { SpaceV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
-import { TwitterSpace } from '../models/twitter-space'
+import { TwitterSpace } from '../models/twitter-space.entity'
 
 export class TwitterSpaceService {
   constructor(
