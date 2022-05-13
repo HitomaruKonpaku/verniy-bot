@@ -105,7 +105,7 @@ export class TwitterTweetTrackingService {
     }
     try {
       const users = await this.twitterApiService.getUsersByUserIds(userIds)
-      await Promise.allSettled(users.map((v) => this.twitterUserService.updateByTwitterUser(v)))
+      await Promise.allSettled(users.map((v) => this.twitterUserService.updateByUserObject(v)))
     } catch (error) {
       this.logger.error(`getUsers: ${error.message}`)
       const ms = ([10, 20][retryCount] || 30) * 1000

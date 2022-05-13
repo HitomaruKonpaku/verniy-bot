@@ -71,7 +71,7 @@ export class TrackCommand {
       let twitterUser = await this.twitterUserService.getOneByUsername(username)
       if (!twitterUser) {
         const user = await this.twitterApiService.getUserByUsername(username)
-        twitterUser = await this.twitterUserService.updateByTwitterUser(user)
+        twitterUser = await this.twitterUserService.updateByUserObject(user)
       }
       // eslint-disable-next-line max-len
       await this.trackTwitterTweetService.add(twitterUser.id, channelId, allowReply, allowRetweet, null, interaction.user.id)
@@ -95,7 +95,7 @@ export class TrackCommand {
       let twitterUser = await this.twitterUserService.getOneByUsername(username)
       if (!twitterUser) {
         const user = await this.twitterApiService.getUserByUsername(username)
-        twitterUser = await this.twitterUserService.updateByTwitterUser(user)
+        twitterUser = await this.twitterUserService.updateByUserObject(user)
       }
       await this.trackTwitterProfileService.add(twitterUser.id, channelId, interaction.user.id)
       this.logger.info('Tracking profile', { username, channelId })

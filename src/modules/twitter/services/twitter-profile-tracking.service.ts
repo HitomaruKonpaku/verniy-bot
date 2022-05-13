@@ -78,7 +78,7 @@ export class TwitterProfileTrackingService {
   private async checkActiveUserProfile(user: UserV1) {
     try {
       const oldUser = await this.twitterUserService.getOneById(user.id_str)
-      const newUser = await this.twitterUserService.updateByTwitterUser(user)
+      const newUser = await this.twitterUserService.updateByUserObject(user)
       await this.checkUserProfile(newUser, oldUser)
     } catch (error) {
       this.logger.error(`checkActiveUserProfile: ${error.message}`, { id: user.id_str })
