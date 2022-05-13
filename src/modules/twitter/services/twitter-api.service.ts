@@ -19,6 +19,19 @@ export class TwitterApiService {
     return this.twitterClientService.roClient
   }
 
+  public async getUserByUsername(username: string): Promise<UserV1> {
+    const requestId = randomUUID()
+    try {
+      this.logger.debug('--> getUserByUsername', { requestId, username })
+      const user = await this.client.v1.user({ screen_name: username })
+      this.logger.debug('<-- getUserByUsername', { requestId })
+      return user
+    } catch (error) {
+      this.logger.error(`getUserByUsername: ${error.message}`, { requestId, username })
+      throw error
+    }
+  }
+
   public async getAllUsersByUserIds(userIds: string[]): Promise<UserV1[]> {
     const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
     const results = await Promise.allSettled(chunks.map((v) => this.getUsersByUserIds(v)))
@@ -59,15 +72,26 @@ export class TwitterApiService {
     }
   }
 
-  public async getUserByUsername(username: string): Promise<UserV1> {
+  public async getSpaceById(id: string) {
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getUserByUsername', { requestId, username })
-      const user = await this.client.v1.user({ screen_name: username })
-      this.logger.debug('<-- getUserByUsername', { requestId })
-      return user
+      this.logger.debug('--> getSpaceById', { requestId, id })
+      const result = await this.client.v2.space(
+        id,
+        {
+          expansions: ['creator_id'],
+          'space.fields': [
+            'id', 'created_at', 'updated_at',
+            'creator_id', 'state', 'is_ticketed',
+            'scheduled_start', 'started_at', 'ended_at',
+            'lang', 'title',
+          ],
+        },
+      )
+      this.logger.debug('<-- getSpaceById', { requestId })
+      return result
     } catch (error) {
-      this.logger.error(`getUserByUsername: ${error.message}`, { requestId })
+      this.logger.error(`getSpaceById: ${error.message}`, { requestId, id })
       throw error
     }
   }
