@@ -3,20 +3,18 @@
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
 import 'dotenv/config'
-import { DISCORD_COMMANDS } from './modules/discord/constants/discord-command.constant'
+import { DISCORD_GLOBAL_COMMANDS, DISCORD_GUILD_COMMANDS } from './modules/discord/constants/discord-command.constant'
 
 const updateGuildCommands = true
 const updateGlobalCommands = !true
 
-const commands = DISCORD_COMMANDS
+const guildCommands = DISCORD_GUILD_COMMANDS
   .map((v) => v.command)
   .map((command) => command.toJSON())
 
-const guildCommands = Array.from(commands)
-const globalCommands = Array.from(commands)
-
-// guildCommands.length = 0
-globalCommands.length = 0
+const globalCommands = DISCORD_GLOBAL_COMMANDS
+  .map((v) => v.command)
+  .map((command) => command.toJSON())
 
 async function main() {
   const token = process.env.DISCORD_TOKEN

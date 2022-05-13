@@ -20,7 +20,7 @@ import { DiscordUserService } from '../../database/services/discord-user.service
 import { TrackTwitterProfileService } from '../../database/services/track-twitter-profile.service'
 import { TrackTwitterTweetService } from '../../database/services/track-twitter-tweet.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
-import { DISCORD_COMMANDS } from '../constants/discord-command.constant'
+import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'
 
 @Injectable()
@@ -114,7 +114,7 @@ export class DiscordService {
   }
 
   private initCommands() {
-    const commands = DISCORD_COMMANDS
+    const commands = DISCORD_APP_COMMANDS
     commands.forEach((v) => this.commands.set(v.command.name, v))
   }
 
