@@ -80,7 +80,7 @@ export class GetCommand {
   private async executeTwitterUserCommand(interaction: CommandInteraction) {
     const id = interaction.options.getString('id')
     const username = interaction.options.getString('username')
-    if (!id || !username) {
+    if (!id && !username) {
       await interaction.editReply(`Required ${inlineCode('id')} or ${inlineCode('username')}`)
       return
     }
