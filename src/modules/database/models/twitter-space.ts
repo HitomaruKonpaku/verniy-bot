@@ -10,7 +10,7 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'creator_id', type: 'text' })
   creatorId: string
 
-  @Column({ name: 'state', type: 'text' })
+  @Column({ name: 'state', type: 'text', default: 'live' })
   state: 'scheduled' | 'live' | 'ended'
 
   @Column({ name: 'is_ticketed', type: 'boolean', default: false })
