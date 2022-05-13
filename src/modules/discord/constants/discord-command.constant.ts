@@ -17,4 +17,5 @@ export const DISCORD_GUILD_COMMANDS = [
 export const DISCORD_GLOBAL_COMMANDS = [
   // TrackCommand,
   // UntrackCommand,
+  // GetCommand,
 ]

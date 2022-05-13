@@ -6,7 +6,7 @@ import 'dotenv/config'
 import { DISCORD_GLOBAL_COMMANDS, DISCORD_GUILD_COMMANDS } from './modules/discord/constants/discord-command.constant'
 
 const updateGuildCommands = true
-const updateGlobalCommands = !true
+const updateGlobalCommands = true
 
 const guildCommands = DISCORD_GUILD_COMMANDS
   .map((v) => v.command)
