@@ -4,7 +4,7 @@ import { TwitterUser } from '../../database/models/twitter-user.entity'
 import { TwitterUtils } from './TwitterUtils'
 
 export class TwitterEntityUtils {
-  public static buildUser(data: UserV1) {
+  public static buildUser(data: UserV1): TwitterUser {
     const obj: TwitterUser = {
       id: data.id_str,
       isActive: true,
@@ -21,7 +21,7 @@ export class TwitterEntityUtils {
     return obj
   }
 
-  public static buildSpace(data: SpaceV2) {
+  public static buildSpace(data: SpaceV2): TwitterSpace {
     const obj: TwitterSpace = {
       id: data.id,
       isActive: true,
