@@ -102,7 +102,7 @@ export class GetCommand {
         ? await this.twitterApiService.getUserById(id)
         : await this.twitterApiService.getUserByUsername(username)
       await this.twitterUserService.updateByUserObject(user)
-      rawUser = await this.twitterUserService.getRawOneByUsername(user.id_str)
+      rawUser = await this.twitterUserService.getRawOneById(user.id_str)
     }
     await this.replyData(interaction, rawUser)
   }
