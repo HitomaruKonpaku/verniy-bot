@@ -30,6 +30,7 @@ import { TwitterService } from './services/twitter.service'
   exports: [
     TwitterService,
     TwitterApiService,
+    TwitterApiPublicService,
   ],
 })
 export class TwitterModule { }
