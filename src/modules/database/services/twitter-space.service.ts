@@ -15,6 +15,15 @@ export class TwitterSpaceService {
     return space
   }
 
+  public async getRawOneById(id: string) {
+    const space = await this.repository
+      .createQueryBuilder('ts')
+      .select('ts.*')
+      .andWhere('ts.id = :id', { id })
+      .getRawOne()
+    return space
+  }
+
   public async getLiveSpaceIds() {
     const spaces = await this.repository.find({ where: { state: 'live' } })
     const ids = spaces.map((v) => v.id)

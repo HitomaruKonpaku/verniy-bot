@@ -15,11 +15,31 @@ export class TwitterUserService {
     return user
   }
 
+  public async getRawOneById(id: string) {
+    const user = await this.repository
+      .createQueryBuilder('tu')
+      .select('tu.*')
+      .andWhere('tu.id = :id', { id })
+      .getRawOne()
+    return user
+  }
+
   public async getOneByUsername(username: string) {
     const user = await this.repository
       .createQueryBuilder()
+      .andWhere('is_active = TRUE')
       .andWhere('LOWER(username) = LOWER(:username)', { username })
       .getOne()
+    return user
+  }
+
+  public async getRawOneByUsername(username: string) {
+    const user = await this.repository
+      .createQueryBuilder('tu')
+      .select('tu.*')
+      .andWhere('tu.is_active = TRUE')
+      .andWhere('LOWER(tu.username) = LOWER(:username)', { username })
+      .getRawOne()
     return user
   }
 
