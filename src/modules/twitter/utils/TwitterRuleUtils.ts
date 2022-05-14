@@ -45,8 +45,6 @@ export class TwitterRuleUtils {
         if (index >= 0) {
           const username = arr1.splice(index, 1)[0]
           arr2.push(username)
-        } else {
-          arr1.unshift(arr2.pop())
         }
         arrResult.push(Array.from(arr2))
         arr2.length = 0
