@@ -27,8 +27,8 @@ export class TwitterUserService {
   public async getOneByUsername(username: string) {
     const user = await this.repository
       .createQueryBuilder()
-      .andWhere('is_active = TRUE')
       .andWhere('LOWER(username) = LOWER(:username)', { username })
+      .addOrderBy('is_active', 'DESC')
       .getOne()
     return user
   }
@@ -37,8 +37,8 @@ export class TwitterUserService {
     const user = await this.repository
       .createQueryBuilder('tu')
       .select('tu.*')
-      .andWhere('tu.is_active = TRUE')
       .andWhere('LOWER(tu.username) = LOWER(:username)', { username })
+      .addOrderBy('tu.is_active', 'DESC')
       .getRawOne()
     return user
   }
