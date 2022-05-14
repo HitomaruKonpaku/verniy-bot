@@ -1,10 +1,17 @@
-import { codeBlock, inlineCode, SlashCommandBuilder } from '@discordjs/builders'
+import {
+  bold,
+  codeBlock,
+  inlineCode,
+  SlashCommandBuilder,
+} from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
 import { TwitterSpaceService } from '../../database/services/twitter-space.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
+import { TwitterApiPublicService } from '../../twitter/services/twitter-api-public.service'
 import { TwitterApiService } from '../../twitter/services/twitter-api.service'
+import { TwitterEntityUtils } from '../../twitter/utils/TwitterEntityUtils'
 
 @Injectable()
 export class GetCommand {
@@ -13,6 +20,8 @@ export class GetCommand {
   constructor(
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
+    @Inject(TwitterApiPublicService)
+    private readonly twitterApiPublicService: TwitterApiPublicService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterSpaceService)
@@ -81,34 +90,45 @@ export class GetCommand {
     const id = interaction.options.getString('id')
     const username = interaction.options.getString('username')
     if (!id && !username) {
-      await interaction.editReply(`Required ${inlineCode('id')} or ${inlineCode('username')}`)
+      await interaction.editReply(`Required ${bold(inlineCode('id'))} or ${bold(inlineCode('username'))}`)
       return
     }
     const refresh = interaction.options.getBoolean('refresh')
-    let twitterUser = id
-      ? await this.twitterUserService.getOneById(id)
-      : await this.twitterUserService.getOneByUsername(username)
-    if (!twitterUser || refresh) {
+    let rawUser = id
+      ? await this.twitterUserService.getRawOneById(id)
+      : await this.twitterUserService.getRawOneByUsername(username)
+    if (!rawUser || refresh) {
       const user = id
         ? await this.twitterApiService.getUserById(id)
         : await this.twitterApiService.getUserByUsername(username)
-      twitterUser = await this.twitterUserService.updateByUserObject(user)
+      await this.twitterUserService.updateByUserObject(user)
+      rawUser = await this.twitterUserService.getRawOneByUsername(user.id_str)
     }
-    await this.replyData(interaction, twitterUser)
+    await this.replyData(interaction, rawUser)
   }
 
   private async executeTwitterSpaceCommand(interaction: CommandInteraction) {
     const id = interaction.options.getString('id', true)
-    let twitterSpace = await this.twitterSpaceService.getOneById(id)
-    if (!twitterSpace) {
+    let rawSpace = await this.twitterSpaceService.getOneById(id)
+    if (!rawSpace) {
       const result = await this.twitterApiService.getSpaceById(id)
-      if (!result.data) {
+      const space = result?.data
+      if (!space) {
         await interaction.editReply(result.errors.map((v) => v.detail).join(' '))
         return
       }
-      twitterSpace = await this.twitterSpaceService.updateBySpaceObject(result.data)
+      const twitterSpace = TwitterEntityUtils.buildSpace(space)
+      if (twitterSpace.state === 'live') {
+        try {
+          twitterSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id)
+        } catch (error) {
+          this.logger.error(`executeTwitterSpaceCommand:getSpacePlaylistUrl: $${error.message}`, { id })
+        }
+      }
+      await this.twitterSpaceService.update(twitterSpace)
+      rawSpace = await this.twitterSpaceService.getRawOneById(id)
     }
-    await this.replyData(interaction, twitterSpace)
+    await this.replyData(interaction, rawSpace)
   }
 
   // eslint-disable-next-line class-methods-use-this
