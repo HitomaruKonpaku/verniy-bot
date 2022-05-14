@@ -109,7 +109,7 @@ export class GetCommand {
 
   private async executeTwitterSpaceCommand(interaction: CommandInteraction) {
     const id = interaction.options.getString('id', true)
-    let rawSpace = await this.twitterSpaceService.getOneById(id)
+    let rawSpace = await this.twitterSpaceService.getRawOneById(id)
     if (!rawSpace) {
       const result = await this.twitterApiService.getSpaceById(id)
       const space = result?.data
