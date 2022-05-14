@@ -122,7 +122,7 @@ export class GetCommand {
         try {
           twitterSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id)
         } catch (error) {
-          this.logger.error(`executeTwitterSpaceCommand:getSpacePlaylistUrl: $${error.message}`, { id })
+          this.logger.error(`executeTwitterSpaceCommand#getSpacePlaylistUrl: $${error.message}`, { id })
         }
       }
       await this.twitterSpaceService.update(twitterSpace)

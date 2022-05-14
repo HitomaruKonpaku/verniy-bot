@@ -4,6 +4,7 @@ import { UserV1 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
+import { twitterSpaceLimiter, twitterSpacesByCreatorIdsLimiter, twitterSpacesByIdsLimiter } from '../twitter.limiter'
 import { TwitterClientService } from './twitter-client.service'
 
 @Injectable()
@@ -88,20 +89,23 @@ export class TwitterApiService {
   public async getSpaceById(id: string) {
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getSpaceById', { requestId, id })
-      const result = await this.client.v2.space(
-        id,
-        {
-          expansions: ['creator_id'],
-          'space.fields': [
-            'id', 'created_at', 'updated_at',
-            'creator_id', 'state', 'is_ticketed',
-            'scheduled_start', 'started_at', 'ended_at',
-            'lang', 'title',
-          ],
-        },
-      )
-      this.logger.debug('<-- getSpaceById', { requestId })
+      const result = await twitterSpaceLimiter.schedule(async () => {
+        this.logger.debug('--> getSpaceById', { requestId, id })
+        const response = await this.client.v2.space(
+          id,
+          {
+            expansions: ['creator_id'],
+            'space.fields': [
+              'id', 'created_at', 'updated_at',
+              'creator_id', 'state', 'is_ticketed',
+              'scheduled_start', 'started_at', 'ended_at',
+              'lang', 'title',
+            ],
+          },
+        )
+        this.logger.debug('<-- getSpaceById', { requestId })
+        return Promise.resolve(response)
+      })
       return result
     } catch (error) {
       this.logger.error(`getSpaceById: ${error.message}`, { requestId, id })
@@ -112,20 +116,23 @@ export class TwitterApiService {
   public async getSpacesByIds(ids: string[]) {
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getSpacesByIds', { requestId, idCount: ids.length, ids })
-      const result = await this.client.v2.spaces(
-        ids,
-        {
-          expansions: ['creator_id'],
-          'space.fields': [
-            'id', 'created_at', 'updated_at',
-            'creator_id', 'state', 'is_ticketed',
-            'scheduled_start', 'started_at', 'ended_at',
-            'lang', 'title',
-          ],
-        },
-      )
-      this.logger.debug('<-- getSpacesByIds', { requestId })
+      const result = await twitterSpacesByIdsLimiter.schedule(async () => {
+        this.logger.debug('--> getSpacesByIds', { requestId, idCount: ids.length, ids })
+        const response = await this.client.v2.spaces(
+          ids,
+          {
+            expansions: ['creator_id'],
+            'space.fields': [
+              'id', 'created_at', 'updated_at',
+              'creator_id', 'state', 'is_ticketed',
+              'scheduled_start', 'started_at', 'ended_at',
+              'lang', 'title',
+            ],
+          },
+        )
+        this.logger.debug('<-- getSpacesByIds', { requestId })
+        return Promise.resolve(response)
+      })
       return result
     } catch (error) {
       this.logger.error(`getSpacesByIds: ${error.message}`, { requestId })
@@ -136,20 +143,23 @@ export class TwitterApiService {
   public async getSpacesByCreatorIds(userIds: string[]) {
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getSpacesByCreatorIds', { requestId, userCount: userIds.length, userIds })
-      const result = await this.client.v2.spacesByCreators(
-        userIds,
-        {
-          expansions: ['creator_id'],
-          'space.fields': [
-            'id', 'created_at', 'updated_at',
-            'creator_id', 'state', 'is_ticketed',
-            'scheduled_start', 'started_at', 'ended_at',
-            'lang', 'title',
-          ],
-        },
-      )
-      this.logger.debug('<-- getSpacesByCreatorIds', { requestId })
+      const result = await twitterSpacesByCreatorIdsLimiter.schedule(async () => {
+        this.logger.debug('--> getSpacesByCreatorIds', { requestId, userCount: userIds.length, userIds })
+        const response = await this.client.v2.spacesByCreators(
+          userIds,
+          {
+            expansions: ['creator_id'],
+            'space.fields': [
+              'id', 'created_at', 'updated_at',
+              'creator_id', 'state', 'is_ticketed',
+              'scheduled_start', 'started_at', 'ended_at',
+              'lang', 'title',
+            ],
+          },
+        )
+        this.logger.debug('<-- getSpacesByCreatorIds', { requestId })
+        return Promise.resolve(response)
+      })
       return result
     } catch (error) {
       this.logger.error(`getSpacesByCreatorIds: ${error.message}`, { requestId })
