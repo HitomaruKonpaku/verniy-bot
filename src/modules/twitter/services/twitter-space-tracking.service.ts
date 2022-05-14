@@ -112,7 +112,7 @@ export class TwitterSpaceTrackingService {
       if (newSpace.state === oldSpace?.state) {
         return
       }
-      this.notifySpace(Object.assign(oldSpace || {}, newSpace))
+      this.notifySpace(newSpace)
     } catch (error) {
       this.logger.error(`updateSpace: ${error.message}`, { space })
     }
@@ -126,7 +126,8 @@ export class TwitterSpaceTrackingService {
       }
 
       // TODO: Update message payload
-      const content = codeBlock('json', JSON.stringify(space, null, 2))
+      const rawSpace = await this.twitterSpaceService.getRawOneById(space.id)
+      const content = codeBlock('json', JSON.stringify(rawSpace, null, 2))
 
       this.logger.info('Channels', { id: channelIds })
       channelIds.forEach((channelId) => {
