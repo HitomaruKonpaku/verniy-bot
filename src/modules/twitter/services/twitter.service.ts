@@ -45,12 +45,12 @@ export class TwitterService {
     if (this.configService.twitter.space.active) {
       await this.twitterSpaceTrackingService.start()
     }
-    await this.checkSpaces(this.spaceCheckInterval)
+    await this.checkSpacesActive(this.spaceCheckInterval)
     await this.checkSpacesPlaylist(this.spaceCheckInterval)
   }
 
-  public async checkSpaces(ms?: number) {
-    this.logger.debug('--> checkSpaces')
+  public async checkSpacesActive(ms?: number) {
+    this.logger.debug('--> checkSpacesActive')
     try {
       const limiter = twitterSpacesByIdsLimiter
       const spaces = await this.twitterSpaceService.getSpacesForActiveCheck()
@@ -73,13 +73,13 @@ export class TwitterService {
         }
       })))
     } catch (error) {
-      this.logger.error(`checkSpaces: ${error.message}`)
+      this.logger.error(`checkSpacesActive: ${error.message}`)
     }
     if (ms) {
-      this.logger.debug(`checkSpaces: Recheck in ${ms}ms`)
-      setTimeout(() => this.checkSpaces(), ms)
+      this.logger.debug(`checkSpacesActive: Recheck in ${ms}ms`)
+      setTimeout(() => this.checkSpacesActive(), ms)
     }
-    this.logger.debug('<-- checkSpaces')
+    this.logger.debug('<-- checkSpacesActive')
   }
 
   public async checkSpacesPlaylist(ms?: number) {
