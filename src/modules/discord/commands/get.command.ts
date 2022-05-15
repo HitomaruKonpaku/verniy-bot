@@ -126,6 +126,15 @@ export class GetCommand {
         }
       }
       await this.twitterSpaceService.update(twitterSpace)
+      try {
+        const twitterUser = await this.twitterUserService.getOneById(twitterSpace.creatorId)
+        if (!twitterUser) {
+          const user = await this.twitterApiService.getUserById(twitterSpace.creatorId)
+          await this.twitterUserService.updateByUserObject(user)
+        }
+      } catch (error) {
+        this.logger.error(`executeTwitterSpaceCommand#updateUser: $${error.message}`, { id, userId: twitterSpace.creatorId })
+      }
       rawSpace = await this.twitterSpaceService.getRawOneById(id)
     }
     await this.replyData(interaction, rawSpace)
