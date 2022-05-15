@@ -30,6 +30,29 @@ export class TwitterSpaceService {
     return ids
   }
 
+  public async getSpacesForActiveCheck() {
+    const spaces = await this.repository
+      .createQueryBuilder()
+      // eslint-disable-next-line quotes
+      .andWhere(`DATETIME('now', '-30 day') > DATETIME(created_at / 1000, 'unixepoch')`)
+      .andWhere('is_active = TRUE')
+      .addOrderBy('created_at')
+      .getMany()
+    return spaces
+  }
+
+  public async getSpacesForPlaylistActiveCheck() {
+    const spaces = await this.repository
+      .createQueryBuilder()
+      // eslint-disable-next-line quotes
+      // .andWhere(`DATETIME('now', '-30 day') > DATETIME(created_at / 1000, 'unixepoch')`)
+      .andWhere('playlist_url NOTNULL')
+      .andWhere('(playlist_active ISNULL OR playlist_active = TRUE)')
+      .addOrderBy('created_at')
+      .getMany()
+    return spaces
+  }
+
   public async update(data: TwitterSpace): Promise<TwitterSpace> {
     const space = await this.repository.save(data)
     return space
@@ -38,5 +61,13 @@ export class TwitterSpaceService {
   public async updateBySpaceObject(data: SpaceV2) {
     const space = await this.update(TwitterEntityUtils.buildSpace(data))
     return space
+  }
+
+  public async updateIsActive(id: string, isActive: boolean) {
+    await this.repository.update({ id }, { isActive })
+  }
+
+  public async updatePlaylistActive(id: string, playlistActive: boolean) {
+    await this.repository.update({ id }, { playlistActive })
   }
 }

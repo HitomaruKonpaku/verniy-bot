@@ -33,4 +33,7 @@ export class TwitterSpace extends BaseExternalEntity {
 
   @Column({ name: 'playlist_url', type: 'text', nullable: true })
   playlistUrl?: string
+
+  @Column({ name: 'playlist_active', type: 'boolean', nullable: true })
+  playlistActive?: boolean
 }
