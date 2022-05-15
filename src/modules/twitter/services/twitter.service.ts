@@ -50,7 +50,7 @@ export class TwitterService {
   }
 
   public async checkSpacesActive(ms?: number) {
-    this.logger.debug('--> checkSpacesActive')
+    this.logger.info('--> checkSpacesActive')
     try {
       const limiter = twitterSpacesByIdsLimiter
       const spaces = await this.twitterSpaceService.getSpacesForActiveCheck()
@@ -76,14 +76,14 @@ export class TwitterService {
       this.logger.error(`checkSpacesActive: ${error.message}`)
     }
     if (ms) {
-      this.logger.debug(`checkSpacesActive: Recheck in ${ms}ms`)
+      this.logger.info(`checkSpacesActive: Recheck in ${ms}ms`)
       setTimeout(() => this.checkSpacesActive(), ms)
     }
-    this.logger.debug('<-- checkSpacesActive')
+    this.logger.info('<-- checkSpacesActive')
   }
 
   public async checkSpacesPlaylist(ms?: number) {
-    this.logger.debug('--> checkSpacesPlaylist')
+    this.logger.info('--> checkSpacesPlaylist')
     try {
       const limiter = new Bottleneck({ maxConcurrent: 2 })
       const spaces = await this.twitterSpaceService.getSpacesForPlaylistActiveCheck()
@@ -93,10 +93,10 @@ export class TwitterService {
       this.logger.error(`checkSpacesPlaylist: ${error.message}`)
     }
     if (ms) {
-      this.logger.debug(`checkSpacesPlaylist: Recheck in ${ms}ms`)
+      this.logger.info(`checkSpacesPlaylist: Recheck in ${ms}ms`)
       setTimeout(() => this.checkSpacesPlaylist(), ms)
     }
-    this.logger.debug('<-- checkSpacesPlaylist')
+    this.logger.info('<-- checkSpacesPlaylist')
   }
 
   public async checkSpacePlaylist(space: TwitterSpace) {
