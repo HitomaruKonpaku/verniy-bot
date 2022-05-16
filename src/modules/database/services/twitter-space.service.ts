@@ -45,7 +45,7 @@ export class TwitterSpaceService {
     const spaces = await this.repository
       .createQueryBuilder()
       // eslint-disable-next-line quotes
-      // .andWhere(`DATETIME('now', '-30 day') > DATETIME(created_at / 1000, 'unixepoch')`)
+      .andWhere(`DATETIME('now', '-30 day') > DATETIME(created_at / 1000, 'unixepoch')`)
       .andWhere('playlist_url NOTNULL')
       .andWhere('(playlist_active ISNULL OR playlist_active = TRUE)')
       .addOrderBy('created_at')
