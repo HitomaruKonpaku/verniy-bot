@@ -30,7 +30,7 @@ export class TwitterSpaceService {
     return ids
   }
 
-  public async getSpacesForActiveCheck() {
+  public async getManyForActiveCheck() {
     const spaces = await this.repository
       .createQueryBuilder()
       // eslint-disable-next-line quotes
@@ -41,7 +41,7 @@ export class TwitterSpaceService {
     return spaces
   }
 
-  public async getSpacesForPlaylistActiveCheck() {
+  public async getManyForPlaylistActiveCheck() {
     const spaces = await this.repository
       .createQueryBuilder()
       // eslint-disable-next-line quotes

@@ -7,6 +7,7 @@ import { Utils } from '../../../utils/Utils'
 import { ConfigService } from '../../config/services/config.service'
 import { TwitterSpace } from '../../database/models/twitter-space.entity'
 import { TwitterSpaceService } from '../../database/services/twitter-space.service'
+import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { twitterSpacesByIdsLimiter } from '../twitter.limiter'
 import { TwitterApiService } from './twitter-api.service'
@@ -30,12 +31,16 @@ export class TwitterService {
     private readonly twitterProfileTrackingService: TwitterProfileTrackingService,
     @Inject(TwitterSpaceTrackingService)
     private readonly twitterSpaceTrackingService: TwitterSpaceTrackingService,
+    @Inject(TwitterUserService)
+    private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterSpaceService)
     private readonly twitterSpaceService: TwitterSpaceService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
   ) {
-    this.spaceCronJob = new CronJob('0 0 0,12 * * *', () => this.checkSpaces(), null, false, 'Asia/Ho_Chi_Minh')
+    const cronTimeZone = 'Asia/Ho_Chi_Minh'
+    this.userCronJob = new CronJob('0 0 */6 * * *', () => this.checkUsers(), null, false, cronTimeZone)
+    this.spaceCronJob = new CronJob('0 0 */12 * * *', () => this.checkSpaces(), null, false, cronTimeZone)
   }
 
   public async start() {
@@ -49,7 +54,38 @@ export class TwitterService {
     if (this.configService.twitter.space.active) {
       await this.twitterSpaceTrackingService.start()
     }
+    this.userCronJob.start()
     this.spaceCronJob.start()
+  }
+
+  public async checkUsers() {
+    this.logger.info('--> checkUsers')
+    try {
+      const limiter = new Bottleneck({ maxConcurrent: 1 })
+      const twitterUsers = await this.twitterUserService.getManyForCheck()
+      const chunks = Utils.splitArrayIntoChunk(twitterUsers, TWITTER_API_LIST_SIZE)
+      await Promise.allSettled(chunks.map((chunk) => limiter.schedule(async () => {
+        try {
+          const ids = chunk.map((v) => v.id)
+          const users = await this.twitterApiService.getUsersByUserIds(ids)
+          const inactiveIdSet = new Set(ids)
+          users.forEach((user) => {
+            inactiveIdSet.delete(user.id_str)
+            this.twitterUserService.updateByUserObject(user)
+              .catch((error) => this.logger.error(`checkUsers#updateByUserObject: ${error.message}`, { id: user.id_str, user }))
+          })
+          inactiveIdSet.forEach((id) => {
+            this.twitterUserService.updateIsActive(id, false)
+              .catch((error) => this.logger.error(`checkUsers#updateIsActive: ${error.message}`, { id }))
+          })
+        } catch (error) {
+          // Ignore
+        }
+      })))
+    } catch (error) {
+      this.logger.error(`checkUsers: ${error.message}`)
+    }
+    this.logger.info('<-- checkUsers')
   }
 
   public async checkSpaces() {
@@ -61,7 +97,7 @@ export class TwitterService {
     this.logger.info('--> checkSpacesActive')
     try {
       const limiter = twitterSpacesByIdsLimiter
-      const spaces = await this.twitterSpaceService.getSpacesForActiveCheck()
+      const spaces = await this.twitterSpaceService.getManyForActiveCheck()
       const chunks = Utils.splitArrayIntoChunk(spaces, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((chunk) => limiter.schedule(async () => {
         try {
@@ -90,7 +126,7 @@ export class TwitterService {
     this.logger.info('--> checkSpacesPlaylist')
     try {
       const limiter = new Bottleneck({ maxConcurrent: 1 })
-      const spaces = await this.twitterSpaceService.getSpacesForPlaylistActiveCheck()
+      const spaces = await this.twitterSpaceService.getManyForPlaylistActiveCheck()
       // eslint-disable-next-line max-len
       await Promise.allSettled(spaces.map((v) => limiter.schedule(() => this.checkSpacePlaylist(v))))
     } catch (error) {

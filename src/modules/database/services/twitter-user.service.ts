@@ -2,6 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { UserV1 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
 import { TwitterEntityUtils } from '../../twitter/utils/TwitterEntityUtils'
+import { TrackTwitterProfile } from '../models/track-twitter-profile.entity'
 import { TwitterUser } from '../models/twitter-user.entity'
 
 export class TwitterUserService {
@@ -45,6 +46,19 @@ export class TwitterUserService {
 
   public async getAll() {
     const users = await this.repository.find()
+    return users
+  }
+
+  public async getManyForCheck() {
+    const users = await this.repository
+      .createQueryBuilder('tu')
+      .leftJoin(
+        TrackTwitterProfile,
+        'ttp',
+        'ttp.is_active = TRUE AND ttp.twitter_user_id = tu.id',
+      )
+      .andWhere('ttp.twitter_user_id ISNULL')
+      .getMany()
     return users
   }
 
