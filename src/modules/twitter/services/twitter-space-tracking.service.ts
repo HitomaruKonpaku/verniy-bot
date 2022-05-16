@@ -101,6 +101,7 @@ export class TwitterSpaceTrackingService {
         // Try to get Space playlist url if not exist
         try {
           newSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(space.id)
+          newSpace.playlistActive = true
         } catch (error) {
           this.logger.error(`updateSpace#getSpacePlaylistUrl: ${error.message}`, { space })
         }

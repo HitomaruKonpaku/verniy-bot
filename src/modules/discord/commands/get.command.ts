@@ -121,6 +121,7 @@ export class GetCommand {
       if (twitterSpace.state === 'live') {
         try {
           twitterSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id)
+          twitterSpace.playlistActive = true
         } catch (error) {
           this.logger.error(`executeTwitterSpaceCommand#getSpacePlaylistUrl: $${error.message}`, { id })
         }
