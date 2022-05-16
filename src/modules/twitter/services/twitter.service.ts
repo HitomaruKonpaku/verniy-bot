@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import axios from 'axios'
 import Bottleneck from 'bottleneck'
+import { CronJob } from 'cron'
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
 import { ConfigService } from '../../config/services/config.service'
@@ -17,7 +18,8 @@ import { TwitterTweetTrackingService } from './twitter-tweet-tracking.service'
 export class TwitterService {
   private readonly logger = baseLogger.child({ context: TwitterService.name })
 
-  private spaceCheckInterval = 1000 * 60 * 60 * 12
+  private userCronJob: CronJob
+  private spaceCronJob: CronJob
 
   constructor(
     @Inject(ConfigService)
@@ -32,7 +34,9 @@ export class TwitterService {
     private readonly twitterSpaceService: TwitterSpaceService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
-  ) { }
+  ) {
+    this.spaceCronJob = new CronJob('0 0 0,12 * * *', () => this.checkSpaces(), null, false, 'Asia/Ho_Chi_Minh')
+  }
 
   public async start() {
     this.logger.info('Starting...')
@@ -45,11 +49,15 @@ export class TwitterService {
     if (this.configService.twitter.space.active) {
       await this.twitterSpaceTrackingService.start()
     }
-    await this.checkSpacesActive(this.spaceCheckInterval)
-    await this.checkSpacesPlaylist(this.spaceCheckInterval)
+    this.spaceCronJob.start()
   }
 
-  public async checkSpacesActive(ms?: number) {
+  public async checkSpaces() {
+    await this.checkSpacesActive()
+    await this.checkSpacesPlaylist()
+  }
+
+  public async checkSpacesActive() {
     this.logger.info('--> checkSpacesActive')
     try {
       const limiter = twitterSpacesByIdsLimiter
@@ -75,26 +83,18 @@ export class TwitterService {
     } catch (error) {
       this.logger.error(`checkSpacesActive: ${error.message}`)
     }
-    if (ms) {
-      this.logger.info(`checkSpacesActive: Recheck in ${ms}ms`)
-      setTimeout(() => this.checkSpacesActive(), ms)
-    }
     this.logger.info('<-- checkSpacesActive')
   }
 
-  public async checkSpacesPlaylist(ms?: number) {
+  public async checkSpacesPlaylist() {
     this.logger.info('--> checkSpacesPlaylist')
     try {
-      const limiter = new Bottleneck({ maxConcurrent: 2 })
+      const limiter = new Bottleneck({ maxConcurrent: 1 })
       const spaces = await this.twitterSpaceService.getSpacesForPlaylistActiveCheck()
       // eslint-disable-next-line max-len
       await Promise.allSettled(spaces.map((v) => limiter.schedule(() => this.checkSpacePlaylist(v))))
     } catch (error) {
       this.logger.error(`checkSpacesPlaylist: ${error.message}`)
-    }
-    if (ms) {
-      this.logger.info(`checkSpacesPlaylist: Recheck in ${ms}ms`)
-      setTimeout(() => this.checkSpacesPlaylist(), ms)
     }
     this.logger.info('<-- checkSpacesPlaylist')
   }
