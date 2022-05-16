@@ -18,6 +18,7 @@ import { DiscordChannelService } from '../../database/services/discord-channel.s
 import { DiscordGuildService } from '../../database/services/discord-guild.service'
 import { DiscordUserService } from '../../database/services/discord-user.service'
 import { TrackTwitterProfileService } from '../../database/services/track-twitter-profile.service'
+import { TrackTwitterSpaceService } from '../../database/services/track-twitter-space.service'
 import { TrackTwitterTweetService } from '../../database/services/track-twitter-tweet.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
 import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
@@ -45,6 +46,8 @@ export class DiscordService {
     private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(forwardRef(() => TrackTwitterProfileService))
     private readonly trackTwitterProfileService: TrackTwitterProfileService,
+    @Inject(forwardRef(() => TrackTwitterSpaceService))
+    private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
     @Inject(forwardRef(() => TwitterService))
     private readonly twitterService: TwitterService,
   ) {
@@ -173,6 +176,7 @@ export class DiscordService {
       const channelIds = (await Promise.allSettled([
         this.trackTwitterTweetService.getDiscordChannelIds(),
         this.trackTwitterProfileService.getDiscordChannelIds(),
+        this.trackTwitterSpaceService.getDiscordChannelIds(),
       ]))
         .filter((v) => v.status === 'fulfilled')
         .map((v: any) => v.value as string[])
