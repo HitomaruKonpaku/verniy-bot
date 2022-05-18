@@ -66,9 +66,9 @@ export class TwitterApiPublicService {
 
   public async getSpacePlaylistUrl(spaceId: string): Promise<string> {
     const audioSpace = await this.getAudioSpaceById(spaceId)
-    this.logger.debug('getSpacePlaylistUrl#audioSpace', { audioSpace })
+    this.logger.info('getSpacePlaylistUrl#audioSpace', { audioSpace })
     const liveVideoStreamStatus = await this.getLiveVideoStreamStatus(audioSpace.metadata.media_key)
-    this.logger.debug('getSpacePlaylistUrl#liveVideoStreamStatus', { liveVideoStreamStatus })
+    this.logger.info('getSpacePlaylistUrl#liveVideoStreamStatus', { liveVideoStreamStatus })
     const dynamicUrl = liveVideoStreamStatus.source.location
     const masterUrl = TwitterSpaceUtils.getMasterPlaylistUrl(dynamicUrl)
     this.logger.info('getSpacePlaylistUrl#playlistUrl', { playlistUrl: masterUrl })
