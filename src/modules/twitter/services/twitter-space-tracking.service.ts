@@ -57,6 +57,7 @@ export class TwitterSpaceTrackingService {
 
     const interval = this.newSpacesCheckInterval
     setTimeout(() => this.checkNewSpaces(), interval)
+    setTimeout(() => this.checkNewSpacesByPublicApi(), Math.floor(interval / 2))
   }
 
   private async checkLiveSpaces() {
@@ -72,7 +73,6 @@ export class TwitterSpaceTrackingService {
 
     const interval = this.liveSpacesCheckInterval
     setTimeout(() => this.checkLiveSpaces(), interval)
-    setTimeout(() => this.checkNewSpacesByPublicApi(), Math.floor(interval / 2))
   }
 
   private async getSpacesByIds(ids: string[]) {
