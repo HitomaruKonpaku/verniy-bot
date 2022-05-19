@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import axios from 'axios'
+import { randomUUID } from 'crypto'
 import { logger as baseLogger } from '../../../logger'
 import { TWITTER_PUBLIC_AUTHORIZATION } from '../constants/twitter.constant'
 import { AudioSpace, LiveVideoStreamStatus } from '../interfaces/twitter.interface'
@@ -32,6 +33,31 @@ export class TwitterApiPublicService {
       headers: { authorization: TWITTER_PUBLIC_AUTHORIZATION },
     })
     return data.guest_token
+  }
+
+  public async getSpacesByFleetsAvatarContent(userIds: string[]) {
+    const requestId = randomUUID()
+    try {
+      const token = process.env.TWITTER_AUTH_TOKEN
+      const url = 'https://twitter.com/i/api/fleets/v1/avatar_content'
+      const headers = {
+        authorization: TWITTER_PUBLIC_AUTHORIZATION,
+        cookie: [`auth_token=${token}`].join(';'),
+      }
+      this.logger.debug('--> getSpacesByFleetsAvatarContent', { requestId, userCount: userIds.length })
+      const { data } = await axios.get(url, {
+        headers,
+        params: {
+          user_ids: userIds.join(','),
+          only_spaces: true,
+        },
+      })
+      this.logger.debug('<-- getSpacesByFleetsAvatarContent', { requestId })
+      return data
+    } catch (error) {
+      this.logger.debug(`getSpacesByFleetsAvatarContent: ${error.message}`, { requestId })
+      throw error
+    }
   }
 
   public async getAudioSpaceById(spaceId: string) {

@@ -1,5 +1,6 @@
 import { codeBlock } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import Bottleneck from 'bottleneck'
 import { SpaceV2 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
@@ -71,6 +72,7 @@ export class TwitterSpaceTrackingService {
 
     const interval = this.liveSpacesCheckInterval
     setTimeout(() => this.checkLiveSpaces(), interval)
+    setTimeout(() => this.checkNewSpacesByPublicApi(), Math.floor(interval / 2))
   }
 
   private async getSpacesByIds(ids: string[]) {
@@ -91,6 +93,49 @@ export class TwitterSpaceTrackingService {
     } catch (error) {
       this.logger.error(`getSpacesByUserIds: ${error.message}`)
     }
+  }
+
+  private async checkNewSpacesByPublicApi() {
+    const token = process.env.TWITTER_AUTH_TOKEN
+    if (!token) {
+      return
+    }
+    try {
+      const userIds = await this.trackTwitterSpaceService.getTwitterUserIds()
+      if (!userIds.length) {
+        return
+      }
+      const spaceIds = await this.getSpaceIdsByUserIdsByPublicApi(userIds)
+      if (!spaceIds.length) {
+        return
+      }
+      const chunks = Utils.splitArrayIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
+      await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
+    } catch (error) {
+      this.logger.error(`checkNewSpacesByPublicApi: ${error.message}`)
+    }
+  }
+
+  private async getSpaceIdsByUserIdsByPublicApi(userIds: string[]): Promise<string[]> {
+    if (!userIds?.length) {
+      return []
+    }
+    try {
+      const limiter = new Bottleneck({ maxConcurrent: 1 })
+      const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+      // eslint-disable-next-line max-len
+      const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterApiPublicService.getSpacesByFleetsAvatarContent(v))))
+      const spaceIds = result
+        .filter((v) => v.status === 'fulfilled')
+        .map((v: any) => Object.values(v.value.users))
+        .flat()
+        .map((v: any) => v?.spaces?.live_content?.audiospace?.broadcast_id)
+        .filter((v) => v) || []
+      return spaceIds
+    } catch (error) {
+      this.logger.error(`getSpaceIdsByUserIdsByPublicApi: ${error.message}`)
+    }
+    return []
   }
 
   private async updateSpace(space: SpaceV2) {
