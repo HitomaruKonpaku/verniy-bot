@@ -31,6 +31,28 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'title', type: 'text', nullable: true })
   title?: string
 
+  @Column({
+    name: 'host_ids',
+    type: 'text',
+    nullable: true,
+    transformer: {
+      to: (value: string[]) => (Array.isArray(value) ? JSON.stringify(value) : null),
+      from: (value: string) => JSON.parse(value),
+    },
+  })
+  hostIds?: string[]
+
+  @Column({
+    name: 'speaker_ids',
+    type: 'text',
+    nullable: true,
+    transformer: {
+      to: (value: string[]) => (Array.isArray(value) ? JSON.stringify(value) : null),
+      from: (value: string) => JSON.parse(value),
+    },
+  })
+  speakerIds?: string[]
+
   @Column({ name: 'playlist_url', type: 'text', nullable: true })
   playlistUrl?: string
 
