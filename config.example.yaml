@@ -10,3 +10,5 @@ twitter:
   space:
     active: true
     interval: 60000
+  cron:
+    active: true

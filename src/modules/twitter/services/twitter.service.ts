@@ -54,8 +54,10 @@ export class TwitterService {
     if (this.configService.twitter.space.active) {
       await this.twitterSpaceTrackingService.start()
     }
-    this.userCronJob.start()
-    this.spaceCronJob.start()
+    if (this.configService.twitter.cron.active) {
+      this.userCronJob.start()
+      this.spaceCronJob.start()
+    }
   }
 
   public async checkUsers() {

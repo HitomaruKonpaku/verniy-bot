@@ -37,6 +37,9 @@ export class ConfigService {
         active: false,
         interval: 60000,
       },
+      cron: {
+        active: false,
+      },
     }
     Object.assign(config, this.config.twitter || {})
     return config
