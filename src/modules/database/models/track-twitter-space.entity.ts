@@ -1,12 +1,7 @@
-import { Column, Entity, Unique } from 'typeorm'
-import { BaseEntity } from './base/base.entity'
+import { Entity, Unique } from 'typeorm'
+import { BaseTrackTwitter } from './base/base-track-twitter.entity'
 
 @Entity('track_twitter_space')
 @Unique(['twitterUserId', 'discordChannelId'])
-export class TrackTwitterSpace extends BaseEntity {
-  @Column({ name: 'twitter_user_id', type: 'text' })
-  twitterUserId: string
-
-  @Column({ name: 'discord_channel_id', type: 'text' })
-  discordChannelId: string
+export class TrackTwitterSpace extends BaseTrackTwitter {
 }
