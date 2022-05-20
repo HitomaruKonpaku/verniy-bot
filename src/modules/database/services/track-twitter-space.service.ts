@@ -40,9 +40,19 @@ export class TrackTwitterSpaceService {
     return records
   }
 
+  public async getManyByTwitterUserIds(twitterUserIds: string[]) {
+    const query = this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .andWhere('twitter_user_id IN (:...twitterUserIds)', { twitterUserIds })
+    const records = await query.getMany()
+    return records
+  }
+
   public async add(
     twitterUserId: string,
     discordChannelId: string,
+    discordMessage = null,
     updatedBy?: string,
   ) {
     await this.repository.upsert(
@@ -52,6 +62,7 @@ export class TrackTwitterSpaceService {
         updatedBy,
         twitterUserId,
         discordChannelId,
+        discordMessage,
       },
       {
         conflictPaths: ['twitterUserId', 'discordChannelId'],

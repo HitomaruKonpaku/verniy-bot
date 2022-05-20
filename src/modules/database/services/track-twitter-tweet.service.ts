@@ -62,6 +62,24 @@ ORDER BY LOWER(tu.username)
     return records
   }
 
+  public async getManyByTwitterUserIds(
+    twitterUserIds: string[],
+    config?: { allowReply?: boolean, allowRetweet?: boolean },
+  ) {
+    const query = this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .andWhere('twitter_user_id IN (:...twitterUserIds)', { twitterUserIds })
+    if (config?.allowReply) {
+      query.andWhere('allow_reply = TRUE')
+    }
+    if (config?.allowRetweet) {
+      query.andWhere('allow_retweet = TRUE')
+    }
+    const records = await query.getMany()
+    return records
+  }
+
   public async existTwitterUserId(twitterUserId: string) {
     const count = await this.repository.count({
       where: {
@@ -76,6 +94,7 @@ ORDER BY LOWER(tu.username)
   public async add(
     twitterUserId: string,
     discordChannelId: string,
+    discordMessage = null,
     allowReply = true,
     allowRetweet = true,
     filterKeywords?: string[],
@@ -88,6 +107,7 @@ ORDER BY LOWER(tu.username)
         updatedBy,
         twitterUserId,
         discordChannelId,
+        discordMessage,
         allowReply,
         allowRetweet,
         filterKeywords,
