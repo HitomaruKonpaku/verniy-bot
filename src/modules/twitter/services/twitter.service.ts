@@ -55,6 +55,7 @@ export class TwitterService {
       await this.twitterSpaceTrackingService.start()
     }
     if (this.configService.twitter.cron.active) {
+      this.logger.info('Starting crons...')
       this.userCronJob.start()
       this.spaceCronJob.start()
     }
