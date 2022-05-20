@@ -55,7 +55,7 @@ export class TwitterApiPublicService {
       this.logger.debug('<-- getSpacesByFleetsAvatarContent', { requestId })
       return data
     } catch (error) {
-      this.logger.debug(`getSpacesByFleetsAvatarContent: ${error.message}`, { requestId })
+      this.logger.error(`getSpacesByFleetsAvatarContent: ${error.message}`, { requestId })
       throw error
     }
   }
@@ -91,13 +91,14 @@ export class TwitterApiPublicService {
   }
 
   public async getSpacePlaylistUrl(spaceId: string): Promise<string> {
+    this.logger.warn('getSpacePlaylistUrl', { spaceId })
     const audioSpace = await this.getAudioSpaceById(spaceId)
-    this.logger.info('getSpacePlaylistUrl#audioSpace', { audioSpace })
+    this.logger.info('getSpacePlaylistUrl#audioSpace', { spaceId, audioSpace })
     const liveVideoStreamStatus = await this.getLiveVideoStreamStatus(audioSpace.metadata.media_key)
-    this.logger.info('getSpacePlaylistUrl#liveVideoStreamStatus', { liveVideoStreamStatus })
+    this.logger.info('getSpacePlaylistUrl#liveVideoStreamStatus', { spaceId, liveVideoStreamStatus })
     const dynamicUrl = liveVideoStreamStatus.source.location
     const masterUrl = TwitterSpaceUtils.getMasterPlaylistUrl(dynamicUrl)
-    this.logger.info('getSpacePlaylistUrl#playlistUrl', { playlistUrl: masterUrl })
+    this.logger.info('getSpacePlaylistUrl#playlistUrl', { spaceId, playlistUrl: masterUrl })
     return masterUrl
   }
 }

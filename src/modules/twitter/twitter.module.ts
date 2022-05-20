@@ -5,6 +5,7 @@ import { DiscordModule } from '../discord/discord.module'
 import { TwitterApiPublicService } from './services/twitter-api-public.service'
 import { TwitterApiService } from './services/twitter-api.service'
 import { TwitterClientService } from './services/twitter-client.service'
+import { TwitterCronService } from './services/twitter-cron.service'
 import { TwitterProfileTrackingService } from './services/twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './services/twitter-space-tracking.service'
 import { TwitterTokenService } from './services/twitter-token.service'
@@ -26,6 +27,7 @@ import { TwitterService } from './services/twitter.service'
     TwitterTweetTrackingService,
     TwitterProfileTrackingService,
     TwitterSpaceTrackingService,
+    TwitterCronService,
   ],
   exports: [
     TwitterService,
