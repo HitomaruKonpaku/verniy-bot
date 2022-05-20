@@ -1,4 +1,4 @@
-import { SpaceV2, UserV1 } from 'twitter-api-v2'
+import { SpaceV2, UserV1, UserV2 } from 'twitter-api-v2'
 import { TwitterSpace } from '../../database/models/twitter-space.entity'
 import { TwitterUser } from '../../database/models/twitter-user.entity'
 import { TwitterUtils } from './TwitterUtils'
@@ -15,8 +15,23 @@ export class TwitterEntityUtils {
       description: TwitterUtils.getUserDescription(data),
       protected: data.protected,
       verified: data.verified,
-      profileImageUrl: TwitterUtils.getUserProfileImageUrl(data),
-      profileBannerUrl: TwitterUtils.getUserProfileBannerUrl(data),
+      profileImageUrl: TwitterUtils.getUserProfileImageUrl(data.profile_image_url_https),
+      profileBannerUrl: TwitterUtils.getUserProfileBannerUrl(data.profile_banner_url),
+    }
+    return obj
+  }
+
+  public static buildUserV2(data: UserV2): TwitterUser {
+    const obj: TwitterUser = {
+      id: data.id,
+      isActive: true,
+      createdAt: new Date(data.created_at).getTime(),
+      username: data.username,
+      name: data.name,
+      location: data.location,
+      protected: data.protected,
+      verified: data.verified,
+      profileImageUrl: TwitterUtils.getUserProfileImageUrl(data.profile_image_url),
     }
     return obj
   }

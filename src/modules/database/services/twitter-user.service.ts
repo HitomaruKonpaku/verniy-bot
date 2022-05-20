@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm'
-import { UserV1 } from 'twitter-api-v2'
+import { UserV1, UserV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
 import { TwitterEntityUtils } from '../../twitter/utils/TwitterEntityUtils'
 import { TrackTwitterProfile } from '../models/track-twitter-profile.entity'
@@ -14,6 +14,14 @@ export class TwitterUserService {
   public async getOneById(id: string) {
     const user = await this.repository.findOne({ where: { id } })
     return user
+  }
+
+  public async getManyByIds(ids: string[]) {
+    const users = await this.repository
+      .createQueryBuilder()
+      .andWhere('id IN (:...ids)', { ids })
+      .getMany()
+    return users
   }
 
   public async getRawOneById(id: string) {
@@ -69,6 +77,11 @@ export class TwitterUserService {
 
   public async updateByUserObject(data: UserV1) {
     const user = await this.update(TwitterEntityUtils.buildUser(data))
+    return user
+  }
+
+  public async updateByUserObjectV2(data: UserV2) {
+    const user = await this.update(TwitterEntityUtils.buildUserV2(data))
     return user
   }
 

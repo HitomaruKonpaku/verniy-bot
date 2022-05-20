@@ -14,6 +14,10 @@ export class TwitterUtils {
     return `https://twitter.com/${username}/status/${tweetId}`
   }
 
+  public static getSpaceUrl(spaceId: string): string {
+    return `https://twitter.com/i/spaces/${spaceId}`
+  }
+
   public static getIncludesUserById(data: TweetV2SingleStreamResult, id: string) {
     return data.includes?.users?.find?.((v) => v?.id === id)
   }
@@ -56,13 +60,13 @@ export class TwitterUtils {
     return desc
   }
 
-  public static getUserProfileImageUrl(user: UserV1): string {
-    const url = user?.profile_image_url_https?.replace?.('_normal', '') || null
+  public static getUserProfileImageUrl(baseUrl: string): string {
+    const url = baseUrl?.replace?.('_normal', '') || null
     return url
   }
 
-  public static getUserProfileBannerUrl(user: UserV1): string {
-    const url = user?.profile_banner_url || null
+  public static getUserProfileBannerUrl(baseUrl: string): string {
+    const url = baseUrl || null
     return url
   }
 }

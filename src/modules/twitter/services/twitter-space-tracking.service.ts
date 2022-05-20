@@ -1,6 +1,4 @@
-import { codeBlock } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import Bottleneck from 'bottleneck'
 import { SpaceV2 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
@@ -8,9 +6,12 @@ import { ConfigService } from '../../config/services/config.service'
 import { TwitterSpace } from '../../database/models/twitter-space.entity'
 import { TrackTwitterSpaceService } from '../../database/services/track-twitter-space.service'
 import { TwitterSpaceService } from '../../database/services/twitter-space.service'
+import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
+import { twitterSpacesByFleetsAvatarContentLimiter } from '../twitter.limiter'
 import { TwitterEntityUtils } from '../utils/TwitterEntityUtils'
+import { TwitterSpaceUtils } from '../utils/TwitterSpaceUtils'
 import { TwitterApiPublicService } from './twitter-api-public.service'
 import { TwitterApiService } from './twitter-api.service'
 import { TwitterTokenService } from './twitter-token.service'
@@ -29,6 +30,8 @@ export class TwitterSpaceTrackingService {
     private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
     @Inject(TwitterSpaceService)
     private readonly twitterSpaceService: TwitterSpaceService,
+    @Inject(TwitterUserService)
+    private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterApiPublicService)
@@ -86,7 +89,9 @@ export class TwitterSpaceTrackingService {
     try {
       const result = await this.twitterApiService.getSpacesByIds(ids)
       const spaces = result.data || []
-      await Promise.allSettled(spaces.map((space) => this.updateSpace(space)))
+      const users = result.includes?.users || []
+      await Promise.allSettled(users.map((v) => this.twitterUserService.updateByUserObjectV2(v)))
+      await Promise.allSettled(spaces.map((v) => this.updateSpace(v)))
     } catch (error) {
       this.logger.error(`getSpacesByIds: ${error.message}`)
     }
@@ -124,7 +129,7 @@ export class TwitterSpaceTrackingService {
       return []
     }
     try {
-      const limiter = new Bottleneck({ maxConcurrent: 1 })
+      const limiter = twitterSpacesByFleetsAvatarContentLimiter
       const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
       // eslint-disable-next-line max-len
       const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterApiPublicService.getSpacesByFleetsAvatarContent(v))))
@@ -155,43 +160,67 @@ export class TwitterSpaceTrackingService {
         }
       }
       await this.twitterSpaceService.update(newSpace)
+      await this.updateSpaceCreator(newSpace)
       if (newSpace.state === oldSpace?.state) {
         return
       }
-      this.notifySpace(newSpace)
+      this.notifySpace(space.id)
     } catch (error) {
       this.logger.error(`updateSpace: ${error.message}`, { space })
     }
   }
 
-  private async notifySpace(space: TwitterSpace) {
+  private async updateSpaceCreator(space: TwitterSpace) {
     try {
-      const channelIds = await this.getDiscordChannelIds(space)
-      if (!channelIds.length) {
+      if (!space.creatorId) {
         return
       }
-
-      // TODO: Update message payload
-      const rawSpace = await this.twitterSpaceService.getRawOneById(space.id)
-      const content = codeBlock('json', JSON.stringify(rawSpace, null, 2))
-
-      this.logger.info('Channels', { id: channelIds })
-      channelIds.forEach((channelId) => {
-        this.discordService.sendToChannel(channelId, { content })
-      })
+      if (await this.twitterUserService.getOneById(space.creatorId)) {
+        return
+      }
+      const user = await this.twitterApiService.getUserById(space.creatorId)
+      await this.twitterUserService.updateByUserObject(user)
     } catch (error) {
-      this.logger.error(`notifySpace: ${error.message}`, { space })
+      this.logger.error(`updateSpaceCreator: ${error.message}`, { space })
     }
   }
 
-  private async getDiscordChannelIds(space: TwitterSpace) {
-    let channelIds = []
+  private async notifySpace(spaceId: string) {
     try {
-      const records = await this.trackTwitterSpaceService.getManyByTwitterUserId(space.creatorId)
-      channelIds = records.map((v) => v.discordChannelId)
+      const space = await this.twitterSpaceService.getOneById(
+        spaceId,
+        { withCreator: true, withHosts: true, withSpeakers: true },
+      )
+      const trackItems = await this.getTrackItems(space)
+      if (!trackItems.length) {
+        return
+      }
+      trackItems.forEach((v) => {
+        try {
+          const embed = TwitterSpaceUtils.getEmbed(space, v)
+          this.discordService.sendToChannel(v.discordChannelId, {
+            content: v.discordMessage,
+            embeds: [embed],
+          })
+        } catch (error) {
+          this.logger.error(`notifySpace#trackItem: ${error.message}`, { space, trackItem: v })
+        }
+      })
     } catch (error) {
-      this.logger.error(`getDiscordChannelIds: ${error.message}`, { space })
+      this.logger.error(`notifySpace: ${error.message}`, { spaceId })
     }
-    return channelIds
+  }
+
+  private async getTrackItems(space: TwitterSpace) {
+    try {
+      const ids = [space.creatorId, space.hostIds, space.speakerIds]
+        .flat()
+        .filter((v) => v)
+      const items = await this.trackTwitterSpaceService.getManyByTwitterUserIds(ids)
+      return items
+    } catch (error) {
+      this.logger.error(`getTrackItems: ${error.message}`, { space })
+    }
+    return []
   }
 }

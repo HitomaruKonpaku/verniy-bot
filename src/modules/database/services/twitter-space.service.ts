@@ -1,17 +1,45 @@
+import { Inject } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { SpaceV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
 import { TwitterEntityUtils } from '../../twitter/utils/TwitterEntityUtils'
 import { TwitterSpace } from '../models/twitter-space.entity'
+import { TwitterUserService } from './twitter-user.service'
 
 export class TwitterSpaceService {
   constructor(
     @InjectRepository(TwitterSpace)
     public readonly repository: Repository<TwitterSpace>,
+    @Inject(TwitterUserService)
+    public readonly twitterUserService: TwitterUserService,
   ) { }
 
-  public async getOneById(id: string) {
-    const space = await this.repository.findOne({ where: { id } })
+  public async getOneById(
+    id: string,
+    options?: {
+      withCreator?: boolean
+      withHosts?: boolean
+      withSpeakers?: boolean
+    },
+  ) {
+    const query = this.repository
+      .createQueryBuilder('ts')
+      .andWhere('ts.id = :id', { id })
+    if (options?.withCreator) {
+      query.leftJoinAndMapOne(
+        'ts.creator',
+        'twitter_user',
+        'tu',
+        'tu.id = ts.creator_id',
+      )
+    }
+    const space = await query.getOne()
+    if (options?.withHosts && space?.hostIds?.length) {
+      space.hosts = await this.twitterUserService.getManyByIds(space.hostIds)
+    }
+    if (options?.withSpeakers && space?.speakerIds?.length) {
+      space.speakers = await this.twitterUserService.getManyByIds(space.speakerIds)
+    }
     return space
   }
 
