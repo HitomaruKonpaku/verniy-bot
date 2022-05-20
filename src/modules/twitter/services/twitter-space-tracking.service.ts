@@ -195,15 +195,18 @@ export class TwitterSpaceTrackingService {
       if (!trackItems.length) {
         return
       }
-      trackItems.forEach((v) => {
+      trackItems.forEach((trackItem) => {
         try {
-          const embed = TwitterSpaceUtils.getEmbed(space, v)
-          this.discordService.sendToChannel(v.discordChannelId, {
-            content: v.discordMessage,
-            embeds: [embed],
-          })
+          const embed = TwitterSpaceUtils.getEmbed(space, trackItem)
+          this.discordService.sendToChannel(
+            trackItem.discordChannelId,
+            {
+              content: trackItem.discordMessage,
+              embeds: [embed],
+            },
+          )
         } catch (error) {
-          this.logger.error(`notifySpace#trackItem: ${error.message}`, { space, trackItem: v })
+          this.logger.error(`notifySpace#trackItem: ${error.message}`, { space, trackItem })
         }
       })
     } catch (error) {

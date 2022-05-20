@@ -1,4 +1,4 @@
-import { bold, hideLinkEmbed, inlineCode } from '@discordjs/builders'
+import { bold, inlineCode } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { MessageOptions } from 'discord.js'
 import { UserV1 } from 'twitter-api-v2'
@@ -10,6 +10,7 @@ import { TrackTwitterProfileService } from '../../database/services/track-twitte
 import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
+import { TwitterProfileUtils } from '../utils/TwitterProfileUtils'
 import { TwitterApiService } from './twitter-api.service'
 
 @Injectable()
@@ -117,8 +118,8 @@ export class TwitterProfileTrackingService {
 
   private async onProfileChange(newUser: TwitterUser, oldUser: TwitterUser) {
     try {
-      const channelIds = await this.getDiscordChannelIds(oldUser)
-      if (!channelIds.length) {
+      const trackItems = await this.getTrackItems(oldUser)
+      if (!trackItems.length) {
         return
       }
 
@@ -127,11 +128,11 @@ export class TwitterProfileTrackingService {
 
       if (newUser.isActive !== oldUser.isActive) {
         try {
-          this.logger.warn(`${oldUser.username} isActive: ${newUser.isActive ? '✅' : '❌'}`)
+          this.logger.warn(`${oldUser.username} isActive: ${TwitterProfileUtils.getBoolIcon(newUser.isActive)}`)
           messageOptionsList.push({
             content: [
               baseContent,
-              `Active: ${newUser.isActive ? '✅' : '❌'}`,
+              `Active: ${TwitterProfileUtils.getBoolIcon(newUser.isActive)}`,
             ].join('\n'),
           })
         } catch (error) {
@@ -145,8 +146,8 @@ export class TwitterProfileTrackingService {
           messageOptionsList.push({
             content: [
               `${baseContent}'s username changed`,
-              `❌ ${inlineCode(oldUser.username)}`,
-              `➡️ ${inlineCode(newUser.username)}`,
+              TwitterProfileUtils.getStringOldLine(oldUser.username),
+              TwitterProfileUtils.getStringNewLine(newUser.username),
             ].join('\n'),
           })
         } catch (error) {
@@ -160,8 +161,8 @@ export class TwitterProfileTrackingService {
           messageOptionsList.push({
             content: [
               `${baseContent}'s name changed`,
-              `❌ ${inlineCode(oldUser.name)}`,
-              `➡️ ${inlineCode(newUser.name)}`,
+              TwitterProfileUtils.getStringOldLine(oldUser.name),
+              TwitterProfileUtils.getStringNewLine(newUser.name),
             ].join('\n'),
           })
         } catch (error) {
@@ -175,8 +176,8 @@ export class TwitterProfileTrackingService {
           messageOptionsList.push({
             content: [
               `${baseContent}'s location changed`,
-              `❌ ${inlineCode(oldUser.location)}`,
-              `➡️ ${inlineCode(newUser.location)}`,
+              TwitterProfileUtils.getStringOldLine(oldUser.location),
+              TwitterProfileUtils.getStringNewLine(newUser.location),
             ].join('\n'),
           })
         } catch (error) {
@@ -190,8 +191,8 @@ export class TwitterProfileTrackingService {
           messageOptionsList.push({
             content: [
               `${baseContent}'s description changed`,
-              `❌ ${inlineCode(oldUser.description)}`,
-              `➡️ ${inlineCode(newUser.description)}`,
+              TwitterProfileUtils.getStringOldLine(oldUser.description),
+              TwitterProfileUtils.getStringNewLine(newUser.description),
             ].join('\n'),
           })
         } catch (error) {
@@ -201,11 +202,11 @@ export class TwitterProfileTrackingService {
 
       if (newUser.protected !== oldUser.protected) {
         try {
-          this.logger.warn(`${oldUser.username} protected: ${newUser.protected ? '✅' : '❌'}`)
+          this.logger.warn(`${oldUser.username} protected: ${TwitterProfileUtils.getBoolIcon(newUser.protected)}`)
           messageOptionsList.push({
             content: [
               baseContent,
-              `Protected: ${newUser.protected ? '✅' : '❌'}`,
+              `Protected: ${TwitterProfileUtils.getBoolIcon(newUser.protected)}`,
             ].join('\n'),
           })
         } catch (error) {
@@ -215,11 +216,11 @@ export class TwitterProfileTrackingService {
 
       if (newUser.verified !== oldUser.verified) {
         try {
-          this.logger.warn(`${oldUser.username} verified: ${newUser.verified ? '✅' : '❌'}`)
+          this.logger.warn(`${oldUser.username} verified: ${TwitterProfileUtils.getBoolIcon(newUser.verified)}`)
           messageOptionsList.push({
             content: [
               baseContent,
-              `Verified: ${newUser.verified ? '✅' : '❌'}`,
+              `Verified: ${TwitterProfileUtils.getBoolIcon(newUser.verified)}`,
             ].join('\n'),
           })
         } catch (error) {
@@ -235,8 +236,8 @@ export class TwitterProfileTrackingService {
           messageOptionsList.push({
             content: [
               `${baseContent}'s profile image changed`,
-              `❌ ${hideLinkEmbed(oldUser.profileImageUrl)}`,
-              `➡️ ${hideLinkEmbed(newUser.profileImageUrl)}`,
+              TwitterProfileUtils.getUrlOldLine(oldUser.profileImageUrl),
+              TwitterProfileUtils.getUrlNewLine(newUser.profileImageUrl),
             ].join('\n'),
             files: [newProfileImageUrl],
           })
@@ -254,8 +255,8 @@ export class TwitterProfileTrackingService {
           messageOptionsList.push({
             content: [
               `${baseContent}'s profile banner changed`,
-              `❌ ${hideLinkEmbed(oldUser.profileBannerUrl)}`,
-              `➡️ ${hideLinkEmbed(newUser.profileBannerUrl)}`,
+              TwitterProfileUtils.getUrlOldLine(oldUser.profileBannerUrl),
+              TwitterProfileUtils.getUrlNewLine(newUser.profileBannerUrl),
             ].join('\n'),
             files: newUser.profileBannerUrl
               ? [{ attachment: newUser.profileBannerUrl, name: fileName }]
@@ -266,10 +267,19 @@ export class TwitterProfileTrackingService {
         }
       }
 
-      this.logger.info('Channels', { id: channelIds })
-      channelIds.forEach((channelId) => {
+      trackItems.forEach((trackItem) => {
         messageOptionsList.forEach((messageOptions) => {
-          this.discordService.sendToChannel(channelId, messageOptions)
+          const channelContent = [trackItem.discordMessage, messageOptions.content]
+            .filter((v) => v)
+            .join('\n')
+          const channelMessageOptions = {
+            ...messageOptions,
+            content: channelContent,
+          }
+          this.discordService.sendToChannel(
+            trackItem.discordChannelId,
+            channelMessageOptions,
+          )
         })
       })
     } catch (error) {
@@ -277,14 +287,13 @@ export class TwitterProfileTrackingService {
     }
   }
 
-  private async getDiscordChannelIds(user: TwitterUser) {
-    let channelIds = []
+  private async getTrackItems(user: TwitterUser) {
     try {
-      const records = await this.trackTwitterProfileService.getManyByTwitterUserId(user.id)
-      channelIds = records.map((v) => v.discordChannelId)
+      const items = await this.trackTwitterProfileService.getManyByTwitterUserId(user.id)
+      return items
     } catch (error) {
-      this.logger.error(`getDiscordChannelIds: ${error.message}`, { user })
+      this.logger.error(`getTrackItems: ${error.message}`, { user })
     }
-    return channelIds
+    return []
   }
 }
