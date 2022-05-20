@@ -38,7 +38,7 @@ export class TwitterApiPublicService {
   public async getSpacesByFleetsAvatarContent(userIds: string[]) {
     const requestId = randomUUID()
     try {
-      const token = process.env.TWITTER_AUTH_TOKEN
+      const token = this.twitterTokenService.getAuthToken()
       const url = 'https://twitter.com/i/api/fleets/v1/avatar_content'
       const headers = {
         authorization: TWITTER_PUBLIC_AUTHORIZATION,

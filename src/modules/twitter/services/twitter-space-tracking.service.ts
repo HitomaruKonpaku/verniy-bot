@@ -13,6 +13,7 @@ import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { TwitterEntityUtils } from '../utils/TwitterEntityUtils'
 import { TwitterApiPublicService } from './twitter-api-public.service'
 import { TwitterApiService } from './twitter-api.service'
+import { TwitterTokenService } from './twitter-token.service'
 
 @Injectable()
 export class TwitterSpaceTrackingService {
@@ -32,6 +33,8 @@ export class TwitterSpaceTrackingService {
     private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterApiPublicService)
     private readonly twitterApiPublicService: TwitterApiPublicService,
+    @Inject(TwitterTokenService)
+    private readonly twitterTokenService: TwitterTokenService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) {
@@ -57,7 +60,11 @@ export class TwitterSpaceTrackingService {
 
     const interval = this.newSpacesCheckInterval
     setTimeout(() => this.checkNewSpaces(), interval)
-    setTimeout(() => this.checkNewSpacesByPublicApi(), Math.floor(interval / 2))
+
+    if (this.twitterTokenService.getAuthToken()) {
+      // Use public API to get Spaces
+      setTimeout(() => this.checkNewSpacesByPublicApi(), interval / 2)
+    }
   }
 
   private async checkLiveSpaces() {
@@ -96,10 +103,6 @@ export class TwitterSpaceTrackingService {
   }
 
   private async checkNewSpacesByPublicApi() {
-    const token = process.env.TWITTER_AUTH_TOKEN
-    if (!token) {
-      return
-    }
     try {
       const userIds = await this.trackTwitterSpaceService.getTwitterUserIds()
       if (!userIds.length) {

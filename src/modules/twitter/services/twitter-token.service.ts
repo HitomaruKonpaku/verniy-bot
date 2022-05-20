@@ -29,4 +29,10 @@ export class TwitterTokenService {
     })
     return token
   }
+
+  // eslint-disable-next-line class-methods-use-this
+  public getAuthToken() {
+    const token = process.env.TWITTER_AUTH_TOKEN
+    return token
+  }
 }
