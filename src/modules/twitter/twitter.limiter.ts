@@ -1,6 +1,26 @@
 import Bottleneck from 'bottleneck'
 
+const reservoirRefreshInterval = 15 * 60 * 1000
+
 export const twitterGuestTokenLimiter = new Bottleneck({ maxConcurrent: 1 })
+
+/**
+ * @see https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-users-show
+ */
+export const twitterUserShowLimiter = new Bottleneck({
+  reservoir: 900,
+  reservoirRefreshAmount: 900,
+  reservoirRefreshInterval,
+})
+
+/**
+ * @see https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-users-lookup
+ */
+export const twitterUserLookupLimiter = new Bottleneck({
+  reservoir: 300,
+  reservoirRefreshAmount: 300,
+  reservoirRefreshInterval,
+})
 
 /**
  * @see https://developer.twitter.com/en/docs/twitter-api/spaces/lookup/api-reference/get-spaces-id
@@ -8,7 +28,7 @@ export const twitterGuestTokenLimiter = new Bottleneck({ maxConcurrent: 1 })
 export const twitterSpaceLimiter = new Bottleneck({
   reservoir: 300,
   reservoirRefreshAmount: 300,
-  reservoirRefreshInterval: 15 * 60 * 1000,
+  reservoirRefreshInterval,
 })
 
 /**
@@ -17,7 +37,7 @@ export const twitterSpaceLimiter = new Bottleneck({
 export const twitterSpacesByIdsLimiter = new Bottleneck({
   reservoir: 300,
   reservoirRefreshAmount: 300,
-  reservoirRefreshInterval: 15 * 60 * 1000,
+  reservoirRefreshInterval,
 })
 
 /**
@@ -28,5 +48,5 @@ export const twitterSpacesByCreatorIdsLimiter = new Bottleneck({
   minTime: 1000,
   reservoir: 300,
   reservoirRefreshAmount: 300,
-  reservoirRefreshInterval: 15 * 60 * 1000,
+  reservoirRefreshInterval,
 })

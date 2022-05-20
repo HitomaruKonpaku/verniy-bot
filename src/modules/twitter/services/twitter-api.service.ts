@@ -4,7 +4,13 @@ import { SpaceV2CreatorLookupParams, UserV1 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
-import { twitterSpaceLimiter, twitterSpacesByCreatorIdsLimiter, twitterSpacesByIdsLimiter } from '../twitter.limiter'
+import {
+  twitterSpaceLimiter,
+  twitterSpacesByCreatorIdsLimiter,
+  twitterSpacesByIdsLimiter,
+  twitterUserLookupLimiter,
+  twitterUserShowLimiter,
+} from '../twitter.limiter'
 import { TwitterClientService } from './twitter-client.service'
 
 @Injectable()
@@ -14,6 +20,7 @@ export class TwitterApiService {
   private readonly SPACE_LOOKUP_OPTIONS: Partial<SpaceV2CreatorLookupParams> = {
     expansions: ['creator_id', 'host_ids', 'speaker_ids'],
     'space.fields': ['id', 'created_at', 'updated_at', 'creator_id', 'state', 'is_ticketed', 'scheduled_start', 'started_at', 'ended_at', 'lang', 'title', 'host_ids', 'speaker_ids'],
+    'user.fields': ['id', 'created_at', 'username', 'name', 'protected', 'verified', 'profile_image_url'],
   }
 
   constructor(
@@ -28,10 +35,12 @@ export class TwitterApiService {
   public async getUserById(id: string): Promise<UserV1> {
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getUserById', { requestId, id })
-      const user = await this.client.v1.user({ user_id: id })
-      this.logger.debug('<-- getUserById', { requestId })
-      return user
+      return await twitterUserShowLimiter.schedule(async () => {
+        this.logger.debug('--> getUserById', { requestId, id })
+        const user = await this.client.v1.user({ user_id: id })
+        this.logger.debug('<-- getUserById', { requestId })
+        return user
+      })
     } catch (error) {
       this.logger.error(`getUserById: ${error.message}`, { requestId, id })
       throw error
@@ -41,10 +50,12 @@ export class TwitterApiService {
   public async getUserByUsername(username: string): Promise<UserV1> {
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getUserByUsername', { requestId, username })
-      const user = await this.client.v1.user({ screen_name: username })
-      this.logger.debug('<-- getUserByUsername', { requestId })
-      return user
+      return await twitterUserShowLimiter.schedule(async () => {
+        this.logger.debug('--> getUserByUsername', { requestId, username })
+        const user = await this.client.v1.user({ screen_name: username })
+        this.logger.debug('<-- getUserByUsername', { requestId })
+        return user
+      })
     } catch (error) {
       this.logger.error(`getUserByUsername: ${error.message}`, { requestId, username })
       throw error
@@ -61,10 +72,12 @@ export class TwitterApiService {
   public async getUsersByUserIds(userIds: string[]): Promise<UserV1[]> {
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getUsersByUserIds', { requestId, userCount: userIds.length })
-      const users = await this.client.v1.users({ user_id: userIds })
-      this.logger.debug('<-- getUsersByUserIds', { requestId })
-      return users
+      return await twitterUserLookupLimiter.schedule(async () => {
+        this.logger.debug('--> getUsersByUserIds', { requestId, userCount: userIds.length })
+        const users = await this.client.v1.users({ user_id: userIds })
+        this.logger.debug('<-- getUsersByUserIds', { requestId })
+        return users
+      })
     } catch (error) {
       this.logger.error(`getUsersByUserIds: ${error.message}`, { requestId })
       throw error
@@ -81,10 +94,12 @@ export class TwitterApiService {
   public async getUsersByUsernames(usernames: string[]): Promise<UserV1[]> {
     const requestId = randomUUID()
     try {
-      this.logger.debug('--> getUsersByUsernames', { requestId, userCount: usernames.length })
-      const users = await this.client.v1.users({ screen_name: usernames })
-      this.logger.debug('<-- getUsersByUsernames', { requestId })
-      return users
+      return await twitterUserLookupLimiter.schedule(async () => {
+        this.logger.debug('--> getUsersByUsernames', { requestId, userCount: usernames.length })
+        const users = await this.client.v1.users({ screen_name: usernames })
+        this.logger.debug('<-- getUsersByUsernames', { requestId })
+        return users
+      })
     } catch (error) {
       this.logger.error(`getUsersByUsernames: ${error.message}`, { requestId })
       throw error
