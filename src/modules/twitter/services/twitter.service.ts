@@ -9,7 +9,6 @@ import { TwitterSpace } from '../../database/models/twitter-space.entity'
 import { TwitterSpaceService } from '../../database/services/twitter-space.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
-import { twitterSpacesByIdsLimiter } from '../twitter.limiter'
 import { TwitterApiService } from './twitter-api.service'
 import { TwitterProfileTrackingService } from './twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './twitter-space-tracking.service'
@@ -99,10 +98,9 @@ export class TwitterService {
   public async checkSpacesActive() {
     this.logger.info('--> checkSpacesActive')
     try {
-      const limiter = twitterSpacesByIdsLimiter
       const spaces = await this.twitterSpaceService.getManyForActiveCheck()
       const chunks = Utils.splitArrayIntoChunk(spaces, TWITTER_API_LIST_SIZE)
-      await Promise.allSettled(chunks.map((chunk) => limiter.schedule(async () => {
+      await Promise.allSettled(chunks.map(async (chunk) => {
         try {
           const ids = chunk.map((v) => v.id)
           const result = await this.twitterApiService.getSpacesByIds(ids)
@@ -118,7 +116,7 @@ export class TwitterService {
         } catch (error) {
           // Ignore
         }
-      })))
+      }))
     } catch (error) {
       this.logger.error(`checkSpacesActive: ${error.message}`)
     }
