@@ -1,8 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
+import { CommandInteraction, TextChannel } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
 import { TrackTwitterProfileService } from '../../database/services/track-twitter-profile.service'
+import { TrackTwitterSpaceService } from '../../database/services/track-twitter-space.service'
 import { TrackTwitterTweetService } from '../../database/services/track-twitter-tweet.service'
 import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { TwitterApiService } from '../../twitter/services/twitter-api.service'
@@ -21,6 +22,8 @@ export class TrackCommand {
     private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(TrackTwitterProfileService)
     private readonly trackTwitterProfileService: TrackTwitterProfileService,
+    @Inject(TrackTwitterSpaceService)
+    private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
   ) { }
 
   public static readonly command = new SlashCommandBuilder()
@@ -28,7 +31,7 @@ export class TrackCommand {
     .setDescription('Track Twitter user')
     .addSubcommand((subcommand) => subcommand
       .setName('tweet')
-      .setDescription('Track user tweet')
+      .setDescription('Track user tweets')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username')
@@ -52,34 +55,48 @@ export class TrackCommand {
       .addStringOption((option) => option
         .setName('message')
         .setDescription('Discord message')))
+    .addSubcommand((subcommand) => subcommand
+      .setName('space')
+      .setDescription('Track user Spaces')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Twitter username')
+        .setRequired(true))
+      .addStringOption((option) => option
+        .setName('message')
+        .setDescription('Discord message')))
 
   public async execute(interaction: CommandInteraction) {
     const subcommand = interaction.options.getSubcommand()
+    const meta = {
+      user: { id: interaction.user.id, tag: interaction.user.tag },
+      channel: { id: interaction.channelId, name: (interaction.channel as TextChannel)?.name },
+      guild: { id: interaction.guildId, name: interaction.guild?.name },
+    }
     switch (subcommand) {
       case 'tweet':
+        this.logger.info('--> executeTweetCommand', meta)
         await this.executeTweetCommand(interaction)
         return
       case 'profile':
+        this.logger.info('--> executeProfileCommand', meta)
         await this.executeProfileCommand(interaction)
         return
+      case 'space':
+        this.logger.info('--> executeSpaceCommand', meta)
+        await this.executeSpaceCommand(interaction)
+        return
       default:
-        // eslint-disable-next-line no-debugger
-        debugger
+        this.logger.warn(`execute: Unhandled subcommand: ${subcommand}`, { subcommand })
     }
   }
 
   private async executeTweetCommand(interaction: CommandInteraction) {
+    const { username, channelId, message } = this.extractBaseOptions(interaction)
+    const allowReply = interaction.options.getBoolean('allow_reply') ?? true
+    const allowRetweet = interaction.options.getBoolean('allow_retweet') ?? true
     try {
-      const { channelId } = interaction
-      const username = interaction.options.getString('username', true)
-      const message = interaction.options.getString('message') || null
-      const allowReply = interaction.options.getBoolean('allow_reply') ?? true
-      const allowRetweet = interaction.options.getBoolean('allow_retweet') ?? true
-      let twitterUser = await this.twitterUserService.getOneByUsername(username)
-      if (!twitterUser) {
-        const user = await this.twitterApiService.getUserByUsername(username)
-        twitterUser = await this.twitterUserService.updateByUserObject(user)
-      }
+      const twitterUser = await this.getTwitterUser(username)
       await this.trackTwitterTweetService.add(
         twitterUser.id,
         channelId,
@@ -89,44 +106,81 @@ export class TrackCommand {
         null,
         interaction.user.id,
       )
-      this.logger.info('Tracking tweet', { username, channelId })
+      this.logger.warn('<-- executeTweetCommand', { username, channelId })
       await interaction.editReply({
         embeds: [{
-          description: `Tracking **[${username}](${TwitterUtils.getUserUrl(username)})** tweet`,
+          description: `Tracking **[${twitterUser.username}](${TwitterUtils.getUserUrl(twitterUser.username)})** tweets`,
           color: 0x1d9bf0,
         }],
       })
     } catch (error) {
-      this.logger.error(`executeTweetCommand: ${error.message}`)
-      interaction.editReply(error.message)
+      this.logger.error(`executeTweetCommand: ${error.message}`, { username, channelId })
+      await interaction.editReply(error.message)
     }
   }
 
   private async executeProfileCommand(interaction: CommandInteraction) {
+    const { username, channelId, message } = this.extractBaseOptions(interaction)
     try {
-      const { channelId } = interaction
-      const username = interaction.options.getString('username', true)
-      const message = interaction.options.getString('message') || null
-      let twitterUser = await this.twitterUserService.getOneByUsername(username)
-      if (!twitterUser) {
-        const user = await this.twitterApiService.getUserByUsername(username)
-        twitterUser = await this.twitterUserService.updateByUserObject(user)
-      }
+      const twitterUser = await this.getTwitterUser(username)
       await this.trackTwitterProfileService.add(
         twitterUser.id,
-        channelId, message,
+        channelId,
+        message,
         interaction.user.id,
       )
-      this.logger.info('Tracking profile', { username, channelId })
+      this.logger.warn('<-- executeProfileCommand', { username, channelId })
       await interaction.editReply({
         embeds: [{
-          description: `Tracking **[${username}](${TwitterUtils.getUserUrl(username)})** profile`,
+          description: `Tracking **[${twitterUser.username}](${TwitterUtils.getUserUrl(twitterUser.username)})** profile`,
           color: 0x1d9bf0,
         }],
       })
     } catch (error) {
-      this.logger.error(`executeProfileCommand: ${error.message}`)
-      interaction.editReply(error.message)
+      this.logger.error(`executeProfileCommand: ${error.message}`, { username, channelId })
+      await interaction.editReply(error.message)
     }
+  }
+
+  private async executeSpaceCommand(interaction: CommandInteraction) {
+    const { username, channelId, message } = this.extractBaseOptions(interaction)
+    try {
+      const twitterUser = await this.getTwitterUser(username)
+      await this.trackTwitterSpaceService.add(
+        twitterUser.id,
+        channelId,
+        message,
+        interaction.user.id,
+      )
+      this.logger.warn('<-- executeSpaceCommand', { username, channelId })
+      await interaction.editReply({
+        embeds: [{
+          description: `Tracking **[${twitterUser.username}](${TwitterUtils.getUserUrl(twitterUser.username)})** Spaces`,
+          color: 0x1d9bf0,
+        }],
+      })
+    } catch (error) {
+      this.logger.error(`executeSpaceCommand: ${error.message}`, { username, channelId })
+      await interaction.editReply(error.message)
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private extractBaseOptions(interaction: CommandInteraction) {
+    const opts = {
+      channelId: interaction.channelId,
+      username: interaction.options.getString('username', true),
+      message: interaction.options.getString('message') || null,
+    }
+    return opts
+  }
+
+  private async getTwitterUser(username: string) {
+    let twitterUser = await this.twitterUserService.getOneByUsername(username)
+    if (!twitterUser) {
+      const user = await this.twitterApiService.getUserByUsername(username)
+      twitterUser = await this.twitterUserService.updateByUserObject(user)
+    }
+    return twitterUser
   }
 }
