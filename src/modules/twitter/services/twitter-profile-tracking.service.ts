@@ -5,13 +5,13 @@ import { UserV1 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
 import { ConfigService } from '../../config/services/config.service'
-import { TwitterUser } from '../../database/models/twitter-user.entity'
-import { TrackTwitterProfileService } from '../../database/services/track-twitter-profile.service'
-import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { DiscordService } from '../../discord/services/discord.service'
+import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
+import { TwitterUser } from '../models/twitter-user.entity'
 import { TwitterProfileUtils } from '../utils/TwitterProfileUtils'
 import { TwitterApiService } from './twitter-api.service'
+import { TwitterUserService } from './twitter-user.service'
 
 @Injectable()
 export class TwitterProfileTrackingService {

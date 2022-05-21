@@ -4,14 +4,14 @@ import { ETwitterStreamEvent, TweetStream, TweetV2SingleStreamResult } from 'twi
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
 import { ConfigService } from '../../config/services/config.service'
-import { TrackTwitterTweetService } from '../../database/services/track-twitter-tweet.service'
-import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { DiscordService } from '../../discord/services/discord.service'
+import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { TwitterRuleUtils } from '../utils/TwitterRuleUtils'
 import { TwitterUtils } from '../utils/TwitterUtils'
 import { TwitterApiService } from './twitter-api.service'
 import { TwitterClientService } from './twitter-client.service'
+import { TwitterUserService } from './twitter-user.service'
 
 @Injectable()
 export class TwitterTweetTrackingService {

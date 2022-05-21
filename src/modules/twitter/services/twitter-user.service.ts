@@ -1,9 +1,9 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserV1, UserV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
+import { TrackTwitterProfile } from '../../track/models/track-twitter-profile.entity'
+import { TwitterUser } from '../../twitter/models/twitter-user.entity'
 import { TwitterEntityUtils } from '../../twitter/utils/TwitterEntityUtils'
-import { TrackTwitterProfile } from '../models/track-twitter-profile.entity'
-import { TwitterUser } from '../models/twitter-user.entity'
 
 export class TwitterUserService {
   constructor(

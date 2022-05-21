@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm'
-import { BaseExternalEntity } from './base/base-external.entity'
+import { BaseExternalEntity } from '../../database/models/base/base-external.entity'
 
 @Entity('discord_user')
 export class DiscordUser extends BaseExternalEntity {

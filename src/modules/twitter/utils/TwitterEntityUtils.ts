@@ -1,6 +1,6 @@
 import { SpaceV2, UserV1, UserV2 } from 'twitter-api-v2'
-import { TwitterSpace } from '../../database/models/twitter-space.entity'
-import { TwitterUser } from '../../database/models/twitter-user.entity'
+import { TwitterSpace } from '../models/twitter-space.entity'
+import { TwitterUser } from '../models/twitter-user.entity'
 import { TwitterUtils } from './TwitterUtils'
 
 export class TwitterEntityUtils {

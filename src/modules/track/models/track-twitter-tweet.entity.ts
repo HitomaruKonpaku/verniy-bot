@@ -1,5 +1,5 @@
 import { Column, Entity, Unique } from 'typeorm'
-import { BaseTrackTwitter } from './base/base-track-twitter.entity'
+import { BaseTrackTwitter } from '../../database/models/base/base-track-twitter.entity'
 
 @Entity('track_twitter_tweet')
 @Unique(['twitterUserId', 'discordChannelId'])

@@ -1,32 +1,24 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { WinstonAdaptor } from 'typeorm-logger-adaptor/logger/winston'
+import { logger } from '../../logger'
 import { DB_ENTITIES } from './constants/database-entities.constant'
-import { DiscordChannelService } from './services/discord-channel.service'
-import { DiscordGuildService } from './services/discord-guild.service'
-import { DiscordUserService } from './services/discord-user.service'
-import { TrackTwitterProfileService } from './services/track-twitter-profile.service'
-import { TrackTwitterSpaceService } from './services/track-twitter-space.service'
-import { TrackTwitterTweetService } from './services/track-twitter-tweet.service'
-import { TwitterSpaceService } from './services/twitter-space.service'
-import { TwitterUserService } from './services/twitter-user.service'
-
-const services = [
-  // Discord
-  DiscordUserService,
-  DiscordGuildService,
-  DiscordChannelService,
-  // Twitter
-  TwitterUserService,
-  TwitterSpaceService,
-  // Tracking
-  TrackTwitterTweetService,
-  TrackTwitterProfileService,
-  TrackTwitterSpaceService,
-]
+import { DB_DATABASE } from './constants/database.constant'
 
 @Module({
-  imports: [TypeOrmModule.forFeature(DB_ENTITIES)],
-  providers: [...services],
-  exports: [...services],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'sqlite',
+      database: DB_DATABASE,
+      synchronize: true,
+      logger: new WinstonAdaptor(
+        logger,
+        process.env.NODE_ENV === 'production'
+          ? ['schema', 'error', 'warn']
+          : 'all',
+      ),
+      entities: DB_ENTITIES,
+    }),
+  ],
 })
 export class DatabaseModule { }

@@ -1,7 +1,7 @@
 import { codeBlock, inlineCode, time } from '@discordjs/builders'
 import { EmbedFieldData, MessageEmbedOptions } from 'discord.js'
-import { TrackTwitterSpace } from '../../database/models/track-twitter-space.entity'
-import { TwitterSpace } from '../../database/models/twitter-space.entity'
+import { TrackTwitterSpace } from '../../track/models/track-twitter-space.entity'
+import { TwitterSpace } from '../models/twitter-space.entity'
 import { TwitterUtils } from './TwitterUtils'
 
 export class TwitterSpaceUtils {

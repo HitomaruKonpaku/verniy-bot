@@ -7,10 +7,12 @@ import {
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
-import { TwitterSpaceService } from '../../database/services/twitter-space.service'
-import { TwitterUserService } from '../../database/services/twitter-user.service'
+import { TwitCastingMovieService } from '../../twitcasting/services/twitcasting-movie.service'
+import { TwitCastingUserService } from '../../twitcasting/services/twitcasting-user.service'
 import { TwitterApiPublicService } from '../../twitter/services/twitter-api-public.service'
 import { TwitterApiService } from '../../twitter/services/twitter-api.service'
+import { TwitterSpaceService } from '../../twitter/services/twitter-space.service'
+import { TwitterUserService } from '../../twitter/services/twitter-user.service'
 import { TwitterEntityUtils } from '../../twitter/utils/TwitterEntityUtils'
 
 @Injectable()
@@ -26,6 +28,10 @@ export class GetCommand {
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterSpaceService)
     private readonly twitterSpaceService: TwitterSpaceService,
+    @Inject(TwitCastingUserService)
+    private readonly twitCastingUserService: TwitCastingUserService,
+    @Inject(TwitCastingMovieService)
+    private readonly twitCastingMovieService: TwitCastingMovieService,
   ) { }
 
   public static readonly command = new SlashCommandBuilder()
@@ -56,6 +62,29 @@ export class GetCommand {
         .addBooleanOption((option) => option
           .setName('refresh')
           .setDescription('Refresh?'))))
+    .addSubcommandGroup((group) => group
+      .setName('twitcasting')
+      .setDescription('TwitCasting')
+      .addSubcommand((subcommand) => subcommand
+        .setName('user')
+        .setDescription('User')
+        .addStringOption((option) => option
+          .setName('id')
+          .setDescription('Id')
+          .setRequired(true))
+        .addBooleanOption((option) => option
+          .setName('refresh')
+          .setDescription('Refresh?')))
+      .addSubcommand((subcommand) => subcommand
+        .setName('movie')
+        .setDescription('Movie')
+        .addStringOption((option) => option
+          .setName('id')
+          .setDescription('Id')
+          .setRequired(true))
+        .addBooleanOption((option) => option
+          .setName('refresh')
+          .setDescription('Refresh?'))))
 
   public async execute(interaction: CommandInteraction) {
     try {
@@ -65,6 +94,11 @@ export class GetCommand {
           this.logger.debug('--> executeTwitterGroup')
           await this.executeTwitterGroup(interaction)
           this.logger.debug('<-- executeTwitterGroup')
+          return
+        case 'twitcasting':
+          this.logger.debug('--> executeTwitCastingGroup')
+          await this.executeTwitCastingGroup(interaction)
+          this.logger.debug('<-- executeTwitCastingGroup')
           return
         default:
           this.logger.warn(`execute: Unhandled command group: ${group}`, { group })
@@ -147,6 +181,42 @@ export class GetCommand {
       rawSpace = await this.twitterSpaceService.getRawOneById(id)
     }
     await this.replyData(interaction, rawSpace)
+  }
+
+  private async executeTwitCastingGroup(interaction: CommandInteraction) {
+    const subcommand = interaction.options.getSubcommand()
+    switch (subcommand) {
+      case 'user':
+        this.logger.debug('--> executeTwitCastingUserCommand')
+        await this.executeTwitCastingUserCommand(interaction)
+        this.logger.debug('<-- executeTwitCastingUserCommand')
+        return
+      case 'movie':
+        this.logger.debug('--> executeTwitCastingMovieCommand')
+        await this.executeTwitCastingMovieCommand(interaction)
+        this.logger.debug('<-- executeTwitCastingMovieCommand')
+        return
+      default:
+        this.logger.warn(`executeTwitCastingGroup: Unhandled subcommand: ${subcommand}`, { subcommand })
+    }
+  }
+
+  private async executeTwitCastingUserCommand(interaction: CommandInteraction) {
+    const id = interaction.options.getString('id', true)
+    let user = await this.twitCastingUserService.getOneByIdOrScreenId(id)
+    if (!user) {
+      user = await this.twitCastingUserService.getOneAndSaveById(id)
+    }
+    await this.replyData(interaction, user)
+  }
+
+  private async executeTwitCastingMovieCommand(interaction: CommandInteraction) {
+    const id = interaction.options.getString('id', true)
+    let movie = await this.twitCastingMovieService.getOneById(id)
+    if (!movie) {
+      movie = await this.twitCastingMovieService.getOneAndSaveById(id)
+    }
+    await this.replyData(interaction, movie)
   }
 
   // eslint-disable-next-line class-methods-use-this

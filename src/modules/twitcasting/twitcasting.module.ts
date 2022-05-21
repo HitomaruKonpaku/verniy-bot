@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
+import { TrackModule } from '../track/track.module'
 import { TwitCastingMovie } from './models/twitcasting-movie.entity'
 import { TwitCastingUser } from './models/twitcasting-user.entity'
 import { TwitCastingApiPublicService } from './services/twitcasting-api-public.service'
@@ -17,6 +18,7 @@ import { TwitCastingService } from './services/twitcasting.service'
       TwitCastingMovie,
     ]),
     ConfigModule,
+    TrackModule,
     forwardRef(() => DiscordModule),
   ],
   providers: [

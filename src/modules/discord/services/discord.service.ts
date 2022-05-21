@@ -14,15 +14,16 @@ import {
 } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
-import { DiscordChannelService } from '../../database/services/discord-channel.service'
-import { DiscordGuildService } from '../../database/services/discord-guild.service'
-import { DiscordUserService } from '../../database/services/discord-user.service'
-import { TrackTwitterProfileService } from '../../database/services/track-twitter-profile.service'
-import { TrackTwitterSpaceService } from '../../database/services/track-twitter-space.service'
-import { TrackTwitterTweetService } from '../../database/services/track-twitter-tweet.service'
+import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
+import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'
+import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
+import { TwitCastingService } from '../../twitcasting/services/twitcasting.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
 import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'
+import { DiscordChannelService } from './discord-channel.service'
+import { DiscordGuildService } from './discord-guild.service'
+import { DiscordUserService } from './discord-user.service'
 
 @Injectable()
 export class DiscordService {
@@ -50,6 +51,8 @@ export class DiscordService {
     private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
     @Inject(forwardRef(() => TwitterService))
     private readonly twitterService: TwitterService,
+    @Inject(forwardRef(() => TwitCastingService))
+    private readonly twitCastingService: TwitCastingService,
   ) {
     this.initClient()
   }
@@ -59,7 +62,7 @@ export class DiscordService {
     try {
       const token = process.env.DISCORD_TOKEN
       if (!token) {
-        this.logger.warn('Token not found')
+        this.logger.error('DISCORD_TOKEN not found')
       }
       await this.client.login(token)
     } catch (error) {
@@ -199,10 +202,12 @@ export class DiscordService {
     })
 
     client.once('ready', () => {
-      if (!this.configService.twitter.active) {
-        return
+      if (this.configService.twitter.active) {
+        this.twitterService.start()
       }
-      this.twitterService.start()
+      if (this.configService.twitcasting.active) {
+        this.twitCastingService.start()
+      }
     })
 
     client.on('interactionCreate', (interaction) => this.handleInteractionCreate(interaction))

@@ -4,11 +4,11 @@ import Bottleneck from 'bottleneck'
 import { CronJob } from 'cron'
 import { logger as baseLogger } from '../../../logger'
 import { Utils } from '../../../utils/Utils'
-import { TwitterSpace } from '../../database/models/twitter-space.entity'
-import { TwitterSpaceService } from '../../database/services/twitter-space.service'
-import { TwitterUserService } from '../../database/services/twitter-user.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
+import { TwitterSpace } from '../models/twitter-space.entity'
 import { TwitterApiService } from './twitter-api.service'
+import { TwitterSpaceService } from './twitter-space.service'
+import { TwitterUserService } from './twitter-user.service'
 
 @Injectable()
 export class TwitterCronService {
