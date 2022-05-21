@@ -75,7 +75,7 @@ export class TwitterSpaceUtils {
         },
       )
     }
-    if (['live', 'ended'].includes(space.state)) {
+    if (['live'].includes(space.state)) {
       fields.push(
         {
           name: 'Started at',
