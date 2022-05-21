@@ -45,6 +45,14 @@ export class ConfigService {
     return config
   }
 
+  public get twitcasting() {
+    const config = {
+      active: false,
+    }
+    Object.assign(config, this.config.twitcasting || {})
+    return config
+  }
+
   public load() {
     let config: any
 
