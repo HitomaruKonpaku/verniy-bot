@@ -52,18 +52,22 @@ export class GetCommand {
         .addStringOption((option) => option
           .setName('id')
           .setDescription('Id')
-          .setRequired(true))))
+          .setRequired(true))
+        .addBooleanOption((option) => option
+          .setName('refresh')
+          .setDescription('Refresh?'))))
 
   public async execute(interaction: CommandInteraction) {
     try {
       const group = interaction.options.getSubcommandGroup()
       switch (group) {
         case 'twitter':
+          this.logger.debug('--> executeTwitterGroup')
           await this.executeTwitterGroup(interaction)
+          this.logger.debug('<-- executeTwitterGroup')
           return
         default:
-          // eslint-disable-next-line no-debugger
-          debugger
+          this.logger.warn(`execute: Unhandled command group: ${group}`, { group })
       }
     } catch (error) {
       this.logger.error(`execute: ${error.message}`)
@@ -75,25 +79,28 @@ export class GetCommand {
     const subcommand = interaction.options.getSubcommand()
     switch (subcommand) {
       case 'user':
+        this.logger.debug('--> executeTwitterUserCommand')
         await this.executeTwitterUserCommand(interaction)
+        this.logger.debug('<-- executeTwitterUserCommand')
         return
       case 'space':
+        this.logger.debug('--> executeTwitterSpaceCommand')
         await this.executeTwitterSpaceCommand(interaction)
+        this.logger.debug('<-- executeTwitterSpaceCommand')
         return
       default:
-        // eslint-disable-next-line no-debugger
-        debugger
+        this.logger.warn(`executeTwitterGroup: Unhandled subcommand: ${subcommand}`, { subcommand })
     }
   }
 
   private async executeTwitterUserCommand(interaction: CommandInteraction) {
     const id = interaction.options.getString('id')
     const username = interaction.options.getString('username')
+    const refresh = interaction.options.getBoolean('refresh')
     if (!id && !username) {
       await interaction.editReply(`Required ${bold(inlineCode('id'))} or ${bold(inlineCode('username'))}`)
       return
     }
-    const refresh = interaction.options.getBoolean('refresh')
     let rawUser = id
       ? await this.twitterUserService.getRawOneById(id)
       : await this.twitterUserService.getRawOneByUsername(username)
@@ -109,8 +116,9 @@ export class GetCommand {
 
   private async executeTwitterSpaceCommand(interaction: CommandInteraction) {
     const id = interaction.options.getString('id', true)
+    const refresh = interaction.options.getBoolean('refresh')
     let rawSpace = await this.twitterSpaceService.getRawOneById(id)
-    if (!rawSpace) {
+    if (!rawSpace || refresh) {
       const result = await this.twitterApiService.getSpaceById(id)
       const space = result?.data
       if (!space) {
