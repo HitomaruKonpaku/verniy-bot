@@ -25,16 +25,16 @@ export class TwitterService {
 
   public async start() {
     this.logger.info('Starting...')
-    if (this.configService.twitter.tweet.active) {
+    if (this.configService.twitter?.tweet?.active) {
       await this.twitterTweetTrackingService.start()
     }
-    if (this.configService.twitter.profile.active) {
+    if (this.configService.twitter?.profile?.active) {
       await this.twitterProfileTrackingService.start()
     }
-    if (this.configService.twitter.space.active) {
+    if (this.configService.twitter?.space?.active) {
       await this.twitterSpaceTrackingService.start()
     }
-    if (this.configService.twitter.cron.active) {
+    if (this.configService.twitter?.cron?.active) {
       this.twitterCronService.start()
     }
   }
