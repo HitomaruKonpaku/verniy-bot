@@ -40,4 +40,18 @@ export class TwitCastingApiService {
     const { data } = await this.client.get(`movies/${id}`)
     return data
   }
+
+  /**
+   *  @see https://apiv2-doc.twitcasting.tv/#get-movies-by-user
+   */
+  public async getMoviesByUserId(
+    id: string,
+    opts?: { limit?: number, offset?: number },
+  ) {
+    const params = new URLSearchParams()
+    params.append('limit', String(opts?.limit || 20))
+    params.append('offset', String(opts?.offset || 0))
+    const { data } = await this.client.get(`users/${id}/movies?${params.toString()}`)
+    return data
+  }
 }
