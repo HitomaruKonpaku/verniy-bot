@@ -145,7 +145,7 @@ export class TwitterProfileTrackingService {
           this.logger.warn(`${oldUser.username} username`, { to: newUser.username, from: oldUser.username })
           messageOptionsList.push({
             content: [
-              `${baseContent}'s username changed`,
+              `${baseContent} username changed`,
               TwitterProfileUtils.getStringOldLine(oldUser.username),
               TwitterProfileUtils.getStringNewLine(newUser.username),
             ].join('\n'),
@@ -160,7 +160,7 @@ export class TwitterProfileTrackingService {
           this.logger.warn(`${oldUser.username} name`, { to: newUser.name, from: oldUser.name })
           messageOptionsList.push({
             content: [
-              `${baseContent}'s name changed`,
+              `${baseContent} name changed`,
               TwitterProfileUtils.getStringOldLine(oldUser.name),
               TwitterProfileUtils.getStringNewLine(newUser.name),
             ].join('\n'),
@@ -175,7 +175,7 @@ export class TwitterProfileTrackingService {
           this.logger.warn(`${oldUser.username} location`, { to: newUser.location, from: oldUser.location })
           messageOptionsList.push({
             content: [
-              `${baseContent}'s location changed`,
+              `${baseContent} location changed`,
               TwitterProfileUtils.getStringOldLine(oldUser.location),
               TwitterProfileUtils.getStringNewLine(newUser.location),
             ].join('\n'),
@@ -190,7 +190,7 @@ export class TwitterProfileTrackingService {
           this.logger.warn(`${oldUser.username} description`, { to: newUser.description, from: oldUser.description })
           messageOptionsList.push({
             content: [
-              `${baseContent}'s description changed`,
+              `${baseContent} description changed`,
               TwitterProfileUtils.getStringOldLine(oldUser.description),
               TwitterProfileUtils.getStringNewLine(newUser.description),
             ].join('\n'),
@@ -235,7 +235,7 @@ export class TwitterProfileTrackingService {
           this.logger.warn(`${oldUser.username} profile image`, { to: newProfileImageUrl, from: oldProfileImageUrl })
           messageOptionsList.push({
             content: [
-              `${baseContent}'s profile image changed`,
+              `${baseContent} profile image changed`,
               TwitterProfileUtils.getUrlOldLine(oldUser.profileImageUrl),
               TwitterProfileUtils.getUrlNewLine(newUser.profileImageUrl),
             ].join('\n'),
@@ -254,7 +254,7 @@ export class TwitterProfileTrackingService {
             : null
           messageOptionsList.push({
             content: [
-              `${baseContent}'s profile banner changed`,
+              `${baseContent} profile banner changed`,
               TwitterProfileUtils.getUrlOldLine(oldUser.profileBannerUrl),
               TwitterProfileUtils.getUrlNewLine(newUser.profileBannerUrl),
             ].join('\n'),
