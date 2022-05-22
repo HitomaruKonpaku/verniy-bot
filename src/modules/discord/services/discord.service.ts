@@ -5,27 +5,19 @@ import {
   Client,
   Collection,
   CommandInteraction,
-  Guild,
   Interaction,
-  Message,
   MessageOptions,
   MessagePayload,
   TextChannel,
-  User,
 } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
-import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
-import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'
-import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
 import { TwitCastingService } from '../../twitcasting/services/twitcasting.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
 import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'
-import { DiscordChannelService } from './discord-channel.service'
+import { DiscordDbService } from './discord-db.service'
 import { DiscordGuildService } from './discord-guild.service'
-import { DiscordMessageService } from './discord-message.service'
-import { DiscordUserService } from './discord-user.service'
 
 @Injectable()
 export class DiscordService {
@@ -39,20 +31,10 @@ export class DiscordService {
     private moduleRef: ModuleRef,
     @Inject(ConfigService)
     private readonly configService: ConfigService,
-    @Inject(DiscordUserService)
-    private readonly discordUserService: DiscordUserService,
+    @Inject(DiscordDbService)
+    private readonly discordDbService: DiscordDbService,
     @Inject(DiscordGuildService)
     private readonly discordGuildService: DiscordGuildService,
-    @Inject(DiscordChannelService)
-    private readonly discordChannelService: DiscordChannelService,
-    @Inject(DiscordMessageService)
-    private readonly discordMessageService: DiscordMessageService,
-    @Inject(forwardRef(() => TrackTwitterTweetService))
-    private readonly trackTwitterTweetService: TrackTwitterTweetService,
-    @Inject(forwardRef(() => TrackTwitterProfileService))
-    private readonly trackTwitterProfileService: TrackTwitterProfileService,
-    @Inject(forwardRef(() => TrackTwitterSpaceService))
-    private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
     @Inject(forwardRef(() => TwitterService))
     private readonly twitterService: TwitterService,
     @Inject(forwardRef(() => TwitCastingService))
@@ -104,13 +86,16 @@ export class DiscordService {
     try {
       const channel = await this.getChannel<TextChannel>(channelId)
       if (!channel) return null
+      this.discordDbService.saveTextChannel(channel)
       const guild = channel.guildId
         ? await this.getGuild(channel.guildId)
         : null
-      this.saveDiscordChannelData(channel)
+      if (guild) {
+        this.discordDbService.saveGuild(guild)
+      }
       const message = await channel.send(options)
       this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
-      this.saveMessage(message).catch()
+      this.discordDbService.saveMessage(message)
       return message
     } catch (error) {
       this.logger.error(`sendToChannel: ${error.message}`, { channelId })
@@ -158,7 +143,7 @@ export class DiscordService {
 
     client.on('guildCreate', async (guild) => {
       try {
-        await this.saveGuild(guild)
+        await this.discordDbService.saveGuild(guild)
       } catch (error) {
         // Ignore
       }
@@ -173,30 +158,14 @@ export class DiscordService {
     })
 
     client.once('ready', async () => {
-      this.client.guilds.cache.forEach(async (guild) => {
-        try {
-          await this.saveGuild(guild)
-        } catch (error) {
-          // Ignore
-        }
+      this.client.guilds.cache.forEach((guild) => {
+        this.discordDbService.saveGuild(guild)
       })
 
-      const channelIds = (await Promise.allSettled([
-        this.trackTwitterTweetService.getDiscordChannelIds(),
-        this.trackTwitterProfileService.getDiscordChannelIds(),
-        this.trackTwitterSpaceService.getDiscordChannelIds(),
-      ]))
-        .filter((v) => v.status === 'fulfilled')
-        .map((v: any) => v.value as string[])
-        .flat()
-
-      this.client.channels.cache.forEach(async (channel) => {
-        if (channelIds.includes(channel.id)) {
-          try {
-            await this.saveChannel(channel as Channel)
-          } catch (error) {
-            // Ignore
-          }
+      const channelIds = await this.twitterService.getDiscordChannelIds()
+      this.client.channels.cache.forEach((channel) => {
+        if (channelIds.includes(channel.id) && channel instanceof TextChannel) {
+          this.discordDbService.saveTextChannel(channel)
         }
       })
     })
@@ -218,26 +187,15 @@ export class DiscordService {
     client.on('interactionCreate', (interaction) => this.handleInteractionCreate(interaction))
   }
 
-  private async saveDiscordChannelData(channel: TextChannel) {
-    if (!channel) {
-      return
-    }
-    try {
-      await this.saveChannel(channel)
-      const guild = await this.getGuild(channel.guildId)
-      if (guild) {
-        await this.saveGuild(guild)
-      }
-    } catch (error) {
-      this.logger.warn(
-        `updateDiscordChannelData: ${error.message}`,
-        { channelId: channel.id },
-      )
-    }
-  }
-
   private async handleInteractionCreate(interaction: Interaction) {
-    this.saveUser(interaction.user)
+    this.discordDbService.saveUser(interaction.user)
+    if (interaction.channel instanceof TextChannel) {
+      this.discordDbService.saveTextChannel(interaction.channel)
+    }
+    if (interaction.guild) {
+      this.discordDbService.saveGuild(interaction.guild)
+    }
+
     try {
       if (interaction.isCommand()) {
         await this.handleCommandInteraction(interaction)
@@ -268,68 +226,6 @@ export class DiscordService {
     } catch (error) {
       this.logger.error(`handleCommandInteraction: ${error.message}`, { command: commandName })
       await interaction.editReply('There was an error while executing this command!')
-    }
-  }
-
-  private async saveUser(user: User) {
-    this.discordUserService.update({
-      id: user.id,
-      isActive: true,
-      createdAt: user.createdTimestamp,
-      username: user.username,
-      discriminator: user.discriminator,
-      tag: user.tag,
-    })
-  }
-
-  private async saveGuild(guild: Guild) {
-    await this.discordGuildService.update({
-      id: guild.id,
-      isActive: true,
-      createdAt: guild.createdTimestamp,
-      ownerId: guild.ownerId,
-      name: guild.name,
-      joinedAt: guild.joinedTimestamp,
-      leftAt: null,
-    })
-
-    const owner = await guild.fetchOwner()
-    if (owner?.user) {
-      await this.saveUser(owner.user)
-    }
-  }
-
-  private async saveChannel(channel: Channel) {
-    if (channel instanceof TextChannel) {
-      await this.discordChannelService.update({
-        id: channel.id,
-        isActive: true,
-        createdAt: channel.createdTimestamp,
-        guildId: channel.guildId,
-        name: channel.name,
-      })
-    }
-  }
-
-  private async saveMessage(message: Message) {
-    await this.discordMessageService.update({
-      id: message.id,
-      isActive: true,
-      createdAt: message.createdTimestamp,
-      authorId: message.author.id,
-      channelId: message.channelId,
-      guildId: message.guildId,
-      url: message.url,
-      content: message.content,
-    })
-    if (message.author) {
-      await this.saveUser(message.author)
-    }
-    if (message.channelId && message.channel) {
-      await this.saveChannel(message.channel as Channel)
-    }
-    if (message.guildId && message.guild) {
-      await this.saveGuild(message.guild)
     }
   }
 }

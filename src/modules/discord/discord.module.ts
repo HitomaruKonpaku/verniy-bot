@@ -12,6 +12,7 @@ import { DiscordGuild } from './models/discord-guild.entity'
 import { DiscordMessage } from './models/discord-message.entity'
 import { DiscordUser } from './models/discord-user.entity'
 import { DiscordChannelService } from './services/discord-channel.service'
+import { DiscordDbService } from './services/discord-db.service'
 import { DiscordGuildService } from './services/discord-guild.service'
 import { DiscordMessageService } from './services/discord-message.service'
 import { DiscordUserService } from './services/discord-user.service'
@@ -32,6 +33,7 @@ import { DiscordService } from './services/discord.service'
   ],
   providers: [
     DiscordService,
+    DiscordDbService,
     DiscordUserService,
     DiscordGuildService,
     DiscordChannelService,
