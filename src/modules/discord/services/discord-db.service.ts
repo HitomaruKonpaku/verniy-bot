@@ -27,61 +27,77 @@ export class DiscordDbService {
   ) { }
 
   public async saveUser(user: User) {
-    this.discordUserService.update({
-      id: user.id,
-      isActive: true,
-      createdAt: user.createdTimestamp,
-      username: user.username,
-      discriminator: user.discriminator,
-      tag: user.tag,
-    })
+    try {
+      await this.discordUserService.update({
+        id: user.id,
+        isActive: true,
+        createdAt: user.createdTimestamp,
+        username: user.username,
+        discriminator: user.discriminator,
+        tag: user.tag,
+      })
+    } catch (error) {
+      this.logger.error(`saveUser: ${error.message}`, { id: user.id, tag: user.tag })
+    }
   }
 
   public async saveGuild(guild: Guild) {
-    await this.discordGuildService.update({
-      id: guild.id,
-      isActive: true,
-      createdAt: guild.createdTimestamp,
-      ownerId: guild.ownerId,
-      name: guild.name,
-      joinedAt: guild.joinedTimestamp,
-      leftAt: null,
-    })
-    const owner = await guild.fetchOwner()
-    if (owner?.user) {
-      await this.saveUser(owner.user)
+    try {
+      await this.discordGuildService.update({
+        id: guild.id,
+        isActive: true,
+        createdAt: guild.createdTimestamp,
+        ownerId: guild.ownerId,
+        name: guild.name,
+        joinedAt: guild.joinedTimestamp,
+        leftAt: null,
+      })
+      const owner = await guild.fetchOwner()
+      if (owner?.user) {
+        await this.saveUser(owner.user)
+      }
+    } catch (error) {
+      this.logger.error(`saveGuild: ${error.message}`, { id: guild.id, name: guild.name })
     }
   }
 
   public async saveTextChannel(channel: TextChannel) {
-    await this.discordChannelService.update({
-      id: channel.id,
-      isActive: true,
-      createdAt: channel.createdTimestamp,
-      guildId: channel.guildId,
-      name: channel.name,
-    })
+    try {
+      await this.discordChannelService.update({
+        id: channel.id,
+        isActive: true,
+        createdAt: channel.createdTimestamp,
+        guildId: channel.guildId,
+        name: channel.name,
+      })
+    } catch (error) {
+      this.logger.error(`saveTextChannel: ${error.message}`, { id: channel.id, name: channel.name })
+    }
   }
 
   public async saveMessage(message: Message) {
-    await this.discordMessageService.update({
-      id: message.id,
-      isActive: true,
-      createdAt: message.createdTimestamp,
-      authorId: message.author.id,
-      channelId: message.channelId,
-      guildId: message.guildId,
-      url: message.url,
-      content: message.content,
-    })
-    if (message.author) {
-      await this.saveUser(message.author)
-    }
-    if (message.channelId && message.channel) {
-      await this.saveTextChannel(message.channel as TextChannel)
-    }
-    if (message.guildId && message.guild) {
-      await this.saveGuild(message.guild)
+    try {
+      await this.discordMessageService.update({
+        id: message.id,
+        isActive: true,
+        createdAt: message.createdTimestamp,
+        authorId: message.author.id,
+        channelId: message.channelId,
+        guildId: message.guildId,
+        url: message.url,
+        content: message.content,
+      })
+      if (message.author) {
+        await this.saveUser(message.author)
+      }
+      if (message.channelId && message.channel) {
+        await this.saveTextChannel(message.channel as TextChannel)
+      }
+      if (message.guildId && message.guild) {
+        await this.saveGuild(message.guild)
+      }
+    } catch (error) {
+      this.logger.error(`saveMessage: ${error.message}`, { id: message.id })
     }
   }
 }
