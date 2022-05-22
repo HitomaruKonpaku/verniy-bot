@@ -9,6 +9,7 @@ import { TrackCommand } from './commands/track.command'
 import { UntrackCommand } from './commands/untrack.command'
 import { DiscordChannel } from './models/discord-channel.entity'
 import { DiscordGuild } from './models/discord-guild.entity'
+import { DiscordMessage } from './models/discord-message.entity'
 import { DiscordUser } from './models/discord-user.entity'
 import { DiscordChannelService } from './services/discord-channel.service'
 import { DiscordGuildService } from './services/discord-guild.service'
@@ -21,6 +22,7 @@ import { DiscordService } from './services/discord.service'
       DiscordUser,
       DiscordGuild,
       DiscordChannel,
+      DiscordMessage,
     ]),
     ConfigModule,
     TrackModule,

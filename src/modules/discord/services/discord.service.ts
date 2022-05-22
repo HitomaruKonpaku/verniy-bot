@@ -7,6 +7,7 @@ import {
   CommandInteraction,
   Guild,
   Interaction,
+  Message,
   MessageOptions,
   MessagePayload,
   TextChannel,
@@ -23,6 +24,7 @@ import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'
 import { DiscordChannelService } from './discord-channel.service'
 import { DiscordGuildService } from './discord-guild.service'
+import { DiscordMessageService } from './discord-message.service'
 import { DiscordUserService } from './discord-user.service'
 
 @Injectable()
@@ -43,6 +45,8 @@ export class DiscordService {
     private readonly discordGuildService: DiscordGuildService,
     @Inject(DiscordChannelService)
     private readonly discordChannelService: DiscordChannelService,
+    @Inject(DiscordMessageService)
+    private readonly discordMessageService: DiscordMessageService,
     @Inject(forwardRef(() => TrackTwitterTweetService))
     private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(forwardRef(() => TrackTwitterProfileService))
@@ -106,6 +110,7 @@ export class DiscordService {
       this.saveDiscordChannelData(channel)
       const message = await channel.send(options)
       this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
+      this.saveMessage(message).catch()
       return message
     } catch (error) {
       this.logger.error(`sendToChannel: ${error.message}`, { channelId })
@@ -186,9 +191,9 @@ export class DiscordService {
         .flat()
 
       this.client.channels.cache.forEach(async (channel) => {
-        if (channelIds.includes(channel.id) && channel instanceof TextChannel) {
+        if (channelIds.includes(channel.id)) {
           try {
-            await this.saveTextChannel(channel)
+            await this.saveChannel(channel as Channel)
           } catch (error) {
             // Ignore
           }
@@ -218,7 +223,7 @@ export class DiscordService {
       return
     }
     try {
-      await this.saveTextChannel(channel)
+      await this.saveChannel(channel)
       const guild = await this.getGuild(channel.guildId)
       if (guild) {
         await this.saveGuild(guild)
@@ -294,13 +299,37 @@ export class DiscordService {
     }
   }
 
-  private async saveTextChannel(channel: TextChannel) {
-    await this.discordChannelService.update({
-      id: channel.id,
+  private async saveChannel(channel: Channel) {
+    if (channel instanceof TextChannel) {
+      await this.discordChannelService.update({
+        id: channel.id,
+        isActive: true,
+        createdAt: channel.createdTimestamp,
+        guildId: channel.guildId,
+        name: channel.name,
+      })
+    }
+  }
+
+  private async saveMessage(message: Message) {
+    await this.discordMessageService.update({
+      id: message.id,
       isActive: true,
-      createdAt: channel.createdTimestamp,
-      guildId: channel.guildId,
-      name: channel.name,
+      createdAt: message.createdTimestamp,
+      authorId: message.author.id,
+      channelId: message.channelId,
+      guildId: message.guildId,
+      url: message.url,
+      content: message.content,
     })
+    if (message.author) {
+      await this.saveUser(message.author)
+    }
+    if (message.channelId && message.channel) {
+      await this.saveChannel(message.channel as Channel)
+    }
+    if (message.guildId && message.guild) {
+      await this.saveGuild(message.guild)
+    }
   }
 }
