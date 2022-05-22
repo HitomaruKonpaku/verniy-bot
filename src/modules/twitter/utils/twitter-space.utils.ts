@@ -2,7 +2,7 @@ import { codeBlock, inlineCode, time } from '@discordjs/builders'
 import { EmbedFieldData, MessageEmbedOptions } from 'discord.js'
 import { TrackTwitterSpace } from '../../track/models/track-twitter-space.entity'
 import { TwitterSpace } from '../models/twitter-space.entity'
-import { TwitterUtils } from './TwitterUtils'
+import { TwitterUtils } from './twitter.utils'
 
 export class TwitterSpaceUtils {
   public static getMasterPlaylistUrl(url: string) {

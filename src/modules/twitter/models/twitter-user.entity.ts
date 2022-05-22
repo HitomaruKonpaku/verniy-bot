@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm'
-import { BaseExternalEntity } from '../../database/models/base/base-external.entity'
+import { BaseExternalEntity } from '../../database/models/base-external.entity'
 import { TwitterSpace } from './twitter-space.entity'
 
 @Entity('twitter_user')

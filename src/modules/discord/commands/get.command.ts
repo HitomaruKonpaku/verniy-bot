@@ -13,7 +13,7 @@ import { TwitterApiPublicService } from '../../twitter/services/twitter-api-publ
 import { TwitterApiService } from '../../twitter/services/twitter-api.service'
 import { TwitterSpaceService } from '../../twitter/services/twitter-space.service'
 import { TwitterUserService } from '../../twitter/services/twitter-user.service'
-import { TwitterEntityUtils } from '../../twitter/utils/TwitterEntityUtils'
+import { TwitterEntityUtils } from '../../twitter/utils/twitter-entity.utils'
 
 @Injectable()
 export class GetCommand {

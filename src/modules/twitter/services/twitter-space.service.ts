@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { SpaceV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
 import { TwitterSpace } from '../models/twitter-space.entity'
-import { TwitterEntityUtils } from '../utils/TwitterEntityUtils'
+import { TwitterEntityUtils } from '../utils/twitter-entity.utils'
 import { TwitterUserService } from './twitter-user.service'
 
 export class TwitterSpaceService {

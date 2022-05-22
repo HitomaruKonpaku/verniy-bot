@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { DB_CURRENT_TIMESTAMP } from '../../constants/database.constant'
+import { DB_CURRENT_TIMESTAMP } from '../constants/database.constant'
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn('uuid')

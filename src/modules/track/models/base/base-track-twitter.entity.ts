@@ -1,5 +1,5 @@
 import { Column } from 'typeorm'
-import { BaseEntity } from './base.entity'
+import { BaseEntity } from '../../../database/models/base.entity'
 
 export abstract class BaseTrackTwitter extends BaseEntity {
   @Column({ name: 'twitter_user_id', type: 'text' })

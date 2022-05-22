@@ -3,7 +3,7 @@ import { UserV1, UserV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
 import { TrackTwitterProfile } from '../../track/models/track-twitter-profile.entity'
 import { TwitterUser } from '../../twitter/models/twitter-user.entity'
-import { TwitterEntityUtils } from '../../twitter/utils/TwitterEntityUtils'
+import { TwitterEntityUtils } from '../utils/twitter-entity.utils'
 
 export class TwitterUserService {
   constructor(

@@ -7,7 +7,7 @@ import { TrackTwitterSpaceService } from '../../track/services/track-twitter-spa
 import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
 import { TwitterApiService } from '../../twitter/services/twitter-api.service'
 import { TwitterUserService } from '../../twitter/services/twitter-user.service'
-import { TwitterUtils } from '../../twitter/utils/TwitterUtils'
+import { TwitterUtils } from '../../twitter/utils/twitter.utils'
 
 @Injectable()
 export class TrackCommand {

@@ -6,7 +6,7 @@ import { TrackTwitterProfileService } from '../../track/services/track-twitter-p
 import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'
 import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
 import { TwitterUserService } from '../../twitter/services/twitter-user.service'
-import { TwitterUtils } from '../../twitter/utils/TwitterUtils'
+import { TwitterUtils } from '../../twitter/utils/twitter.utils'
 
 @Injectable()
 export class UntrackCommand {

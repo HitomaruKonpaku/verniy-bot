@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm'
 import { DB_CURRENT_TIMESTAMP } from '../../database/constants/database.constant'
-import { BaseExternalEntity } from '../../database/models/base/base-external.entity'
+import { BaseExternalEntity } from '../../database/models/base-external.entity'
 import { TwitterUser } from './twitter-user.entity'
 
 @Entity('twitter_space')

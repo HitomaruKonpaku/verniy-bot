@@ -1,5 +1,5 @@
 import { Column, PrimaryColumn } from 'typeorm'
-import { DB_CURRENT_TIMESTAMP } from '../../constants/database.constant'
+import { DB_CURRENT_TIMESTAMP } from '../constants/database.constant'
 
 export abstract class BaseExternalEntity {
   @PrimaryColumn({ type: 'text' })

@@ -9,7 +9,7 @@ import { DiscordService } from '../../discord/services/discord.service'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { TwitterUser } from '../models/twitter-user.entity'
-import { TwitterProfileUtils } from '../utils/TwitterProfileUtils'
+import { TwitterProfileUtils } from '../utils/twitter-profile.utils'
 import { TwitterApiService } from './twitter-api.service'
 import { TwitterUserService } from './twitter-user.service'
 

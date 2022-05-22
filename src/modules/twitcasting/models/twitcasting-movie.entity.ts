@@ -1,5 +1,5 @@
 import { Column, Entity } from 'typeorm'
-import { BaseExternalEntity } from '../../database/models/base/base-external.entity'
+import { BaseExternalEntity } from '../../database/models/base-external.entity'
 import { TwitCastingUser } from './twitcasting-user.entity'
 
 @Entity('twitcasting_movie')
