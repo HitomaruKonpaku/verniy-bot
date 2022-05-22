@@ -13,6 +13,7 @@ import { DiscordMessage } from './models/discord-message.entity'
 import { DiscordUser } from './models/discord-user.entity'
 import { DiscordChannelService } from './services/discord-channel.service'
 import { DiscordGuildService } from './services/discord-guild.service'
+import { DiscordMessageService } from './services/discord-message.service'
 import { DiscordUserService } from './services/discord-user.service'
 import { DiscordService } from './services/discord.service'
 
@@ -34,6 +35,7 @@ import { DiscordService } from './services/discord.service'
     DiscordUserService,
     DiscordGuildService,
     DiscordChannelService,
+    DiscordMessageService,
     TrackCommand,
     UntrackCommand,
     GetCommand,
