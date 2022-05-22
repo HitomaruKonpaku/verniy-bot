@@ -3,7 +3,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { MessageOptions } from 'discord.js'
 import { UserV1 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
-import { Utils } from '../../../utils/Utils'
+import { ArrayUtils } from '../../../utils/array.utils'
 import { ConfigService } from '../../config/services/config.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
@@ -39,7 +39,7 @@ export class TwitterProfileTrackingService {
     try {
       const userIds = await this.trackTwitterProfileService.getTwitterUserIds()
       if (userIds.length) {
-        const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+        const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.checkUsers(v)))
       }
     } catch (error) {

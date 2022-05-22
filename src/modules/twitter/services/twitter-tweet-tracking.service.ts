@@ -2,15 +2,15 @@ import { hideLinkEmbed } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { ETwitterStreamEvent, TweetStream, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
-import { Utils } from '../../../utils/Utils'
+import { AppUtils } from '../../../utils/app.utils'
 import { ConfigService } from '../../config/services/config.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
-import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { TwitterRuleUtils } from '../utils/TwitterRuleUtils'
 import { TwitterUtils } from '../utils/TwitterUtils'
 import { TwitterApiService } from './twitter-api.service'
 import { TwitterClientService } from './twitter-client.service'
+import { TwitterFilteredStreamUserService } from './twitter-filtered-stream-user.service'
 import { TwitterUserService } from './twitter-user.service'
 
 @Injectable()
@@ -22,19 +22,19 @@ export class TwitterTweetTrackingService {
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
-    @Inject(TrackTwitterTweetService)
-    private readonly trackTwitterTweetService: TrackTwitterTweetService,
-    @Inject(TwitterUserService)
-    private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterClientService)
     private readonly twitterClientService: TwitterClientService,
+    @Inject(TwitterFilteredStreamUserService)
+    private readonly twitterFilteredStreamUserService: TwitterFilteredStreamUserService,
+    @Inject(TwitterUserService)
+    private readonly twitterUserService: TwitterUserService,
+    @Inject(TrackTwitterTweetService)
+    private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
-  ) {
-    this.initStream()
-  }
+  ) { }
 
   private get client() {
     return this.twitterClientService.roClient
@@ -42,6 +42,7 @@ export class TwitterTweetTrackingService {
 
   public async start() {
     this.logger.info('Starting...')
+    this.initStream()
     await this.initUsers()
     await this.initStreamRules()
     await this.connect()
@@ -55,7 +56,7 @@ export class TwitterTweetTrackingService {
       this.logger.error(`connect: ${error.message}`)
       const ms = ([10, 20, 30][retryCount] || 60) * 1000
       this.logger.info(`connect: Retry in ${ms}ms`)
-      await Utils.sleep(ms)
+      await AppUtils.sleep(ms)
       this.connect(retryCount + 1)
     }
   }
@@ -90,48 +91,42 @@ export class TwitterTweetTrackingService {
   }
 
   private async initUsers() {
+    this.logger.debug('initUsers')
     try {
-      const userIds = await this.trackTwitterTweetService.getTwitterUserIds()
-      const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
-      await Promise.allSettled(chunks.map((v) => this.getUsers(v)))
+      const userIds = await this.twitterFilteredStreamUserService.getIdsForInitUsers()
+      if (!userIds.length) {
+        return
+      }
+      const users = await this.twitterApiService.getAllUsersByUserIds(userIds)
+      if (userIds.length !== users.length) {
+        const missingIds = userIds.filter((id) => !users.some((user) => user.id_str === id))
+        this.logger.warn('initUsers: Failed to get some users by ids', { idCount: missingIds, ids: missingIds })
+      }
+      await Promise.allSettled(users.map((v) => this.twitterUserService.updateByUserObject(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)
     }
   }
 
-  private async getUsers(userIds: string[], retryCount = 0) {
-    if (!userIds?.length) {
-      return
-    }
-    try {
-      const users = await this.twitterApiService.getUsersByUserIds(userIds)
-      await Promise.allSettled(users.map((v) => this.twitterUserService.updateByUserObject(v)))
-    } catch (error) {
-      this.logger.error(`getUsers: ${error.message}`)
-      const ms = ([10, 20][retryCount] || 30) * 1000
-      this.logger.warn(`getUsers: Users not found, retry in ${ms}ms`, { userCount: userIds.length, userIds })
-      await Utils.sleep(ms)
-      this.getUsers(userIds, retryCount + 1)
-    }
-  }
-
   private async initStreamRules(retryCount = 0) {
+    this.logger.debug('initStreamRules')
     try {
-      const usernames = await this.trackTwitterTweetService.getTwitterUsernames()
+      const users = await this.twitterFilteredStreamUserService.getUsersForInitRules()
+      const usernames = users.map((v) => v.username)
       const newStreamRules = TwitterRuleUtils.buildStreamRulesByUsernames(
         usernames,
         this.configService.twitter.tweet.ruleLength,
       )
       const curStreamRules = (await this.client.v2.streamRules()).data || []
-      this.logger.info('curStreamRules', { length: curStreamRules.length })
-      this.logger.info('newStreamRules', { length: newStreamRules.length })
+      this.logger.info('initStreamRules: curStreamRules', { length: curStreamRules.length })
+      this.logger.info('initStreamRules: newStreamRules', { length: newStreamRules.length })
       if (newStreamRules.length > this.configService.twitter.tweet.ruleLimit) {
         this.logger.error(`initStreamRules: Rule size (${newStreamRules.length}) exceed maximum limit (${this.configService.twitter.tweet.ruleLimit})`)
         this.logger.error('initStreamRules: Cancelled')
         return
       }
-      this.logger.debug('curStreamRules', { rules: curStreamRules.map((v) => v.value) })
-      this.logger.debug('newStreamRules', { rules: newStreamRules })
+      this.logger.debug('initStreamRules: curStreamRulesDetail', { rules: curStreamRules.map((v) => v.value) })
+      this.logger.debug('initStreamRules: newStreamRulesDetail', { rules: newStreamRules })
       const isMatch = true
         && newStreamRules.length === curStreamRules.length
         && newStreamRules.every((value) => curStreamRules.some((rule) => rule.value === value))
@@ -152,7 +147,7 @@ export class TwitterTweetTrackingService {
       this.logger.error(`initStreamRules: ${error.message}`)
       const ms = ([10, 20, 30][retryCount] || 60) * 1000
       this.logger.info(`initStreamRules: Retry in ${ms}ms`)
-      await Utils.sleep(ms)
+      await AppUtils.sleep(ms)
       await this.initStreamRules(retryCount + 1)
     }
   }
@@ -171,9 +166,8 @@ export class TwitterTweetTrackingService {
 
       const author = TwitterUtils.getIncludesUserById(data, authorId)
       const tweetUrl = TwitterUtils.getTweetUrl(author.username, data.data.id)
-      const channelIds = await this.getDiscordChannelIds(data)
-      if (!channelIds.length) {
-        this.logger.debug(`onTweet: ${tweetUrl}`)
+      const trackItems = await this.getTrackItems(data)
+      if (!trackItems.length) {
         return
       }
 
@@ -191,29 +185,33 @@ export class TwitterTweetTrackingService {
         this.logger.error(`onData: Parsing tweet error: ${error.message}`)
       }
 
-      this.logger.info('Channels', { id: channelIds })
-      channelIds.forEach((channelId) => {
-        this.discordService.sendToChannel(channelId, { content })
+      trackItems.forEach((trackItem) => {
+        const channelContent = [trackItem.discordMessage, content]
+          .filter((v) => v)
+          .join('\n')
+        this.discordService.sendToChannel(
+          trackItem.discordChannelId,
+          { content: channelContent },
+        )
       })
     } catch (error) {
       this.logger.error(`onData: ${error.message}`, { data })
     }
   }
 
-  private async getDiscordChannelIds(data: TweetV2SingleStreamResult) {
-    let channelIds = []
+  private async getTrackItems(data: TweetV2SingleStreamResult) {
     try {
       const author = TwitterUtils.getIncludesUserById(data, data.data.author_id)
       const isReply = TwitterUtils.isReplyStatus(data)
       const isRetweet = TwitterUtils.isRetweetStatus(data)
-      const records = await this.trackTwitterTweetService.getManyByTwitterUserId(
+      let items = await this.trackTwitterTweetService.getManyByTwitterUserId(
         author.id,
         {
           allowReply: isReply,
           allowRetweet: isRetweet,
         },
       )
-      channelIds = records
+      items = items
         .filter((record) => {
           if (!record?.filterKeywords?.length) {
             return true
@@ -226,10 +224,10 @@ export class TwitterTweetTrackingService {
           const existKeyword = record.filterKeywords.some((keyword) => contents.some((v) => v.includes(keyword.toLowerCase())))
           return existKeyword
         })
-        .map((v) => v.discordChannelId)
+      return items
     } catch (error) {
-      this.logger.error(`getDiscordChannelIds: ${error.message}`, { data })
+      this.logger.error(`getTrackItems: ${error.message}`, { data })
     }
-    return channelIds
+    return []
   }
 }

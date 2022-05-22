@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { SpaceV2 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../logger'
-import { Utils } from '../../../utils/Utils'
+import { ArrayUtils } from '../../../utils/array.utils'
 import { ConfigService } from '../../config/services/config.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'
@@ -54,7 +54,7 @@ export class TwitterSpaceTrackingService {
     try {
       const userIds = await this.trackTwitterSpaceService.getTwitterUserIds()
       if (userIds.length) {
-        const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+        const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.getSpacesByUserIds(v)))
       }
     } catch (error) {
@@ -74,7 +74,7 @@ export class TwitterSpaceTrackingService {
     try {
       const spaceIds = await this.twitterSpaceService.getLiveSpaceIds()
       if (spaceIds.length) {
-        const chunks = Utils.splitArrayIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
+        const chunks = ArrayUtils.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
       }
     } catch (error) {
@@ -117,7 +117,7 @@ export class TwitterSpaceTrackingService {
       if (!spaceIds.length) {
         return
       }
-      const chunks = Utils.splitArrayIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
+      const chunks = ArrayUtils.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
     } catch (error) {
       this.logger.error(`checkNewSpacesByPublicApi: ${error.message}`)
@@ -130,7 +130,7 @@ export class TwitterSpaceTrackingService {
     }
     try {
       const limiter = twitterSpacesByFleetsAvatarContentLimiter
-      const chunks = Utils.splitArrayIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+      const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
       // eslint-disable-next-line max-len
       const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterApiPublicService.getSpacesByFleetsAvatarContent(v))))
       const spaceIds = result

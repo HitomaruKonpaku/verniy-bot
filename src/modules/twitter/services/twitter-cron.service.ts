@@ -3,7 +3,7 @@ import axios from 'axios'
 import Bottleneck from 'bottleneck'
 import { CronJob } from 'cron'
 import { logger as baseLogger } from '../../../logger'
-import { Utils } from '../../../utils/Utils'
+import { ArrayUtils } from '../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { TwitterSpace } from '../models/twitter-space.entity'
 import { TwitterApiService } from './twitter-api.service'
@@ -41,7 +41,7 @@ export class TwitterCronService {
     try {
       const limiter = new Bottleneck({ maxConcurrent: 1 })
       const twitterUsers = await this.twitterUserService.getManyForCheck()
-      const chunks = Utils.splitArrayIntoChunk(twitterUsers, TWITTER_API_LIST_SIZE)
+      const chunks = ArrayUtils.splitIntoChunk(twitterUsers, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((chunk) => limiter.schedule(async () => {
         try {
           const ids = chunk.map((v) => v.id)
@@ -75,7 +75,7 @@ export class TwitterCronService {
     this.logger.info('--> checkSpacesActive')
     try {
       const spaces = await this.twitterSpaceService.getManyForActiveCheck()
-      const chunks = Utils.splitArrayIntoChunk(spaces, TWITTER_API_LIST_SIZE)
+      const chunks = ArrayUtils.splitIntoChunk(spaces, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map(async (chunk) => {
         try {
           const ids = chunk.map((v) => v.id)
