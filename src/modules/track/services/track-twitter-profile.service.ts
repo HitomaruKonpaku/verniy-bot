@@ -24,20 +24,20 @@ export class TrackTwitterProfileService extends BaseTrackService<TrackTwitterPro
     return ids
   }
 
-  public async getManyByTwitterUserId(twitterUserId: string) {
+  public async getManyByTwitterUserId(userId: string) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere('twitter_user_id = :twitterUserId', { twitterUserId })
+      .andWhere('twitter_user_id = :userId', { userId })
     const records = await query.getMany()
     return records
   }
 
-  public async getManyByTwitterUserIds(twitterUserIds: string[]) {
+  public async getManyByTwitterUserIds(userIds: string[]) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere('twitter_user_id IN (:...twitterUserIds)', { twitterUserIds })
+      .andWhere('twitter_user_id IN (:...userIds)', { userIds })
     const records = await query.getMany()
     return records
   }
