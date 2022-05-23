@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { TrackTwitCastingLive } from '../models/track-twitcating-live.entity'
+import { TrackTwitCastingLive } from '../models/track-twitcasting-live.entity'
 import { BaseTrackService } from './base/base-track.service'
 
 export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCastingLive> {
