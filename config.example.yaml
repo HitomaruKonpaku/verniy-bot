@@ -12,3 +12,7 @@ twitter:
     interval: 60000
   cron:
     active: true
+
+twitcasting:
+  active: true
+  interval: 60000
