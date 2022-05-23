@@ -22,3 +22,7 @@ export const twitCastingMoviesByUserIdLimiter = new Bottleneck({
   reservoirRefreshAmount: 60,
   reservoirRefreshInterval,
 })
+
+export const twitCastingStreamServerLimiter = new Bottleneck({
+  maxConcurrent: 3,
+})

@@ -51,8 +51,9 @@ export class TwitCastingMovieService {
 
   public async getOneAndSaveById(id: string) {
     const response = await this.twitCastingApiService.getMovieById(id)
-    await this.twitCastingUserService.update(response.broadcaster)
+    const user = await this.twitCastingUserService.update(response.broadcaster)
     const movie = await this.update(response.movie)
+    movie.user = user
     return movie
   }
 

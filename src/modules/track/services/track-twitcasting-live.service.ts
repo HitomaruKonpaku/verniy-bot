@@ -11,17 +11,36 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
     super()
   }
 
-  public async getTwitterUserIds() {
+  public async getIdsForInitUsers(): Promise<string[]> {
     const records = await this.repository
-      .createQueryBuilder()
-      .select('twitter_user_id')
-      .distinct()
-      .andWhere('is_active = TRUE')
-      .addOrderBy('LENGTH(twitter_user_id)')
-      .addOrderBy('twitter_user_id')
+      .createQueryBuilder('ttl')
+      .select('ttl.twitcasting_user_id')
+      .leftJoin('twitcasting_user', 'tu', 'tu.id = ttl.twitcasting_user_id')
+      .andWhere('ttl.is_active = TRUE')
+      .andWhere('tu.id ISNULL')
       .getRawMany()
-    const ids = records.map((v) => v.twitter_user_id) as string[]
+    const ids = records.map((v) => v.twitcasting_user_id)
     return ids
+  }
+
+  public async getUsersForLiveCheck() {
+    const records = await this.repository
+      .createQueryBuilder('ttl')
+      .leftJoinAndMapOne('ttl.user', 'twitcasting_user', 'tu', 'tu.id = ttl.twitcasting_user_id')
+      .andWhere('ttl.is_active = TRUE')
+      .andWhere('tu.id NOTNULL')
+      .getMany()
+    const users = records.map((v) => v.user)
+    return users
+  }
+
+  public async getManyByTwitCastingUserId(userId: string) {
+    const query = this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .andWhere('twitcasting_user_id = :userId', { userId })
+    const records = await query.getMany()
+    return records
   }
 
   public async add(
