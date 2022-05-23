@@ -157,6 +157,11 @@ export class DiscordService {
       }
     })
 
+    client.once('ready', () => {
+      const { user } = client
+      this.logger.info(`${user.tag} ready!`)
+    })
+
     client.once('ready', async () => {
       this.client.guilds.cache.forEach((guild) => {
         this.discordDbService.saveGuild(guild)
@@ -168,11 +173,6 @@ export class DiscordService {
           this.discordDbService.saveTextChannel(channel)
         }
       })
-    })
-
-    client.once('ready', () => {
-      const { user } = client
-      this.logger.info(`${user.tag} ready!`)
     })
 
     client.once('ready', () => {
