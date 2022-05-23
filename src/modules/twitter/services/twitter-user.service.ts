@@ -1,7 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserV1, UserV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
-import { TrackTwitterProfile } from '../../track/models/track-twitter-profile.entity'
 import { TwitterUser } from '../../twitter/models/twitter-user.entity'
 import { TwitterEntityUtils } from '../utils/twitter-entity.utils'
 
@@ -61,7 +60,7 @@ export class TwitterUserService {
     const users = await this.repository
       .createQueryBuilder('tu')
       .leftJoin(
-        TrackTwitterProfile,
+        'track_twitter_profile',
         'ttp',
         'ttp.is_active = TRUE AND ttp.twitter_user_id = tu.id',
       )
