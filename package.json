@@ -1,12 +1,13 @@
 {
   "name": "verniy-bot",
   "version": "1.4.4",
-  "description": "Discord bot for tracking Twitter",
+  "description": "Discord tracking bot for Twitter/TwitCasting...",
   "scripts": {
     "start": "node dist/index",
     "build": "tsc",
     "lint": "eslint src --ext .ts",
-    "lint-fix": "eslint src --ext .ts --fix"
+    "lint-fix": "eslint src --ext .ts --fix",
+    "update": "git fetch -p && git pull && npm run build"
   },
   "repository": {
     "type": "git",
