@@ -13,10 +13,10 @@ export class TwitCastingMovieService {
   constructor(
     @InjectRepository(TwitCastingMovie)
     public readonly repository: Repository<TwitCastingMovie>,
-    @Inject(TwitCastingApiService)
-    private readonly twitCastingApiService: TwitCastingApiService,
     @Inject(TwitCastingUserService)
     private readonly twitCastingUserService: TwitCastingUserService,
+    @Inject(TwitCastingApiService)
+    private readonly twitCastingApiService: TwitCastingApiService,
   ) { }
 
   public async getOneById(id: string) {
@@ -24,13 +24,6 @@ export class TwitCastingMovieService {
       .createQueryBuilder()
       .andWhere('id = :id', { id })
       .getOne()
-    return movie
-  }
-
-  public async getOneAndSaveById(id: string) {
-    const response = await this.twitCastingApiService.getMovieById(id)
-    await this.twitCastingUserService.update(response.broadcaster)
-    const movie = await this.update(response.movie)
     return movie
   }
 
@@ -54,5 +47,31 @@ export class TwitCastingMovieService {
     }
     await this.repository.save(movie)
     return movie
+  }
+
+  public async getOneAndSaveById(id: string) {
+    const response = await this.twitCastingApiService.getMovieById(id)
+    await this.twitCastingUserService.update(response.broadcaster)
+    const movie = await this.update(response.movie)
+    return movie
+  }
+
+  public async fetchMoviesByUserIds(id: string) {
+    const limit = 50
+    let offset = 0
+    let movies: any[] = []
+    do {
+      try {
+        this.logger.debug('fetchMoviesByUserIds', { id, limit, offset })
+        // eslint-disable-next-line no-await-in-loop
+        const response = await this.twitCastingApiService.getMoviesByUserId(id, { limit, offset })
+        movies = response.movies
+        // eslint-disable-next-line no-await-in-loop
+        await Promise.all(movies.map((v) => this.update(v)))
+        offset += limit
+      } catch (error) {
+        this.logger.error(`fetchMoviesByUserIds: ${error.message}`, { id, limit, offset })
+      }
+    } while (movies.length)
   }
 }

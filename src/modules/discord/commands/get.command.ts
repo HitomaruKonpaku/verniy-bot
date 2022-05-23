@@ -84,7 +84,14 @@ export class GetCommand {
           .setRequired(true))
         .addBooleanOption((option) => option
           .setName('refresh')
-          .setDescription('Refresh?'))))
+          .setDescription('Refresh?')))
+      .addSubcommand((subcommand) => subcommand
+        .setName('movies_by_user')
+        .setDescription('Movies by user')
+        .addStringOption((option) => option
+          .setName('id')
+          .setDescription('Id')
+          .setRequired(true))))
 
   public async execute(interaction: CommandInteraction) {
     try {
@@ -196,6 +203,11 @@ export class GetCommand {
         await this.executeTwitCastingMovieCommand(interaction)
         this.logger.debug('<-- executeTwitCastingMovieCommand')
         return
+      case 'movies_by_user':
+        this.logger.debug('--> executeTwitCastingMoviesByUserCommand')
+        await this.executeTwitCastingMoviesByUserCommand(interaction)
+        this.logger.debug('<-- executeTwitCastingMoviesByUserCommand')
+        return
       default:
         this.logger.warn(`executeTwitCastingGroup: Unhandled subcommand: ${subcommand}`, { subcommand })
     }
@@ -217,6 +229,23 @@ export class GetCommand {
       movie = await this.twitCastingMovieService.getOneAndSaveById(id)
     }
     await this.replyData(interaction, movie)
+  }
+
+  private async executeTwitCastingMoviesByUserCommand(interaction: CommandInteraction) {
+    if (!await this.isBotOwner(interaction)) {
+      await interaction.editReply('Owner only!')
+      return
+    }
+    const id = interaction.options.getString('id', true)
+    await this.twitCastingUserService.getOneAndSaveById(id)
+    await this.twitCastingMovieService.fetchMoviesByUserIds(id)
+    await interaction.editReply('✅')
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private async isBotOwner(interaction: CommandInteraction) {
+    const app = await interaction.client.application.fetch()
+    return app.owner.id === interaction.user.id
   }
 
   // eslint-disable-next-line class-methods-use-this
