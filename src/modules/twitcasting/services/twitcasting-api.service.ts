@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import axios, { AxiosInstance } from 'axios'
+import { randomUUID } from 'crypto'
 import { logger as baseLogger } from '../../../logger'
+import { twitCastingUserByIdLimiter } from '../twitcasting.limiter'
 
 @Injectable()
 export class TwitCastingApiService {
@@ -29,16 +31,38 @@ export class TwitCastingApiService {
    *  @see https://apiv2-doc.twitcasting.tv/#get-user-info
    */
   public async getUserById(id: string) {
-    const { data } = await this.client.get(`users/${id}`)
-    return data
+    const requestId = randomUUID()
+    try {
+      const { data } = await twitCastingUserByIdLimiter.schedule(async () => {
+        this.logger.debug('--> getUserById', { requestId, id })
+        const response = await this.client.get(`users/${id}`)
+        this.logger.debug('<-- getUserById', { requestId, id })
+        return response
+      })
+      return data
+    } catch (error) {
+      this.logger.error(`getUserById: ${error.message}`, { requestId, id })
+      throw error
+    }
   }
 
   /**
    *  @see https://apiv2-doc.twitcasting.tv/#get-movie-info
    */
   public async getMovieById(id: string) {
-    const { data } = await this.client.get(`movies/${id}`)
-    return data
+    const requestId = randomUUID()
+    try {
+      const { data } = await twitCastingUserByIdLimiter.schedule(async () => {
+        this.logger.debug('--> getMovieById', { requestId, id })
+        const response = await this.client.get(`movies/${id}`)
+        this.logger.debug('<-- getMovieById', { requestId, id })
+        return response
+      })
+      return data
+    } catch (error) {
+      this.logger.error(`getMovieById: ${error.message}`, { requestId, id })
+      throw error
+    }
   }
 
   /**
@@ -48,10 +72,27 @@ export class TwitCastingApiService {
     id: string,
     opts?: { limit?: number, offset?: number },
   ) {
-    const params = new URLSearchParams()
-    params.append('limit', String(opts?.limit || 20))
-    params.append('offset', String(opts?.offset || 0))
-    const { data } = await this.client.get(`users/${id}/movies?${params.toString()}`)
-    return data
+    const requestId = randomUUID()
+    const limit = opts?.limit || 20
+    const offset = opts?.offset || 0
+    try {
+      const params = new URLSearchParams()
+      params.append('limit', String(limit))
+      params.append('offset', String(offset))
+      const { data } = await twitCastingUserByIdLimiter.schedule(async () => {
+        this.logger.debug('--> getMoviesByUserId', {
+          requestId, id, limit, offset,
+        })
+        const response = await this.client.get(`users/${id}/movies?${params.toString()}`)
+        this.logger.debug('<-- getMoviesByUserId', { requestId, id })
+        return response
+      })
+      return data
+    } catch (error) {
+      this.logger.error(`getMoviesByUserId: ${error.message}`, {
+        requestId, id, limit, offset,
+      })
+      throw error
+    }
   }
 }
