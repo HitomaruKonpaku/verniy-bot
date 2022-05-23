@@ -1,12 +1,15 @@
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { TrackTwitterTweet } from '../models/track-twitter-tweet.entity'
+import { BaseTrackService } from './base/base-track.service'
 
-export class TrackTwitterTweetService {
+export class TrackTwitterTweetService extends BaseTrackService<TrackTwitterTweet> {
   constructor(
     @InjectRepository(TrackTwitterTweet)
     public readonly repository: Repository<TrackTwitterTweet>,
-  ) { }
+  ) {
+    super()
+  }
 
   public async getTwitterUserIds() {
     const records = await this.repository
@@ -18,16 +21,6 @@ export class TrackTwitterTweetService {
       .addOrderBy('twitter_user_id')
       .getRawMany()
     const ids = records.map((v) => v.twitter_user_id) as string[]
-    return ids
-  }
-
-  public async getDiscordChannelIds() {
-    const records = await this.repository
-      .createQueryBuilder()
-      .select('discord_channel_id')
-      .distinct()
-      .getRawMany()
-    const ids = records.map((v) => v.discord_channel_id) as string[]
     return ids
   }
 

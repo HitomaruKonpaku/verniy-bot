@@ -2,6 +2,7 @@ import { DiscordChannel } from '../../discord/models/discord-channel.entity'
 import { DiscordGuild } from '../../discord/models/discord-guild.entity'
 import { DiscordMessage } from '../../discord/models/discord-message.entity'
 import { DiscordUser } from '../../discord/models/discord-user.entity'
+import { TrackTwitCastingLive } from '../../track/models/track-twitcating-live.entity'
 import { TrackTwitterProfile } from '../../track/models/track-twitter-profile.entity'
 import { TrackTwitterSpace } from '../../track/models/track-twitter-space.entity'
 import { TrackTwitterTweet } from '../../track/models/track-twitter-tweet.entity'
@@ -24,4 +25,5 @@ export const DB_ENTITIES = [
   TrackTwitterTweet,
   TrackTwitterProfile,
   TrackTwitterSpace,
+  TrackTwitCastingLive,
 ]
