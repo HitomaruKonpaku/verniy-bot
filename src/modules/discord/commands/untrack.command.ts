@@ -53,7 +53,8 @@ export class UntrackCommand {
     if (interaction.guild) {
       const member = await interaction.guild.members.fetch(interaction.user.id)
       if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {
-        await interaction.editReply(`Required ${bold(inlineCode('MANAGE_MESSAGES'))} permission!`)
+        const content = `You must have ${bold(inlineCode('MANAGE_MESSAGES'))} permission to run this command!`
+        await interaction.editReply(content)
         return
       }
     }
