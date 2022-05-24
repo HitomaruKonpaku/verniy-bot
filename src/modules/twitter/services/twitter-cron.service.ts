@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import axios from 'axios'
 import Bottleneck from 'bottleneck'
 import { CronJob } from 'cron'
+import { CRON_TIME_ZONE } from '../../../constants/cron.constant'
 import { logger as baseLogger } from '../../../logger'
 import { ArrayUtils } from '../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
@@ -25,7 +26,7 @@ export class TwitterCronService {
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
   ) {
-    const cronTimeZone = 'Asia/Ho_Chi_Minh'
+    const cronTimeZone = CRON_TIME_ZONE
     this.userCheckCronJob = new CronJob('0 0 */6 * * *', () => this.checkUsers(), null, false, cronTimeZone)
     this.spaceCheckCronJob = new CronJob('0 0 */12 * * *', () => this.checkSpaces(), null, false, cronTimeZone)
   }

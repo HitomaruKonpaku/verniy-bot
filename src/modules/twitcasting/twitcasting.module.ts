@@ -7,6 +7,7 @@ import { TwitCastingMovie } from './models/twitcasting-movie.entity'
 import { TwitCastingUser } from './models/twitcasting-user.entity'
 import { TwitCastingApiPublicService } from './services/twitcasting-api-public.service'
 import { TwitCastingApiService } from './services/twitcasting-api.service'
+import { TwitCastingCronService } from './services/twitcasting-cron.service'
 import { TwitCastingLiveTrackingService } from './services/twitcasting-live-tracking.service'
 import { TwitCastingMovieService } from './services/twitcasting-movie.service'
 import { TwitCastingUserService } from './services/twitcasting-user.service'
@@ -29,6 +30,7 @@ import { TwitCastingService } from './services/twitcasting.service'
     TwitCastingUserService,
     TwitCastingMovieService,
     TwitCastingLiveTrackingService,
+    TwitCastingCronService,
   ],
   exports: [
     TwitCastingService,

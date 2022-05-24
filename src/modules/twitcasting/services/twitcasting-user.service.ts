@@ -40,6 +40,14 @@ export class TwitCastingUserService {
     return user
   }
 
+  public async getManyActive() {
+    const users = await this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .getMany()
+    return users
+  }
+
   public async getOneAndSaveById(id: string) {
     const response = await this.twitCastingApiService.getUserById(id)
     const user = await this.update(response.user)
