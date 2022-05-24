@@ -1,5 +1,6 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { bold, inlineCode, SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
+import { PermissionFlagsBits } from 'discord-api-types/v10'
 import { CommandInteraction, TextChannel } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
@@ -49,6 +50,14 @@ export class UntrackCommand {
         .setRequired(true)))
 
   public async execute(interaction: CommandInteraction) {
+    if (interaction.guild) {
+      const member = await interaction.guild.members.fetch(interaction.user.id)
+      if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {
+        await interaction.editReply(`Required ${bold(inlineCode('MANAGE_MESSAGES'))} permission!`)
+        return
+      }
+    }
+
     const subcommand = interaction.options.getSubcommand()
     const meta = {
       user: { id: interaction.user.id, tag: interaction.user.tag },
