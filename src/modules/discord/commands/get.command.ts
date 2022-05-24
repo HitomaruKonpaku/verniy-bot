@@ -1,9 +1,4 @@
-import {
-  bold,
-  codeBlock,
-  inlineCode,
-  SlashCommandBuilder,
-} from '@discordjs/builders'
+import { bold, inlineCode, SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
@@ -14,9 +9,10 @@ import { TwitterApiService } from '../../twitter/services/twitter-api.service'
 import { TwitterSpaceService } from '../../twitter/services/twitter-space.service'
 import { TwitterUserService } from '../../twitter/services/twitter-user.service'
 import { TwitterEntityUtils } from '../../twitter/utils/twitter-entity.utils'
+import { BaseCommand } from './base/base.command'
 
 @Injectable()
-export class GetCommand {
+export class GetCommand extends BaseCommand {
   private readonly logger = baseLogger.child({ context: GetCommand.name })
 
   constructor(
@@ -32,7 +28,9 @@ export class GetCommand {
     private readonly twitCastingUserService: TwitCastingUserService,
     @Inject(TwitCastingMovieService)
     private readonly twitCastingMovieService: TwitCastingMovieService,
-  ) { }
+  ) {
+    super()
+  }
 
   public static readonly command = new SlashCommandBuilder()
     .setName('get')
@@ -152,7 +150,7 @@ export class GetCommand {
       await this.twitterUserService.updateByUserObject(user)
       rawUser = await this.twitterUserService.getRawOneById(user.id_str)
     }
-    await this.replyData(interaction, rawUser)
+    await this.replyObject(interaction, rawUser)
   }
 
   private async executeTwitterSpaceCommand(interaction: CommandInteraction) {
@@ -187,7 +185,7 @@ export class GetCommand {
       }
       rawSpace = await this.twitterSpaceService.getRawOneById(id)
     }
-    await this.replyData(interaction, rawSpace)
+    await this.replyObject(interaction, rawSpace)
   }
 
   private async executeTwitCastingGroup(interaction: CommandInteraction) {
@@ -219,7 +217,7 @@ export class GetCommand {
     if (!user) {
       user = await this.twitCastingUserService.getOneAndSaveById(id)
     }
-    await this.replyData(interaction, user)
+    await this.replyObject(interaction, user)
   }
 
   private async executeTwitCastingMovieCommand(interaction: CommandInteraction) {
@@ -228,28 +226,17 @@ export class GetCommand {
     if (!movie) {
       movie = await this.twitCastingMovieService.getOneAndSaveById(id)
     }
-    await this.replyData(interaction, movie)
+    await this.replyObject(interaction, movie)
   }
 
   private async executeTwitCastingMoviesByUserCommand(interaction: CommandInteraction) {
-    if (!await this.isBotOwner(interaction)) {
-      await interaction.editReply('Owner only!')
+    if (!await this.isAppOwner(interaction)) {
+      await this.replyOwnerOnly(interaction)
       return
     }
     const id = interaction.options.getString('id', true)
     await this.twitCastingUserService.getOneAndSaveById(id)
     await this.twitCastingMovieService.fetchMoviesByUserIds(id)
     await interaction.editReply('✅')
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  private async isBotOwner(interaction: CommandInteraction) {
-    const app = await interaction.client.application.fetch()
-    return app.owner.id === interaction.user.id
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  private async replyData<T>(interaction: CommandInteraction, data: T) {
-    await interaction.editReply({ content: codeBlock('json', JSON.stringify(data, null, 2)) })
   }
 }

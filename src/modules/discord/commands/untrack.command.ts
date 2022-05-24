@@ -1,4 +1,4 @@
-import { bold, inlineCode, SlashCommandBuilder } from '@discordjs/builders'
+import { SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { PermissionFlagsBits } from 'discord-api-types/v10'
 import { CommandInteraction, TextChannel } from 'discord.js'
@@ -8,9 +8,10 @@ import { TrackTwitterSpaceService } from '../../track/services/track-twitter-spa
 import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
 import { TwitterUserService } from '../../twitter/services/twitter-user.service'
 import { TwitterUtils } from '../../twitter/utils/twitter.utils'
+import { BaseCommand } from './base/base.command'
 
 @Injectable()
-export class UntrackCommand {
+export class UntrackCommand extends BaseCommand {
   private readonly logger = baseLogger.child({ context: UntrackCommand.name })
 
   constructor(
@@ -22,7 +23,9 @@ export class UntrackCommand {
     private readonly trackTwitterProfileService: TrackTwitterProfileService,
     @Inject(TrackTwitterSpaceService)
     private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
-  ) { }
+  ) {
+    super()
+  }
 
   public static readonly command = new SlashCommandBuilder()
     .setName('untrack')
@@ -53,8 +56,7 @@ export class UntrackCommand {
     if (interaction.guild) {
       const member = await interaction.guild.members.fetch(interaction.user.id)
       if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {
-        const content = `You must have ${bold(inlineCode('MANAGE_MESSAGES'))} permission to run this command!`
-        await interaction.editReply(content)
+        await this.replyMissingPermission(interaction, 'MANAGE_MESSAGES')
         return
       }
     }
