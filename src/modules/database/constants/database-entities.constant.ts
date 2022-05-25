@@ -17,11 +17,14 @@ export const DB_ENTITIES = [
   DiscordGuild,
   DiscordChannel,
   DiscordMessage,
+
   TwitterFilteredStreamUser,
   TwitterUser,
   TwitterSpace,
+
   TwitCastingUser,
   TwitCastingMovie,
+
   TrackTwitterTweet,
   TrackTwitterProfile,
   TrackTwitterSpace,
