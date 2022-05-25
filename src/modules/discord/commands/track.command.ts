@@ -3,9 +3,12 @@ import { Inject, Injectable } from '@nestjs/common'
 import { PermissionFlagsBits } from 'discord-api-types/v10'
 import { CommandInteraction, TextChannel } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
+import { TrackTwitCastingLiveService } from '../../track/services/track-twitcasting-live.service'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
 import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'
 import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
+import { TwitCastingUserControllerService } from '../../twitcasting/services/controller/twitcasting-user-controller.service'
+import { TwitCastingUtils } from '../../twitcasting/utils/twitcasting.utils'
 import { TwitterUserControllerService } from '../../twitter/services/controller/twitter-user-controller.service'
 import { TwitterUtils } from '../../twitter/utils/twitter.utils'
 import { BaseCommand } from './base/base.command'
@@ -17,19 +20,23 @@ export class TrackCommand extends BaseCommand {
   constructor(
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
+    @Inject(TwitCastingUserControllerService)
+    private readonly twitCastingUserControllerService: TwitCastingUserControllerService,
     @Inject(TrackTwitterTweetService)
     private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(TrackTwitterProfileService)
     private readonly trackTwitterProfileService: TrackTwitterProfileService,
     @Inject(TrackTwitterSpaceService)
     private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
+    @Inject(TrackTwitCastingLiveService)
+    private readonly trackTwitCastingLiveService: TrackTwitCastingLiveService,
   ) {
     super()
   }
 
   public static readonly command = new SlashCommandBuilder()
     .setName('track')
-    .setDescription('Track Twitter user')
+    .setDescription('Track')
     .addSubcommand((subcommand) => subcommand
       .setName('tweet')
       .setDescription('Track user tweets')
@@ -48,7 +55,7 @@ export class TrackCommand extends BaseCommand {
         .setDescription('Allow retweet?')))
     .addSubcommand((subcommand) => subcommand
       .setName('profile')
-      .setDescription('Track user profile')
+      .setDescription('Track user Twitter profile')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username')
@@ -58,10 +65,20 @@ export class TrackCommand extends BaseCommand {
         .setDescription('Discord message')))
     .addSubcommand((subcommand) => subcommand
       .setName('space')
-      .setDescription('Track user Spaces')
+      .setDescription('Track user Twitter Spaces')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username')
+        .setRequired(true))
+      .addStringOption((option) => option
+        .setName('message')
+        .setDescription('Discord message')))
+    .addSubcommand((subcommand) => subcommand
+      .setName('twitcasting')
+      .setDescription('Track TwitCasting user')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('TwitCasting id')
         .setRequired(true))
       .addStringOption((option) => option
         .setName('message')
@@ -95,6 +112,10 @@ export class TrackCommand extends BaseCommand {
         this.logger.info('--> executeSpaceCommand', meta)
         await this.executeSpaceCommand(interaction)
         return
+      case 'twitcasting':
+        this.logger.info('--> executeTwitCastingCommand', meta)
+        await this.executeTwitCastingCommand(interaction)
+        return
       default:
         this.logger.warn(`execute: Unhandled subcommand: ${subcommand}`, { subcommand })
     }
@@ -105,9 +126,9 @@ export class TrackCommand extends BaseCommand {
     const allowReply = interaction.options.getBoolean('allow_reply') ?? true
     const allowRetweet = interaction.options.getBoolean('allow_retweet') ?? true
     try {
-      const twitterUser = await this.getTwitterUser(username)
+      const user = await this.getTwitterUser(username)
       await this.trackTwitterTweetService.add(
-        twitterUser.id,
+        user.id,
         channelId,
         message,
         allowReply,
@@ -118,7 +139,7 @@ export class TrackCommand extends BaseCommand {
       this.logger.warn('<-- executeTweetCommand', { username, channelId })
       await interaction.editReply({
         embeds: [{
-          description: `Tracking **[${twitterUser.username}](${TwitterUtils.getUserUrl(twitterUser.username)})** tweets`,
+          description: `Tracking **[${user.username}](${TwitterUtils.getUserUrl(user.username)})** tweets`,
           color: 0x1d9bf0,
         }],
       })
@@ -131,9 +152,9 @@ export class TrackCommand extends BaseCommand {
   private async executeProfileCommand(interaction: CommandInteraction) {
     const { username, channelId, message } = this.extractBaseOptions(interaction)
     try {
-      const twitterUser = await this.getTwitterUser(username)
+      const user = await this.getTwitterUser(username)
       await this.trackTwitterProfileService.add(
-        twitterUser.id,
+        user.id,
         channelId,
         message,
         interaction.user.id,
@@ -141,7 +162,7 @@ export class TrackCommand extends BaseCommand {
       this.logger.warn('<-- executeProfileCommand', { username, channelId })
       await interaction.editReply({
         embeds: [{
-          description: `Tracking **[${twitterUser.username}](${TwitterUtils.getUserUrl(twitterUser.username)})** profile`,
+          description: `Tracking **[${user.username}](${TwitterUtils.getUserUrl(user.username)})** profile`,
           color: 0x1d9bf0,
         }],
       })
@@ -154,9 +175,9 @@ export class TrackCommand extends BaseCommand {
   private async executeSpaceCommand(interaction: CommandInteraction) {
     const { username, channelId, message } = this.extractBaseOptions(interaction)
     try {
-      const twitterUser = await this.getTwitterUser(username)
+      const user = await this.getTwitterUser(username)
       await this.trackTwitterSpaceService.add(
-        twitterUser.id,
+        user.id,
         channelId,
         message,
         interaction.user.id,
@@ -164,12 +185,35 @@ export class TrackCommand extends BaseCommand {
       this.logger.warn('<-- executeSpaceCommand', { username, channelId })
       await interaction.editReply({
         embeds: [{
-          description: `Tracking **[${twitterUser.username}](${TwitterUtils.getUserUrl(twitterUser.username)})** Spaces`,
+          description: `Tracking **[${user.username}](${TwitterUtils.getUserUrl(user.username)})** Spaces`,
           color: 0x1d9bf0,
         }],
       })
     } catch (error) {
       this.logger.error(`executeSpaceCommand: ${error.message}`, { username, channelId })
+      await interaction.editReply(error.message)
+    }
+  }
+
+  private async executeTwitCastingCommand(interaction: CommandInteraction) {
+    const { username, channelId, message } = this.extractBaseOptions(interaction)
+    try {
+      const user = await this.getTwitCastingUser(username)
+      await this.trackTwitCastingLiveService.add(
+        user.id,
+        channelId,
+        message,
+        interaction.user.id,
+      )
+      this.logger.warn('<-- executeTwitCastingCommand', { username, channelId })
+      await interaction.editReply({
+        embeds: [{
+          description: `Tracking **[${user.screenId}](${TwitCastingUtils.getUserUrl(user.screenId)})** TwitCasting user`,
+          color: 0x1d9bf0,
+        }],
+      })
+    } catch (error) {
+      this.logger.error(`executeTwitCastingCommand: ${error.message}`, { username, channelId })
       await interaction.editReply(error.message)
     }
   }
@@ -185,7 +229,12 @@ export class TrackCommand extends BaseCommand {
   }
 
   private async getTwitterUser(username: string) {
-    const twitterUser = await this.twitterUserControllerService.getOneByUsername(username)
-    return twitterUser
+    const user = await this.twitterUserControllerService.getOneByUsername(username)
+    return user
+  }
+
+  private async getTwitCastingUser(username: string) {
+    const user = await this.twitCastingUserControllerService.getOneAndSaveById(username)
+    return user
   }
 }
