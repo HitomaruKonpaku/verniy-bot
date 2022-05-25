@@ -208,10 +208,7 @@ export class TwitterSpaceTrackingService {
           const embed = TwitterSpaceUtils.getEmbed(space, trackItem)
           this.discordService.sendToChannel(
             trackItem.discordChannelId,
-            {
-              content,
-              embeds: [embed],
-            },
+            { content, embeds: [embed] },
           )
         } catch (error) {
           this.logger.error(`notifySpace#trackItem: ${error.message}`, { space, trackItem })

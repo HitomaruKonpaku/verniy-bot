@@ -1,4 +1,3 @@
-import { codeBlock } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { logger as baseLogger } from '../../../../logger'
 import { ConfigService } from '../../../config/services/config.service'
@@ -6,6 +5,7 @@ import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackTwitCastingLiveService } from '../../../track/services/track-twitcasting-live.service'
 import { TwitCastingMovie } from '../../models/twitcasting-movie.entity'
 import { TwitCastingUser } from '../../models/twitcasting-user.entity'
+import { TwitCastingUtils } from '../../utils/twitcasting.utils'
 import { TwitCastingApiPublicService } from '../api/twitcasting-api-public.service'
 import { TwitCastingMovieControllerService } from '../controller/twitcasting-movie-controller.service'
 import { TwitCastingUserControllerService } from '../controller/twitcasting-user-controller.service'
@@ -86,28 +86,28 @@ export class TwitCastingLiveTrackingService {
       }
       if (!oldMovie?.id) {
         this.logger.warn(`checkMovieById: Found new movie @${newMovie.user?.screenId || newMovie.userId} >> ${id}`, { movie: newMovie })
-        await this.broadcastNewMovie(newMovie)
+        await this.notifyMovie(newMovie)
       }
     } catch (error) {
       this.logger.error(`checkMovieById: ${error.message}`, { id })
     }
   }
 
-  private async broadcastNewMovie(movie: TwitCastingMovie) {
+  private async notifyMovie(movie: TwitCastingMovie) {
     try {
       const trackItems = await this.getTrackItems(movie)
       if (!trackItems.length) {
         return
       }
       trackItems.forEach((trackItem) => {
-        // TODO: Update message content/embed
-        const content = [
-          trackItem.discordMessage,
-          codeBlock('json', JSON.stringify(movie, null, 2)),
-        ]
+        const content = [trackItem.discordMessage]
           .filter((v) => v)
-          .join('\n')
-        this.discordService.sendToChannel(trackItem.discordChannelId, { content })
+          .join('\n') || null
+        const embed = TwitCastingUtils.getEmbed(movie)
+        this.discordService.sendToChannel(
+          trackItem.discordChannelId,
+          { content, embeds: [embed] },
+        )
       })
     } catch (error) {
       this.logger.error(`broadcastNewMovie: ${error.message}`, { movie })
