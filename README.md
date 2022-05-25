@@ -1,12 +1,19 @@
 # verniy-bot
 
-> Discord bot with Twitter integration
+> Discord tracking bot for Twitter/TwitCasting...
+
+## Invite
+
+[![discord](https://img.shields.io/badge/invite-verniy--bot-brightgreen?style=for-the-badge&logo=discord&color=5865F2)](https://discord.com/oauth2/authorize?client_id=422330233035948032&permissions=0&scope=bot%20applications.commands)
 
 ## Requirements
 
 - [Node.js](https://nodejs.org) (>=14)
 - [Discord Bot Token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
-- [Twitter API v1 access](https://developer.twitter.com/en/docs/twitter-api/v1)
+- [Twitter API v2 token](https://developer.twitter.com/en/docs/twitter-api)
+- ~~[Twitter API v1 token](https://developer.twitter.com/en/docs/twitter-api/v1)~~
+- [TwitCasting API token](https://apiv2-doc.twitcasting.tv)
+- [Twitch API token](https://dev.twitch.tv/docs/api)
 
 ## Getting Started
 
