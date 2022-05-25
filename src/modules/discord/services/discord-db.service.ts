@@ -6,10 +6,10 @@ import {
   User,
 } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
-import { DiscordChannelService } from './discord-channel.service'
-import { DiscordGuildService } from './discord-guild.service'
-import { DiscordMessageService } from './discord-message.service'
-import { DiscordUserService } from './discord-user.service'
+import { DiscordChannelService } from './data/discord-channel.service'
+import { DiscordGuildService } from './data/discord-guild.service'
+import { DiscordMessageService } from './data/discord-message.service'
+import { DiscordUserService } from './data/discord-user.service'
 
 @Injectable()
 export class DiscordDbService {
@@ -28,7 +28,7 @@ export class DiscordDbService {
 
   public async saveUser(user: User) {
     try {
-      await this.discordUserService.update({
+      await this.discordUserService.save({
         id: user.id,
         isActive: true,
         createdAt: user.createdTimestamp,
@@ -43,7 +43,7 @@ export class DiscordDbService {
 
   public async saveGuild(guild: Guild) {
     try {
-      await this.discordGuildService.update({
+      await this.discordGuildService.save({
         id: guild.id,
         isActive: true,
         createdAt: guild.createdTimestamp,
@@ -63,7 +63,7 @@ export class DiscordDbService {
 
   public async saveTextChannel(channel: TextChannel) {
     try {
-      await this.discordChannelService.update({
+      await this.discordChannelService.save({
         id: channel.id,
         isActive: true,
         createdAt: channel.createdTimestamp,
@@ -77,7 +77,7 @@ export class DiscordDbService {
 
   public async saveMessage(message: Message) {
     try {
-      await this.discordMessageService.update({
+      await this.discordMessageService.save({
         id: message.id,
         isActive: true,
         createdAt: message.createdTimestamp,

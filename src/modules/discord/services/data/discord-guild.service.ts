@@ -1,16 +1,16 @@
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { DiscordGuild } from '../models/discord-guild.entity'
+import { BaseEntityService } from '../../../../shared/services/base-entity.service'
+import { DiscordGuild } from '../../models/discord-guild.entity'
 
-export class DiscordGuildService {
+@Injectable()
+export class DiscordGuildService extends BaseEntityService<DiscordGuild> {
   constructor(
     @InjectRepository(DiscordGuild)
     public readonly repository: Repository<DiscordGuild>,
-  ) { }
-
-  public async update(data: DiscordGuild): Promise<DiscordGuild> {
-    const record = await this.repository.save(data)
-    return record
+  ) {
+    super()
   }
 
   public async updateLeftAt(id: string) {

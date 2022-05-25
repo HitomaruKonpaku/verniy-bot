@@ -10,8 +10,8 @@ import {
 import { logger as baseLogger } from '../../../logger'
 import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'
+import { DiscordGuildService } from './data/discord-guild.service'
 import { DiscordDbService } from './discord-db.service'
-import { DiscordGuildService } from './discord-guild.service'
 
 @Injectable()
 export class DiscordClientService extends Client {
