@@ -6,7 +6,7 @@ import { logger as baseLogger } from '../../../logger'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
 import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'
 import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
-import { TwitterUserService } from '../../twitter/services/twitter-user.service'
+import { TwitterUserService } from '../../twitter/services/data/twitter-user.service'
 import { TwitterUtils } from '../../twitter/utils/twitter.utils'
 import { BaseCommand } from './base/base.command'
 

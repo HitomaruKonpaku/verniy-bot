@@ -7,9 +7,9 @@ import { logger as baseLogger } from '../../../logger'
 import { ArrayUtils } from '../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { TwitterSpace } from '../models/twitter-space.entity'
-import { TwitterApiService } from './twitter-api.service'
-import { TwitterSpaceService } from './twitter-space.service'
-import { TwitterUserService } from './twitter-user.service'
+import { TwitterApiService } from './api/twitter-api.service'
+import { TwitterSpaceService } from './data/twitter-space.service'
+import { TwitterUserService } from './data/twitter-user.service'
 
 @Injectable()
 export class TwitterCronService {

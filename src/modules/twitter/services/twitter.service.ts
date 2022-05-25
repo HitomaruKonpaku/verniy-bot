@@ -4,10 +4,10 @@ import { ConfigService } from '../../config/services/config.service'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
 import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'
 import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
+import { TwitterProfileTrackingService } from './tracking/twitter-profile-tracking.service'
+import { TwitterSpaceTrackingService } from './tracking/twitter-space-tracking.service'
+import { TwitterTweetTrackingService } from './tracking/twitter-tweet-tracking.service'
 import { TwitterCronService } from './twitter-cron.service'
-import { TwitterProfileTrackingService } from './twitter-profile-tracking.service'
-import { TwitterSpaceTrackingService } from './twitter-space-tracking.service'
-import { TwitterTweetTrackingService } from './twitter-tweet-tracking.service'
 
 @Injectable()
 export class TwitterService {

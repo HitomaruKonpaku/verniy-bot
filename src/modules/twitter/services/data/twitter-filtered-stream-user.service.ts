@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { TwitterFilteredStreamUser } from '../models/twitter-filtered-stream-user.entity'
+import { TwitterFilteredStreamUser } from '../../models/twitter-filtered-stream-user.entity'
 
 @Injectable()
 export class TwitterFilteredStreamUserService {
