@@ -2,8 +2,10 @@ import { bold, inlineCode, SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
-import { TwitCastingMovieService } from '../../twitcasting/services/twitcasting-movie.service'
-import { TwitCastingUserService } from '../../twitcasting/services/twitcasting-user.service'
+import { TwitCastingMovieControlService } from '../../twitcasting/services/control/twitcasting-movie-control.service'
+import { TwitCastingUserControlService } from '../../twitcasting/services/control/twitcasting-user-control.service'
+import { TwitCastingMovieService } from '../../twitcasting/services/data/twitcasting-movie.service'
+import { TwitCastingUserService } from '../../twitcasting/services/data/twitcasting-user.service'
 import { TwitterApiPublicService } from '../../twitter/services/twitter-api-public.service'
 import { TwitterApiService } from '../../twitter/services/twitter-api.service'
 import { TwitterSpaceService } from '../../twitter/services/twitter-space.service'
@@ -28,6 +30,10 @@ export class GetCommand extends BaseCommand {
     private readonly twitCastingUserService: TwitCastingUserService,
     @Inject(TwitCastingMovieService)
     private readonly twitCastingMovieService: TwitCastingMovieService,
+    @Inject(TwitCastingUserControlService)
+    private readonly twitCastingUserControlService: TwitCastingUserControlService,
+    @Inject(TwitCastingMovieControlService)
+    private readonly twitCastingMovieControlService: TwitCastingMovieControlService,
   ) {
     super()
   }
@@ -215,7 +221,7 @@ export class GetCommand extends BaseCommand {
     const id = interaction.options.getString('id', true)
     let user = await this.twitCastingUserService.getOneByIdOrScreenId(id)
     if (!user) {
-      user = await this.twitCastingUserService.getOneAndSaveById(id)
+      user = await this.twitCastingUserControlService.getOneAndSaveById(id)
     }
     await this.replyObject(interaction, user)
   }
@@ -224,7 +230,7 @@ export class GetCommand extends BaseCommand {
     const id = interaction.options.getString('id', true)
     let movie = await this.twitCastingMovieService.getOneById(id)
     if (!movie) {
-      movie = await this.twitCastingMovieService.getOneAndSaveById(id)
+      movie = await this.twitCastingMovieControlService.getOneAndSaveById(id)
     }
     await this.replyObject(interaction, movie)
   }
@@ -235,8 +241,8 @@ export class GetCommand extends BaseCommand {
       return
     }
     const id = interaction.options.getString('id', true)
-    await this.twitCastingUserService.getOneAndSaveById(id)
-    await this.twitCastingMovieService.fetchMoviesByUserIds(id)
+    await this.twitCastingUserControlService.getOneAndSaveById(id)
+    await this.twitCastingMovieControlService.getMoviesByUserIds(id)
     await interaction.editReply('✅')
   }
 }

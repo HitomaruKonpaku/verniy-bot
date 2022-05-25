@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { logger as baseLogger } from '../../../logger'
+import { TwitCastingLiveTrackingService } from './tracking/twitcasting-live-tracking.service'
 import { TwitCastingCronService } from './twitcasting-cron.service'
-import { TwitCastingLiveTrackingService } from './twitcasting-live-tracking.service'
 
 @Injectable()
 export class TwitCastingService {

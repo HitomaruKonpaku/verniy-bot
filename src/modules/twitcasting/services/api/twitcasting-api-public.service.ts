@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import axios from 'axios'
 import { randomUUID } from 'crypto'
-import { logger as baseLogger } from '../../../logger'
-import { twitCastingStreamServerLimiter } from '../twitcasting.limiter'
+import { logger as baseLogger } from '../../../../logger'
+import { twitCastingStreamServerLimiter } from '../../twitcasting.limiter'
 
 @Injectable()
 export class TwitCastingApiPublicService {

@@ -1,14 +1,15 @@
 import { codeBlock } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { logger as baseLogger } from '../../../logger'
-import { ConfigService } from '../../config/services/config.service'
-import { DiscordService } from '../../discord/services/discord.service'
-import { TrackTwitCastingLiveService } from '../../track/services/track-twitcasting-live.service'
-import { TwitCastingMovie } from '../models/twitcasting-movie.entity'
-import { TwitCastingUser } from '../models/twitcasting-user.entity'
-import { TwitCastingApiPublicService } from './twitcasting-api-public.service'
-import { TwitCastingMovieService } from './twitcasting-movie.service'
-import { TwitCastingUserService } from './twitcasting-user.service'
+import { logger as baseLogger } from '../../../../logger'
+import { ConfigService } from '../../../config/services/config.service'
+import { DiscordService } from '../../../discord/services/discord.service'
+import { TrackTwitCastingLiveService } from '../../../track/services/track-twitcasting-live.service'
+import { TwitCastingMovie } from '../../models/twitcasting-movie.entity'
+import { TwitCastingUser } from '../../models/twitcasting-user.entity'
+import { TwitCastingApiPublicService } from '../api/twitcasting-api-public.service'
+import { TwitCastingMovieControlService } from '../control/twitcasting-movie-control.service'
+import { TwitCastingUserControlService } from '../control/twitcasting-user-control.service'
+import { TwitCastingMovieService } from '../data/twitcasting-movie.service'
 
 @Injectable()
 export class TwitCastingLiveTrackingService {
@@ -19,10 +20,12 @@ export class TwitCastingLiveTrackingService {
     private readonly configService: ConfigService,
     @Inject(TrackTwitCastingLiveService)
     private readonly trackTwitCastingLiveService: TrackTwitCastingLiveService,
-    @Inject(TwitCastingUserService)
-    private readonly twitCastingUserService: TwitCastingUserService,
     @Inject(TwitCastingMovieService)
     private readonly twitCastingMovieService: TwitCastingMovieService,
+    @Inject(TwitCastingUserControlService)
+    private readonly twitCastingUserControlService: TwitCastingUserControlService,
+    @Inject(TwitCastingMovieControlService)
+    private readonly twitCastingMovieControlService: TwitCastingMovieControlService,
     @Inject(TwitCastingApiPublicService)
     private readonly twitCastingApiPublicService: TwitCastingApiPublicService,
     @Inject(forwardRef(() => DiscordService))
@@ -41,7 +44,8 @@ export class TwitCastingLiveTrackingService {
       if (!userIds.length) {
         return
       }
-      await Promise.allSettled(userIds.map((v) => this.twitCastingUserService.getOneAndSaveById(v)))
+      // eslint-disable-next-line max-len
+      await Promise.allSettled(userIds.map((v) => this.twitCastingUserControlService.getOneAndSaveById(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)
     }
@@ -76,7 +80,7 @@ export class TwitCastingLiveTrackingService {
   private async checkMovieById(id: string) {
     try {
       const oldMovie = await this.twitCastingMovieService.getOneById(id)
-      const newMovie = await this.twitCastingMovieService.getOneAndSaveById(id)
+      const newMovie = await this.twitCastingMovieControlService.getOneAndSaveById(id)
       if (oldMovie?.isLive === newMovie?.isLive) {
         return
       }
