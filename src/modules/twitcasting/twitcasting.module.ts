@@ -42,6 +42,8 @@ import { TwitCastingService } from './services/twitcasting.service'
     TwitCastingApiPublicService,
     TwitCastingUserService,
     TwitCastingMovieService,
+    TwitCastingUserControlService,
+    TwitCastingMovieControlService,
   ],
 })
 export class TwitCastingModule { }
