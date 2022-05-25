@@ -197,11 +197,14 @@ export class TwitterSpaceTrackingService {
       }
       trackItems.forEach((trackItem) => {
         try {
+          const content = space.state !== 'ended'
+            ? trackItem.discordMessage
+            : null
           const embed = TwitterSpaceUtils.getEmbed(space, trackItem)
           this.discordService.sendToChannel(
             trackItem.discordChannelId,
             {
-              content: trackItem.discordMessage,
+              content,
               embeds: [embed],
             },
           )
