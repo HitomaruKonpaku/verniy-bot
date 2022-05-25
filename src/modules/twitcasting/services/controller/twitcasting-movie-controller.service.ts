@@ -3,24 +3,24 @@ import { logger as baseLogger } from '../../../../logger'
 import { TwitCastingMovie } from '../../models/twitcasting-movie.entity'
 import { TwitCastingApiService } from '../api/twitcasting-api.service'
 import { TwitCastingMovieService } from '../data/twitcasting-movie.service'
-import { TwitCastingUserControlService } from './twitcasting-user-control.service'
+import { TwitCastingUserControllerService } from './twitcasting-user-controller.service'
 
 @Injectable()
-export class TwitCastingMovieControlService {
-  private readonly logger = baseLogger.child({ context: TwitCastingMovieControlService.name })
+export class TwitCastingMovieControllerService {
+  private readonly logger = baseLogger.child({ context: TwitCastingMovieControllerService.name })
 
   constructor(
     @Inject(TwitCastingMovieService)
     private readonly twitCastingMovieService: TwitCastingMovieService,
-    @Inject(TwitCastingUserControlService)
-    private readonly twitCastingUserControlService: TwitCastingUserControlService,
+    @Inject(TwitCastingUserControllerService)
+    private readonly twitCastingUserControllerService: TwitCastingUserControllerService,
     @Inject(TwitCastingApiService)
     private readonly twitCastingApiService: TwitCastingApiService,
   ) { }
 
   public async getOneAndSaveById(id: string) {
     const response = await this.twitCastingApiService.getMovieById(id)
-    const user = await this.twitCastingUserControlService.save(response.broadcaster)
+    const user = await this.twitCastingUserControllerService.save(response.broadcaster)
     const movie = await this.update(response.movie)
     movie.user = user
     return movie

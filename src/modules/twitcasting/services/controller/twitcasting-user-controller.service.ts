@@ -5,8 +5,8 @@ import { TwitCastingApiService } from '../api/twitcasting-api.service'
 import { TwitCastingUserService } from '../data/twitcasting-user.service'
 
 @Injectable()
-export class TwitCastingUserControlService {
-  private readonly logger = baseLogger.child({ context: TwitCastingUserControlService.name })
+export class TwitCastingUserControllerService {
+  private readonly logger = baseLogger.child({ context: TwitCastingUserControllerService.name })
 
   constructor(
     @Inject(TwitCastingUserService)

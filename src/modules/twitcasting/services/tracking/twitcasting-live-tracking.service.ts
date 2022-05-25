@@ -7,8 +7,8 @@ import { TrackTwitCastingLiveService } from '../../../track/services/track-twitc
 import { TwitCastingMovie } from '../../models/twitcasting-movie.entity'
 import { TwitCastingUser } from '../../models/twitcasting-user.entity'
 import { TwitCastingApiPublicService } from '../api/twitcasting-api-public.service'
-import { TwitCastingMovieControlService } from '../control/twitcasting-movie-control.service'
-import { TwitCastingUserControlService } from '../control/twitcasting-user-control.service'
+import { TwitCastingMovieControllerService } from '../controller/twitcasting-movie-controller.service'
+import { TwitCastingUserControllerService } from '../controller/twitcasting-user-controller.service'
 import { TwitCastingMovieService } from '../data/twitcasting-movie.service'
 
 @Injectable()
@@ -22,10 +22,10 @@ export class TwitCastingLiveTrackingService {
     private readonly trackTwitCastingLiveService: TrackTwitCastingLiveService,
     @Inject(TwitCastingMovieService)
     private readonly twitCastingMovieService: TwitCastingMovieService,
-    @Inject(TwitCastingUserControlService)
-    private readonly twitCastingUserControlService: TwitCastingUserControlService,
-    @Inject(TwitCastingMovieControlService)
-    private readonly twitCastingMovieControlService: TwitCastingMovieControlService,
+    @Inject(TwitCastingUserControllerService)
+    private readonly twitCastingUserControllerService: TwitCastingUserControllerService,
+    @Inject(TwitCastingMovieControllerService)
+    private readonly twitCastingMovieControllerService: TwitCastingMovieControllerService,
     @Inject(TwitCastingApiPublicService)
     private readonly twitCastingApiPublicService: TwitCastingApiPublicService,
     @Inject(forwardRef(() => DiscordService))
@@ -45,7 +45,7 @@ export class TwitCastingLiveTrackingService {
         return
       }
       // eslint-disable-next-line max-len
-      await Promise.allSettled(userIds.map((v) => this.twitCastingUserControlService.getOneAndSaveById(v)))
+      await Promise.allSettled(userIds.map((v) => this.twitCastingUserControllerService.getOneAndSaveById(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)
     }
@@ -80,7 +80,7 @@ export class TwitCastingLiveTrackingService {
   private async checkMovieById(id: string) {
     try {
       const oldMovie = await this.twitCastingMovieService.getOneById(id)
-      const newMovie = await this.twitCastingMovieControlService.getOneAndSaveById(id)
+      const newMovie = await this.twitCastingMovieControllerService.getOneAndSaveById(id)
       if (oldMovie?.isLive === newMovie?.isLive) {
         return
       }
