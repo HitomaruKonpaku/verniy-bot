@@ -10,6 +10,7 @@ import { TwitterRuleUtils } from '../../utils/twitter-rule.utils'
 import { TwitterUtils } from '../../utils/twitter.utils'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterClientService } from '../api/twitter-client.service'
+import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterFilteredStreamUserService } from '../data/twitter-filtered-stream-user.service'
 import { TwitterUserService } from '../data/twitter-user.service'
 
@@ -28,6 +29,8 @@ export class TwitterTweetTrackingService {
     private readonly twitterFilteredStreamUserService: TwitterFilteredStreamUserService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
+    @Inject(TwitterUserControllerService)
+    private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TrackTwitterTweetService)
     private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(TwitterApiService)
@@ -102,7 +105,7 @@ export class TwitterTweetTrackingService {
         const missingIds = userIds.filter((id) => !users.some((user) => user.id_str === id))
         this.logger.warn('initUsers: Failed to get some users by ids', { idCount: missingIds, ids: missingIds })
       }
-      await Promise.allSettled(users.map((v) => this.twitterUserService.updateByUserObject(v)))
+      await Promise.allSettled(users.map((v) => this.twitterUserControllerService.saveUser(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)
     }

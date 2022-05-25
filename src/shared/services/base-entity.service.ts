@@ -11,6 +11,21 @@ export abstract class BaseEntityService<T> {
     return result
   }
 
+  public async getManyByIds(ids: string[]) {
+    const result = await this.repository
+      .createQueryBuilder()
+      .andWhere('id IN (:...ids)', { ids })
+      .getMany()
+    return result
+  }
+
+  public async getAll() {
+    const result = await this.repository
+      .createQueryBuilder()
+      .getMany()
+    return result
+  }
+
   public async save(data: T): Promise<T> {
     const result = await this.repository.save(data)
     return result

@@ -8,6 +8,7 @@ import { ArrayUtils } from '../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../constants/twitter.constant'
 import { TwitterSpace } from '../models/twitter-space.entity'
 import { TwitterApiService } from './api/twitter-api.service'
+import { TwitterUserControllerService } from './controller/twitter-user-controller.service'
 import { TwitterSpaceService } from './data/twitter-space.service'
 import { TwitterUserService } from './data/twitter-user.service'
 
@@ -23,6 +24,8 @@ export class TwitterCronService {
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterSpaceService)
     private readonly twitterSpaceService: TwitterSpaceService,
+    @Inject(TwitterUserControllerService)
+    private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
   ) {
@@ -50,7 +53,7 @@ export class TwitterCronService {
           const inactiveIdSet = new Set(ids)
           users.forEach((user) => {
             inactiveIdSet.delete(user.id_str)
-            this.twitterUserService.updateByUserObject(user)
+            this.twitterUserControllerService.saveUser(user)
               .catch((error) => this.logger.error(`checkUsers#updateByUserObject: ${error.message}`, { id: user.id_str, user }))
           })
           inactiveIdSet.forEach((id) => {

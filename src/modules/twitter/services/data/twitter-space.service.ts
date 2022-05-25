@@ -1,18 +1,19 @@
 import { Inject } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { SpaceV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
+import { BaseEntityService } from '../../../../shared/services/base-entity.service'
 import { TwitterSpace } from '../../models/twitter-space.entity'
-import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterUserService } from './twitter-user.service'
 
-export class TwitterSpaceService {
+export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
   constructor(
     @InjectRepository(TwitterSpace)
     public readonly repository: Repository<TwitterSpace>,
     @Inject(TwitterUserService)
     public readonly twitterUserService: TwitterUserService,
-  ) { }
+  ) {
+    super()
+  }
 
   public async getOneById(
     id: string,
@@ -79,16 +80,6 @@ export class TwitterSpaceService {
       .addOrderBy('created_at')
       .getMany()
     return spaces
-  }
-
-  public async update(data: TwitterSpace): Promise<TwitterSpace> {
-    const space = await this.repository.save(data)
-    return space
-  }
-
-  public async updateBySpaceObject(data: SpaceV2) {
-    const space = await this.update(TwitterEntityUtils.buildSpace(data))
-    return space
   }
 
   public async updateIsActive(id: string, isActive: boolean) {

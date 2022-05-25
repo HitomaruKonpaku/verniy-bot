@@ -8,9 +8,10 @@ import { TwitCastingMovieService } from '../../twitcasting/services/data/twitcas
 import { TwitCastingUserService } from '../../twitcasting/services/data/twitcasting-user.service'
 import { TwitterApiPublicService } from '../../twitter/services/api/twitter-api-public.service'
 import { TwitterApiService } from '../../twitter/services/api/twitter-api.service'
+import { TwitterSpaceControllerService } from '../../twitter/services/controller/twitter-space-controller.service'
+import { TwitterUserControllerService } from '../../twitter/services/controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../../twitter/services/data/twitter-space.service'
 import { TwitterUserService } from '../../twitter/services/data/twitter-user.service'
-import { TwitterEntityUtils } from '../../twitter/utils/twitter-entity.utils'
 import { BaseCommand } from './base/base.command'
 
 @Injectable()
@@ -26,6 +27,10 @@ export class GetCommand extends BaseCommand {
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterSpaceService)
     private readonly twitterSpaceService: TwitterSpaceService,
+    @Inject(TwitterUserControllerService)
+    private readonly twitterUserControllerService: TwitterUserControllerService,
+    @Inject(TwitterSpaceControllerService)
+    private readonly twitterSpaceControllerService: TwitterSpaceControllerService,
     @Inject(TwitCastingUserService)
     private readonly twitCastingUserService: TwitCastingUserService,
     @Inject(TwitCastingMovieService)
@@ -153,7 +158,7 @@ export class GetCommand extends BaseCommand {
       const user = id
         ? await this.twitterApiService.getUserById(id)
         : await this.twitterApiService.getUserByUsername(username)
-      await this.twitterUserService.updateByUserObject(user)
+      await this.twitterUserControllerService.saveUser(user)
       rawUser = await this.twitterUserService.getRawOneById(user.id_str)
     }
     await this.replyObject(interaction, rawUser)
@@ -164,31 +169,7 @@ export class GetCommand extends BaseCommand {
     const refresh = interaction.options.getBoolean('refresh')
     let rawSpace = await this.twitterSpaceService.getRawOneById(id)
     if (!rawSpace || refresh) {
-      const result = await this.twitterApiService.getSpaceById(id)
-      const space = result?.data
-      if (!space) {
-        await interaction.editReply(result.errors.map((v) => v.detail).join(' '))
-        return
-      }
-      const twitterSpace = TwitterEntityUtils.buildSpace(space)
-      if (twitterSpace.state === 'live') {
-        try {
-          twitterSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id)
-          twitterSpace.playlistActive = true
-        } catch (error) {
-          this.logger.error(`executeTwitterSpaceCommand#getSpacePlaylistUrl: $${error.message}`, { id })
-        }
-      }
-      await this.twitterSpaceService.update(twitterSpace)
-      try {
-        const twitterUser = await this.twitterUserService.getOneById(twitterSpace.creatorId)
-        if (!twitterUser) {
-          const user = await this.twitterApiService.getUserById(twitterSpace.creatorId)
-          await this.twitterUserService.updateByUserObject(user)
-        }
-      } catch (error) {
-        this.logger.error(`executeTwitterSpaceCommand#updateUser: $${error.message}`, { id, userId: twitterSpace.creatorId })
-      }
+      await this.twitterSpaceControllerService.getOneById(id, refresh)
       rawSpace = await this.twitterSpaceService.getRawOneById(id)
     }
     await this.replyObject(interaction, rawSpace)

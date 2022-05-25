@@ -11,6 +11,7 @@ import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { TwitterUser } from '../../models/twitter-user.entity'
 import { TwitterProfileUtils } from '../../utils/twitter-profile.utils'
 import { TwitterApiService } from '../api/twitter-api.service'
+import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterUserService } from '../data/twitter-user.service'
 
 @Injectable()
@@ -24,6 +25,8 @@ export class TwitterProfileTrackingService {
     private readonly trackTwitterProfileService: TrackTwitterProfileService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
+    @Inject(TwitterUserControllerService)
+    private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
     @Inject(forwardRef(() => DiscordService))
@@ -79,7 +82,7 @@ export class TwitterProfileTrackingService {
   private async checkActiveUserProfile(user: UserV1) {
     try {
       const oldUser = await this.twitterUserService.getOneById(user.id_str)
-      const newUser = await this.twitterUserService.updateByUserObject(user)
+      const newUser = await this.twitterUserControllerService.saveUser(user)
       await this.checkUserProfile(newUser, oldUser)
     } catch (error) {
       this.logger.error(`checkActiveUserProfile: ${error.message}`, { id: user.id_str })

@@ -12,6 +12,8 @@ import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterSpaceUtils } from '../../utils/twitter-space.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
+import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
+import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 import { TwitterUserService } from '../data/twitter-user.service'
 import { TwitterTokenService } from '../twitter-token.service'
@@ -32,6 +34,10 @@ export class TwitterSpaceTrackingService {
     private readonly twitterSpaceService: TwitterSpaceService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
+    @Inject(TwitterSpaceControllerService)
+    private readonly twitterSpaceControllerService: TwitterSpaceControllerService,
+    @Inject(TwitterUserControllerService)
+    private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterApiPublicService)
@@ -90,7 +96,7 @@ export class TwitterSpaceTrackingService {
       const result = await this.twitterApiService.getSpacesByIds(ids)
       const spaces = result.data || []
       const users = result.includes?.users || []
-      await Promise.allSettled(users.map((v) => this.twitterUserService.updateByUserObjectV2(v)))
+      await Promise.allSettled(users.map((v) => this.twitterUserControllerService.saveUserV2(v)))
       await Promise.allSettled(spaces.map((v) => this.updateSpace(v)))
     } catch (error) {
       this.logger.error(`getSpacesByIds: ${error.message}`)
@@ -159,7 +165,7 @@ export class TwitterSpaceTrackingService {
           this.logger.error(`updateSpace#getSpacePlaylistUrl: ${error.message}`, { space })
         }
       }
-      await this.twitterSpaceService.update(newSpace)
+      await this.twitterSpaceService.save(newSpace)
       await this.updateSpaceCreator(newSpace)
       if (newSpace.state === oldSpace?.state) {
         return
@@ -178,8 +184,7 @@ export class TwitterSpaceTrackingService {
       if (await this.twitterUserService.getOneById(space.creatorId)) {
         return
       }
-      const user = await this.twitterApiService.getUserById(space.creatorId)
-      await this.twitterUserService.updateByUserObject(user)
+      await this.twitterUserControllerService.getOneById(space.creatorId)
     } catch (error) {
       this.logger.error(`updateSpaceCreator: ${error.message}`, { space })
     }

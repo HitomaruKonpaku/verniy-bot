@@ -9,6 +9,8 @@ import { TwitterUser } from './models/twitter-user.entity'
 import { TwitterApiPublicService } from './services/api/twitter-api-public.service'
 import { TwitterApiService } from './services/api/twitter-api.service'
 import { TwitterClientService } from './services/api/twitter-client.service'
+import { TwitterSpaceControllerService } from './services/controller/twitter-space-controller.service'
+import { TwitterUserControllerService } from './services/controller/twitter-user-controller.service'
 import { TwitterFilteredStreamUserService } from './services/data/twitter-filtered-stream-user.service'
 import { TwitterSpaceService } from './services/data/twitter-space.service'
 import { TwitterUserService } from './services/data/twitter-user.service'
@@ -39,6 +41,8 @@ import { TwitterService } from './services/twitter.service'
     TwitterFilteredStreamUserService,
     TwitterUserService,
     TwitterSpaceService,
+    TwitterUserControllerService,
+    TwitterSpaceControllerService,
     TwitterTweetTrackingService,
     TwitterProfileTrackingService,
     TwitterSpaceTrackingService,
@@ -50,6 +54,8 @@ import { TwitterService } from './services/twitter.service'
     TwitterApiPublicService,
     TwitterUserService,
     TwitterSpaceService,
+    TwitterUserControllerService,
+    TwitterSpaceControllerService,
   ],
 })
 export class TwitterModule { }

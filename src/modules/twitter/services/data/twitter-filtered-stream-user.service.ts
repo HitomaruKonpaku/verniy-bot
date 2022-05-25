@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import { BaseEntityService } from '../../../../shared/services/base-entity.service'
 import { TwitterFilteredStreamUser } from '../../models/twitter-filtered-stream-user.entity'
 
 @Injectable()
-export class TwitterFilteredStreamUserService {
+export class TwitterFilteredStreamUserService extends BaseEntityService<TwitterFilteredStreamUser> {
   constructor(
     @InjectRepository(TwitterFilteredStreamUser)
     public readonly repository: Repository<TwitterFilteredStreamUser>,
-  ) { }
+  ) {
+    super()
+  }
 
   public async getIdsForInitUsers(): Promise<string[]> {
     const records = await this.repository
@@ -34,7 +37,7 @@ export class TwitterFilteredStreamUserService {
     return users
   }
 
-  public async save(id: string) {
+  public async saveId(id: string) {
     await this.repository.save({ id, isActive: true })
   }
 }

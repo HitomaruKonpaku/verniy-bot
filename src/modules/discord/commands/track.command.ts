@@ -6,8 +6,7 @@ import { logger as baseLogger } from '../../../logger'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
 import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'
 import { TrackTwitterTweetService } from '../../track/services/track-twitter-tweet.service'
-import { TwitterApiService } from '../../twitter/services/api/twitter-api.service'
-import { TwitterUserService } from '../../twitter/services/data/twitter-user.service'
+import { TwitterUserControllerService } from '../../twitter/services/controller/twitter-user-controller.service'
 import { TwitterUtils } from '../../twitter/utils/twitter.utils'
 import { BaseCommand } from './base/base.command'
 
@@ -16,10 +15,8 @@ export class TrackCommand extends BaseCommand {
   private readonly logger = baseLogger.child({ context: TrackCommand.name })
 
   constructor(
-    @Inject(TwitterApiService)
-    private readonly twitterApiService: TwitterApiService,
-    @Inject(TwitterUserService)
-    private readonly twitterUserService: TwitterUserService,
+    @Inject(TwitterUserControllerService)
+    private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TrackTwitterTweetService)
     private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(TrackTwitterProfileService)
@@ -188,11 +185,7 @@ export class TrackCommand extends BaseCommand {
   }
 
   private async getTwitterUser(username: string) {
-    let twitterUser = await this.twitterUserService.getOneByUsername(username)
-    if (!twitterUser) {
-      const user = await this.twitterApiService.getUserByUsername(username)
-      twitterUser = await this.twitterUserService.updateByUserObject(user)
-    }
+    const twitterUser = await this.twitterUserControllerService.getOneByUsername(username)
     return twitterUser
   }
 }

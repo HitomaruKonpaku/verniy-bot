@@ -1,26 +1,14 @@
 import { InjectRepository } from '@nestjs/typeorm'
-import { UserV1, UserV2 } from 'twitter-api-v2'
 import { Repository } from 'typeorm'
+import { BaseEntityService } from '../../../../shared/services/base-entity.service'
 import { TwitterUser } from '../../models/twitter-user.entity'
-import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 
-export class TwitterUserService {
+export class TwitterUserService extends BaseEntityService<TwitterUser> {
   constructor(
     @InjectRepository(TwitterUser)
     public readonly repository: Repository<TwitterUser>,
-  ) { }
-
-  public async getOneById(id: string) {
-    const user = await this.repository.findOne({ where: { id } })
-    return user
-  }
-
-  public async getManyByIds(ids: string[]) {
-    const users = await this.repository
-      .createQueryBuilder()
-      .andWhere('id IN (:...ids)', { ids })
-      .getMany()
-    return users
+  ) {
+    super()
   }
 
   public async getRawOneById(id: string) {
@@ -51,11 +39,6 @@ export class TwitterUserService {
     return user
   }
 
-  public async getAll() {
-    const users = await this.repository.find()
-    return users
-  }
-
   public async getManyForCheck() {
     const users = await this.repository
       .createQueryBuilder('tu')
@@ -67,21 +50,6 @@ export class TwitterUserService {
       .andWhere('ttp.twitter_user_id ISNULL')
       .getMany()
     return users
-  }
-
-  public async update(data: TwitterUser): Promise<TwitterUser> {
-    const user = await this.repository.save(data)
-    return user
-  }
-
-  public async updateByUserObject(data: UserV1) {
-    const user = await this.update(TwitterEntityUtils.buildUser(data))
-    return user
-  }
-
-  public async updateByUserObjectV2(data: UserV2) {
-    const user = await this.update(TwitterEntityUtils.buildUserV2(data))
-    return user
   }
 
   public async updateIsActive(id: string, isActive: boolean) {
