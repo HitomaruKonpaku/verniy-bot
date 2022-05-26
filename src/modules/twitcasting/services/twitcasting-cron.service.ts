@@ -26,7 +26,7 @@ export class TwitCastingCronService {
   ) {
     const cronTimeZone = CRON_TIME_ZONE
     this.userCheckCronJob = new CronJob('0 0 */3 * * *', () => this.checkUsers(), null, false, cronTimeZone)
-    this.movieCheckCronJob = new CronJob('* * * * *', () => this.checkMovies(), null, false, cronTimeZone)
+    this.movieCheckCronJob = new CronJob('0 */5 * * * *', () => this.checkMovies(), null, false, cronTimeZone)
   }
 
   public async start() {
