@@ -46,14 +46,14 @@ export class UntrackCommand extends BaseCommand {
         .setRequired(true)))
     .addSubcommand((subcommand) => subcommand
       .setName('profile')
-      .setDescription('Untrack user Twitter profile')
+      .setDescription('Untrack Twitter user profile')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username')
         .setRequired(true)))
     .addSubcommand((subcommand) => subcommand
       .setName('space')
-      .setDescription('Untrack user Twitter Spaces')
+      .setDescription('Untrack Twitter Spaces from user')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username')

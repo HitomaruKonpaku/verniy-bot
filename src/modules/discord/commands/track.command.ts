@@ -55,7 +55,7 @@ export class TrackCommand extends BaseCommand {
         .setDescription('Allow retweet?')))
     .addSubcommand((subcommand) => subcommand
       .setName('profile')
-      .setDescription('Track user Twitter profile')
+      .setDescription('Track Twitter user profile')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username')
@@ -65,7 +65,7 @@ export class TrackCommand extends BaseCommand {
         .setDescription('Discord message')))
     .addSubcommand((subcommand) => subcommand
       .setName('space')
-      .setDescription('Track user Twitter Spaces')
+      .setDescription('Track Twitter Spaces from user')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username')
