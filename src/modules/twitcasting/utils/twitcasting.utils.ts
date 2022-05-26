@@ -67,8 +67,8 @@ export class TwitCastingUtils {
       return null
     }
     return [
-      time(Math.floor(ms / 1000)),
-      time(Math.floor(ms / 1000), 'R'),
+      time(ms),
+      time(ms, 'R'),
     ].join('\n')
   }
 }
