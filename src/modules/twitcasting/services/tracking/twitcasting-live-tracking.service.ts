@@ -59,7 +59,7 @@ export class TwitCastingLiveTrackingService {
       this.logger.error(`checkLive: ${error.message}`)
     }
 
-    const { interval } = this.configService.twitcasting
+    const { interval } = this.configService.twitcasting.live
     setTimeout(() => this.checkLive(), interval)
   }
 

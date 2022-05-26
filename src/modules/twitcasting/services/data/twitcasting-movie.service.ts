@@ -12,4 +12,12 @@ export class TwitCastingMovieService extends BaseEntityService<TwitCastingMovie>
   ) {
     super()
   }
+
+  public async getManyLive() {
+    const result = await this.repository
+      .createQueryBuilder()
+      .andWhere('is_live = TRUE')
+      .getMany()
+    return result
+  }
 }

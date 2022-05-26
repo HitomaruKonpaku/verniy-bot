@@ -48,7 +48,13 @@ export class ConfigService {
   public get twitcasting() {
     const config = {
       active: false,
-      interval: 60000,
+      live: {
+        active: false,
+        interval: 60000,
+      },
+      cron: {
+        active: false,
+      },
     }
     Object.assign(config, this.config.twitcasting || {})
     return config
