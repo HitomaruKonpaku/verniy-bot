@@ -63,13 +63,8 @@ export class TwitterSpaceUtils {
     ]
     if (space.state === 'scheduled') {
       fields.push(
-        // {
-        //   name: 'Scheduled at',
-        //   value: TwitterSpaceUtils.getEmbedTimestamp(space.scheduledStart),
-        //   inline: true,
-        // },
         {
-          name: 'Scheduled at',
+          name: 'Scheduled start',
           value: TwitterSpaceUtils.getEmbedLocalTime(space.scheduledStart),
           inline: true,
         },
@@ -77,11 +72,6 @@ export class TwitterSpaceUtils {
     }
     if (['live', 'ended'].includes(space.state)) {
       fields.push(
-        // {
-        //   name: 'Started at',
-        //   value: TwitterSpaceUtils.getEmbedTimestamp(space.startedAt),
-        //   inline: true,
-        // },
         {
           name: 'Started at',
           value: TwitterSpaceUtils.getEmbedLocalTime(space.startedAt),
@@ -91,11 +81,6 @@ export class TwitterSpaceUtils {
     }
     if (['ended'].includes(space.state)) {
       fields.push(
-        // {
-        //   name: 'Ended at',
-        //   value: TwitterSpaceUtils.getEmbedTimestamp(space.endedAt),
-        //   inline: true,
-        // },
         {
           name: 'Ended at',
           value: TwitterSpaceUtils.getEmbedLocalTime(space.endedAt),
