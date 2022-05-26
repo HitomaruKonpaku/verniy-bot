@@ -1,5 +1,5 @@
 twitter:
-  active: true
+  active: false
   tweet:
     active: true
     ruleLimit: 5
@@ -14,5 +14,9 @@ twitter:
     active: true
 
 twitcasting:
-  active: true
-  interval: 60000
+  active: false
+  live:
+    active: true
+    interval: 60000
+  cron:
+    active: true
