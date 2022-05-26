@@ -1,7 +1,7 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
+import { bold, inlineCode, SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { PermissionFlagsBits } from 'discord-api-types/v10'
-import { CommandInteraction, TextChannel } from 'discord.js'
+import { CommandInteraction, TextChannel, User } from 'discord.js'
 import { logger as baseLogger } from '../../../logger'
 import { TrackTwitCastingLiveService } from '../../track/services/track-twitcasting-live.service'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
@@ -10,6 +10,7 @@ import { TrackTwitterTweetService } from '../../track/services/track-twitter-twe
 import { TwitCastingUserControllerService } from '../../twitcasting/services/controller/twitcasting-user-controller.service'
 import { TwitCastingUtils } from '../../twitcasting/utils/twitcasting.utils'
 import { TwitterUserControllerService } from '../../twitter/services/controller/twitter-user-controller.service'
+import { TwitterFilteredStreamUserService } from '../../twitter/services/data/twitter-filtered-stream-user.service'
 import { TwitterUtils } from '../../twitter/utils/twitter.utils'
 import { BaseCommand } from './base/base.command'
 
@@ -18,6 +19,8 @@ export class TrackCommand extends BaseCommand {
   private readonly logger = baseLogger.child({ context: TrackCommand.name })
 
   constructor(
+    @Inject(TwitterFilteredStreamUserService)
+    private readonly twitterFilteredStreamUserService: TwitterFilteredStreamUserService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitCastingUserControllerService)
@@ -127,6 +130,13 @@ export class TrackCommand extends BaseCommand {
     const allowRetweet = interaction.options.getBoolean('allow_retweet') ?? true
     try {
       const user = await this.getTwitterUser(username)
+      if (!await this.twitterFilteredStreamUserService.getOneById(user.id)) {
+        const owner = interaction.client.application.owner as User
+        const content = `> Due to Twitter API limitation, please contact ${bold(inlineCode(owner.tag))} to request to add this user to tracking list`
+        interaction.editReply(content)
+        this.logger.warn('<-- executeTweetCommand#ignore', { username, channelId })
+        return
+      }
       await this.trackTwitterTweetService.add(
         user.id,
         channelId,

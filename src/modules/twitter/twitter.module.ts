@@ -52,6 +52,7 @@ import { TwitterService } from './services/twitter.service'
     TwitterService,
     TwitterApiService,
     TwitterApiPublicService,
+    TwitterFilteredStreamUserService,
     TwitterUserService,
     TwitterSpaceService,
     TwitterUserControllerService,
