@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Inject, Injectable } from '@nestjs/common'
 import { CronJob } from 'cron'
 import { CRON_TIME_ZONE } from '../../../constants/cron.constant'
@@ -39,7 +40,6 @@ export class TwitCastingCronService {
     this.logger.info('--> checkUsers')
     try {
       const users = await this.twitCastingUserService.getManyActive()
-      // eslint-disable-next-line max-len
       await Promise.allSettled(users.map((v) => this.twitCastingUserControllerService.getOneAndSaveById(v.id)))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
@@ -51,10 +51,6 @@ export class TwitCastingCronService {
     this.logger.info('--> checkMovies')
     try {
       const movies = await this.twitCastingMovieService.getManyLive()
-      if (!movies.length) {
-        return
-      }
-      // eslint-disable-next-line max-len
       await Promise.allSettled(movies.map((v) => this.twitCastingMovieControllerService.getOneAndSaveById(v.id)))
     } catch (error) {
       this.logger.error(`checkMovies: ${error.message}`)
