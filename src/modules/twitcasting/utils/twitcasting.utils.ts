@@ -50,7 +50,7 @@ export class TwitCastingUtils {
     if (movie.createdAt) {
       embed.fields.push(
         {
-          name: 'Started at',
+          name: '▶️ Started at',
           value: this.getEmbedLocalTime(movie.createdAt),
           inline: true,
         },

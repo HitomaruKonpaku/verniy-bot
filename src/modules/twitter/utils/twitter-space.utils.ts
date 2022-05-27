@@ -64,7 +64,7 @@ export class TwitterSpaceUtils {
     if (space.state === 'scheduled') {
       fields.push(
         {
-          name: 'Scheduled start',
+          name: 'ℹ️ Scheduled start',
           value: TwitterSpaceUtils.getEmbedLocalTime(space.scheduledStart),
           inline: true,
         },
@@ -73,7 +73,7 @@ export class TwitterSpaceUtils {
     if (['live', 'ended'].includes(space.state)) {
       fields.push(
         {
-          name: 'Started at',
+          name: '▶️ Started at',
           value: TwitterSpaceUtils.getEmbedLocalTime(space.startedAt),
           inline: true,
         },
@@ -82,7 +82,7 @@ export class TwitterSpaceUtils {
     if (['ended'].includes(space.state)) {
       fields.push(
         {
-          name: 'Ended at',
+          name: '⏹️ Ended at',
           value: TwitterSpaceUtils.getEmbedLocalTime(space.endedAt),
           inline: true,
         },
