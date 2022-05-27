@@ -8,6 +8,8 @@ import { twitCastingUserByIdLimiter } from '../../twitcasting.limiter'
 export class TwitCastingApiService {
   private readonly logger = baseLogger.child({ context: TwitCastingApiService.name })
 
+  private readonly BASE_URL = 'https://apiv2.twitcasting.tv'
+
   private client: AxiosInstance
 
   constructor() {
@@ -101,7 +103,7 @@ export class TwitCastingApiService {
 
   private initClient() {
     this.client = axios.create({
-      baseURL: 'https://apiv2.twitcasting.tv',
+      baseURL: this.BASE_URL,
       headers: { authorization: (this.clientId && this.clientSecret ? `Basic ${Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64')}` : '') },
     })
   }

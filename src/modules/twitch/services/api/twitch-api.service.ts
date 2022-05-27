@@ -8,6 +8,9 @@ import { TwitchTokenService } from '../twitch-token.service'
 export class TwitchApiService {
   private readonly logger = baseLogger.child({ context: TwitchApiService.name })
 
+  private readonly BASE_URL = 'https://api.twitch.tv'
+  private readonly AUTH_URL = 'https://id.twitch.tv/oauth2/token'
+
   private client: AxiosInstance
 
   constructor(
@@ -34,8 +37,7 @@ export class TwitchApiService {
   }
 
   public async getAccessToken() {
-    const url = 'https://id.twitch.tv/oauth2/token'
-    const { data } = await axios.post(url, {
+    const { data } = await axios.post(this.AUTH_URL, {
       client_id: this.clientId,
       client_secret: this.clientSecret,
       grant_type: 'client_credentials',
@@ -54,7 +56,7 @@ export class TwitchApiService {
 
   private initClient() {
     this.client = axios.create({
-      baseURL: 'https://api.twitch.tv',
+      baseURL: this.BASE_URL,
       headers: { 'client-id': this.clientId },
     })
     this.client.interceptors.request.use((async (request) => {

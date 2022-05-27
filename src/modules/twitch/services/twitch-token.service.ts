@@ -22,7 +22,10 @@ export class TwitchTokenService {
         const data = await this.twitchApiService.getAccessToken()
         this.accessToken = data.access_token
         this.accessTokenExpireAt = Date.now() + (data.expires_in - 300) * 1000
-        this.logger.debug('<-- getAccessToken')
+        this.logger.debug('<-- getAccessToken', {
+          accessTokenExpireAt: new Date(this.accessTokenExpireAt).toISOString(),
+          accessTokenExpireAtTimestamp: this.accessTokenExpireAt,
+        })
       }
       return Promise.resolve(this.accessToken)
     })
