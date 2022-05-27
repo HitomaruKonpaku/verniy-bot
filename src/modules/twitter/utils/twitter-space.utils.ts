@@ -64,7 +64,7 @@ export class TwitterSpaceUtils {
     if (space.state === 'scheduled') {
       fields.push(
         {
-          name: 'ℹ️ Scheduled start',
+          name: '⏰ Scheduled start',
           value: TwitterSpaceUtils.getEmbedLocalTime(space.scheduledStart),
           inline: true,
         },
