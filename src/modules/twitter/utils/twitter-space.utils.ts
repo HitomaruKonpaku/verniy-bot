@@ -1,6 +1,7 @@
 import { codeBlock, inlineCode, time } from '@discordjs/builders'
 import { EmbedFieldData, MessageEmbedOptions } from 'discord.js'
 import { TrackTwitterSpace } from '../../track/models/track-twitter-space.entity'
+import { SpaceState } from '../enums/twitter-space.enum'
 import { TwitterSpace } from '../models/twitter-space.entity'
 import { TwitterUtils } from './twitter.utils'
 
@@ -33,10 +34,10 @@ export class TwitterSpaceUtils {
 
   public static getEmbedTitle(space: TwitterSpace, track: TrackTwitterSpace) {
     const displayCreator = inlineCode(space.creator?.username || space.creatorId)
-    if (space.state === 'scheduled') {
+    if (space.state === SpaceState.SCHEDULED) {
       return `${displayCreator} scheduled a Space`
     }
-    if (space.state === 'ended') {
+    if (space.state === SpaceState.ENDED) {
       return `${displayCreator} ended a Space`
     }
     if (space.creatorId !== track.twitterUserId) {
@@ -61,7 +62,7 @@ export class TwitterSpaceUtils {
         value: codeBlock(space.title),
       },
     ]
-    if (space.state === 'scheduled') {
+    if (space.state === SpaceState.SCHEDULED) {
       fields.push(
         {
           name: '⏰ Scheduled start',
@@ -70,7 +71,7 @@ export class TwitterSpaceUtils {
         },
       )
     }
-    if (['live', 'ended'].includes(space.state)) {
+    if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state)) {
       fields.push(
         {
           name: '▶️ Started at',
@@ -79,7 +80,7 @@ export class TwitterSpaceUtils {
         },
       )
     }
-    if (['ended'].includes(space.state)) {
+    if ([SpaceState.ENDED].includes(space.state)) {
       fields.push(
         {
           name: '⏹️ Ended at',
@@ -88,7 +89,7 @@ export class TwitterSpaceUtils {
         },
       )
     }
-    if (['live', 'ended'].includes(space.state)) {
+    if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state)) {
       fields.push(
         {
           name: 'Playlist url',

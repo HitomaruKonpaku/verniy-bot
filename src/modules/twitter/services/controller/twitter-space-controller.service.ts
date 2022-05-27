@@ -1,6 +1,7 @@
 import { Inject } from '@nestjs/common'
 import { SpaceV2 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../../logger'
+import { SpaceState } from '../../enums/twitter-space.enum'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -27,7 +28,7 @@ export class TwitterSpaceControllerService {
       const result = await this.twitterApiService.getSpaceById(id)
       const space = result.data
       twitterSpace = TwitterEntityUtils.buildSpace(space)
-      if (twitterSpace.state === 'live') {
+      if (twitterSpace.state === SpaceState.LIVE) {
         try {
           twitterSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id)
           twitterSpace.playlistActive = true

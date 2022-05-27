@@ -2,6 +2,7 @@ import { Inject } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/services/base-entity.service'
+import { SpaceState } from '../../enums/twitter-space.enum'
 import { TwitterSpace } from '../../models/twitter-space.entity'
 import { TwitterUserService } from './twitter-user.service'
 
@@ -54,7 +55,7 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
   }
 
   public async getLiveSpaceIds() {
-    const spaces = await this.repository.find({ where: { state: 'live' } })
+    const spaces = await this.repository.find({ where: { state: SpaceState.LIVE } })
     const ids = spaces.map((v) => v.id)
     return ids
   }

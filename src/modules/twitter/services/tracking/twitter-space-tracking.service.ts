@@ -6,6 +6,7 @@ import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackTwitterSpaceService } from '../../../track/services/track-twitter-space.service'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
+import { SpaceState } from '../../enums/twitter-space.enum'
 import { TwitterSpace } from '../../models/twitter-space.entity'
 import { twitterSpacesByFleetsAvatarContentLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
@@ -156,7 +157,7 @@ export class TwitterSpaceTrackingService {
     try {
       const newSpace = TwitterEntityUtils.buildSpace(space)
       const oldSpace = await this.twitterSpaceService.getOneById(space.id)
-      if (newSpace.state === 'live' && !oldSpace?.playlistUrl) {
+      if (newSpace.state === SpaceState.LIVE && !oldSpace?.playlistUrl) {
         // Try to get Space playlist url if not exist
         try {
           newSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(space.id)
@@ -202,7 +203,7 @@ export class TwitterSpaceTrackingService {
       }
       trackItems.forEach((trackItem) => {
         try {
-          const content = space.state !== 'ended'
+          const content = space.state !== SpaceState.ENDED
             ? trackItem.discordMessage
             : null
           const embed = TwitterSpaceUtils.getEmbed(space, trackItem)

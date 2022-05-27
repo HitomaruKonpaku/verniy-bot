@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm'
 import { DB_CURRENT_TIMESTAMP } from '../../database/constants/database.constant'
 import { BaseExternalEntity } from '../../database/models/base-external.entity'
+import { SpaceState } from '../enums/twitter-space.enum'
 import { TwitterUser } from './twitter-user.entity'
 
 @Entity('twitter_space')
@@ -11,8 +12,8 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'creator_id', type: 'text' })
   creatorId: string
 
-  @Column({ name: 'state', type: 'text', default: 'live' })
-  state: 'scheduled' | 'live' | 'ended'
+  @Column({ name: 'state', type: 'text', default: SpaceState.LIVE })
+  state: SpaceState
 
   @Column({ name: 'is_ticketed', type: 'boolean', default: false })
   isTicketed?: boolean
