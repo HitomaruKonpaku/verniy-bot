@@ -11,20 +11,23 @@ export class TwitCastingApiService {
   private client: AxiosInstance
 
   constructor() {
-    const clientId = process.env.TWITCASTING_CLIENT_ID
-    const clientSecret = process.env.TWITCASTING_CLIENT_SECRET
-    if (!clientId) {
+    if (!this.clientId) {
       this.logger.error('TWITCASTING_CLIENT_ID not found')
     }
-    if (!clientSecret) {
+    if (!this.clientSecret) {
       this.logger.error('TWITCASTING_CLIENT_SECRET not found')
     }
-    this.client = axios.create({
-      baseURL: 'https://apiv2.twitcasting.tv',
-      headers: {
-        authorization: (clientId && clientSecret ? `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}` : ''),
-      },
-    })
+    this.initClient()
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private get clientId() {
+    return process.env.TWITCH_CLIENT_ID
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  private get clientSecret() {
+    return process.env.TWITCH_CLIENT_SECRET
   }
 
   /**
@@ -94,5 +97,12 @@ export class TwitCastingApiService {
       })
       throw error
     }
+  }
+
+  private initClient() {
+    this.client = axios.create({
+      baseURL: 'https://apiv2.twitcasting.tv',
+      headers: { authorization: (this.clientId && this.clientSecret ? `Basic ${Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64')}` : '') },
+    })
   }
 }
