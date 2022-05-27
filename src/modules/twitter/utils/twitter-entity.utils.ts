@@ -1,4 +1,5 @@
 import { SpaceV2, UserV1, UserV2 } from 'twitter-api-v2'
+import { SpaceState } from '../enums/twitter-space.enum'
 import { TwitterSpace } from '../models/twitter-space.entity'
 import { TwitterUser } from '../models/twitter-user.entity'
 import { TwitterUtils } from './twitter.utils'
@@ -43,7 +44,7 @@ export class TwitterEntityUtils {
       createdAt: new Date(data.created_at).getTime(),
       updatedAt: new Date(data.updated_at).getTime(),
       creatorId: data.creator_id,
-      state: data.state,
+      state: data.state as SpaceState,
       isTicketed: data.is_ticketed,
       scheduledStart: data.scheduled_start
         ? new Date(data.scheduled_start).getTime()
