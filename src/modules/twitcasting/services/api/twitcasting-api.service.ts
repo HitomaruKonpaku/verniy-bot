@@ -24,12 +24,12 @@ export class TwitCastingApiService {
 
   // eslint-disable-next-line class-methods-use-this
   private get clientId() {
-    return process.env.TWITCH_CLIENT_ID
+    return process.env.TWITCASTING_CLIENT_ID
   }
 
   // eslint-disable-next-line class-methods-use-this
   private get clientSecret() {
-    return process.env.TWITCH_CLIENT_SECRET
+    return process.env.TWITCASTING_CLIENT_SECRET
   }
 
   /**
@@ -102,9 +102,12 @@ export class TwitCastingApiService {
   }
 
   private initClient() {
+    const authorization = this.clientId && this.clientSecret
+      ? `Basic ${Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64')}`
+      : ''
     this.client = axios.create({
       baseURL: this.BASE_URL,
-      headers: { authorization: (this.clientId && this.clientSecret ? `Basic ${Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64')}` : '') },
+      headers: { authorization },
     })
   }
 }
