@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { TWITTER_GUEST_TOKEN_DURATION } from '../constants/twitter.constant'
 import { twitterGuestTokenLimiter } from '../twitter.limiter'
 import { TwitterApiPublicService } from './api/twitter-api-public.service'

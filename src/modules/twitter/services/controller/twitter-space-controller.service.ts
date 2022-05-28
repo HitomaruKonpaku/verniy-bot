@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { SpaceV2 } from 'twitter-api-v2'
-import { logger as baseLogger } from '../../../../logger'
+import { baseLogger } from '../../../../logger'
 import { SpaceState } from '../../enums/twitter-space.enum'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'

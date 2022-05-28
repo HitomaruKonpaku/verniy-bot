@@ -7,7 +7,7 @@ import {
   Interaction,
   TextChannel,
 } from 'discord.js'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'
 import { DiscordGuildService } from './data/discord-guild.service'

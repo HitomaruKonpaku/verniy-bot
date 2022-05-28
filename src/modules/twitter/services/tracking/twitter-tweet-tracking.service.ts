@@ -1,7 +1,7 @@
 import { hideLinkEmbed } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { ETwitterStreamEvent, TweetStream, TweetV2SingleStreamResult } from 'twitter-api-v2'
-import { logger as baseLogger } from '../../../../logger'
+import { baseLogger } from '../../../../logger'
 import { AppUtils } from '../../../../utils/app.utils'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'

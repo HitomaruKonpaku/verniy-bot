@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { logger as baseLogger } from '../../../../logger'
+import { baseLogger } from '../../../../logger'
 import { TwitCastingUser } from '../../models/twitcasting-user.entity'
 import { TwitCastingApiService } from '../api/twitcasting-api.service'
 import { TwitCastingUserService } from '../data/twitcasting-user.service'

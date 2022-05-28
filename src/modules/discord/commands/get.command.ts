@@ -1,7 +1,7 @@
 import { bold, inlineCode, SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { TwitCastingMovieControllerService } from '../../twitcasting/services/controller/twitcasting-movie-controller.service'
 import { TwitCastingUserControllerService } from '../../twitcasting/services/controller/twitcasting-user-controller.service'
 import { TwitCastingMovieService } from '../../twitcasting/services/data/twitcasting-movie.service'

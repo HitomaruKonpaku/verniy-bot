@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { randomUUID } from 'crypto'
 import { SpaceV2CreatorLookupParams, UserV1 } from 'twitter-api-v2'
-import { logger as baseLogger } from '../../../../logger'
+import { baseLogger } from '../../../../logger'
 import { ArrayUtils } from '../../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import {

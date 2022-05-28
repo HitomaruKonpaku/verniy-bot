@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { UserV1, UserV2 } from 'twitter-api-v2'
-import { logger as baseLogger } from '../../../../logger'
+import { baseLogger } from '../../../../logger'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterUserService } from '../data/twitter-user.service'

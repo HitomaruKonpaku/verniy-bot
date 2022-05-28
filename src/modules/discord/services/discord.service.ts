@@ -5,7 +5,7 @@ import {
   MessagePayload,
   TextChannel,
 } from 'discord.js'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { TwitCastingService } from '../../twitcasting/services/twitcasting.service'
 import { TwitterService } from '../../twitter/services/twitter.service'

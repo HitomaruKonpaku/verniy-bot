@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { TwitterApi } from 'twitter-api-v2'
-import { logger as baseLogger } from '../../../../logger'
+import { baseLogger } from '../../../../logger'
 
 @Injectable()
 export class TwitterClientService {

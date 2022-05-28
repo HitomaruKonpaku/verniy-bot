@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { readFileSync } from 'fs'
 import yaml from 'js-yaml'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { TWITTER_STREAM_RULE_LENGTH, TWITTER_STREAM_RULE_LIMIT } from '../../twitter/constants/twitter.constant'
 
 @Injectable()

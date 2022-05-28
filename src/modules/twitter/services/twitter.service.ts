@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { TrackTwitterProfileService } from '../../track/services/track-twitter-profile.service'
 import { TrackTwitterSpaceService } from '../../track/services/track-twitter-space.service'

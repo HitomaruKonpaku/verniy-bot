@@ -5,7 +5,7 @@ import {
   TextChannel,
   User,
 } from 'discord.js'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { DiscordChannelService } from './data/discord-channel.service'
 import { DiscordGuildService } from './data/discord-guild.service'
 import { DiscordMessageService } from './data/discord-message.service'

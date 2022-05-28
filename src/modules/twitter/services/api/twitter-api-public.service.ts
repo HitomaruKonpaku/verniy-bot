@@ -2,7 +2,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import axios from 'axios'
 import { randomUUID } from 'crypto'
-import { logger as baseLogger } from '../../../../logger'
+import { baseLogger } from '../../../../logger'
 import { TWITTER_PUBLIC_AUTHORIZATION } from '../../constants/twitter.constant'
 import { AudioSpace, LiveVideoStreamStatus } from '../../interfaces/twitter.interface'
 import { TwitterSpaceUtils } from '../../utils/twitter-space.utils'

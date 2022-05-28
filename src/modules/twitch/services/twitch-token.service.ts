@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { twitchAccessTokenLimiter } from '../twitch.limiter'
 import { TwitchApiService } from './api/twitch-api.service'
 

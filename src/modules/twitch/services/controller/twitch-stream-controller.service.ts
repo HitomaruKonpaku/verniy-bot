@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { logger as baseLogger } from '../../../../logger'
+import { baseLogger } from '../../../../logger'
 import { TwitchApiService } from '../api/twitch-api.service'
 import { TwitchStreamService } from '../data/twitch-stream.service'
 

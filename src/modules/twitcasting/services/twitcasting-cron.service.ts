@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { CronJob } from 'cron'
 import { CRON_TIME_ZONE } from '../../../constants/cron.constant'
-import { logger as baseLogger } from '../../../logger'
+import { baseLogger } from '../../../logger'
 import { TwitCastingMovieControllerService } from './controller/twitcasting-movie-controller.service'
 import { TwitCastingUserControllerService } from './controller/twitcasting-user-controller.service'
 import { TwitCastingMovieService } from './data/twitcasting-movie.service'
