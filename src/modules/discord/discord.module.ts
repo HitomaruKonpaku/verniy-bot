@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
 import { TrackModule } from '../track/track.module'
 import { TwitCastingModule } from '../twitcasting/twitcasting.module'
+import { TwitchModule } from '../twitch/twitch.module'
 import { TwitterModule } from '../twitter/twitter.module'
 import { GetCommand } from './commands/get.command'
 import { TrackCommand } from './commands/track.command'
@@ -31,6 +32,7 @@ import { DiscordService } from './services/discord.service'
     TrackModule,
     forwardRef(() => TwitterModule),
     forwardRef(() => TwitCastingModule),
+    forwardRef(() => TwitchModule),
   ],
   providers: [
     DiscordService,

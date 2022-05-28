@@ -60,6 +60,21 @@ export class ConfigService {
     return config
   }
 
+  public get twitch() {
+    const config = {
+      active: false,
+      stream: {
+        active: false,
+        interval: 60000,
+      },
+      cron: {
+        active: false,
+      },
+    }
+    Object.assign(config, this.config.twitch || {})
+    return config
+  }
+
   public load() {
     let config: any
 

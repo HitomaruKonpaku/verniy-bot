@@ -36,6 +36,9 @@ export class TwitchApiService {
     return process.env.TWITCH_CLIENT_SECRET
   }
 
+  /**
+   * @see https://dev.twitch.tv/docs/cli/mock-api-command#getting-an-app-access-token
+   */
   public async getAccessToken() {
     const { data } = await axios.post(this.AUTH_URL, {
       client_id: this.clientId,
@@ -45,6 +48,21 @@ export class TwitchApiService {
     return data
   }
 
+  /**
+   * @see https://dev.twitch.tv/docs/api/reference#get-users
+   */
+  public async getUsersByUserIds(userIds: string[]) {
+    const requestId = randomUUID()
+    this.logger.debug('--> getUsersByUserIds', { requestId, userCount: userIds.length })
+    const params = userIds.map((v) => `id=${v}`).join('&')
+    const { data } = await this.client.get(`helix/users?${params}`)
+    this.logger.debug('<-- getUsersByUserIds', { requestId })
+    return data
+  }
+
+  /**
+   * @see https://dev.twitch.tv/docs/api/reference#get-users
+   */
   public async getUsersByUsernames(usernames: string[]) {
     const requestId = randomUUID()
     this.logger.debug('--> getUsersByUsernames', { requestId, userCount: usernames.length })
@@ -54,6 +72,9 @@ export class TwitchApiService {
     return data
   }
 
+  /**
+   * @see https://dev.twitch.tv/docs/api/reference#get-teams
+   */
   public async getTeamByName(name: string) {
     const requestId = randomUUID()
     this.logger.debug('--> getTeamByName', { requestId, name })
@@ -62,10 +83,16 @@ export class TwitchApiService {
     return data
   }
 
+  /**
+   * @see https://dev.twitch.tv/docs/api/reference#get-streams
+   */
   public async getStreamsByUserIds(userIds: string[]) {
     const requestId = randomUUID()
     this.logger.debug('--> getStreamsByUserIds', { requestId, userCount: userIds.length })
-    const params = userIds.map((v) => `user_id=${v}`).join('&')
+    const params = [
+      'first=100',
+      userIds.map((v) => `user_id=${v}`).join('&'),
+    ].join('&')
     const { data } = await this.client.get(`helix/streams?${params}`)
     this.logger.debug('<-- getStreamsByUserIds', { requestId })
     return data
@@ -79,7 +106,7 @@ export class TwitchApiService {
     this.client.interceptors.request.use((async (request) => {
       const accessToken = await this.twitchTokenService.getAccessToken()
       request.headers.authorization = `Bearer ${accessToken}`
-      return Promise.resolve(request)
+      return request
     }))
   }
 }

@@ -14,6 +14,20 @@ export class TwitchUserControllerService {
     private readonly twitchApiService: TwitchApiService,
   ) { }
 
+  public async fetchUsersByIds(userIds: string[]) {
+    const { data: users } = await this.twitchApiService.getUsersByUserIds(userIds)
+    const twitchUsers = await Promise.all(users.map(async (user) => {
+      try {
+        const twitchUser = await this.saveUser(user)
+        return twitchUser
+      } catch (error) {
+        this.logger.error(`fetchUsersByIds#saveUser: ${error.message}`, { user })
+      }
+      return null
+    }))
+    return twitchUsers
+  }
+
   public async saveUser(data: any) {
     const user = await this.twitchUserService.save({
       id: data.id,

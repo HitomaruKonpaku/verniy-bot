@@ -12,4 +12,25 @@ export class TwitchStreamService extends BaseEntityService<TwitchStream> {
   ) {
     super()
   }
+
+  public async getOneById(
+    id: string,
+    options?: {
+      withUser?: boolean
+    },
+  ) {
+    const query = this.repository
+      .createQueryBuilder('ts')
+      .andWhere('ts.id = :id', { id })
+    if (options?.withUser) {
+      query.leftJoinAndMapOne(
+        'ts.user',
+        'twitch_user',
+        'tu',
+        'tu.id = ts.user_id',
+      )
+    }
+    const stream = await query.getOne()
+    return stream
+  }
 }

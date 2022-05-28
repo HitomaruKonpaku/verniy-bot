@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
-import { TwitchApiService } from './api/twitch-api.service'
+import { TwitchStreamTrackingService } from './tracking/twitch-stream-tracking.service'
 
 @Injectable()
 export class TwitchService {
@@ -10,11 +10,18 @@ export class TwitchService {
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
-    @Inject(TwitchApiService)
-    private readonly twitchApiService: TwitchApiService,
+    @Inject(TwitchStreamTrackingService)
+    private readonly twitchStreamTrackingService: TwitchStreamTrackingService,
   ) { }
 
   public async start() {
     this.logger.info('Starting...')
+    const config = this.configService.twitch
+    if (config.stream?.active) {
+      await this.twitchStreamTrackingService.start()
+    }
+    if (config.cron?.active) {
+      // TODO
+    }
   }
 }
