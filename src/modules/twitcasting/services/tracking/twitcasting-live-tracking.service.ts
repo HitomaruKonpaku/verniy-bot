@@ -83,7 +83,6 @@ export class TwitCastingLiveTrackingService {
         return
       }
       if (!oldMovie?.id) {
-        this.logger.warn(`checkMovieById: Found new movie @${newMovie.user?.screenId || newMovie.userId} >> ${id}`, { movie: newMovie })
         await this.notifyMovie(newMovie)
       }
     } catch (error) {
@@ -93,6 +92,7 @@ export class TwitCastingLiveTrackingService {
 
   private async notifyMovie(movie: TwitCastingMovie) {
     try {
+      this.logger.warn(`notifyMovie: ${movie.user.screenId}`, { url: TwitCastingUtils.getUserUrl(movie.user.screenId) })
       const trackItems = await this.getTrackItems(movie)
       if (!trackItems.length) {
         return

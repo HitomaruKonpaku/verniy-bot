@@ -92,6 +92,7 @@ export class TwitchStreamTrackingService {
   private async notifyStream(streamId: string) {
     try {
       const stream = await this.twitchStreamService.getOneById(streamId, { withUser: true })
+      this.logger.warn(`notifyStream: ${stream.user.username}`, { url: TwitchUtils.getUserUrl(stream.user.username) })
       const trackItems = await this.getTrackItems(stream)
       if (!trackItems.length) {
         return
