@@ -103,10 +103,17 @@ export class TwitchApiService {
       baseURL: this.BASE_URL,
       headers: { 'client-id': this.clientId },
     })
+
     this.client.interceptors.request.use((async (request) => {
       const accessToken = await this.twitchTokenService.getAccessToken()
       request.headers.authorization = `Bearer ${accessToken}`
       return request
     }))
+
+    this.client.interceptors.response.use(null, (error) => {
+      if (error.response?.status === 401 && this.clientId && this.clientSecret) {
+        this.twitchTokenService.getAccessToken(true)
+      }
+    })
   }
 }

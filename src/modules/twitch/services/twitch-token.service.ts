@@ -17,9 +17,9 @@ export class TwitchTokenService {
     private readonly twitchApiService: TwitchApiService,
   ) { }
 
-  public async getAccessToken() {
+  public async getAccessToken(forceRefresh = false) {
     const token = await twitchAccessTokenLimiter.schedule(async () => {
-      if (!this.accessToken || Date.now() >= this.accessTokenExpireAt) {
+      if (forceRefresh || !this.accessToken || Date.now() >= this.accessTokenExpireAt) {
         this.logger.debug('--> getAccessToken')
         const data = await this.twitchApiService.getAccessToken()
         this.accessToken = data.access_token
