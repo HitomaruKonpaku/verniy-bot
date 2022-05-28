@@ -22,10 +22,11 @@ export class TwitCastingService {
 
   public async start() {
     this.logger.info('Starting...')
-    if (this.configService.twitcasting?.live?.active) {
+    const config = this.configService.twitcasting
+    if (config.live?.active) {
       await this.twitCastingLiveTrackingService.start()
     }
-    if (this.configService.twitcasting?.cron?.active) {
+    if (config.cron?.active) {
       this.twitCastingCronService.start()
     }
   }
