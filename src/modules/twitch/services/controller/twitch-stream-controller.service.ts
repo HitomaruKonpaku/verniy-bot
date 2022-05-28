@@ -23,6 +23,7 @@ export class TwitchStreamControllerService {
       gameId: data.game_id || null,
       type: data.type || null,
       title: data.title || null,
+      language: data.language || null,
       isMature: data.is_mature || false,
     })
     return stream

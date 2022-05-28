@@ -16,6 +16,9 @@ export class TwitchStream extends BaseExternalEntity {
   @Column({ name: 'title', type: 'text', nullable: true })
   title?: string
 
+  @Column({ name: 'language', type: 'text', nullable: true })
+  language?: string
+
   @Column({ name: 'is_mature', type: 'boolean', default: false })
   isMature?: boolean
 
