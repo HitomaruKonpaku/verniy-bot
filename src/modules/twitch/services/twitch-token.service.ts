@@ -7,6 +7,8 @@ import { TwitchApiService } from './api/twitch-api.service'
 export class TwitchTokenService {
   private readonly logger = baseLogger.child({ context: TwitchTokenService.name })
 
+  private readonly ACCESS_TOKEN_EXPIRE_OFFSET = 300 // in second
+
   private accessToken: string
   private accessTokenExpireAt: number
 
@@ -21,7 +23,7 @@ export class TwitchTokenService {
         this.logger.debug('--> getAccessToken')
         const data = await this.twitchApiService.getAccessToken()
         this.accessToken = data.access_token
-        this.accessTokenExpireAt = Date.now() + (data.expires_in - 300) * 1000
+        this.accessTokenExpireAt = Date.now() + (data.expires_in - this.ACCESS_TOKEN_EXPIRE_OFFSET) * 1000
         this.logger.debug('<-- getAccessToken', {
           accessTokenExpireAt: new Date(this.accessTokenExpireAt).toISOString(),
           accessTokenExpireAtTimestamp: this.accessTokenExpireAt,
