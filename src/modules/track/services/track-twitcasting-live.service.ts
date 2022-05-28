@@ -15,6 +15,7 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
     const records = await this.repository
       .createQueryBuilder('ttl')
       .select('ttl.twitcasting_user_id')
+      .distinct()
       .leftJoin('twitcasting_user', 'tu', 'tu.id = ttl.twitcasting_user_id')
       .andWhere('ttl.is_active = TRUE')
       .andWhere('tu.id ISNULL')
@@ -23,15 +24,17 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
     return ids
   }
 
-  public async getUsersForLiveCheck() {
+  public async getScreenIdsForLiveCheck(): Promise<string[]> {
     const records = await this.repository
       .createQueryBuilder('ttl')
-      .leftJoinAndMapOne('ttl.user', 'twitcasting_user', 'tu', 'tu.id = ttl.twitcasting_user_id')
+      .select('tu.screen_id')
+      .distinct()
+      .leftJoin('twitcasting_user', 'tu', 'tu.id = ttl.twitcasting_user_id')
       .andWhere('ttl.is_active = TRUE')
       .andWhere('tu.id NOTNULL')
-      .getMany()
-    const users = records.map((v) => v.user)
-    return users
+      .getRawMany()
+    const ids = records.map((v) => v.screen_id)
+    return ids
   }
 
   public async getManyByTwitCastingUserId(userId: string) {

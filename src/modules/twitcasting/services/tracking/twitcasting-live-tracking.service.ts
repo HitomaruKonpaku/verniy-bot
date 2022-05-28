@@ -4,7 +4,6 @@ import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackTwitCastingLiveService } from '../../../track/services/track-twitcasting-live.service'
 import { TwitCastingMovie } from '../../models/twitcasting-movie.entity'
-import { TwitCastingUser } from '../../models/twitcasting-user.entity'
 import { TwitCastingUtils } from '../../utils/twitcasting.utils'
 import { TwitCastingApiPublicService } from '../api/twitcasting-api-public.service'
 import { TwitCastingMovieControllerService } from '../controller/twitcasting-movie-controller.service'
@@ -52,8 +51,8 @@ export class TwitCastingLiveTrackingService {
 
   private async checkLive() {
     try {
-      const users = await this.trackTwitCastingLiveService.getUsersForLiveCheck()
-      await Promise.allSettled(users.map((v) => this.checkUserLive(v)))
+      const screenIds = await this.trackTwitCastingLiveService.getScreenIdsForLiveCheck()
+      await Promise.allSettled(screenIds.map((v) => this.checkUserMovie(v)))
     } catch (error) {
       this.logger.error(`checkLive: ${error.message}`)
     }
@@ -62,21 +61,21 @@ export class TwitCastingLiveTrackingService {
     setTimeout(() => this.checkLive(), interval)
   }
 
-  private async checkUserLive(user: TwitCastingUser) {
+  private async checkUserMovie(screenId: string) {
     try {
-      const response = await this.twitCastingApiPublicService.getStreamServer(user.screenId)
+      const response = await this.twitCastingApiPublicService.getStreamServer(screenId)
       const live = response?.movie?.live
       const id = response?.movie?.id
       if (!live) {
         return
       }
-      await this.checkMovieById(id)
+      await this.updateMovieById(id)
     } catch (error) {
-      this.logger.error(`checkUserLive: ${error.message}`, { user: { id: user.id, screenId: user.screenId } })
+      this.logger.error(`checkUserMovie: ${error.message}`, { screenId })
     }
   }
 
-  private async checkMovieById(id: string) {
+  private async updateMovieById(id: string) {
     try {
       const oldMovie = await this.twitCastingMovieService.getOneById(id)
       const newMovie = await this.twitCastingMovieControllerService.getOneAndSaveById(id)
