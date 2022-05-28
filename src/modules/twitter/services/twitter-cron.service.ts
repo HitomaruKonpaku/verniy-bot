@@ -108,7 +108,6 @@ export class TwitterCronService {
     try {
       const limiter = new Bottleneck({ maxConcurrent: 1 })
       const spaces = await this.twitterSpaceService.getManyForPlaylistActiveCheck()
-      // eslint-disable-next-line max-len
       await Promise.allSettled(spaces.map((v) => limiter.schedule(() => this.checkSpacePlaylist(v))))
     } catch (error) {
       this.logger.error(`checkSpacesPlaylist: ${error.message}`)

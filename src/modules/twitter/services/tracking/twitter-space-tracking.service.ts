@@ -138,7 +138,6 @@ export class TwitterSpaceTrackingService {
     try {
       const limiter = twitterSpacesByFleetsAvatarContentLimiter
       const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
-      // eslint-disable-next-line max-len
       const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterApiPublicService.getSpacesByFleetsAvatarContent(v))))
       const spaceIds = result
         .filter((v) => v.status === 'fulfilled')

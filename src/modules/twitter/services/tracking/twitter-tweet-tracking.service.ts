@@ -223,7 +223,6 @@ export class TwitterTweetTrackingService {
           const text = data.data.text || ''
           const urls = entities?.urls?.map?.((v) => v.expanded_url) || []
           const contents = [text, ...urls].filter((v) => v).map((v) => v.toLowerCase())
-          // eslint-disable-next-line max-len
           const existKeyword = record.filterKeywords.some((keyword) => contents.some((v) => v.includes(keyword.toLowerCase())))
           return existKeyword
         })

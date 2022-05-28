@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { Inject, Injectable } from '@nestjs/common'
 import { CronJob } from 'cron'
 import { CRON_TIME_ZONE } from '../../../constants/cron.constant'

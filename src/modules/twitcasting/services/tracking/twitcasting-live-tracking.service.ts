@@ -44,7 +44,6 @@ export class TwitCastingLiveTrackingService {
       if (!userIds.length) {
         return
       }
-      // eslint-disable-next-line max-len
       await Promise.allSettled(userIds.map((v) => this.twitCastingUserControllerService.getOneAndSaveById(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)

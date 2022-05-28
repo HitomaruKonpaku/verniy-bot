@@ -42,12 +42,10 @@ export class TwitterSpaceUtils {
     }
     if (space.creatorId !== track.twitterUserId) {
       if (space.hostIds?.includes?.(track.twitterUserId)) {
-        // eslint-disable-next-line max-len
         const displayGuest = inlineCode(space.hosts?.find?.((v) => v.id === track.twitterUserId)?.username || track.twitterUserId)
         return `${displayGuest} is co-hosting ${displayCreator}'s Space`
       }
       if (space.speakerIds?.includes?.(track.twitterUserId)) {
-        // eslint-disable-next-line max-len
         const displayGuest = inlineCode(space.speakers?.find?.((v) => v.id === track.twitterUserId)?.username || track.twitterUserId)
         return `${displayGuest} is speaking in ${displayCreator}'s Space`
       }
