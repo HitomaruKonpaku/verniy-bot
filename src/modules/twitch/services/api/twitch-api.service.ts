@@ -54,6 +54,23 @@ export class TwitchApiService {
     return data
   }
 
+  public async getTeamByName(name: string) {
+    const requestId = randomUUID()
+    this.logger.debug('--> getTeamByName', { requestId, name })
+    const { data } = await this.client.get('helix/teams', { params: { name } })
+    this.logger.debug('<-- getTeamByName', { requestId })
+    return data
+  }
+
+  public async getStreamsByUserIds(userIds: string[]) {
+    const requestId = randomUUID()
+    this.logger.debug('--> getStreamsByUserIds', { requestId, userCount: userIds.length })
+    const params = userIds.map((v) => `user_id=${v}`).join('&')
+    const { data } = await this.client.get(`helix/streams?${params}`)
+    this.logger.debug('<-- getStreamsByUserIds', { requestId })
+    return data
+  }
+
   private initClient() {
     this.client = axios.create({
       baseURL: this.BASE_URL,

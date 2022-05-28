@@ -13,4 +13,18 @@ export class TwitchStreamControllerService {
     @Inject(TwitchApiService)
     private readonly twitchApiService: TwitchApiService,
   ) { }
+
+  public async saveStream(data: any) {
+    const stream = await this.twitchStreamService.save({
+      id: data.id,
+      isActive: true,
+      createdAt: new Date(data.started_at).getTime(),
+      userId: data.user_id,
+      gameId: data.game_id || null,
+      type: data.type || null,
+      title: data.title || null,
+      isMature: data.is_mature || false,
+    })
+    return stream
+  }
 }
