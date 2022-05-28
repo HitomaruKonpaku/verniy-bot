@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { SpaceV2 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../../logger'
 import { SpaceState } from '../../enums/twitter-space.enum'
@@ -8,6 +8,7 @@ import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 import { TwitterUserControllerService } from './twitter-user-controller.service'
 
+@Injectable()
 export class TwitterSpaceControllerService {
   private readonly logger = baseLogger.child({ context: TwitterSpaceControllerService.name })
 

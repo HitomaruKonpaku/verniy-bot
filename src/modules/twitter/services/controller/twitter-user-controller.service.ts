@@ -1,10 +1,11 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { UserV1, UserV2 } from 'twitter-api-v2'
 import { logger as baseLogger } from '../../../../logger'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterUserService } from '../data/twitter-user.service'
 
+@Injectable()
 export class TwitterUserControllerService {
   private readonly logger = baseLogger.child({ context: TwitterUserControllerService.name })
 

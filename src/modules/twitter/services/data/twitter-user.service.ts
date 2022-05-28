@@ -1,8 +1,10 @@
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/services/base-entity.service'
 import { TwitterUser } from '../../models/twitter-user.entity'
 
+@Injectable()
 export class TwitterUserService extends BaseEntityService<TwitterUser> {
   constructor(
     @InjectRepository(TwitterUser)
