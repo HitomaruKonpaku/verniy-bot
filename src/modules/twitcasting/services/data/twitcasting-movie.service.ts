@@ -23,6 +23,6 @@ export class TwitCastingMovieService extends BaseEntityService<TwitCastingMovie>
   }
 
   public async updateIsActive(id: string, isActive: boolean) {
-    await this.repository.update({ id }, { isActive })
+    await this.repository.update({ id }, { isActive, isLive: false })
   }
 }
