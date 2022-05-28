@@ -16,8 +16,13 @@ export class TwitCastingMovieService extends BaseEntityService<TwitCastingMovie>
   public async getManyLive() {
     const result = await this.repository
       .createQueryBuilder()
+      .andWhere('is_active = TRUE')
       .andWhere('is_live = TRUE')
       .getMany()
     return result
+  }
+
+  public async updateIsActive(id: string, isActive: boolean) {
+    await this.repository.update({ id }, { isActive })
   }
 }

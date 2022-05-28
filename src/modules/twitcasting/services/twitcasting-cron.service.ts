@@ -50,7 +50,15 @@ export class TwitCastingCronService {
     this.logger.info('--> checkMovies')
     try {
       const movies = await this.twitCastingMovieService.getManyLive()
-      await Promise.allSettled(movies.map((v) => this.twitCastingMovieControllerService.getOneAndSaveById(v.id)))
+      await Promise.allSettled(movies.map(async (v) => {
+        try {
+          await this.twitCastingMovieControllerService.getOneAndSaveById(v.id)
+        } catch (error) {
+          if (error.response?.status === 404) {
+            await this.twitCastingMovieService.updateIsActive(v.id, false)
+          }
+        }
+      }))
     } catch (error) {
       this.logger.error(`checkMovies: ${error.message}`)
     }
