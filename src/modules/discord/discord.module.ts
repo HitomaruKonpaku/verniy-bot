@@ -5,9 +5,19 @@ import { TrackModule } from '../track/track.module'
 import { TwitCastingModule } from '../twitcasting/twitcasting.module'
 import { TwitchModule } from '../twitch/twitch.module'
 import { TwitterModule } from '../twitter/twitter.module'
-import { GetCommand } from './commands/get.command'
-import { TrackCommand } from './commands/track.command'
-import { UntrackCommand } from './commands/untrack.command'
+import { GetCommand } from './commands/get/get.command'
+import { TrackAddTwitCastingLiveCommand } from './commands/track/track-add/track-add-twitcasting-live.command'
+import { TrackAddTwitchUserStreamCommand } from './commands/track/track-add/track-add-twitch-user-stream.command'
+import { TrackAddTwitterProfileCommand } from './commands/track/track-add/track-add-twitter-profile.command'
+import { TrackAddTwitterSpaceCommand } from './commands/track/track-add/track-add-twitter-space.command'
+import { TrackAddTwitterTweetCommand } from './commands/track/track-add/track-add-twitter-tweet.command'
+import { TrackAddCommand } from './commands/track/track-add/track-add.command'
+import { TrackRemoveTwitCastingLiveCommand } from './commands/track/track-remove/track-remove-twitcasting-live.command'
+import { TrackRemoveTwitchUserStreamCommand } from './commands/track/track-remove/track-remove-twitch-user-stream.command'
+import { TrackRemoveTwitterProfileCommand } from './commands/track/track-remove/track-remove-twitter-profile.command'
+import { TrackRemoveTwitterSpaceCommand } from './commands/track/track-remove/track-remove-twitter-space.command'
+import { TrackRemoveTwitterTweetCommand } from './commands/track/track-remove/track-remove-twitter-tweet.command'
+import { TrackRemoveCommand } from './commands/track/track-remove/track-remove.command'
 import { DiscordChannel } from './models/discord-channel.entity'
 import { DiscordGuild } from './models/discord-guild.entity'
 import { DiscordMessage } from './models/discord-message.entity'
@@ -42,8 +52,21 @@ import { DiscordService } from './services/discord.service'
     DiscordGuildService,
     DiscordChannelService,
     DiscordMessageService,
-    TrackCommand,
-    UntrackCommand,
+    //
+    TrackAddCommand,
+    TrackAddTwitterTweetCommand,
+    TrackAddTwitterProfileCommand,
+    TrackAddTwitterSpaceCommand,
+    TrackAddTwitCastingLiveCommand,
+    TrackAddTwitchUserStreamCommand,
+    //
+    TrackRemoveCommand,
+    TrackRemoveTwitterTweetCommand,
+    TrackRemoveTwitterProfileCommand,
+    TrackRemoveTwitterSpaceCommand,
+    TrackRemoveTwitCastingLiveCommand,
+    TrackRemoveTwitchUserStreamCommand,
+    //
     GetCommand,
   ],
   exports: [

@@ -18,6 +18,11 @@ export abstract class BaseCommand {
     await interaction.editReply(content)
   }
 
+  protected async replyUserNotFound(interaction: CommandInteraction) {
+    const content = 'User not found'
+    await interaction.editReply(content)
+  }
+
   protected async replyObject<T>(interaction: CommandInteraction, data: T) {
     await interaction.editReply({ content: codeBlock('json', JSON.stringify(data, null, 2)) })
   }

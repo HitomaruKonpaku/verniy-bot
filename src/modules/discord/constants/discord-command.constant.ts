@@ -1,21 +1,21 @@
-import { GetCommand } from '../commands/get.command'
-import { TrackCommand } from '../commands/track.command'
-import { UntrackCommand } from '../commands/untrack.command'
+import { GetCommand } from '../commands/get/get.command'
+import { TrackAddCommand } from '../commands/track/track-add/track-add.command'
+import { TrackRemoveCommand } from '../commands/track/track-remove/track-remove.command'
 
 export const DISCORD_APP_COMMANDS = [
-  TrackCommand,
-  UntrackCommand,
+  TrackAddCommand,
+  TrackRemoveCommand,
   GetCommand,
 ]
 
 export const DISCORD_GUILD_COMMANDS = [
-  // TrackCommand,
-  // UntrackCommand,
+  // TrackAddCommand,
+  // TrackRemoveCommand,
   GetCommand,
 ]
 
 export const DISCORD_GLOBAL_COMMANDS = [
-  // TrackCommand,
-  // UntrackCommand,
+  // TrackAddCommand,
+  // TrackRemoveCommand,
   // GetCommand,
 ]
