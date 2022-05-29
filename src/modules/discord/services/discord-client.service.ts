@@ -91,7 +91,7 @@ export class DiscordClientService extends Client {
   private addClientReadyListeners() {
     this.on('ready', async () => {
       await this.application.fetch()
-      this.logger.debug('application fetched')
+      this.logger.warn('application fetched')
     })
 
     this.on('ready', () => {
