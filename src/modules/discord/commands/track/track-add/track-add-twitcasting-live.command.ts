@@ -37,7 +37,7 @@ export class TrackAddTwitCastingLiveCommand extends BaseCommand {
       this.logger.warn('execute: added', meta)
       await interaction.editReply({
         embeds: [{
-          description: `Tracking **[${user.screenId}](${TwitCastingUtils.getUserUrl(user.screenId)})** TwitCasting user`,
+          description: `Tracking **[${user.screenId}](${TwitCastingUtils.getUserUrl(user.screenId)})**`,
           color: 0x1d9bf0,
         }],
       })
