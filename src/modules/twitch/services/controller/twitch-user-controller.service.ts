@@ -28,6 +28,15 @@ export class TwitchUserControllerService {
     return twitchUsers
   }
 
+  public async fetchUserByUsername(username: string) {
+    const { data: users } = await this.twitchApiService.getUsersByUsernames([username])
+    if (!users.length) {
+      throw new Error('User not found')
+    }
+    const user = await this.saveUser(users[0])
+    return user
+  }
+
   public async saveUser(data: any) {
     const user = await this.twitchUserService.save({
       id: data.id,
