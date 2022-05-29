@@ -12,4 +12,13 @@ export class TwitchUserService extends BaseEntityService<TwitchUser> {
   ) {
     super()
   }
+
+  public async getOneByUsername(username: string) {
+    const user = await this.repository
+      .createQueryBuilder()
+      .andWhere('LOWER(username) = LOWER(:username)', { username })
+      .addOrderBy('is_active', 'DESC')
+      .getOne()
+    return user
+  }
 }
