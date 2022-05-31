@@ -28,6 +28,10 @@ export class TrackAddTwitchUserStreamCommand extends BaseCommand {
 
     try {
       const user = await this.twitchUserControllerService.fetchUserByUsername(username)
+      if (!user) {
+        await this.replyUserNotFound(interaction)
+        return
+      }
       await this.trackTwitchStreamService.add(
         user.id,
         channelId,
