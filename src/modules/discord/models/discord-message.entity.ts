@@ -12,9 +12,6 @@ export class DiscordMessage extends BaseExternalEntity {
   @Column({ name: 'guild_id', type: 'text', nullable: true })
   guildId?: string
 
-  @Column({ name: 'url', type: 'text', nullable: true })
-  url?: string
-
   @Column({ name: 'content', type: 'text', nullable: true })
   content?: string
 }

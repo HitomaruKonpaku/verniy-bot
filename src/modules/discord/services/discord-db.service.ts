@@ -84,7 +84,6 @@ export class DiscordDbService {
         authorId: message.author.id,
         channelId: message.channelId,
         guildId: message.guildId,
-        url: message.url,
         content: message.content,
       })
       if (message.author) {
