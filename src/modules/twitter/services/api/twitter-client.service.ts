@@ -11,7 +11,7 @@ export class TwitterClientService {
   constructor() {
     const token = process.env.TWITTER_BEARER_TOKEN
     if (!token) {
-      this.logger.warn('Token not found')
+      this.logger.error('TWITTER_BEARER_TOKEN not found')
     }
     this.client = new TwitterApi(token)
   }
