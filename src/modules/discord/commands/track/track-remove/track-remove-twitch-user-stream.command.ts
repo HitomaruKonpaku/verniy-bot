@@ -37,7 +37,7 @@ export class TrackRemoveTwitchUserStreamCommand extends TrackRemoveBaseCommand {
 
       await interaction.editReply({
         embeds: [{
-          description: `Untrack **[${user.username}](${TwitchUtils.getUserUrl(user.username)})**`,
+          description: `Untrack **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch`,
           color: 0x1d9bf0,
         }],
       })

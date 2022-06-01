@@ -37,7 +37,7 @@ export class TrackRemoveTwitCastingLiveCommand extends TrackRemoveBaseCommand {
 
       await interaction.editReply({
         embeds: [{
-          description: `Untrack **[${user.screenId}](${TwitCastingUtils.getUserUrl(user.screenId)})**`,
+          description: `Untrack **[${user.screenId}](${TwitCastingUtils.getUserUrl(user.screenId)})** TwitCasting`,
           color: 0x1d9bf0,
         }],
       })

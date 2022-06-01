@@ -41,7 +41,7 @@ export class TrackAddTwitchUserStreamCommand extends BaseCommand {
       this.logger.warn('execute: added', meta)
       await interaction.editReply({
         embeds: [{
-          description: `Tracking **[${user.username}](${TwitchUtils.getUserUrl(user.username)})**`,
+          description: `Tracking **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch`,
           color: 0x1d9bf0,
         }],
       })
