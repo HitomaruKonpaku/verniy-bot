@@ -20,3 +20,19 @@ twitcasting:
     interval: 60000
   cron:
     active: true
+
+twitch:
+  active: false
+  stream:
+    active: true
+    interval: 60000
+  cron:
+    active: true
+
+instagram:
+  active: false
+  track:
+    active: true
+    interval: 60000
+  cron:
+    active: true
