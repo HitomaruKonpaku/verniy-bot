@@ -1,19 +1,51 @@
 # verniy-bot
 
-> Discord tracking bot for Twitter/TwitCasting...
+Discord tracking bot
 
-## Invite
+- Twitter
+  - User tweet
+  - User profile change
+  - Spaces
+- TwitCasting
+- Twitch
+- Instagram
+
+## Links
 
 [![discord](https://img.shields.io/badge/invite-verniy--bot-brightgreen?style=for-the-badge&logo=discord&color=5865F2)](https://discord.com/oauth2/authorize?client_id=422330233035948032&permissions=0&scope=bot%20applications.commands)
 
 ## Requirements
 
 - [Node.js](https://nodejs.org) (>=14)
-- [Discord Bot Token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
-- [Twitter API v2 token](https://developer.twitter.com/en/docs/twitter-api)
-- ~~[Twitter API v1 token](https://developer.twitter.com/en/docs/twitter-api/v1)~~
-- [TwitCasting API token](https://apiv2-doc.twitcasting.tv)
-- [Twitch API token](https://dev.twitch.tv/docs/api)
+- [Discord bot token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
+- [Twitter API v2 bearer token](https://developer.twitter.com/en/docs/twitter-api)
+- [TwitCasting API cliend id & secret](https://apiv2-doc.twitcasting.tv)
+- [Twitch API cliend id & secret](https://dev.twitch.tv/docs/api)
+- Instagram session id (optional)
+
+## Commands
+
+- **track_add**
+  - twitter_tweet
+  - twitter_profile
+  - twitter_space
+  - twitcasting_live
+  - twitch_user_stream
+
+- **track_remove**
+  - twitter_tweet
+  - twitter_profile
+  - twitter_space
+  - twitcasting_live
+  - twitch_user_stream
+
+- **get**
+  - twitter
+    - user
+    - space
+  - twitcasting
+    - user
+    - movie
 
 ## Getting Started
 
