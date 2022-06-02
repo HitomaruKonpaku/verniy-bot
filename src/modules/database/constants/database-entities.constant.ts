@@ -2,6 +2,9 @@ import { DiscordChannel } from '../../discord/models/discord-channel.entity'
 import { DiscordGuild } from '../../discord/models/discord-guild.entity'
 import { DiscordMessage } from '../../discord/models/discord-message.entity'
 import { DiscordUser } from '../../discord/models/discord-user.entity'
+import { InstagramPost } from '../../instagram/models/instagram-post.entity'
+import { InstagramUser } from '../../instagram/models/instagram-user.entity'
+import { TrackInstagramPost } from '../../track/models/track-instagram-post.entity'
 import { TrackTwitCastingLive } from '../../track/models/track-twitcasting-live.entity'
 import { TrackTwitchStream } from '../../track/models/track-twitch-stream.entity'
 import { TrackTwitterProfile } from '../../track/models/track-twitter-profile.entity'
@@ -31,9 +34,13 @@ export const DB_ENTITIES = [
   TwitchUser,
   TwitchStream,
 
+  InstagramUser,
+  InstagramPost,
+
   TrackTwitterTweet,
   TrackTwitterProfile,
   TrackTwitterSpace,
   TrackTwitCastingLive,
   TrackTwitchStream,
+  TrackInstagramPost,
 ]

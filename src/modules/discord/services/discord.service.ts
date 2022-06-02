@@ -7,6 +7,7 @@ import {
 } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
+import { InstagramService } from '../../instagram/services/instagram.service'
 import { TwitCastingService } from '../../twitcasting/services/twitcasting.service'
 import { TwitchService } from '../../twitch/services/twitch.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
@@ -30,6 +31,8 @@ export class DiscordService {
     private readonly twitCastingService: TwitCastingService,
     @Inject(forwardRef(() => TwitchService))
     private readonly twitchService: TwitchService,
+    @Inject(forwardRef(() => InstagramService))
+    private readonly instagramService: InstagramService,
   ) {
     this.addClientListeners()
   }
@@ -120,6 +123,9 @@ export class DiscordService {
       }
       if (this.configService.twitch.active) {
         this.twitchService.start()
+      }
+      if (this.configService.instagram.active) {
+        this.instagramService.start()
       }
     })
   }
