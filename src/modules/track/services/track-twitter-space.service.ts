@@ -1,8 +1,10 @@
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { TrackTwitterSpace } from '../models/track-twitter-space.entity'
 import { BaseTrackService } from './base/base-track.service'
 
+@Injectable()
 export class TrackTwitterSpaceService extends BaseTrackService<TrackTwitterSpace> {
   constructor(
     @InjectRepository(TrackTwitterSpace)
