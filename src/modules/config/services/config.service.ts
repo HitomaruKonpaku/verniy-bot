@@ -75,6 +75,21 @@ export class ConfigService {
     return config
   }
 
+  public get instagram() {
+    const config = {
+      active: false,
+      track: {
+        active: false,
+        interval: 60000,
+      },
+      cron: {
+        active: false,
+      },
+    }
+    Object.assign(config, this.config.instagram || {})
+    return config
+  }
+
   public load() {
     let config: any
 
