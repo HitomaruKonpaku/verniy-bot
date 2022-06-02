@@ -5,6 +5,7 @@ import { DiscordModule } from '../discord/discord.module'
 import { TrackModule } from '../track/track.module'
 import { TwitterFilteredStreamUser } from './models/twitter-filtered-stream-user.entity'
 import { TwitterSpace } from './models/twitter-space.entity'
+import { TwitterTweet } from './models/twitter-tweet.entity'
 import { TwitterUser } from './models/twitter-user.entity'
 import { TwitterApiPublicService } from './services/api/twitter-api-public.service'
 import { TwitterApiService } from './services/api/twitter-api.service'
@@ -26,6 +27,7 @@ import { TwitterService } from './services/twitter.service'
     TypeOrmModule.forFeature([
       TwitterFilteredStreamUser,
       TwitterUser,
+      TwitterTweet,
       TwitterSpace,
     ]),
     ConfigModule,

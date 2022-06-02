@@ -16,6 +16,7 @@ import { TwitchStream } from '../../twitch/models/twitch-stream.entity'
 import { TwitchUser } from '../../twitch/models/twitch-user.entity'
 import { TwitterFilteredStreamUser } from '../../twitter/models/twitter-filtered-stream-user.entity'
 import { TwitterSpace } from '../../twitter/models/twitter-space.entity'
+import { TwitterTweet } from '../../twitter/models/twitter-tweet.entity'
 import { TwitterUser } from '../../twitter/models/twitter-user.entity'
 
 export const DB_ENTITIES = [
@@ -26,6 +27,7 @@ export const DB_ENTITIES = [
 
   TwitterFilteredStreamUser,
   TwitterUser,
+  TwitterTweet,
   TwitterSpace,
 
   TwitCastingUser,

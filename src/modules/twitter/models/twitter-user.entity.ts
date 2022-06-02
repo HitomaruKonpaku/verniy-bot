@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm'
 import { BaseExternalEntity } from '../../database/models/base-external.entity'
 import { TwitterSpace } from './twitter-space.entity'
+import { TwitterTweet } from './twitter-tweet.entity'
 
 @Entity('twitter_user')
 export class TwitterUser extends BaseExternalEntity {
@@ -27,6 +28,8 @@ export class TwitterUser extends BaseExternalEntity {
 
   @Column({ name: 'profile_banner_url', type: 'text', nullable: true })
   profileBannerUrl?: string
+
+  tweets?: TwitterTweet[]
 
   spaces?: TwitterSpace[]
 }
