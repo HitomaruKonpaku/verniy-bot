@@ -63,16 +63,17 @@ export class TwitCastingLiveTrackingService {
   }
 
   private async checkUserMovie(screenId: string) {
+    let movie: { id: string, live: boolean }
     try {
       const response = await this.twitCastingApiPublicService.getStreamServer(screenId)
-      const live = response?.movie?.live
-      const id = response?.movie?.id
-      if (!live) {
+      movie = response?.movie
+      if (!movie?.live) {
         return
       }
-      await this.updateMovieById(id)
+      await this.updateMovieById(movie.id)
     } catch (error) {
-      this.logger.error(`checkUserMovie: ${error.message}`, { screenId })
+      this.logger.error(`checkUserMovie: ${error.message}`, { screenId, movie })
+      // TODO: Membership movie will throw status code 404, to handle this special case
     }
   }
 
