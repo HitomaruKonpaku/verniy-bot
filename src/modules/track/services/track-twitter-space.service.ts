@@ -15,12 +15,13 @@ export class TrackTwitterSpaceService extends BaseTrackService<TrackTwitterSpace
 
   public async getTwitterUserIds() {
     const records = await this.repository
-      .createQueryBuilder()
-      .select('twitter_user_id')
+      .createQueryBuilder('tts')
+      .select('tts.twitter_user_id')
       .distinct()
-      .andWhere('is_active = TRUE')
-      .addOrderBy('LENGTH(twitter_user_id)')
-      .addOrderBy('twitter_user_id')
+      .leftJoin('twitter_user', 'tu', 'tu.id = tts.twitter_user_id')
+      .andWhere('tts.is_active = TRUE')
+      .andWhere('tu.is_active = TRUE')
+      .andWhere('tu.protected = FALSE')
       .getRawMany()
     const ids = records.map((v) => v.twitter_user_id) as string[]
     return ids
