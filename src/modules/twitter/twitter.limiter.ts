@@ -8,6 +8,7 @@ export const twitterGuestTokenLimiter = new Bottleneck({ maxConcurrent: 1 })
  * @see https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-users-show
  */
 export const twitterUserShowLimiter = new Bottleneck({
+  maxConcurrent: 5,
   reservoir: 900,
   reservoirRefreshAmount: 900,
   reservoirRefreshInterval,
@@ -17,6 +18,7 @@ export const twitterUserShowLimiter = new Bottleneck({
  * @see https://developer.twitter.com/en/docs/twitter-api/v1/accounts-and-users/follow-search-get-users/api-reference/get-users-lookup
  */
 export const twitterUserLookupLimiter = new Bottleneck({
+  maxConcurrent: 5,
   reservoir: 300,
   reservoirRefreshAmount: 300,
   reservoirRefreshInterval,
