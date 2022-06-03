@@ -13,9 +13,9 @@ export class TwitCastingApiPublicService {
     const url = `https://twitcasting.tv/streamserver.php?target=${screenId}&mode=client`
     try {
       const { data } = await twitCastingStreamServerLimiter.schedule(async () => {
-        this.logger.debug('--> getStreamServer', { requestId, screenId })
+        // this.logger.debug('--> getStreamServer', { requestId, screenId })
         const response = await axios.get(url)
-        this.logger.debug('<-- getStreamServer', { requestId, screenId })
+        // this.logger.debug('<-- getStreamServer', { requestId, screenId })
         return response
       })
       return data

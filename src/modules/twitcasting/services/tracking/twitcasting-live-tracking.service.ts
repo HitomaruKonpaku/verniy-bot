@@ -52,6 +52,7 @@ export class TwitCastingLiveTrackingService {
   private async checkLive() {
     try {
       const screenIds = await this.trackTwitCastingLiveService.getScreenIdsForLiveCheck()
+      this.logger.debug('checkLive', { userCount: screenIds.length })
       await Promise.allSettled(screenIds.map((v) => this.checkUserMovie(v)))
     } catch (error) {
       this.logger.error(`checkLive: ${error.message}`)
