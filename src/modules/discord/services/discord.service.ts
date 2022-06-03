@@ -45,7 +45,7 @@ export class DiscordService {
         this.logger.error('DISCORD_TOKEN not found')
       }
       await this.client.login(token)
-      this.logger.info('Logged in!')
+      this.logger.warn('Logged in!')
     } catch (error) {
       this.logger.error(`start: ${error.message}`)
     }
