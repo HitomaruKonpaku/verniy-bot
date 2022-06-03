@@ -96,7 +96,7 @@ export class DiscordClientService extends Client {
 
     this.on('ready', () => {
       const { user } = this
-      this.logger.info(`${user.tag} ready!`)
+      this.logger.warn(`${user.tag} ready!`)
     })
   }
 
