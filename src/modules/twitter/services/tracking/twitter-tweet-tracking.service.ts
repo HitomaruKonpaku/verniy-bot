@@ -1,5 +1,6 @@
 import { hideLinkEmbed } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { EventEmitter } from 'events'
 import { ETwitterStreamEvent, TweetStream, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { AppUtils } from '../../../../utils/app.utils'
@@ -12,10 +13,9 @@ import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterClientService } from '../api/twitter-client.service'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterFilteredStreamUserService } from '../data/twitter-filtered-stream-user.service'
-import { TwitterUserService } from '../data/twitter-user.service'
 
 @Injectable()
-export class TwitterTweetTrackingService {
+export class TwitterTweetTrackingService extends EventEmitter {
   private readonly logger = baseLogger.child({ context: TwitterTweetTrackingService.name })
 
   private stream: TweetStream<TweetV2SingleStreamResult>
@@ -27,8 +27,6 @@ export class TwitterTweetTrackingService {
     private readonly twitterClientService: TwitterClientService,
     @Inject(TwitterFilteredStreamUserService)
     private readonly twitterFilteredStreamUserService: TwitterFilteredStreamUserService,
-    @Inject(TwitterUserService)
-    private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TrackTwitterTweetService)
@@ -37,7 +35,9 @@ export class TwitterTweetTrackingService {
     private readonly twitterApiService: TwitterApiService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
-  ) { }
+  ) {
+    super()
+  }
 
   private get client() {
     return this.twitterClientService.roClient
@@ -91,6 +91,7 @@ export class TwitterTweetTrackingService {
     stream.on(ev.ReconnectLimitExceeded, () => this.logger.error('ReconnectLimitExceeded'))
     stream.on(ev.Reconnected, () => this.logger.info('Reconnected'))
     stream.on(ev.Data, (data) => this.onData(data))
+    stream.on(ev.Data, (data) => this.emit(ETwitterStreamEvent.Data, data))
   }
 
   private async initUsers() {
