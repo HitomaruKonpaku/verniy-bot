@@ -13,7 +13,7 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
     super()
   }
 
-  public async getIdsForInitUsers(): Promise<string[]> {
+  public async getUserIdsForInitUsers(): Promise<string[]> {
     const records = await this.repository
       .createQueryBuilder('ttl')
       .select('ttl.twitcasting_user_id')
@@ -46,6 +46,18 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
       .andWhere('twitcasting_user_id = :userId', { userId })
     const records = await query.getMany()
     return records
+  }
+
+  public async filterExistedUserIds(userIds: string[]): Promise<string[]> {
+    const records = await this.repository
+      .createQueryBuilder()
+      .select('twitcasting_user_id')
+      .distinct()
+      .andWhere('is_active = TRUE')
+      .andWhere('twitcasting_user_id IN (:...userIds)', { userIds })
+      .getRawMany()
+    const ids = records.map((v) => v.twitcasting_user_id)
+    return ids
   }
 
   public async add(

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
+import { TwitCastingApiMovie, TwitCastingApiMovieInfo } from '../../interfaces/twitcasting-api.interface'
 import { TwitCastingMovie } from '../../models/twitcasting-movie.entity'
 import { TwitCastingApiService } from '../api/twitcasting-api.service'
 import { TwitCastingMovieService } from '../data/twitcasting-movie.service'
@@ -20,9 +21,7 @@ export class TwitCastingMovieControllerService {
 
   public async getOneAndSaveById(id: string) {
     const response = await this.twitCastingApiService.getMovieById(id)
-    const user = await this.twitCastingUserControllerService.save(response.broadcaster)
-    const movie = await this.update(response.movie)
-    movie.user = user
+    const movie = await this.saveMovieInfo(response)
     return movie
   }
 
@@ -37,7 +36,7 @@ export class TwitCastingMovieControllerService {
         const response = await this.twitCastingApiService.getMoviesByUserId(id, { limit, offset })
         movies = response.movies
         // eslint-disable-next-line no-await-in-loop
-        await Promise.all(movies.map((v) => this.update(v)))
+        await Promise.all(movies.map((v) => this.save(v)))
         offset += limit
       } catch (error) {
         this.logger.error(`getMoviesByUserIds: ${error.message}`, { id, limit, offset })
@@ -45,7 +44,17 @@ export class TwitCastingMovieControllerService {
     } while (movies.length)
   }
 
-  public async update(data: any): Promise<TwitCastingMovie> {
+  /**
+   * @see https://apiv2-doc.twitcasting.tv/#get-movie-info
+   */
+  public async saveMovieInfo(info: TwitCastingApiMovieInfo) {
+    const user = await this.twitCastingUserControllerService.save(info.broadcaster)
+    const movie = await this.save(info.movie)
+    movie.user = user
+    return movie
+  }
+
+  public async save(data: TwitCastingApiMovie): Promise<TwitCastingMovie> {
     const movie: TwitCastingMovie = {
       id: data.id,
       isActive: true,

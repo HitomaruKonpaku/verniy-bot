@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
+import { TwitCastingApiUser } from '../../interfaces/twitcasting-api.interface'
 import { TwitCastingUser } from '../../models/twitcasting-user.entity'
 import { TwitCastingApiService } from '../api/twitcasting-api.service'
 import { TwitCastingUserService } from '../data/twitcasting-user.service'
@@ -21,7 +22,7 @@ export class TwitCastingUserControllerService {
     return user
   }
 
-  public async save(data: any): Promise<TwitCastingUser> {
+  public async save(data: TwitCastingApiUser): Promise<TwitCastingUser> {
     const user: TwitCastingUser = {
       id: data.id,
       isActive: true,

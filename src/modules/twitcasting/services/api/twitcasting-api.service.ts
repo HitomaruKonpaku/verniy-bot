@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import axios, { AxiosInstance } from 'axios'
 import { randomUUID } from 'crypto'
 import { baseLogger } from '../../../../logger'
+import { TwitCastingApiMovieInfo } from '../../interfaces/twitcasting-api.interface'
 import { twitCastingUserByIdLimiter } from '../../twitcasting.limiter'
 
 @Injectable()
@@ -33,7 +34,14 @@ export class TwitCastingApiService {
   }
 
   /**
-   *  @see https://apiv2-doc.twitcasting.tv/#get-user-info
+   * @see https://apiv2-doc.twitcasting.tv/#realtime-api
+   */
+  public getRealtimeLivesUrl() {
+    return `wss://${this.clientId}:${this.clientSecret}@realtime.twitcasting.tv/lives`
+  }
+
+  /**
+   * @see https://apiv2-doc.twitcasting.tv/#get-user-info
    */
   public async getUserById(id: string) {
     const requestId = randomUUID()
@@ -52,14 +60,14 @@ export class TwitCastingApiService {
   }
 
   /**
-   *  @see https://apiv2-doc.twitcasting.tv/#get-movie-info
+   * @see https://apiv2-doc.twitcasting.tv/#get-movie-info
    */
   public async getMovieById(id: string) {
     const requestId = randomUUID()
     try {
       const { data } = await twitCastingUserByIdLimiter.schedule(async () => {
         this.logger.debug('--> getMovieById', { requestId, id })
-        const response = await this.client.get(`movies/${id}`)
+        const response = await this.client.get<TwitCastingApiMovieInfo>(`movies/${id}`)
         this.logger.debug('<-- getMovieById', { requestId, id })
         return response
       })
@@ -71,7 +79,7 @@ export class TwitCastingApiService {
   }
 
   /**
-   *  @see https://apiv2-doc.twitcasting.tv/#get-movies-by-user
+   * @see https://apiv2-doc.twitcasting.tv/#get-movies-by-user
    */
   public async getMoviesByUserId(
     id: string,

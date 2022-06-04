@@ -1,11 +1,14 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { WebSocket } from 'ws'
 import { baseLogger } from '../../../../logger'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackTwitCastingLiveService } from '../../../track/services/track-twitcasting-live.service'
+import { TwitCastingApiMovieInfo } from '../../interfaces/twitcasting-api.interface'
 import { TwitCastingMovie } from '../../models/twitcasting-movie.entity'
 import { TwitCastingUtils } from '../../utils/twitcasting.utils'
 import { TwitCastingApiPublicService } from '../api/twitcasting-api-public.service'
+import { TwitCastingApiService } from '../api/twitcasting-api.service'
 import { TwitCastingMovieControllerService } from '../controller/twitcasting-movie-controller.service'
 import { TwitCastingUserControllerService } from '../controller/twitcasting-user-controller.service'
 import { TwitCastingMovieService } from '../data/twitcasting-movie.service'
@@ -25,6 +28,8 @@ export class TwitCastingLiveTrackingService {
     private readonly twitCastingUserControllerService: TwitCastingUserControllerService,
     @Inject(TwitCastingMovieControllerService)
     private readonly twitCastingMovieControllerService: TwitCastingMovieControllerService,
+    @Inject(TwitCastingApiService)
+    private readonly twitCastingApiService: TwitCastingApiService,
     @Inject(TwitCastingApiPublicService)
     private readonly twitCastingApiPublicService: TwitCastingApiPublicService,
     @Inject(forwardRef(() => DiscordService))
@@ -34,18 +39,83 @@ export class TwitCastingLiveTrackingService {
   public async start() {
     this.logger.info('Starting...')
     await this.initUsers()
-    await this.checkLive()
+    this.initRealtimeApi()
+    this.checkLive()
   }
 
   private async initUsers() {
     try {
-      const userIds = await this.trackTwitCastingLiveService.getIdsForInitUsers()
+      const userIds = await this.trackTwitCastingLiveService.getUserIdsForInitUsers()
       if (!userIds.length) {
         return
       }
       await Promise.allSettled(userIds.map((v) => this.twitCastingUserControllerService.getOneAndSaveById(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)
+    }
+  }
+
+  private initRealtimeApi() {
+    const url = this.twitCastingApiService.getRealtimeLivesUrl()
+    const socket = new WebSocket(url)
+    socket.on('error', (error) => this.logger.error(`[WS] error: ${error.message}`))
+    socket.on('open', () => this.logger.debug('[WS] open'))
+    socket.on('close', () => this.onWsClose())
+    socket.on('message', (payload) => this.onWsMessage(String(payload)))
+  }
+
+  private onWsClose() {
+    this.logger.debug('[WS] close')
+    this.initRealtimeApi()
+  }
+
+  private onWsMessage(payload: string) {
+    this.logger.debug('[WS] message')
+    try {
+      const obj = JSON.parse(payload)
+      if (!obj.movies?.length) {
+        return
+      }
+      this.checkMovieInfoArr(obj.movies)
+    } catch (error) {
+      this.logger.error(`onWsMessage: ${error.message}`)
+    }
+  }
+
+  private async checkMovieInfoArr(infoArr: TwitCastingApiMovieInfo[]) {
+    if (!infoArr?.length) {
+      return
+    }
+    try {
+      const allUserIds = infoArr.map((v) => v.movie.user_id)
+      const filterUserIds = await this.trackTwitCastingLiveService.filterExistedUserIds(allUserIds)
+      if (!filterUserIds.length) {
+        return
+      }
+      const filterMovieInfoArr = infoArr.filter((v) => filterUserIds.some((uid) => uid.toLowerCase() === v.movie.user_id))
+      await Promise.all(filterMovieInfoArr.map((v) => this.updateAndNotifyMovieInfo(v)))
+    } catch (error) {
+      this.logger.error(`checkMovies: ${error.message}`)
+    }
+  }
+
+  private async updateAndNotifyMovieInfo(info: TwitCastingApiMovieInfo) {
+    try {
+      this.logger.debug('updateAndNotifyMovieInfo', {
+        movie: { id: info.movie.id },
+        user: {
+          id: info.broadcaster.id,
+          screenId: info.broadcaster.screen_id,
+        },
+      })
+      let movie = await this.twitCastingMovieService.getOneById(info.movie.id)
+      if (movie) {
+        return
+      }
+      movie = await this.twitCastingMovieControllerService.saveMovieInfo(info)
+      await this.notifyMovie(movie)
+    } catch (error) {
+      this.logger.error(`updateAndNotifyMovieInfo: ${error.message}`)
     }
   }
 
