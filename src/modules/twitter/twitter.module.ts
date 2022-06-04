@@ -59,6 +59,7 @@ import { TwitterService } from './services/twitter.service'
     TwitterSpaceService,
     TwitterUserControllerService,
     TwitterSpaceControllerService,
+    TwitterTweetTrackingService,
   ],
 })
 export class TwitterModule { }

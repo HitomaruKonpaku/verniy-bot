@@ -90,6 +90,14 @@ export class ConfigService {
     return config
   }
 
+  public get holodex() {
+    const config = {
+      active: false,
+    }
+    Object.assign(config, this.config.holodex || {})
+    return config
+  }
+
   public load() {
     let config: any
 

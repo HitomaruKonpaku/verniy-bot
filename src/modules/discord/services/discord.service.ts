@@ -7,6 +7,7 @@ import {
 } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
+import { HolodexService } from '../../holodex/services/holodex.service'
 import { InstagramService } from '../../instagram/services/instagram.service'
 import { TwitCastingService } from '../../twitcasting/services/twitcasting.service'
 import { TwitchService } from '../../twitch/services/twitch.service'
@@ -33,6 +34,8 @@ export class DiscordService {
     private readonly twitchService: TwitchService,
     @Inject(forwardRef(() => InstagramService))
     private readonly instagramService: InstagramService,
+    @Inject(forwardRef(() => HolodexService))
+    private readonly holodexService: HolodexService,
   ) {
     this.addClientListeners()
   }
@@ -126,6 +129,9 @@ export class DiscordService {
       }
       if (this.configService.instagram.active) {
         this.instagramService.start()
+      }
+      if (this.configService.holodex.active) {
+        this.holodexService.start()
       }
     })
   }

@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
+import { HolodexModule } from '../holodex/holodex.module'
 import { InstagramModule } from '../instagram/instagram.module'
 import { TrackModule } from '../track/track.module'
 import { TwitCastingModule } from '../twitcasting/twitcasting.module'
@@ -45,6 +46,7 @@ import { DiscordService } from './services/discord.service'
     forwardRef(() => TwitCastingModule),
     forwardRef(() => TwitchModule),
     forwardRef(() => InstagramModule),
+    forwardRef(() => HolodexModule),
   ],
   providers: [
     DiscordService,
