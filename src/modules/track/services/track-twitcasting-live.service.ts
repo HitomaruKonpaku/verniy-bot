@@ -16,13 +16,13 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
   public async getUserIdsForInitUsers(): Promise<string[]> {
     const records = await this.repository
       .createQueryBuilder('ttl')
-      .select('ttl.twitcasting_user_id')
+      .select('ttl.user_id')
       .distinct()
-      .leftJoin('twitcasting_user', 'tu', 'tu.id = ttl.twitcasting_user_id')
+      .leftJoin('twitcasting_user', 'tu', 'tu.id = ttl.user_id')
       .andWhere('ttl.is_active = TRUE')
       .andWhere('tu.id ISNULL')
       .getRawMany()
-    const ids = records.map((v) => v.twitcasting_user_id)
+    const ids = records.map((v) => v.user_id)
     return ids
   }
 
@@ -31,7 +31,7 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
       .createQueryBuilder('ttl')
       .select('tu.screen_id')
       .distinct()
-      .leftJoin('twitcasting_user', 'tu', 'tu.id = ttl.twitcasting_user_id')
+      .leftJoin('twitcasting_user', 'tu', 'tu.id = ttl.user_id')
       .andWhere('ttl.is_active = TRUE')
       .andWhere('tu.id NOTNULL')
       .getRawMany()
@@ -43,7 +43,7 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere('twitcasting_user_id = :userId', { userId })
+      .andWhere('user_id = :userId', { userId })
     const records = await query.getMany()
     return records
   }
@@ -51,52 +51,12 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
   public async filterExistedUserIds(userIds: string[]): Promise<string[]> {
     const records = await this.repository
       .createQueryBuilder()
-      .select('twitcasting_user_id')
+      .select('user_id')
       .distinct()
       .andWhere('is_active = TRUE')
-      .andWhere('twitcasting_user_id IN (:...userIds)', { userIds })
+      .andWhere('user_id IN (:...userIds)', { userIds })
       .getRawMany()
-    const ids = records.map((v) => v.twitcasting_user_id)
+    const ids = records.map((v) => v.user_id)
     return ids
-  }
-
-  public async add(
-    twitcastingUserId: string,
-    discordChannelId: string,
-    discordMessage = null,
-    updatedBy?: string,
-  ) {
-    await this.repository.upsert(
-      {
-        isActive: true,
-        updatedAt: Date.now(),
-        updatedBy,
-        twitcastingUserId,
-        discordChannelId,
-        discordMessage,
-      },
-      {
-        conflictPaths: ['twitcastingUserId', 'discordChannelId'],
-        skipUpdateIfNoValuesChanged: true,
-      },
-    )
-  }
-
-  public async remove(
-    twitcastingUserId: string,
-    discordChannelId: string,
-    updatedBy?: string,
-  ) {
-    await this.repository.update(
-      {
-        twitcastingUserId,
-        discordChannelId,
-      },
-      {
-        isActive: false,
-        updatedAt: Date.now(),
-        updatedBy,
-      },
-    )
   }
 }

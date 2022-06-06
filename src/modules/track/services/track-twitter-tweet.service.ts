@@ -16,13 +16,13 @@ export class TrackTwitterTweetService extends BaseTrackService<TrackTwitterTweet
   public async getTwitterUserIds() {
     const records = await this.repository
       .createQueryBuilder()
-      .select('twitter_user_id')
+      .select('user_id')
       .distinct()
       .andWhere('is_active = TRUE')
-      .addOrderBy('LENGTH(twitter_user_id)')
-      .addOrderBy('twitter_user_id')
+      .addOrderBy('LENGTH(user_id)')
+      .addOrderBy('user_id')
       .getRawMany()
-    const ids = records.map((v) => v.twitter_user_id) as string[]
+    const ids = records.map((v) => v.user_id) as string[]
     return ids
   }
 
@@ -30,7 +30,7 @@ export class TrackTwitterTweetService extends BaseTrackService<TrackTwitterTweet
     const query = `
 SELECT DISTINCT (tu.username)
 FROM track_twitter_tweet AS tt
-  JOIN twitter_user AS tu ON tu.id = tt.twitter_user_id
+  JOIN twitter_user AS tu ON tu.id = tt.user_id
 WHERE tt.is_active = TRUE
 ORDER BY LOWER(tu.username)
     `
@@ -46,7 +46,7 @@ ORDER BY LOWER(tu.username)
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere('twitter_user_id = :userId', { userId })
+      .andWhere('user_id = :userId', { userId })
     if (config?.allowReply) {
       query.andWhere('allow_reply = TRUE')
     }
@@ -64,7 +64,7 @@ ORDER BY LOWER(tu.username)
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere('twitter_user_id IN (:...userIds)', { userIds })
+      .andWhere('user_id IN (:...userIds)', { userIds })
     if (config?.allowReply) {
       query.andWhere('allow_reply = TRUE')
     }
@@ -75,11 +75,11 @@ ORDER BY LOWER(tu.username)
     return records
   }
 
-  public async existTwitterUserId(twitterUserId: string) {
+  public async existTwitterUserId(userId: string) {
     const count = await this.repository.count({
       where: {
         isActive: true,
-        twitterUserId,
+        userId,
       },
     })
     const isExist = count > 0
@@ -87,47 +87,31 @@ ORDER BY LOWER(tu.username)
   }
 
   public async add(
-    twitterUserId: string,
+    userId: string,
     discordChannelId: string,
     discordMessage = null,
-    allowReply = true,
-    allowRetweet = true,
-    filterKeywords?: string[],
     updatedBy?: string,
+    options?: {
+      allowReply?: boolean
+      allowRetweet?: boolean
+      filterKeywords?: string[]
+    },
   ) {
     await this.repository.upsert(
       {
         isActive: true,
         updatedAt: Date.now(),
         updatedBy,
-        twitterUserId,
+        userId,
         discordChannelId,
         discordMessage,
-        allowReply,
-        allowRetweet,
-        filterKeywords,
+        allowReply: options?.allowReply || true,
+        allowRetweet: options?.allowRetweet || true,
+        filterKeywords: options?.filterKeywords || null,
       },
       {
-        conflictPaths: ['twitterUserId', 'discordChannelId'],
+        conflictPaths: ['userId', 'discordChannelId'],
         skipUpdateIfNoValuesChanged: true,
-      },
-    )
-  }
-
-  public async remove(
-    twitterUserId: string,
-    discordChannelId: string,
-    updatedBy?: string,
-  ) {
-    await this.repository.update(
-      {
-        twitterUserId,
-        discordChannelId,
-      },
-      {
-        isActive: false,
-        updatedAt: Date.now(),
-        updatedBy,
       },
     )
   }

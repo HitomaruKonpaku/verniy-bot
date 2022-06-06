@@ -40,13 +40,13 @@ export class TwitterSpaceUtils {
     if (space.state === SpaceState.ENDED) {
       return `${displayCreator} ended a Space`
     }
-    if (space.creatorId !== track.twitterUserId) {
-      if (space.hostIds?.includes?.(track.twitterUserId)) {
-        const displayGuest = inlineCode(space.hosts?.find?.((v) => v.id === track.twitterUserId)?.username || track.twitterUserId)
+    if (space.creatorId !== track.userId) {
+      if (space.hostIds?.includes?.(track.userId)) {
+        const displayGuest = inlineCode(space.hosts?.find?.((v) => v.id === track.userId)?.username || track.userId)
         return `${displayGuest} is co-hosting ${displayCreator}'s Space`
       }
-      if (space.speakerIds?.includes?.(track.twitterUserId)) {
-        const displayGuest = inlineCode(space.speakers?.find?.((v) => v.id === track.twitterUserId)?.username || track.twitterUserId)
+      if (space.speakerIds?.includes?.(track.userId)) {
+        const displayGuest = inlineCode(space.speakers?.find?.((v) => v.id === track.userId)?.username || track.userId)
         return `${displayGuest} is speaking in ${displayCreator}'s Space`
       }
     }

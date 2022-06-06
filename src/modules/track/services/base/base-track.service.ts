@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Repository } from 'typeorm'
+import { BaseTrackEntity } from '../../models/base/base-track.entity'
 
-export abstract class BaseTrackService<T> {
+export abstract class BaseTrackService<T extends BaseTrackEntity> {
   public readonly repository: Repository<T>
 
   public async getDiscordChannelIds() {
@@ -11,5 +13,46 @@ export abstract class BaseTrackService<T> {
       .getRawMany()
     const ids = records.map((v) => v.discord_channel_id) as string[]
     return ids
+  }
+
+  public async add(
+    userId: string,
+    discordChannelId: string,
+    discordMessage = null,
+    updatedBy?: string,
+    options?: any,
+  ) {
+    await this.repository.upsert(
+      {
+        isActive: true,
+        updatedAt: Date.now(),
+        updatedBy,
+        userId,
+        discordChannelId,
+        discordMessage,
+      } as any,
+      {
+        conflictPaths: ['userId', 'discordChannelId'],
+        skipUpdateIfNoValuesChanged: true,
+      },
+    )
+  }
+
+  public async remove(
+    userId: string,
+    discordChannelId: string,
+    updatedBy?: string,
+  ) {
+    await this.repository.update(
+      {
+        userId,
+        discordChannelId,
+      } as any,
+      {
+        isActive: false,
+        updatedAt: Date.now(),
+        updatedBy,
+      } as any,
+    )
   }
 }

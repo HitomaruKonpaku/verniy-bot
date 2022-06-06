@@ -47,9 +47,9 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
       .leftJoin(
         'track_twitter_profile',
         'ttp',
-        'ttp.is_active = TRUE AND ttp.twitter_user_id = tu.id',
+        'ttp.is_active = TRUE AND ttp.user_id = tu.id',
       )
-      .andWhere('ttp.twitter_user_id ISNULL')
+      .andWhere('ttp.user_id ISNULL')
       .getMany()
     return users
   }

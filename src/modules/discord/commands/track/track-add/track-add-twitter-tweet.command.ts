@@ -45,10 +45,11 @@ export class TrackAddTwitterTweetCommand extends BaseCommand {
         user.id,
         channelId,
         message,
-        allowReply,
-        allowRetweet,
-        null,
         interaction.user.id,
+        {
+          allowReply,
+          allowRetweet,
+        },
       )
       this.logger.warn('execute: added', meta)
       await interaction.editReply({
