@@ -39,15 +39,6 @@ export class TrackTwitCastingLiveService extends BaseTrackService<TrackTwitCasti
     return ids
   }
 
-  public async getManyByTwitCastingUserId(userId: string) {
-    const query = this.repository
-      .createQueryBuilder()
-      .andWhere('is_active = TRUE')
-      .andWhere('user_id = :userId', { userId })
-    const records = await query.getMany()
-    return records
-  }
-
   public async filterExistedUserIds(userIds: string[]): Promise<string[]> {
     const records = await this.repository
       .createQueryBuilder()

@@ -82,7 +82,7 @@ export class InstagramTrackingService {
 
   private async getTrackItems(user: InstagramUser) {
     try {
-      const items = await this.trackInstagramPostService.getManyByInstagramUserId(user.id)
+      const items = await this.trackInstagramPostService.getManyByUserId(user.id)
       return items
     } catch (error) {
       this.logger.error(`getTrackItems: ${error.message}`, { user: { id: user.id } })

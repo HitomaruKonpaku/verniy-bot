@@ -224,7 +224,7 @@ export class TwitterSpaceTrackingService {
       const ids = [space.creatorId, space.hostIds, space.speakerIds]
         .flat()
         .filter((v) => v)
-      const items = await this.trackTwitterSpaceService.getManyByTwitterUserIds(ids)
+      const items = await this.trackTwitterSpaceService.getManyByUserIds(ids)
       return items
     } catch (error) {
       this.logger.error(`getTrackItems: ${error.message}`, { space })

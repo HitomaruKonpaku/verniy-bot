@@ -41,34 +41,16 @@ ORDER BY LOWER(tu.username)
 
   public async getManyByTwitterUserId(
     userId: string,
-    config?: { allowReply?: boolean, allowRetweet?: boolean },
+    options?: { allowReply?: boolean, allowRetweet?: boolean },
   ) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
       .andWhere('user_id = :userId', { userId })
-    if (config?.allowReply) {
+    if (options?.allowReply) {
       query.andWhere('allow_reply = TRUE')
     }
-    if (config?.allowRetweet) {
-      query.andWhere('allow_retweet = TRUE')
-    }
-    const records = await query.getMany()
-    return records
-  }
-
-  public async getManyByTwitterUserIds(
-    userIds: string[],
-    config?: { allowReply?: boolean, allowRetweet?: boolean },
-  ) {
-    const query = this.repository
-      .createQueryBuilder()
-      .andWhere('is_active = TRUE')
-      .andWhere('user_id IN (:...userIds)', { userIds })
-    if (config?.allowReply) {
-      query.andWhere('allow_reply = TRUE')
-    }
-    if (config?.allowRetweet) {
+    if (options?.allowRetweet) {
       query.andWhere('allow_retweet = TRUE')
     }
     const records = await query.getMany()

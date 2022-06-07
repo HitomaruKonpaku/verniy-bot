@@ -15,6 +15,24 @@ export abstract class BaseTrackService<T extends BaseTrackEntity> {
     return ids
   }
 
+  public async getManyByUserId(userId: string, options?: any) {
+    const query = this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .andWhere('user_id = :userId', { userId })
+    const records = await query.getMany()
+    return records
+  }
+
+  public async getManyByUserIds(userIds: string[], options?: any) {
+    const query = this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .andWhere('user_id IN (:...userIds)', { userIds })
+    const records = await query.getMany()
+    return records
+  }
+
   public async add(
     userId: string,
     discordChannelId: string,

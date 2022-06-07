@@ -25,22 +25,4 @@ export class TrackTwitterProfileService extends BaseTrackService<TrackTwitterPro
     const ids = records.map((v) => v.user_id) as string[]
     return ids
   }
-
-  public async getManyByTwitterUserId(userId: string) {
-    const query = this.repository
-      .createQueryBuilder()
-      .andWhere('is_active = TRUE')
-      .andWhere('user_id = :userId', { userId })
-    const records = await query.getMany()
-    return records
-  }
-
-  public async getManyByTwitterUserIds(userIds: string[]) {
-    const query = this.repository
-      .createQueryBuilder()
-      .andWhere('is_active = TRUE')
-      .andWhere('user_id IN (:...userIds)', { userIds })
-    const records = await query.getMany()
-    return records
-  }
 }

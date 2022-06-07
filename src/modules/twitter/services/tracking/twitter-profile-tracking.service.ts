@@ -292,7 +292,7 @@ export class TwitterProfileTrackingService {
 
   private async getTrackItems(user: TwitterUser) {
     try {
-      const items = await this.trackTwitterProfileService.getManyByTwitterUserId(user.id)
+      const items = await this.trackTwitterProfileService.getManyByUserId(user.id)
       return items
     } catch (error) {
       this.logger.error(`getTrackItems: ${error.message}`, { user })

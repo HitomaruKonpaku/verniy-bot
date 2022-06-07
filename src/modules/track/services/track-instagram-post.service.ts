@@ -38,13 +38,4 @@ export class TrackInstagramPostService extends BaseTrackService<TrackInstagramPo
     const usernames = records.map((v) => v.iu_username)
     return usernames
   }
-
-  public async getManyByInstagramUserId(userId: string) {
-    const query = this.repository
-      .createQueryBuilder()
-      .andWhere('is_active = TRUE')
-      .andWhere('user_id = :userId', { userId })
-    const records = await query.getMany()
-    return records
-  }
 }

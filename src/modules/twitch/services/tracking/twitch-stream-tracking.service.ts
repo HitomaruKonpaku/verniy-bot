@@ -113,7 +113,7 @@ export class TwitchStreamTrackingService {
 
   private async getTrackItems(stream: TwitchStream) {
     try {
-      const items = await this.trackTwitchStreamService.getManyByTwitchUserId(stream.userId)
+      const items = await this.trackTwitchStreamService.getManyByUserId(stream.userId)
       return items
     } catch (error) {
       this.logger.error(`getTrackItems: ${error.message}`, { stream })

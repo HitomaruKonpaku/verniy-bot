@@ -38,13 +38,4 @@ export class TrackTwitchStreamService extends BaseTrackService<TrackTwitchStream
     const ids = records.map((v) => v.user_id)
     return ids
   }
-
-  public async getManyByTwitchUserId(userId: string) {
-    const query = this.repository
-      .createQueryBuilder()
-      .andWhere('is_active = TRUE')
-      .andWhere('user_id = :userId', { userId })
-    const records = await query.getMany()
-    return records
-  }
 }

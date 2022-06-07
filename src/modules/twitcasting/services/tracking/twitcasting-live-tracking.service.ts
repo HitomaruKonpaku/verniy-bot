@@ -186,7 +186,7 @@ export class TwitCastingLiveTrackingService {
 
   private async getTrackItems(movie: TwitCastingMovie) {
     try {
-      const items = await this.trackTwitCastingLiveService.getManyByTwitCastingUserId(movie.userId)
+      const items = await this.trackTwitCastingLiveService.getManyByUserId(movie.userId)
       return items
     } catch (error) {
       this.logger.error(`getTrackItems: ${error.message}`, { movie })
