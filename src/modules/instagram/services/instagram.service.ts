@@ -20,7 +20,7 @@ export class InstagramService {
   public async start() {
     this.logger.info('Starting...')
     const config = this.configService.instagram
-    if (config.track) {
+    if (config.track.active) {
       await this.instagramTrackingService.start()
     }
   }
