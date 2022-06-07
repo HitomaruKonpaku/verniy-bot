@@ -1,8 +1,13 @@
+/* eslint-disable class-methods-use-this */
 import { Injectable } from '@nestjs/common'
 import { readFileSync } from 'fs'
 import yaml from 'js-yaml'
 import { baseLogger } from '../../../logger'
-import { TWITTER_STREAM_RULE_LENGTH, TWITTER_STREAM_RULE_LIMIT } from '../../twitter/constants/twitter.constant'
+import { holodexConfig } from '../config/holodex.config'
+import { instagramConfig } from '../config/instagram.config'
+import { twitcastingConfig } from '../config/twitcasting.config'
+import { twitchConfig } from '../config/twitch.config'
+import { twitterConfig } from '../config/twitter.config'
 
 @Injectable()
 export class ConfigService {
@@ -12,93 +17,39 @@ export class ConfigService {
 
   constructor() {
     this.config = {}
-    this.load()
+    this.loadConfig()
+    this.applyConfig()
   }
 
   public get twitter() {
-    const config = {
-      active: false,
-      tweet: {
-        active: false,
-        /**
-         * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
-         */
-        ruleLimit: TWITTER_STREAM_RULE_LIMIT,
-        /**
-         * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
-         */
-        ruleLength: TWITTER_STREAM_RULE_LENGTH,
-      },
-      profile: {
-        active: false,
-        interval: 60000,
-      },
-      space: {
-        active: false,
-        interval: 60000,
-      },
-      cron: {
-        active: false,
-      },
-    }
-    Object.assign(config, this.config.twitter || {})
-    return config
+    return twitterConfig
   }
 
   public get twitcasting() {
-    const config = {
-      active: false,
-      live: {
-        active: false,
-        interval: 60000,
-      },
-      cron: {
-        active: false,
-      },
-    }
-    Object.assign(config, this.config.twitcasting || {})
-    return config
+    return twitcastingConfig
   }
 
   public get twitch() {
-    const config = {
-      active: false,
-      stream: {
-        active: false,
-        interval: 60000,
-      },
-      cron: {
-        active: false,
-      },
-    }
-    Object.assign(config, this.config.twitch || {})
-    return config
+    return twitchConfig
   }
 
   public get instagram() {
-    const config = {
-      active: false,
-      track: {
-        active: false,
-        interval: 60000,
-      },
-      cron: {
-        active: false,
-      },
-    }
-    Object.assign(config, this.config.instagram || {})
-    return config
+    return instagramConfig
   }
 
   public get holodex() {
-    const config = {
-      active: false,
-    }
-    Object.assign(config, this.config.holodex || {})
-    return config
+    return holodexConfig
   }
 
-  public load() {
+  public applyConfig() {
+    Object.assign(twitterConfig, this.config.twitter || {})
+    Object.assign(twitcastingConfig, this.config.twitcasting || {})
+    Object.assign(twitchConfig, this.config.twitch || {})
+    Object.assign(instagramConfig, this.config.instagram || {})
+    Object.assign(holodexConfig, this.config.holodex || {})
+  }
+
+  public loadConfig() {
     let config: any
 
     try {
@@ -119,10 +70,5 @@ export class ConfigService {
 
     this.config = config || {}
     return this.config
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  private getNumber(value: string, defaultValue = 0) {
-    return Number(value || defaultValue) || defaultValue
   }
 }
