@@ -5,6 +5,7 @@ import yaml from 'js-yaml'
 import { baseLogger } from '../../../logger'
 import { holodexConfig } from '../config/holodex.config'
 import { instagramConfig } from '../config/instagram.config'
+import { tiktokConfig } from '../config/tiktok.config'
 import { twitcastingConfig } from '../config/twitcasting.config'
 import { twitchConfig } from '../config/twitch.config'
 import { twitterConfig } from '../config/twitter.config'
@@ -37,6 +38,10 @@ export class ConfigService {
     return instagramConfig
   }
 
+  public get tiktok() {
+    return tiktokConfig
+  }
+
   public get holodex() {
     return holodexConfig
   }
@@ -46,6 +51,7 @@ export class ConfigService {
     Object.assign(twitcastingConfig, this.config.twitcasting || {})
     Object.assign(twitchConfig, this.config.twitch || {})
     Object.assign(instagramConfig, this.config.instagram || {})
+    Object.assign(tiktokConfig, this.config.tiktok || {})
     Object.assign(holodexConfig, this.config.holodex || {})
   }
 
