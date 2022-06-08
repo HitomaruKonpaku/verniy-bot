@@ -53,7 +53,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
   public async connect(retryCount = 0) {
     try {
-      this.logger.info('Connecting')
+      this.logger.info('Connecting...')
       await this.stream.connect({ autoReconnect: true })
     } catch (error) {
       this.logger.error(`connect: ${error.message}`)
@@ -86,6 +86,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
     stream.on(ev.Connected, () => this.logger.info('Connected'))
     stream.on(ev.ConnectionLost, () => this.logger.error('ConnectionLost'))
     stream.on(ev.ConnectionClosed, () => this.logger.error('ConnectionClosed'))
+    stream.on(ev.ConnectionClosed, () => this.onConnectionClosed())
     stream.on(ev.ReconnectError, (error) => this.logger.error(`ReconnectError: ${error}`))
     stream.on(ev.ReconnectAttempt, (tries) => this.logger.warn(`ReconnectAttempt: ${tries}`))
     stream.on(ev.ReconnectLimitExceeded, () => this.logger.error('ReconnectLimitExceeded'))
@@ -159,6 +160,10 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
   private onError(error) {
     this.logger.error(`Error: ${error.message}`)
+  }
+
+  private onConnectionClosed() {
+    this.connect()
   }
 
   private async onData(data: TweetV2SingleStreamResult) {
