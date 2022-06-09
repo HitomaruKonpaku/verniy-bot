@@ -55,7 +55,7 @@ export class TiktokUserControllerService {
   public async saveUser(data: any) {
     const user = await this.tiktokUserService.save({
       // Not real TikTok user id but since TikTok API so shitty, we just use username as id
-      id: data.title,
+      id: data.title.toLowerCase(),
       isActive: true,
       createdAt: 0,
       username: data.title,
