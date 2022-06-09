@@ -4,7 +4,10 @@ import { DiscordMessage } from '../../discord/models/discord-message.entity'
 import { DiscordUser } from '../../discord/models/discord-user.entity'
 import { InstagramPost } from '../../instagram/models/instagram-post.entity'
 import { InstagramUser } from '../../instagram/models/instagram-user.entity'
+import { TiktokUser } from '../../tiktok/models/tiktok-user.entity'
+import { TiktokVideo } from '../../tiktok/models/tiktok-video.entity'
 import { TrackInstagramPost } from '../../track/models/track-instagram-post.entity'
+import { TrackTiktokVideo } from '../../track/models/track-tiktok-video.entity'
 import { TrackTwitCastingLive } from '../../track/models/track-twitcasting-live.entity'
 import { TrackTwitchStream } from '../../track/models/track-twitch-stream.entity'
 import { TrackTwitterProfile } from '../../track/models/track-twitter-profile.entity'
@@ -39,10 +42,14 @@ export const DB_ENTITIES = [
   InstagramUser,
   InstagramPost,
 
+  TiktokUser,
+  TiktokVideo,
+
   TrackTwitterTweet,
   TrackTwitterProfile,
   TrackTwitterSpace,
   TrackTwitCastingLive,
   TrackTwitchStream,
   TrackInstagramPost,
+  TrackTiktokVideo,
 ]

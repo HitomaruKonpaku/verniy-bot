@@ -5,6 +5,8 @@ import { PermissionFlagsBits } from 'discord-api-types/v10'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { BaseCommand } from '../../base/base.command'
+import { TrackType } from '../track-type.enum'
+import { TrackAddTiktokVideoCommand } from './track-add-tiktok-video.command'
 import { TrackAddTwitCastingLiveCommand } from './track-add-twitcasting-live.command'
 import { TrackAddTwitchUserStreamCommand } from './track-add-twitch-user-stream.command'
 import { TrackAddTwitterProfileCommand } from './track-add-twitter-profile.command'
@@ -16,9 +18,9 @@ export class TrackAddCommand extends BaseCommand {
   public static readonly command = new SlashCommandBuilder()
     .setName('track_add')
     .setDescription('Add tracking')
-    // twitter_tweet
+    //
     .addSubcommand((subcommand) => subcommand
-      .setName('twitter_tweet')
+      .setName(TrackType.TWITTER_TWEET)
       .setDescription('Track user tweets')
       .addStringOption((option) => option
         .setName('username')
@@ -31,40 +33,49 @@ export class TrackAddCommand extends BaseCommand {
       .addBooleanOption((option) => option
         .setName('allow_retweet')
         .setDescription('Allow retweet?')))
-    // twitter_profile
+    //
     .addSubcommand((subcommand) => subcommand
-      .setName('twitter_profile')
+      .setName(TrackType.TWITTER_PROFILE)
       .setDescription('Track user profile changes')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username, e.g. "nakiriayame"')
         .setRequired(true))
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    // twitter_space
+    //
     .addSubcommand((subcommand) => subcommand
-      .setName('twitter_space')
+      .setName(TrackType.TWITTER_SPACE)
       .setDescription('Track Spaces from user')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitter username, e.g. "nakiriayame"')
         .setRequired(true))
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    // twitcasting_live
+    //
     .addSubcommand((subcommand) => subcommand
-      .setName('twitcasting_live')
+      .setName(TrackType.TWITCASTING_LIVE)
       .setDescription('Track user live')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('TwitCasting user, e.g. "nakiriayame"')
         .setRequired(true))
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    // twitch_user_stream
+    //
     .addSubcommand((subcommand) => subcommand
-      .setName('twitch_user_stream')
+      .setName(TrackType.TWITCH_USER_STREAM)
       .setDescription('Track user live')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitch user, e.g. "nakiriayame_hololive"')
+        .setRequired(true))
+      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
+    //
+    .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.TIKTOK_VIDEO)
+      .setDescription('Track user video')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('TikTok user, e.g. "hololive_english"')
         .setRequired(true))
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
 
@@ -94,16 +105,18 @@ export class TrackAddCommand extends BaseCommand {
   private getCommandService(subcommand: string) {
     this.logger.debug(`getCommandService: ${subcommand}`)
     switch (subcommand) {
-      case 'twitter_tweet':
+      case TrackType.TWITTER_TWEET:
         return TrackAddTwitterTweetCommand
-      case 'twitter_profile':
+      case TrackType.TWITTER_PROFILE:
         return TrackAddTwitterProfileCommand
-      case 'twitter_space':
+      case TrackType.TWITTER_SPACE:
         return TrackAddTwitterSpaceCommand
-      case 'twitcasting_live':
+      case TrackType.TWITCASTING_LIVE:
         return TrackAddTwitCastingLiveCommand
-      case 'twitch_user_stream':
+      case TrackType.TWITCH_USER_STREAM:
         return TrackAddTwitchUserStreamCommand
+      case TrackType.TIKTOK_VIDEO:
+        return TrackAddTiktokVideoCommand
       default:
         return null
     }
