@@ -34,5 +34,9 @@ instagram:
   track:
     active: true
     interval: 60000
-  cron:
+
+tiktok:
+  active: false
+  track:
     active: true
+    interval: 300000
