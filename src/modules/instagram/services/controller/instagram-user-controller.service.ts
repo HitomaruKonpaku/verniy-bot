@@ -21,6 +21,9 @@ export class InstagramUserControllerService {
   public async fetchUserByUsername(username: string) {
     try {
       const result = await this.instagramApiService.getUser(username)
+      if (!result) {
+        return null
+      }
       const user = await this.saveUser(result)
       if (result.edge_owner_to_timeline_media?.edges?.length) {
         const nodes = result.edge_owner_to_timeline_media.edges.map((v) => v.node).filter((v) => v)
