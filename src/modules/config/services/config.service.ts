@@ -18,8 +18,7 @@ export class ConfigService {
 
   constructor() {
     this.config = {}
-    this.loadConfig()
-    this.applyConfig()
+    this.reloadConfig()
   }
 
   public get twitter() {
@@ -53,6 +52,11 @@ export class ConfigService {
     Object.assign(instagramConfig, this.config.instagram || {})
     Object.assign(tiktokConfig, this.config.tiktok || {})
     Object.assign(holodexConfig, this.config.holodex || {})
+  }
+
+  public reloadConfig() {
+    this.loadConfig()
+    this.applyConfig()
   }
 
   public loadConfig() {
