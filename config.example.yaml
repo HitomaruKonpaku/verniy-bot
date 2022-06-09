@@ -37,6 +37,7 @@ instagram:
 
 tiktok:
   active: false
+  proxyIndex: 0
   track:
     active: true
     interval: 300000

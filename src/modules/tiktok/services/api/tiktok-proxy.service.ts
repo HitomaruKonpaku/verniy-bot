@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
+import { ConfigService } from '../../../config/services/config.service'
 
 @Injectable()
 export class TiktokProxyService {
@@ -14,13 +15,20 @@ export class TiktokProxyService {
     'https://proxitok.privacydev.net',
   ]
 
-  private currentIndex = 2
+  private currentIndex = 0
+
+  constructor(
+    @Inject(ConfigService)
+    private readonly configService: ConfigService,
+  ) {
+    this.setCurrentIndex(this.configService.tiktok.proxyIndex)
+  }
 
   public getProxyUrl() {
     return this.INSTANCES_URLS[this.currentIndex]
   }
 
   public setCurrentIndex(index: number) {
-    this.currentIndex = index
+    this.currentIndex = Math.max(0, Math.min(this.INSTANCES_URLS.length - 1, index))
   }
 }
