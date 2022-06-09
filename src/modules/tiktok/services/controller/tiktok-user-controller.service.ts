@@ -30,12 +30,13 @@ export class TiktokUserControllerService {
         return null
       }
       const user = await this.saveUser(userData)
-      const videoIds: string[] = userData.item?.map((v) => v.guid) || []
+      const videoData: any[] = (Array.isArray(userData.item) ? userData.item : [userData.item]).filter((v) => v)
+      const videoIds: string[] = videoData?.map((v) => v.guid) || []
       if (videoIds.length) {
         try {
           const newVideoIds = await this.tiktokVideoControllerService.getNewVideoIds(videoIds)
           if (newVideoIds.length) {
-            const newVideos = userData.item.filter((v) => newVideoIds.some((id) => id === v.guid))
+            const newVideos = videoData.filter((v) => newVideoIds.some((id) => id === v.guid))
             const result = await Promise.allSettled(newVideos.map((v) => this.tiktokVideoControllerService.saveVideo(v, user.id)))
             user.newVideos = result
               .filter((v) => v.status === 'fulfilled')
