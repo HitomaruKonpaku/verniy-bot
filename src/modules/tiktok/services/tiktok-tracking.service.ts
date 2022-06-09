@@ -33,6 +33,7 @@ export class TiktokTrackingService {
   private async checkUsers() {
     try {
       const usernames = await this.trackTiktokVideoService.getUsernamesForCheck()
+      this.logger.debug('checkUsers', { userCount: usernames.length })
       await Promise.all(usernames.map((v) => this.checkUser(v)))
     } catch (error) {
       this.logger.error(`execute: ${error.message}`)
