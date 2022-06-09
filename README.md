@@ -9,6 +9,7 @@ Discord tracking bot
 - TwitCasting
 - Twitch
 - Instagram
+- TikTok
 
 ## Links
 
@@ -31,13 +32,10 @@ Discord tracking bot
   - twitter_space
   - twitcasting_live
   - twitch_user_stream
+  - tiktok_video
 
 - **track_remove**
-  - twitter_tweet
-  - twitter_profile
-  - twitter_space
-  - twitcasting_live
-  - twitch_user_stream
+  - Same as **track_add**
 
 - **get**
   - twitter
