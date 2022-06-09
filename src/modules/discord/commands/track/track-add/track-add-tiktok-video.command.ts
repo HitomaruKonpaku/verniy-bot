@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TiktokUserControllerService } from '../../../../tiktok/services/controller/tiktok-user-controller.service'
+import { TiktokUserService } from '../../../../tiktok/services/data/tiktok-user.service'
 import { TiktokUtils } from '../../../../tiktok/utils/tiktok.utils'
 import { TrackTiktokVideoService } from '../../../../track/services/track-tiktok-video.service'
 import { BaseCommand } from '../../base/base.command'
@@ -11,6 +12,8 @@ export class TrackAddTiktokVideoCommand extends BaseCommand {
   private readonly logger = baseLogger.child({ context: TrackAddTiktokVideoCommand.name })
 
   constructor(
+    @Inject(TiktokUserService)
+    private readonly tiktokUserService: TiktokUserService,
     @Inject(TiktokUserControllerService)
     private readonly tiktokUserControllerService: TiktokUserControllerService,
     @Inject(TrackTiktokVideoService)
@@ -27,7 +30,10 @@ export class TrackAddTiktokVideoCommand extends BaseCommand {
     this.logger.debug('--> execute', meta)
 
     try {
-      const user = await this.tiktokUserControllerService.fetchUser(username)
+      let user = await this.tiktokUserService.getOneByUsername(username)
+      if (!user) {
+        user = await this.tiktokUserControllerService.fetchUser(username)
+      }
       if (!user) {
         await this.replyUserNotFound(interaction)
         return

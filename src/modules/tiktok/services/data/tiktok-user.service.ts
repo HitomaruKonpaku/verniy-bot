@@ -12,4 +12,12 @@ export class TiktokUserService extends BaseEntityService<TiktokUser> {
   ) {
     super()
   }
+
+  public async getOneByUsername(username: string) {
+    const result = await this.repository
+      .createQueryBuilder()
+      .andWhere('LOWER(username) = LOWER(:username)', { username })
+      .getOne()
+    return result
+  }
 }
