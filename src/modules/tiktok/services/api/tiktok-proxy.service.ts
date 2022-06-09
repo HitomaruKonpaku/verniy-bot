@@ -19,4 +19,8 @@ export class TiktokProxyService {
   public getProxyUrl() {
     return this.INSTANCES_URLS[this.currentIndex]
   }
+
+  public setCurrentIndex(index: number) {
+    this.currentIndex = index
+  }
 }
