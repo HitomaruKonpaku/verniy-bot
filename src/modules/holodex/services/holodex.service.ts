@@ -3,6 +3,7 @@ import { ETwitterStreamEvent, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { TwitterTweetTrackingService } from '../../twitter/services/tracking/twitter-tweet-tracking.service'
+import { TwitterUtils } from '../../twitter/utils/twitter.utils'
 
 @Injectable()
 export class HolodexService {
@@ -25,16 +26,17 @@ export class HolodexService {
   }
 
   private async onTweetData(data: TweetV2SingleStreamResult) {
-    const entities = data.data?.entities
-    const urls = entities?.urls?.map?.((v) => v.expanded_url) || []
+    const urls = TwitterUtils.getTweetEntityUrls(data)
     if (!urls.length) {
       return
     }
+
     const patterns = ['youtube.com/watch', 'youtu.be']
     const ytUrls = urls.filter((url) => patterns.some((v) => url.includes(v)))
     if (!ytUrls.length) {
       return
     }
+
     // TODO: Forward youtube url to holodex !?
     ytUrls.forEach((url) => this.logger.debug(`onTweetData: ${url}`))
   }

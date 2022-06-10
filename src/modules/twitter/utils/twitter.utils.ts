@@ -48,6 +48,12 @@ export class TwitterUtils {
     return this.getTweetUrl(author.username, tweetId)
   }
 
+  public static getTweetEntityUrls(data: TweetV2SingleStreamResult) {
+    const entities = data.data?.entities
+    const urls = entities?.urls?.map?.((v) => v.expanded_url) || []
+    return urls
+  }
+
   public static getUserDescription(user: UserV1): string {
     const desc = user?.description || ''
     // const entities = user?.entities as any

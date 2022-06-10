@@ -226,9 +226,8 @@ export class TwitterTweetTrackingService extends EventEmitter {
           if (!record?.filterKeywords?.length) {
             return true
           }
-          const entities = data.data?.entities
           const text = data.data.text || ''
-          const urls = entities?.urls?.map?.((v) => v.expanded_url) || []
+          const urls = TwitterUtils.getTweetEntityUrls(data)
           const contents = [text, ...urls].filter((v) => v).map((v) => v.toLowerCase())
           const existKeyword = record.filterKeywords.some((keyword) => contents.some((v) => v.includes(keyword.toLowerCase())))
           return existKeyword
