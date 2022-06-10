@@ -29,7 +29,10 @@ export class TiktokUtils {
   public static getVideoEmbed(video: TiktokVideo, user: TiktokUser, baseUrl?: string) {
     const embed: MessageEmbedOptions = {
       title: `${bold(inlineCode(user.username))} posted a new video`,
-      description: this.getVideoUrl(user.username, video.id, baseUrl),
+      description: [
+        this.getVideoUrl(user.username, video.id),
+        this.getVideoUrl(user.username, video.id, baseUrl),
+      ].join('\n'),
       color: 0xf18719,
       author: {
         name: user.username,
