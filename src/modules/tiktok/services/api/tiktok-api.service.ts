@@ -31,6 +31,9 @@ export class TiktokApiService {
       return data
     } catch (error) {
       this.logger.error(`getUserFeed: ${error.message}`, meta)
+      if (error.response?.status === 500) {
+        this.tiktokProxyService.switchProxy()
+      }
       throw error
     }
   }

@@ -31,4 +31,12 @@ export class TiktokProxyService {
   public setCurrentIndex(index: number) {
     this.currentIndex = Math.max(0, Math.min(this.INSTANCES_URLS.length - 1, index))
   }
+
+  public switchProxy() {
+    this.currentIndex += 1
+    if (this.currentIndex >= this.INSTANCES_URLS.length) {
+      this.currentIndex = 0
+    }
+    this.logger.info(`switchProxy: ${this.currentIndex}`)
+  }
 }
