@@ -15,6 +15,8 @@ import { TiktokUserControllerService } from './controller/tiktok-user-controller
 export class TiktokTrackingService {
   private readonly logger = baseLogger.child({ context: TiktokTrackingService.name })
 
+  private errorUserCount = 0
+
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
@@ -45,9 +47,16 @@ export class TiktokTrackingService {
 
   private async checkUsers() {
     try {
+      this.errorUserCount = 0
       const usernames = await this.trackTiktokVideoService.getUsernamesForCheck()
       this.logger.debug('checkUsers', { userCount: usernames.length })
-      await Promise.all(usernames.map((v) => this.checkUser(v)))
+      if (usernames.length) {
+        await Promise.all(usernames.map((v) => this.checkUser(v)))
+        // Switch proxy if error count exceed 75%
+        if (this.errorUserCount / usernames.length > 0.75) {
+          this.tiktokProxyService.switchProxy()
+        }
+      }
     } catch (error) {
       this.logger.error(`execute: ${error.message}`)
     }
@@ -59,6 +68,9 @@ export class TiktokTrackingService {
   private async checkUser(username: string) {
     try {
       const user = await this.tiktokUserControllerService.fetchUser(username)
+      if (!user) {
+        this.errorUserCount += 1
+      }
       if (user?.newVideos?.length) {
         await this.notifyUserNewVideos(user)
       }
