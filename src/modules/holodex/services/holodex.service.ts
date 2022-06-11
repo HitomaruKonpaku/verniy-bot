@@ -22,7 +22,10 @@ export class HolodexService {
   }
 
   private addListeners() {
-    this.twitterTweetTrackingService.on(ETwitterStreamEvent.Data, (data) => this.onTweetData(data))
+    if (this.configService.twitter.tweet) {
+      this.logger.debug('Listen to tweets')
+      this.twitterTweetTrackingService.on(ETwitterStreamEvent.Data, (data) => this.onTweetData(data))
+    }
   }
 
   private async onTweetData(data: TweetV2SingleStreamResult) {
@@ -32,12 +35,12 @@ export class HolodexService {
     }
 
     const patterns = ['youtube.com/watch', 'youtu.be']
-    const ytUrls = urls.filter((url) => patterns.some((v) => url.includes(v)))
-    if (!ytUrls.length) {
+    const filterUrls = urls.filter((url) => patterns.some((v) => url.includes(v)))
+    if (!filterUrls.length) {
       return
     }
 
     // TODO: Forward youtube url to holodex !?
-    ytUrls.forEach((url) => this.logger.debug(`onTweetData: ${url}`))
+    filterUrls.forEach((url) => this.logger.debug(`onTweetData: ${url}`))
   }
 }

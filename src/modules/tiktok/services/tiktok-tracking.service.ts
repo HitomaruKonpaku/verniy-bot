@@ -1,8 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { ETwitterStreamEvent, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { DiscordService } from '../../discord/services/discord.service'
 import { TrackTiktokVideoService } from '../../track/services/track-tiktok-video.service'
+import { TwitterTweetTrackingService } from '../../twitter/services/tracking/twitter-tweet-tracking.service'
+import { TwitterUtils } from '../../twitter/utils/twitter.utils'
 import { TiktokUser } from '../models/tiktok-user.entity'
 import { TiktokUtils } from '../utils/tiktok.utils'
 import { TiktokProxyService } from './api/tiktok-proxy.service'
@@ -21,13 +24,23 @@ export class TiktokTrackingService {
     private readonly tiktokUserControllerService: TiktokUserControllerService,
     @Inject(TiktokProxyService)
     private readonly tiktokProxyService: TiktokProxyService,
+    @Inject(TwitterTweetTrackingService)
+    private readonly twitterTweetTrackingService: TwitterTweetTrackingService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) { }
 
   public async start() {
     this.logger.info('Starting...')
+    this.addListeners()
     await this.checkUsers()
+  }
+
+  private addListeners() {
+    if (this.configService.twitter.tweet) {
+      this.logger.debug('Listen to tweets')
+      this.twitterTweetTrackingService.on(ETwitterStreamEvent.Data, (data) => this.onTweetData(data))
+    }
   }
 
   private async checkUsers() {
@@ -52,6 +65,22 @@ export class TiktokTrackingService {
     } catch (error) {
       this.logger.error(`checkUser: ${error.message}`, { username })
     }
+  }
+
+  private async onTweetData(data: TweetV2SingleStreamResult) {
+    const urls = TwitterUtils.getTweetEntityUrls(data)
+    if (!urls.length) {
+      return
+    }
+
+    const patterns = ['tiktok.com']
+    const filterUrls = urls.filter((url) => patterns.some((v) => url.includes(v)))
+    if (!filterUrls.length) {
+      return
+    }
+
+    // TODO: Check and forward urls to channels ?
+    filterUrls.forEach((url) => this.logger.warn(`onTweetData: ${url}`))
   }
 
   private async notifyUserNewVideos(user: TiktokUser) {

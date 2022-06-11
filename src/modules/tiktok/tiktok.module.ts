@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
 import { TrackModule } from '../track/track.module'
+import { TwitterModule } from '../twitter/twitter.module'
 import { TiktokUser } from './models/tiktok-user.entity'
 import { TiktokVideo } from './models/tiktok-video.entity'
 import { TiktokApiService } from './services/api/tiktok-api.service'
@@ -22,6 +23,7 @@ import { TiktokService } from './services/tiktok.service'
     ]),
     ConfigModule,
     TrackModule,
+    TwitterModule,
     forwardRef(() => DiscordModule),
   ],
   providers: [
