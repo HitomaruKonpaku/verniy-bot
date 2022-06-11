@@ -23,7 +23,7 @@ export class HolodexService {
 
   private addListeners() {
     if (this.configService.twitter.tweet) {
-      this.logger.debug('Listen to tweets')
+      this.logger.info('Listen to tweets')
       this.twitterTweetTrackingService.on(ETwitterStreamEvent.Data, (data) => this.onTweetData(data))
     }
   }
