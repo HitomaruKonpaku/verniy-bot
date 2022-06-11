@@ -143,7 +143,6 @@ export class TwitCastingLiveTrackingService {
       await this.updateMovieById(movie.id)
     } catch (error) {
       this.logger.error(`checkUserMovie: ${error.message}`, { screenId, movie })
-      // TODO: Membership movie will throw status code 404, to handle this special case
     }
   }
 
@@ -158,6 +157,10 @@ export class TwitCastingLiveTrackingService {
         await this.notifyMovie(newMovie)
       }
     } catch (error) {
+      if (error.response?.status === 404) {
+        // TODO: Get membership movie will always throw status code 404 so just ignore it for now
+        return
+      }
       this.logger.error(`checkMovieById: ${error.message}`, { id })
     }
   }
