@@ -83,10 +83,16 @@ export class DiscordService {
     }
   }
 
-  public async sendToChannel(channelId: string, options: string | MessagePayload | MessageOptions) {
+  public async sendToChannel(
+    channelId: string,
+    options: string | MessagePayload | MessageOptions,
+    config?: { throwError?: boolean },
+  ) {
     try {
+      // Get channel
       const channel = await this.getChannel<TextChannel>(channelId)
       if (!channel) return null
+      // Try to save destination channel & guild
       this.discordDbService.saveTextChannel(channel)
       const guild = channel.guildId
         ? await this.getGuild(channel.guildId)
@@ -94,12 +100,25 @@ export class DiscordService {
       if (guild) {
         this.discordDbService.saveGuild(guild)
       }
+      // Send message
       const message = await channel.send(options)
-      this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
-      this.discordDbService.saveMessage(message)
+      if (message) {
+        this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
+        this.discordDbService.saveMessage(message)
+        // Crosspost message
+        if (message.channel.type === 'GUILD_NEWS') {
+          await message.crosspost()
+            .then(() => this.logger.info('Crossposted message!'))
+            .catch((error) => this.logger.error(`sendToChannel#crosspost: ${error.message}`, { channelId, messageId: message.id }))
+        }
+      }
+      // Return message
       return message
     } catch (error) {
       this.logger.error(`sendToChannel: ${error.message}`, { channelId })
+      if (config?.throwError) {
+        throw error
+      }
     }
     return null
   }
