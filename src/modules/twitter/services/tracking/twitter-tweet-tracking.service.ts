@@ -192,7 +192,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
           content = [hideLinkEmbed(tweetUrl), `🔁 ${originTweetUrl}`].join('\n')
         }
       } catch (error) {
-        this.logger.error(`onData: Parsing tweet error: ${error.message}`)
+        this.logger.error(`onData: Parsing tweet error: ${error.message}`, { data })
       }
 
       trackItems.forEach((trackItem) => {
