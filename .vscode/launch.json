@@ -7,8 +7,8 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "[src] worker",
-      "program": "${workspaceFolder}/src/index.ts",
+      "name": "[src] deploy-commands",
+      "program": "${workspaceFolder}/src/deploy-commands.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outputCapture": "std",
       "skipFiles": [
@@ -18,8 +18,8 @@
     {
       "type": "pwa-node",
       "request": "launch",
-      "name": "[src] deploy-commands",
-      "program": "${workspaceFolder}/src/deploy-commands.ts",
+      "name": "[src] worker",
+      "program": "${workspaceFolder}/src/index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outputCapture": "std",
       "skipFiles": [
