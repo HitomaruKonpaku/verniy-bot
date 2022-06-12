@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
+import { ConfigEvent } from '../../../config/enum/config-event.enum'
 import { ConfigService } from '../../../config/services/config.service'
 
 @Injectable()
@@ -21,6 +22,7 @@ export class TiktokProxyService {
     @Inject(ConfigService)
     private readonly configService: ConfigService,
   ) {
+    this.addListeners()
     this.setCurrentIndex(this.configService.tiktok.proxyIndex)
   }
 
@@ -38,5 +40,11 @@ export class TiktokProxyService {
       this.currentIndex = 0
     }
     this.logger.info(`switchProxy: ${this.currentIndex}`)
+  }
+
+  private addListeners() {
+    this.configService.on(ConfigEvent.RELOAD, () => {
+      this.setCurrentIndex(this.configService.tiktok.proxyIndex)
+    })
   }
 }

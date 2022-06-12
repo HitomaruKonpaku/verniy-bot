@@ -1,3 +1,4 @@
+import { ConfigCommand } from '../commands/config/config.command'
 import { GetCommand } from '../commands/get/get.command'
 import { TrackAddTiktokVideoCommand } from '../commands/track/track-add/track-add-tiktok-video.command'
 import { TrackAddTwitCastingLiveCommand } from '../commands/track/track-add/track-add-twitcasting-live.command'
@@ -15,12 +16,14 @@ import { TrackRemoveTwitterTweetCommand } from '../commands/track/track-remove/t
 import { TrackRemoveCommand } from '../commands/track/track-remove/track-remove.command'
 
 export const DISCORD_APP_COMMANDS = [
+  ConfigCommand,
   TrackAddCommand,
   TrackRemoveCommand,
   GetCommand,
 ]
 
 export const DISCORD_GUILD_COMMANDS = [
+  ConfigCommand,
   // TrackAddCommand,
   // TrackRemoveCommand,
   // GetCommand,
@@ -33,6 +36,9 @@ export const DISCORD_GLOBAL_COMMANDS = [
 ]
 
 export const DISCORD_ALL_COMMANDS = [
+  // config
+  ConfigCommand,
+
   // track-add
   TrackAddCommand,
   TrackAddTwitterTweetCommand,

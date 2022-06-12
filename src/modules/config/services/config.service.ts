@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { Injectable } from '@nestjs/common'
+import EventEmitter from 'events'
 import { readFileSync } from 'fs'
 import yaml from 'js-yaml'
 import { baseLogger } from '../../../logger'
@@ -9,14 +10,16 @@ import { tiktokConfig } from '../config/tiktok.config'
 import { twitcastingConfig } from '../config/twitcasting.config'
 import { twitchConfig } from '../config/twitch.config'
 import { twitterConfig } from '../config/twitter.config'
+import { ConfigEvent } from '../enum/config-event.enum'
 
 @Injectable()
-export class ConfigService {
+export class ConfigService extends EventEmitter {
   public config: Record<string, any>
 
   private readonly logger = baseLogger.child({ context: ConfigService.name })
 
   constructor() {
+    super()
     this.config = {}
     this.reloadConfig()
   }
@@ -57,6 +60,8 @@ export class ConfigService {
   public reloadConfig() {
     this.loadConfig()
     this.applyConfig()
+    this.logger.warn('config reloaded')
+    this.emit(ConfigEvent.RELOAD)
   }
 
   public loadConfig() {
