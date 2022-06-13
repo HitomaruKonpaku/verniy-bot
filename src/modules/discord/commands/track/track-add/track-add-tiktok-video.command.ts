@@ -1,61 +1,37 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
+import { TiktokUser } from '../../../../tiktok/models/tiktok-user.entity'
 import { TiktokUserControllerService } from '../../../../tiktok/services/controller/tiktok-user-controller.service'
 import { TiktokUserService } from '../../../../tiktok/services/data/tiktok-user.service'
 import { TiktokUtils } from '../../../../tiktok/utils/tiktok.utils'
 import { TrackTiktokVideoService } from '../../../../track/services/track-tiktok-video.service'
-import { BaseCommand } from '../../base/base.command'
+import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
 @Injectable()
-export class TrackAddTiktokVideoCommand extends BaseCommand {
-  private readonly logger = baseLogger.child({ context: TrackAddTiktokVideoCommand.name })
+export class TrackAddTiktokVideoCommand extends TrackAddBaseSubcommand {
+  logger = baseLogger.child({ context: TrackAddTiktokVideoCommand.name })
 
   constructor(
+    @Inject(TrackTiktokVideoService)
+    protected readonly trackService: TrackTiktokVideoService,
     @Inject(TiktokUserService)
     private readonly tiktokUserService: TiktokUserService,
     @Inject(TiktokUserControllerService)
     private readonly tiktokUserControllerService: TiktokUserControllerService,
-    @Inject(TrackTiktokVideoService)
-    private readonly trackTiktokVideoService: TrackTiktokVideoService,
   ) {
     super()
   }
 
-  public async execute(interaction: CommandInteraction) {
-    const { channelId } = interaction
-    const message = interaction.options.getString('message') || null
-    const username = interaction.options.getString('username', true)
-    const meta = { username, channelId }
-    this.logger.debug('--> execute', meta)
-
-    try {
-      let user = await this.tiktokUserService.getOneByUsername(username)
-      if (!user) {
-        user = await this.tiktokUserControllerService.fetchUser(username)
-      }
-      if (!user) {
-        await this.replyUserNotFound(interaction)
-        return
-      }
-      await this.trackTiktokVideoService.add(
-        user.id,
-        channelId,
-        message,
-        interaction.user.id,
-      )
-      this.logger.warn('execute: added', meta)
-      await interaction.editReply({
-        embeds: [{
-          description: `Tracking **[${user.username}](${TiktokUtils.getUserUrl(user.username)})** TikTok`,
-          color: 0x1d9bf0,
-        }],
-      })
-    } catch (error) {
-      this.logger.error(`execute: ${error.message}`, meta)
-      await interaction.editReply(error.message)
+  protected async getUser(username: string): Promise<TiktokUser> {
+    let user = await this.tiktokUserService.getOneByUsername(username)
+    if (!user) {
+      user = await this.tiktokUserControllerService.fetchUser(username)
     }
+    return user
+  }
 
-    this.logger.debug('<-- execute', meta)
+  // eslint-disable-next-line class-methods-use-this
+  protected getSuccessEmbedDescription(user: TiktokUser): string {
+    return `Tracking **[${user.username}](${TiktokUtils.getUserUrl(user.username)})** TikTok`
   }
 }

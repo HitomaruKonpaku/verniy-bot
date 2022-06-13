@@ -1,51 +1,31 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackTwitCastingLiveService } from '../../../../track/services/track-twitcasting-live.service'
+import { TwitCastingUser } from '../../../../twitcasting/models/twitcasting-user.entity'
 import { TwitCastingUserControllerService } from '../../../../twitcasting/services/controller/twitcasting-user-controller.service'
 import { TwitCastingUtils } from '../../../../twitcasting/utils/twitcasting.utils'
-import { BaseCommand } from '../../base/base.command'
+import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
 @Injectable()
-export class TrackAddTwitCastingLiveCommand extends BaseCommand {
-  private readonly logger = baseLogger.child({ context: TrackAddTwitCastingLiveCommand.name })
+export class TrackAddTwitCastingLiveCommand extends TrackAddBaseSubcommand {
+  logger = baseLogger.child({ context: TrackAddTwitCastingLiveCommand.name })
 
   constructor(
+    @Inject(TrackTwitCastingLiveService)
+    protected readonly trackService: TrackTwitCastingLiveService,
     @Inject(TwitCastingUserControllerService)
     private readonly twitCastingUserControllerService: TwitCastingUserControllerService,
-    @Inject(TrackTwitCastingLiveService)
-    private readonly trackTwitCastingLiveService: TrackTwitCastingLiveService,
   ) {
     super()
   }
 
-  public async execute(interaction: CommandInteraction) {
-    const { channelId } = interaction
-    const message = interaction.options.getString('message') || null
-    const username = interaction.options.getString('username', true)
-    const meta = { username, channelId }
-    this.logger.debug('--> execute', meta)
+  protected async getUser(username: string): Promise<TwitCastingUser> {
+    const user = await this.twitCastingUserControllerService.getOneAndSaveById(username)
+    return user
+  }
 
-    try {
-      const user = await this.twitCastingUserControllerService.getOneAndSaveById(username)
-      await this.trackTwitCastingLiveService.add(
-        user.id,
-        channelId,
-        message,
-        interaction.user.id,
-      )
-      this.logger.warn('execute: added', meta)
-      await interaction.editReply({
-        embeds: [{
-          description: `Tracking **[${user.screenId}](${TwitCastingUtils.getUserUrl(user.screenId)})** TwitCasting`,
-          color: 0x1d9bf0,
-        }],
-      })
-    } catch (error) {
-      this.logger.error(`execute: ${error.message}`, meta)
-      await interaction.editReply(error.message)
-    }
-
-    this.logger.debug('<-- execute', meta)
+  // eslint-disable-next-line class-methods-use-this
+  protected getSuccessEmbedDescription(user: TwitCastingUser): string {
+    return `Tracking **[${user.screenId}](${TwitCastingUtils.getUserUrl(user.screenId)})** TwitCasting`
   }
 }
