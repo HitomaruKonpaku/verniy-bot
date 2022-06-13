@@ -23,7 +23,7 @@ export const DISCORD_APP_COMMANDS = [
 ]
 
 export const DISCORD_GUILD_COMMANDS = [
-  ConfigCommand,
+  // ConfigCommand,
   // TrackAddCommand,
   // TrackRemoveCommand,
   // GetCommand,
