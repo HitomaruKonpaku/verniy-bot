@@ -21,7 +21,6 @@ export class TrackRemoveTiktokVideoCommand extends TrackRemoveBaseSubcommand {
 
   protected async getUser(username: string): Promise<TiktokUser> {
     const user = await this.tiktokUserService.getOneById(username)
-
     return user
   }
 

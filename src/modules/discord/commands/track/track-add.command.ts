@@ -5,6 +5,7 @@ import { PermissionFlagsBits } from 'discord-api-types/v10'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { BaseCommand } from '../base/base.command'
+import { TrackAddInstagramPostCommand } from './track-add/track-add-instagram-post.command'
 import { TrackAddTiktokVideoCommand } from './track-add/track-add-tiktok-video.command'
 import { TrackAddTwitCastingLiveCommand } from './track-add/track-add-twitcasting-live.command'
 import { TrackAddTwitchUserStreamCommand } from './track-add/track-add-twitch-user-stream.command'
@@ -71,6 +72,15 @@ export class TrackAddCommand extends BaseCommand {
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
     //
     .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.INSTAGRAM_POST)
+      .setDescription('Track user post/story')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Instagram user')
+        .setRequired(true))
+      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
+    //
+    .addSubcommand((subcommand) => subcommand
       .setName(TrackType.TIKTOK_VIDEO)
       .setDescription('Track user video')
       .addStringOption((option) => option
@@ -115,6 +125,8 @@ export class TrackAddCommand extends BaseCommand {
         return TrackAddTwitCastingLiveCommand
       case TrackType.TWITCH_USER_STREAM:
         return TrackAddTwitchUserStreamCommand
+      case TrackType.INSTAGRAM_POST:
+        return TrackAddInstagramPostCommand
       case TrackType.TIKTOK_VIDEO:
         return TrackAddTiktokVideoCommand
       default:

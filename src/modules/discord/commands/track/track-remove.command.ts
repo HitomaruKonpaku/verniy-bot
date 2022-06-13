@@ -5,6 +5,7 @@ import { PermissionFlagsBits } from 'discord-api-types/v10'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { BaseCommand } from '../base/base.command'
+import { TrackRemoveInstagramPostCommand } from './track-remove/track-remove-instagram-post.command'
 import { TrackRemoveTiktokVideoCommand } from './track-remove/track-remove-tiktok-video.command'
 import { TrackRemoveTwitCastingLiveCommand } from './track-remove/track-remove-twitcasting-live.command'
 import { TrackRemoveTwitchUserStreamCommand } from './track-remove/track-remove-twitch-user-stream.command'
@@ -60,6 +61,14 @@ export class TrackRemoveCommand extends BaseCommand {
         .setRequired(true)))
     //
     .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.INSTAGRAM_POST)
+      .setDescription('Untrack user post/story')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Instagram user')
+        .setRequired(true)))
+    //
+    .addSubcommand((subcommand) => subcommand
       .setName(TrackType.TIKTOK_VIDEO)
       .setDescription('Untrack user video')
       .addStringOption((option) => option
@@ -103,6 +112,8 @@ export class TrackRemoveCommand extends BaseCommand {
         return TrackRemoveTwitCastingLiveCommand
       case TrackType.TWITCH_USER_STREAM:
         return TrackRemoveTwitchUserStreamCommand
+      case TrackType.INSTAGRAM_POST:
+        return TrackRemoveInstagramPostCommand
       case TrackType.TIKTOK_VIDEO:
         return TrackRemoveTiktokVideoCommand
       default:
