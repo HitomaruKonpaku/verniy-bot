@@ -29,6 +29,7 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
 
       await this.trackService.add(user.id, channelId, message, interaction.user.id)
       this.logger.warn('execute: added', meta)
+
       const embed: MessageEmbedOptions = {
         description: this.getSuccessEmbedDescription(user),
         color: this.getSuccessEmbedColor(user),

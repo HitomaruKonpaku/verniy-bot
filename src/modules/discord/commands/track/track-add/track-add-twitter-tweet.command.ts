@@ -68,6 +68,7 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
         },
       )
       this.logger.warn('execute: added', meta)
+
       const embed: MessageEmbedOptions = {
         description: this.getSuccessEmbedDescription(user),
         color: this.getSuccessEmbedColor(user),
