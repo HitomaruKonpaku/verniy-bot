@@ -1,51 +1,31 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackTwitterProfileService } from '../../../../track/services/track-twitter-profile.service'
+import { TwitterUser } from '../../../../twitter/models/twitter-user.entity'
 import { TwitterUserService } from '../../../../twitter/services/data/twitter-user.service'
 import { TwitterUtils } from '../../../../twitter/utils/twitter.utils'
-import { TrackRemoveBaseCommand } from './track-remove-base.command'
+import { TrackRemoveBaseSubcommand } from '../base/track-remove-base-subcommand'
 
 @Injectable()
-export class TrackRemoveTwitterProfileCommand extends TrackRemoveBaseCommand {
-  private readonly logger = baseLogger.child({ context: TrackRemoveTwitterProfileCommand.name })
+export class TrackRemoveTwitterProfileCommand extends TrackRemoveBaseSubcommand {
+  logger = baseLogger.child({ context: TrackRemoveTwitterProfileCommand.name })
 
   constructor(
+    @Inject(TrackTwitterProfileService)
+    protected readonly trackService: TrackTwitterProfileService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
-    @Inject(TrackTwitterProfileService)
-    private readonly trackTwitterProfileService: TrackTwitterProfileService,
   ) {
     super()
   }
 
-  public async execute(interaction: CommandInteraction) {
-    const { channelId } = interaction
-    const username = interaction.options.getString('username', true)
-    const meta = { username, channelId }
-    this.logger.debug('--> execute', meta)
+  protected async getUser(username: string): Promise<TwitterUser> {
+    const user = await this.twitterUserService.getOneByUsername(username)
+    return user
+  }
 
-    try {
-      const user = await this.twitterUserService.getOneByUsername(username)
-      if (!user) {
-        await this.replyUserNotFound(interaction)
-        return
-      }
-
-      await this.trackTwitterProfileService.remove(user.id, channelId, interaction.user.id)
-      this.logger.warn('execute: removed', meta)
-
-      await interaction.editReply({
-        embeds: [{
-          description: `Untrack **[${user.username}](${TwitterUtils.getUserUrl(user.username)})** profile`,
-          color: 0x1d9bf0,
-        }],
-      })
-    } catch (error) {
-      this.logger.error(`execute: ${error.message}`, meta)
-      await interaction.editReply(error.message)
-    }
-
-    this.logger.debug('<-- execute', meta)
+  // eslint-disable-next-line class-methods-use-this
+  protected getSuccessEmbedDescription(user: TwitterUser): string {
+    return `Untrack **[${user.username}](${TwitterUtils.getUserUrl(user.username)})** Twitter profile`
   }
 }
