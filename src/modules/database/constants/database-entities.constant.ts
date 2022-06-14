@@ -21,6 +21,8 @@ import { TwitterFilteredStreamUser } from '../../twitter/models/twitter-filtered
 import { TwitterSpace } from '../../twitter/models/twitter-space.entity'
 import { TwitterTweet } from '../../twitter/models/twitter-tweet.entity'
 import { TwitterUser } from '../../twitter/models/twitter-user.entity'
+import { YoutubeChannel } from '../../youtube/models/youtube-channel.entity'
+import { YoutubeVideo } from '../../youtube/models/youtube-video.entity'
 
 export const DB_ENTITIES = [
   DiscordUser,
@@ -35,6 +37,9 @@ export const DB_ENTITIES = [
 
   TwitCastingUser,
   TwitCastingMovie,
+
+  YoutubeChannel,
+  YoutubeVideo,
 
   TwitchUser,
   TwitchStream,

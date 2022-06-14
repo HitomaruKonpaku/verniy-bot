@@ -13,6 +13,7 @@ import { TiktokService } from '../../tiktok/services/tiktok.service'
 import { TwitCastingService } from '../../twitcasting/services/twitcasting.service'
 import { TwitchService } from '../../twitch/services/twitch.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
+import { YoutubeService } from '../../youtube/services/youtube.service'
 import { DiscordClientService } from './discord-client.service'
 import { DiscordDbService } from './discord-db.service'
 
@@ -31,6 +32,8 @@ export class DiscordService {
     private readonly twitterService: TwitterService,
     @Inject(forwardRef(() => TwitCastingService))
     private readonly twitCastingService: TwitCastingService,
+    @Inject(forwardRef(() => YoutubeService))
+    private readonly youtubeService: YoutubeService,
     @Inject(forwardRef(() => TwitchService))
     private readonly twitchService: TwitchService,
     @Inject(forwardRef(() => InstagramService))
@@ -145,6 +148,9 @@ export class DiscordService {
       }
       if (this.configService.twitcasting.active) {
         this.twitCastingService.start()
+      }
+      if (this.configService.youtube.active) {
+        this.youtubeService.start()
       }
       if (this.configService.twitch.active) {
         this.twitchService.start()

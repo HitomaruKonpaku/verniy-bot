@@ -10,6 +10,7 @@ import { tiktokConfig } from '../config/tiktok.config'
 import { twitcastingConfig } from '../config/twitcasting.config'
 import { twitchConfig } from '../config/twitch.config'
 import { twitterConfig } from '../config/twitter.config'
+import { youtubeConfig } from '../config/youtube.config'
 import { ConfigEvent } from '../enum/config-event.enum'
 
 @Injectable()
@@ -32,6 +33,10 @@ export class ConfigService extends EventEmitter {
     return twitcastingConfig
   }
 
+  public get youtube() {
+    return youtubeConfig
+  }
+
   public get twitch() {
     return twitchConfig
   }
@@ -51,6 +56,7 @@ export class ConfigService extends EventEmitter {
   public applyConfig() {
     Object.assign(twitterConfig, this.config.twitter || {})
     Object.assign(twitcastingConfig, this.config.twitcasting || {})
+    Object.assign(youtubeConfig, this.config.youtube || {})
     Object.assign(twitchConfig, this.config.twitch || {})
     Object.assign(instagramConfig, this.config.instagram || {})
     Object.assign(tiktokConfig, this.config.tiktok || {})

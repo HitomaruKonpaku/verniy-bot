@@ -8,6 +8,7 @@ import { TrackModule } from '../track/track.module'
 import { TwitCastingModule } from '../twitcasting/twitcasting.module'
 import { TwitchModule } from '../twitch/twitch.module'
 import { TwitterModule } from '../twitter/twitter.module'
+import { YoutubeModule } from '../youtube/youtube.module'
 import { DISCORD_ALL_COMMANDS } from './constants/discord-command.constant'
 import { DiscordChannel } from './models/discord-channel.entity'
 import { DiscordGuild } from './models/discord-guild.entity'
@@ -33,6 +34,7 @@ import { DiscordService } from './services/discord.service'
     TrackModule,
     forwardRef(() => TwitterModule),
     forwardRef(() => TwitCastingModule),
+    forwardRef(() => YoutubeModule),
     forwardRef(() => TwitchModule),
     forwardRef(() => InstagramModule),
     forwardRef(() => TiktokModule),
