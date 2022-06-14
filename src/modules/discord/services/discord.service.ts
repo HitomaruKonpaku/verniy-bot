@@ -129,41 +129,56 @@ export class DiscordService {
   private addClientListeners() {
     const { client } = this
 
-    client.once('ready', async () => {
-      this.client.guilds.cache.forEach((guild) => {
-        this.discordDbService.saveGuild(guild)
-      })
+    client.once('ready', () => {
+      this.saveClientGuilds()
+      this.saveClientChannels()
+    })
 
+    client.once('ready', () => {
+      this.startServices()
+    })
+  }
+
+  private async saveClientGuilds() {
+    this.client.guilds.cache.forEach((guild) => {
+      this.discordDbService.saveGuild(guild)
+    })
+  }
+
+  private async saveClientChannels() {
+    try {
       const channelIds = await this.twitterService.getDiscordChannelIds()
       this.client.channels.cache.forEach((channel) => {
         if (channelIds.includes(channel.id) && channel instanceof TextChannel) {
           this.discordDbService.saveTextChannel(channel)
         }
       })
-    })
+    } catch (error) {
+      this.logger.error(`saveClientChannels: ${error.message}`)
+    }
+  }
 
-    client.once('ready', () => {
-      if (this.configService.twitter.active) {
-        this.twitterService.start()
-      }
-      if (this.configService.twitcasting.active) {
-        this.twitCastingService.start()
-      }
-      if (this.configService.youtube.active) {
-        this.youtubeService.start()
-      }
-      if (this.configService.twitch.active) {
-        this.twitchService.start()
-      }
-      if (this.configService.instagram.active) {
-        this.instagramService.start()
-      }
-      if (this.configService.tiktok.active) {
-        this.tiktokService.start()
-      }
-      if (this.configService.holodex.active) {
-        this.holodexService.start()
-      }
-    })
+  private startServices() {
+    if (this.configService.twitter.active) {
+      this.twitterService.start()
+    }
+    if (this.configService.twitcasting.active) {
+      this.twitCastingService.start()
+    }
+    if (this.configService.youtube.active) {
+      this.youtubeService.start()
+    }
+    if (this.configService.twitch.active) {
+      this.twitchService.start()
+    }
+    if (this.configService.instagram.active) {
+      this.instagramService.start()
+    }
+    if (this.configService.tiktok.active) {
+      this.tiktokService.start()
+    }
+    if (this.configService.holodex.active) {
+      this.holodexService.start()
+    }
   }
 }
