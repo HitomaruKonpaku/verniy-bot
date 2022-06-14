@@ -11,7 +11,7 @@ export class InstagramApiService {
 
   constructor() {
     if (!this.sessionId) {
-      this.logger.warn('INSTAGRAM_SESSION_ID not found')
+      this.logger.error('INSTAGRAM_SESSION_ID not found')
     }
   }
 
