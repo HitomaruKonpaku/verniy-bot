@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
-import { InstagramTrackingService } from './instagram-tracking.service'
+import { InstagramPostTrackingService } from './tracking/instagram-post-tracking.service'
+import { InstagramProfileTrackingService } from './tracking/instagram-profile-tracking.service'
+import { InstagramTrackingService } from './tracking/instagram-tracking.service'
 
 @Injectable()
 export class InstagramService {
@@ -12,6 +14,10 @@ export class InstagramService {
     private readonly configService: ConfigService,
     @Inject(InstagramTrackingService)
     private readonly instagramTrackingService: InstagramTrackingService,
+    @Inject(InstagramPostTrackingService)
+    private readonly instagramPostTrackingService: InstagramPostTrackingService,
+    @Inject(InstagramProfileTrackingService)
+    private readonly instagramProfileTrackingService: InstagramProfileTrackingService,
   ) { }
 
   /**
@@ -21,7 +27,9 @@ export class InstagramService {
     this.logger.info('Starting...')
     const config = this.configService.instagram
     if (config.track.active) {
-      await this.instagramTrackingService.start()
+      this.instagramPostTrackingService.start()
+      this.instagramProfileTrackingService.start()
+      this.instagramTrackingService.start()
     }
   }
 }

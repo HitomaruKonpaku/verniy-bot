@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { randomUUID } from 'crypto'
 import { user } from 'instagram-api.js'
+import { getStories } from 'instagram-stories'
 import { baseLogger } from '../../../../logger'
-import { instagramUserLimiter } from '../../instagram.limiter'
+import { instagramUserLimiter, instagramUserStoriesLimiter } from '../../instagram.limiter'
 
 @Injectable()
 export class InstagramApiService {
@@ -31,6 +32,22 @@ export class InstagramApiService {
       return data
     } catch (error) {
       this.logger.error(`getUser: ${error.message}`, { username })
+      throw error
+    }
+  }
+
+  public async getUserStories(userId: string) {
+    const requestId = randomUUID()
+    try {
+      const data = await instagramUserStoriesLimiter.schedule(async () => {
+        this.logger.debug('--> getUserStories', { requestId, userId })
+        const response = getStories({ id: userId, sessionid: this.sessionId })
+        this.logger.debug('<-- getUserStories', { requestId, userId })
+        return response
+      })
+      return data
+    } catch (error) {
+      this.logger.error(`getUserStories: ${error.message}`, { userId })
       throw error
     }
   }

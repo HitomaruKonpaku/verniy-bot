@@ -20,4 +20,17 @@ export class InstagramUserService extends BaseEntityService<InstagramUser> {
       .getOne()
     return result
   }
+
+  public async getManyForTracking() {
+    const result = await this.repository
+      .createQueryBuilder('u')
+      .innerJoin(
+        'track_instagram_post',
+        'tip',
+        'tip.user_id = u.id AND tip.is_active = TRUE',
+      )
+      .andWhere('u.is_active = TRUE')
+      .getMany()
+    return result
+  }
 }
