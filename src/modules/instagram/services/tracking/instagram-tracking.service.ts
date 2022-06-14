@@ -33,8 +33,9 @@ export class InstagramTrackingService extends EventEmitter {
 
   private async checkUsers() {
     try {
-      const limiter = new Bottleneck({ maxConcurrent: 1 })
       const users = await this.instagramUserService.getManyForTracking()
+      this.logger.debug('checkUsers', { userCount: users.length })
+      const limiter = new Bottleneck({ maxConcurrent: 1 })
       await Promise.all(users.map((user) => limiter.schedule(() => Promise.allSettled([
         this.checkUserProfileAndPosts(user),
         this.checkUserStories(user),
