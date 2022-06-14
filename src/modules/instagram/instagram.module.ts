@@ -4,6 +4,7 @@ import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
 import { TrackModule } from '../track/track.module'
 import { InstagramPost } from './models/instagram-post.entity'
+import { InstagramStory } from './models/instagram-story.entity'
 import { InstagramUser } from './models/instagram-user.entity'
 import { InstagramApiService } from './services/api/instagram-api.service'
 import { InstagramPostControllerService } from './services/controller/instagram-post-controller.service'
@@ -18,6 +19,7 @@ import { InstagramService } from './services/instagram.service'
     TypeOrmModule.forFeature([
       InstagramUser,
       InstagramPost,
+      InstagramStory,
     ]),
     ConfigModule,
     TrackModule,

@@ -3,6 +3,7 @@ import { DiscordGuild } from '../../discord/models/discord-guild.entity'
 import { DiscordMessage } from '../../discord/models/discord-message.entity'
 import { DiscordUser } from '../../discord/models/discord-user.entity'
 import { InstagramPost } from '../../instagram/models/instagram-post.entity'
+import { InstagramStory } from '../../instagram/models/instagram-story.entity'
 import { InstagramUser } from '../../instagram/models/instagram-user.entity'
 import { TiktokUser } from '../../tiktok/models/tiktok-user.entity'
 import { TiktokVideo } from '../../tiktok/models/tiktok-video.entity'
@@ -46,6 +47,7 @@ export const DB_ENTITIES = [
 
   InstagramUser,
   InstagramPost,
+  InstagramStory,
 
   TiktokUser,
   TiktokVideo,

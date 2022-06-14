@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm'
 import { BaseExternalEntity } from '../../database/models/base-external.entity'
 import { InstagramPost } from './instagram-post.entity'
+import { InstagramStory } from './instagram-story.entity'
 
 @Entity('instagram_user')
 export class InstagramUser extends BaseExternalEntity {
@@ -28,4 +29,6 @@ export class InstagramUser extends BaseExternalEntity {
   posts?: InstagramPost[]
 
   newPosts?: InstagramPost[]
+
+  stories?: InstagramStory[]
 }
