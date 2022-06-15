@@ -17,21 +17,23 @@ export class TwitterUserControllerService {
   ) { }
 
   public async getOneById(id: string, refresh = false) {
-    const twitterUser = await this.twitterUserService.getOneById(id)
-    if (!twitterUser || refresh) {
-      const user = await this.twitterApiService.getUserById(id)
-      await this.saveUser(user)
+    let user = !refresh
+      ? await this.twitterUserService.getOneById(id)
+      : null
+    if (!user) {
+      user = await this.twitterApiService.getUserById(id).then((v) => this.saveUser(v))
     }
-    return twitterUser
+    return user
   }
 
-  public async getOneByUsername(id: string, refresh = false) {
-    const twitterUser = await this.twitterUserService.getOneByUsername(id)
-    if (!twitterUser || refresh) {
-      const user = await this.twitterApiService.getUserByUsername(id)
-      await this.saveUser(user)
+  public async getOneByUsername(username: string, refresh = false) {
+    let user = !refresh
+      ? await this.twitterUserService.getOneByUsername(username)
+      : null
+    if (!user) {
+      user = await this.twitterApiService.getUserByUsername(username).then((v) => this.saveUser(v))
     }
-    return twitterUser
+    return user
   }
 
   public async saveUser(data: UserV1) {
