@@ -61,6 +61,7 @@ export class TwitterSpaceTrackingService {
     try {
       const userIds = await this.trackTwitterSpaceService.getTwitterUserIds()
       if (userIds.length) {
+        this.logger.debug('checkNewSpaces', { userCount: userIds.length })
         const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.getSpacesByUserIds(v)))
       }

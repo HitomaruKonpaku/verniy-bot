@@ -42,6 +42,7 @@ export class TwitterProfileTrackingService {
     try {
       const userIds = await this.trackTwitterProfileService.getTwitterUserIds()
       if (userIds.length) {
+        this.logger.debug('execute', { userCount: userIds.length })
         const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.checkUsers(v)))
       }
