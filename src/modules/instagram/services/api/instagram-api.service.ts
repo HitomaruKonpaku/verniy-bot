@@ -25,7 +25,7 @@ export class InstagramApiService {
     try {
       const data = await instagramUserLimiter.schedule(async () => {
         this.logger.debug('--> getUser', { requestId, username })
-        const response = user(username, this.sessionId)
+        const response = user(username)
         this.logger.debug('<-- getUser', { requestId, username })
         return response
       })
