@@ -1,7 +1,7 @@
 export const twitchConfig = {
   active: false,
 
-  stream: {
+  live: {
     active: false,
     interval: 60000,
   },

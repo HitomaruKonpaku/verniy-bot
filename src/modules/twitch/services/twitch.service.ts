@@ -17,7 +17,7 @@ export class TwitchService {
   public async start() {
     this.logger.info('Starting...')
     const config = this.configService.twitch
-    if (config.stream?.active) {
+    if (config.live?.active) {
       await this.twitchStreamTrackingService.start()
     }
     if (config.cron?.active) {

@@ -23,7 +23,7 @@ twitcasting:
 
 twitch:
   active: false
-  stream:
+  live:
     active: true
     interval: 60000
   cron:

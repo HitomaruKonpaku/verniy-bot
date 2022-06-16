@@ -61,7 +61,7 @@ export class TwitchStreamTrackingService {
       this.logger.error(`checkStreams: ${error.message}`)
     }
 
-    const { interval } = this.configService.twitch.stream
+    const { interval } = this.configService.twitch.live
     setTimeout(() => this.checkStreams(), interval)
   }
 
