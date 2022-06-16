@@ -1,18 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
-import { TrackTwitchStreamService } from '../../../../track/services/track-twitch-stream.service'
+import { TrackTwitchLiveService } from '../../../../track/services/track-twitch-live.service'
 import { TwitchUser } from '../../../../twitch/models/twitch-user.entity'
 import { TwitchUserService } from '../../../../twitch/services/data/twitch-user.service'
 import { TwitchUtils } from '../../../../twitch/utils/twitch.utils'
 import { TrackRemoveBaseSubcommand } from '../base/track-remove-base-subcommand'
 
 @Injectable()
-export class TrackRemoveTwitchUserStreamCommand extends TrackRemoveBaseSubcommand {
-  logger = baseLogger.child({ context: TrackRemoveTwitchUserStreamCommand.name })
+export class TrackRemoveTwitchLiveCommand extends TrackRemoveBaseSubcommand {
+  logger = baseLogger.child({ context: TrackRemoveTwitchLiveCommand.name })
 
   constructor(
-    @Inject(TrackTwitchStreamService)
-    protected readonly trackService: TrackTwitchStreamService,
+    @Inject(TrackTwitchLiveService)
+    protected readonly trackService: TrackTwitchLiveService,
     @Inject(TwitchUserService)
     private readonly twitchUserService: TwitchUserService,
   ) {

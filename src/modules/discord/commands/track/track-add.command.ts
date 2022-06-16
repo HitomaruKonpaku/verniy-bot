@@ -9,7 +9,7 @@ import { BaseCommand } from '../base/base.command'
 import { TrackAddInstagramPostCommand } from './track-add/track-add-instagram-post.command'
 import { TrackAddTiktokVideoCommand } from './track-add/track-add-tiktok-video.command'
 import { TrackAddTwitCastingLiveCommand } from './track-add/track-add-twitcasting-live.command'
-import { TrackAddTwitchUserStreamCommand } from './track-add/track-add-twitch-user-stream.command'
+import { TrackAddTwitchLiveCommand } from './track-add/track-add-twitch-live.command'
 import { TrackAddTwitterProfileCommand } from './track-add/track-add-twitter-profile.command'
 import { TrackAddTwitterSpaceCommand } from './track-add/track-add-twitter-space.command'
 import { TrackAddTwitterTweetCommand } from './track-add/track-add-twitter-tweet.command'
@@ -63,7 +63,7 @@ export class TrackAddCommand extends BaseCommand {
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
     //
     .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITCH_USER_STREAM)
+      .setName(TrackType.TWITCH_LIVE)
       .setDescription('Track user live')
       .addStringOption((option) => option
         .setName('username')
@@ -123,8 +123,8 @@ export class TrackAddCommand extends BaseCommand {
         return TrackAddTwitterSpaceCommand
       case TrackType.TWITCASTING_LIVE:
         return TrackAddTwitCastingLiveCommand
-      case TrackType.TWITCH_USER_STREAM:
-        return TrackAddTwitchUserStreamCommand
+      case TrackType.TWITCH_LIVE:
+        return TrackAddTwitchLiveCommand
       case TrackType.INSTAGRAM_POST:
         return TrackAddInstagramPostCommand
       case TrackType.TIKTOK_VIDEO:

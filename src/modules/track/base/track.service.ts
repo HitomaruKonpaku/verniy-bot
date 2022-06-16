@@ -1,21 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Repository } from 'typeorm'
-import { BaseTrackEntity } from '../../models/base/base-track.entity'
+import { Track } from './track.entity'
 
-export abstract class BaseTrackService<T extends BaseTrackEntity> {
+export abstract class TrackService<T extends Track> {
   public readonly repository: Repository<T>
 
-  public async getDiscordChannelIds() {
-    const records = await this.repository
-      .createQueryBuilder()
-      .select('discord_channel_id')
-      .distinct()
-      .getRawMany()
-    const ids = records.map((v) => v.discord_channel_id) as string[]
-    return ids
-  }
-
-  public async getManyByUserId(userId: string, options?: any) {
+  public async getManyByUserId(userId: string, options?: Record<string, any>) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
@@ -24,7 +14,7 @@ export abstract class BaseTrackService<T extends BaseTrackEntity> {
     return records
   }
 
-  public async getManyByUserIds(userIds: string[], options?: any) {
+  public async getManyByUserIds(userIds: string[], options?: Record<string, any>) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
@@ -36,9 +26,9 @@ export abstract class BaseTrackService<T extends BaseTrackEntity> {
   public async add(
     userId: string,
     discordChannelId: string,
-    discordMessage = null,
-    updatedBy?: string,
-    options?: any,
+    discordMessage: string = null,
+    updatedBy: string = null,
+    options: Record<string, any> = {},
   ) {
     await this.repository.upsert(
       {
@@ -48,9 +38,10 @@ export abstract class BaseTrackService<T extends BaseTrackEntity> {
         userId,
         discordChannelId,
         discordMessage,
+        ...(options || {}),
       } as any,
       {
-        conflictPaths: ['userId', 'discordChannelId'],
+        conflictPaths: ['type', 'userId', 'discordChannelId'],
         skipUpdateIfNoValuesChanged: true,
       },
     )

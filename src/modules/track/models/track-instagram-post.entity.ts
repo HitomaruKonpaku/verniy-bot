@@ -1,7 +1,7 @@
-import { Entity, Unique } from 'typeorm'
-import { BaseTrackInstagram } from './base/base-track-instagram.entity'
+import { ChildEntity } from 'typeorm'
+import { Track } from '../base/track.entity'
+import { TrackType } from '../enums/track-type.enum'
 
-@Entity('track_instagram_post')
-@Unique(['userId', 'discordChannelId'])
-export class TrackInstagramPost extends BaseTrackInstagram {
+@ChildEntity(TrackType.INSTAGRAM_POST)
+export class TrackInstagramPost extends Track {
 }

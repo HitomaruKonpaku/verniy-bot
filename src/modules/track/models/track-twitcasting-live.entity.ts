@@ -1,7 +1,7 @@
-import { Entity, Unique } from 'typeorm'
-import { BaseTrackTwitCasting } from './base/base-track-twitcasting.entity'
+import { ChildEntity } from 'typeorm'
+import { Track } from '../base/track.entity'
+import { TrackType } from '../enums/track-type.enum'
 
-@Entity('track_twitcasting_live')
-@Unique(['userId', 'discordChannelId'])
-export class TrackTwitCastingLive extends BaseTrackTwitCasting {
+@ChildEntity(TrackType.TWITCASTING_LIVE)
+export class TrackTwitCastingLive extends Track {
 }

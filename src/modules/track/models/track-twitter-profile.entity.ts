@@ -1,7 +1,7 @@
-import { Entity, Unique } from 'typeorm'
-import { BaseTrackTwitter } from './base/base-track-twitter.entity'
+import { ChildEntity } from 'typeorm'
+import { Track } from '../base/track.entity'
+import { TrackType } from '../enums/track-type.enum'
 
-@Entity('track_twitter_profile')
-@Unique(['userId', 'discordChannelId'])
-export class TrackTwitterProfile extends BaseTrackTwitter {
+@ChildEntity(TrackType.TWITTER_PROFILE)
+export class TrackTwitterProfile extends Track {
 }

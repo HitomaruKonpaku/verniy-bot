@@ -1,7 +1,7 @@
-import { Entity, Unique } from 'typeorm'
-import { BaseTrackTiktok } from './base/base-track-tiktok.entity'
+import { ChildEntity } from 'typeorm'
+import { Track } from '../base/track.entity'
+import { TrackType } from '../enums/track-type.enum'
 
-@Entity('track_tiktok_video')
-@Unique(['userId', 'discordChannelId'])
-export class TrackTiktokVideo extends BaseTrackTiktok {
+@ChildEntity(TrackType.TIKTOK_VIDEO)
+export class TrackTiktokVideo extends Track {
 }

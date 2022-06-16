@@ -9,7 +9,7 @@ import { BaseCommand } from '../base/base.command'
 import { TrackRemoveInstagramPostCommand } from './track-remove/track-remove-instagram-post.command'
 import { TrackRemoveTiktokVideoCommand } from './track-remove/track-remove-tiktok-video.command'
 import { TrackRemoveTwitCastingLiveCommand } from './track-remove/track-remove-twitcasting-live.command'
-import { TrackRemoveTwitchUserStreamCommand } from './track-remove/track-remove-twitch-user-stream.command'
+import { TrackRemoveTwitchLiveCommand } from './track-remove/track-remove-twitch-live.command'
 import { TrackRemoveTwitterProfileCommand } from './track-remove/track-remove-twitter-profile.command'
 import { TrackRemoveTwitterSpaceCommand } from './track-remove/track-remove-twitter-space.command'
 import { TrackRemoveTwitterTweetCommand } from './track-remove/track-remove-twitter-tweet.command'
@@ -53,7 +53,7 @@ export class TrackRemoveCommand extends BaseCommand {
         .setRequired(true)))
     //
     .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITCH_USER_STREAM)
+      .setName(TrackType.TWITCH_LIVE)
       .setDescription('Untrack user live')
       .addStringOption((option) => option
         .setName('username')
@@ -110,8 +110,8 @@ export class TrackRemoveCommand extends BaseCommand {
         return TrackRemoveTwitterSpaceCommand
       case TrackType.TWITCASTING_LIVE:
         return TrackRemoveTwitCastingLiveCommand
-      case TrackType.TWITCH_USER_STREAM:
-        return TrackRemoveTwitchUserStreamCommand
+      case TrackType.TWITCH_LIVE:
+        return TrackRemoveTwitchLiveCommand
       case TrackType.INSTAGRAM_POST:
         return TrackRemoveInstagramPostCommand
       case TrackType.TIKTOK_VIDEO:
