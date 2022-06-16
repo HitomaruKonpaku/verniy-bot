@@ -3,7 +3,7 @@ import { baseLogger } from '../../../../logger'
 import { ArrayUtils } from '../../../../utils/array.utils'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
-import { TrackTwitchStreamService } from '../../../track/services/track-twitch-stream.service'
+import { TrackTwitchLiveService } from '../../../track/services/track-twitch-live.service'
 import { TWITCH_API_LIST_SIZE } from '../../constants/twitch.constant'
 import { TwitchStream } from '../../models/twitch-stream.entity'
 import { TwitchUtils } from '../../utils/twitch.utils'
@@ -19,8 +19,8 @@ export class TwitchStreamTrackingService {
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
-    @Inject(TrackTwitchStreamService)
-    private readonly trackTwitchStreamService: TrackTwitchStreamService,
+    @Inject(TrackTwitchLiveService)
+    private readonly trackTwitchLiveService: TrackTwitchLiveService,
     @Inject(TwitchStreamService)
     private readonly twitchStreamService: TwitchStreamService,
     @Inject(TwitchUserControllerService)
@@ -41,7 +41,7 @@ export class TwitchStreamTrackingService {
 
   private async initUsers() {
     try {
-      const userIds = await this.trackTwitchStreamService.getUserIdsForInitUsers()
+      const userIds = await this.trackTwitchLiveService.getUserIdsForInit()
       if (!userIds.length) {
         return
       }
@@ -54,7 +54,7 @@ export class TwitchStreamTrackingService {
 
   private async checkStreams() {
     try {
-      const userIds = await this.trackTwitchStreamService.getUserIdsForStreamCheck()
+      const userIds = await this.trackTwitchLiveService.getUserIdsForLiveCheck()
       const chunks = ArrayUtils.splitIntoChunk(userIds, TWITCH_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((v) => this.checkStreamsByUserIds(v)))
     } catch (error) {
@@ -113,7 +113,7 @@ export class TwitchStreamTrackingService {
 
   private async getTrackItems(stream: TwitchStream) {
     try {
-      const items = await this.trackTwitchStreamService.getManyByUserId(stream.userId)
+      const items = await this.trackTwitchLiveService.getManyByUserId(stream.userId)
       return items
     } catch (error) {
       this.logger.error(`getTrackItems: ${error.message}`, { stream })
