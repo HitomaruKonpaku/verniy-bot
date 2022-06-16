@@ -25,7 +25,7 @@ export class InstagramApiService {
     try {
       const data = await instagramUserLimiter.schedule(async () => {
         this.logger.debug('--> getUser', { requestId, username })
-        const response = user(username)
+        const response = await user(username)
         this.logger.debug('<-- getUser', { requestId, username })
         return response
       })
@@ -41,8 +41,9 @@ export class InstagramApiService {
     try {
       const data = await instagramUserStoriesLimiter.schedule(async () => {
         this.logger.debug('--> getUserStories', { requestId, userId })
-        const response = getStories({ id: userId, sessionid: this.sessionId })
-        this.logger.debug('<-- getUserStories', { requestId, userId })
+        const response = await getStories({ id: userId, sessionid: this.sessionId })
+        const storyCount = response.items?.length
+        this.logger.debug('<-- getUserStories', { requestId, userId, storyCount })
         return response
       })
       return data
