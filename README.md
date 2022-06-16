@@ -61,6 +61,12 @@ npm install
 1. Clone `config.example.yaml` and rename to `config.yaml`
 1. Clone `.env.example` and rename to `.env`
 1. Fill out the values in `.env`
+1. Build
+
+    ```
+    npm run build
+    ```
+
 1. Run
 
     ```
