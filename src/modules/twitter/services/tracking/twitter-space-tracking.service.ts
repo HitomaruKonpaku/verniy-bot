@@ -59,7 +59,7 @@ export class TwitterSpaceTrackingService {
 
   private async checkNewSpaces() {
     try {
-      const userIds = await this.trackTwitterSpaceService.getTwitterUserIds()
+      const userIds = await this.trackTwitterSpaceService.getUserIds()
       if (userIds.length) {
         this.logger.debug('checkNewSpaces', { userCount: userIds.length })
         const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
@@ -117,7 +117,7 @@ export class TwitterSpaceTrackingService {
 
   private async checkNewSpacesByPublicApi() {
     try {
-      const userIds = await this.trackTwitterSpaceService.getTwitterUserIds()
+      const userIds = await this.trackTwitterSpaceService.getUserIds()
       if (!userIds.length) {
         return
       }

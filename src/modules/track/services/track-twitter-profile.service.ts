@@ -12,4 +12,17 @@ export class TrackTwitterProfileService extends TrackService<TrackTwitterProfile
   ) {
     super()
   }
+
+  public async getUserIds() {
+    const records = await this.repository
+      .createQueryBuilder('t')
+      .select('t.user_id')
+      .distinct()
+      .andWhere('t.is_active = TRUE')
+      .addOrderBy('LENGTH(t.user_id)')
+      .addOrderBy('t.user_id')
+      .getRawMany()
+    const ids = records.map((v) => v.user_id) as string[]
+    return ids
+  }
 }

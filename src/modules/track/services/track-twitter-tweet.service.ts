@@ -13,6 +13,27 @@ export class TrackTwitterTweetService extends TrackService<TrackTwitterTweet> {
     super()
   }
 
+  public async getManyByUserId(
+    userId: string,
+    options: {
+      allowReply: boolean
+      allowRetweet: boolean
+    },
+  ) {
+    const query = this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .andWhere('user_id = :userId', { userId })
+    if (options?.allowReply) {
+      query.andWhere('allow_reply = TRUE')
+    }
+    if (options?.allowRetweet) {
+      query.andWhere('allow_retweet = TRUE')
+    }
+    const records = await query.getMany()
+    return records
+  }
+
   public async add(
     userId: string,
     discordChannelId: string,

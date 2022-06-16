@@ -169,7 +169,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
   private async onData(data: TweetV2SingleStreamResult) {
     try {
       const { author_id: authorId } = data.data
-      const isAuthorExist = await this.trackTwitterTweetService.existTwitterUserId(authorId)
+      const isAuthorExist = await this.trackTwitterTweetService.existUserId(authorId)
       if (!isAuthorExist) {
         return
       }
@@ -214,7 +214,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
       const author = TwitterUtils.getIncludesUserById(data, data.data.author_id)
       const isReply = TwitterUtils.isReplyStatus(data)
       const isRetweet = TwitterUtils.isRetweetStatus(data)
-      let items = await this.trackTwitterTweetService.getManyByTwitterUserId(
+      let items = await this.trackTwitterTweetService.getManyByUserId(
         author.id,
         {
           allowReply: isReply,

@@ -40,7 +40,7 @@ export class TwitterProfileTrackingService {
 
   private async execute() {
     try {
-      const userIds = await this.trackTwitterProfileService.getTwitterUserIds()
+      const userIds = await this.trackTwitterProfileService.getUserIds()
       if (userIds.length) {
         this.logger.debug('execute', { userCount: userIds.length })
         const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
