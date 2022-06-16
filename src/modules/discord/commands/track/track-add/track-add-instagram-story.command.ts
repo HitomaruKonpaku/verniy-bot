@@ -38,6 +38,7 @@ export class TrackAddInstagramStoryCommand extends TrackAddBaseSubcommand {
 
   public async execute(interaction: CommandInteraction) {
     if (!await this.isAppOwner(interaction)) {
+      this.logger.warn('execute: blocked')
       await this.replyOwnerOnly(interaction)
       return
     }

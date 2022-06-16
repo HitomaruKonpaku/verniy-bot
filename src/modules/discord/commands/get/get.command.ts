@@ -218,6 +218,7 @@ export class GetCommand extends BaseCommand {
 
   private async executeTwitCastingMoviesByUserCommand(interaction: CommandInteraction) {
     if (!await this.isAppOwner(interaction)) {
+      this.logger.warn('executeTwitCastingMoviesByUserCommand: blocked')
       await this.replyOwnerOnly(interaction)
       return
     }
