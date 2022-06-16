@@ -30,15 +30,4 @@ export class TwitCastingService {
       this.twitCastingCronService.start()
     }
   }
-
-  public async getDiscordChannelIds() {
-    const result = await Promise.allSettled([
-      this.trackTwitCastingLiveService.getDiscordChannelIds(),
-    ])
-    const ids = result
-      .filter((v) => v.status === 'fulfilled')
-      .map((v: any) => v.value as string[])
-      .flat() || []
-    return ids
-  }
 }

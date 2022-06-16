@@ -45,7 +45,7 @@ export class TwitCastingLiveTrackingService {
 
   private async initUsers() {
     try {
-      const userIds = await this.trackTwitCastingLiveService.getUserIdsForInitUsers()
+      const userIds = await this.trackTwitCastingLiveService.getUserIdsForInit()
       if (!userIds.length) {
         return
       }
