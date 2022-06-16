@@ -28,7 +28,6 @@ export class InstagramUtils {
         icon_url: user.profileImageUrl,
       },
       fields: [],
-      image: { url: post.displayUrl },
       footer: {
         text: 'Instagram',
         icon_url: 'https://static.cdninstagram.com/rsrc.php/v3/y-/r/99-GUnvE0f7.png',
@@ -40,6 +39,9 @@ export class InstagramUtils {
         value: this.getEmbedLocalTime(post.createdAt),
         inline: true,
       })
+    }
+    if (post.displayUrl) {
+      embed.image = { url: post.displayUrl }
     }
     return embed
   }
@@ -81,6 +83,9 @@ export class InstagramUtils {
         value: this.getEmbedLocalTime(story.expiringAt),
         inline: true,
       })
+    }
+    if (story.imageUrl) {
+      embed.image = { url: story.imageUrl }
     }
     return embed
   }
