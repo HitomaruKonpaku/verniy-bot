@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
+import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { InstagramUser } from '../../../../instagram/models/instagram-user.entity'
 import { InstagramUserControllerService } from '../../../../instagram/services/controller/instagram-user-controller.service'
@@ -33,5 +34,13 @@ export class TrackAddInstagramStoryCommand extends TrackAddBaseSubcommand {
   // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: InstagramUser): string {
     return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram story`
+  }
+
+  public async execute(interaction: CommandInteraction) {
+    if (!await this.isAppOwner(interaction)) {
+      await this.replyOwnerOnly(interaction)
+      return
+    }
+    super.execute(interaction)
   }
 }
