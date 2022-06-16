@@ -16,6 +16,7 @@ import { InstagramUserService } from './services/data/instagram-user.service'
 import { InstagramService } from './services/instagram.service'
 import { InstagramPostTrackingService } from './services/tracking/instagram-post-tracking.service'
 import { InstagramProfileTrackingService } from './services/tracking/instagram-profile-tracking.service'
+import { InstagramStoryTrackingService } from './services/tracking/instagram-story-tracking.service'
 import { InstagramTrackingService } from './services/tracking/instagram-tracking.service'
 
 @Module({
@@ -40,6 +41,7 @@ import { InstagramTrackingService } from './services/tracking/instagram-tracking
     InstagramStoryControllerService,
     InstagramTrackingService,
     InstagramPostTrackingService,
+    InstagramStoryTrackingService,
     InstagramProfileTrackingService,
   ],
   exports: [
