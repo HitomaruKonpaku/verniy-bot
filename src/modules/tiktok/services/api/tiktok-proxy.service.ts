@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
-import { ConfigEvent } from '../../../config/enum/config-event.enum'
+import { ConfigEvent } from '../../../config/enums/config-event.enum'
 import { ConfigService } from '../../../config/services/config.service'
 
 @Injectable()

@@ -11,7 +11,7 @@ import { twitcastingConfig } from '../config/twitcasting.config'
 import { twitchConfig } from '../config/twitch.config'
 import { twitterConfig } from '../config/twitter.config'
 import { youtubeConfig } from '../config/youtube.config'
-import { ConfigEvent } from '../enum/config-event.enum'
+import { ConfigEvent } from '../enums/config-event.enum'
 
 @Injectable()
 export class ConfigService extends EventEmitter {
