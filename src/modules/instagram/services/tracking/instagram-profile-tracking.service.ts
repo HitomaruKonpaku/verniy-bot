@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/services/discord.service'
-import { TrackInstagramPostService } from '../../../track/services/track-instagram-post.service'
+import { TrackInstagramProfileService } from '../../../track/services/track-instagram-profile.service'
 import { InstagramTrackingEvent } from '../../enum/instagram-tracking-event.enum'
 import { InstagramUser } from '../../models/instagram-user.entity'
 import { InstagramTrackingService } from './instagram-tracking.service'
@@ -13,8 +13,8 @@ export class InstagramProfileTrackingService {
   constructor(
     @Inject(InstagramTrackingService)
     private readonly instagramTrackingService: InstagramTrackingService,
-    @Inject(TrackInstagramPostService)
-    private readonly trackInstagramPostService: TrackInstagramPostService,
+    @Inject(TrackInstagramProfileService)
+    private readonly trackInstagramProfileService: TrackInstagramProfileService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) { }
@@ -64,7 +64,7 @@ export class InstagramProfileTrackingService {
 
   private async getTrackItems(user: InstagramUser) {
     try {
-      const items = await this.trackInstagramPostService.getManyByUserId(user.id)
+      const items = await this.trackInstagramProfileService.getManyByUserId(user.id)
       return items
     } catch (error) {
       this.logger.error(`getTrackItems: ${error.message}`, { user: { id: user.id } })
