@@ -31,8 +31,10 @@ Discord tracking bot
   - twitter_profile
   - twitter_space
   - twitcasting_live
-  - twitch_user_stream
+  - twitch_live
   - instagram_post
+  - instagram_story
+  - instagram_profile
   - tiktok_video
 
 - **track_remove**
