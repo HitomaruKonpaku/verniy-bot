@@ -147,7 +147,7 @@ export class DiscordService {
 
   private async saveClientChannels() {
     try {
-      const channelIds = await this.twitterService.getDiscordChannelIds()
+      const channelIds = []
       this.client.channels.cache.forEach((channel) => {
         if (channelIds.includes(channel.id) && channel instanceof TextChannel) {
           this.discordDbService.saveTextChannel(channel)
