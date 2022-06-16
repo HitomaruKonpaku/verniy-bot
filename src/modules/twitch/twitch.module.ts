@@ -10,7 +10,7 @@ import { TwitchStreamControllerService } from './services/controller/twitch-stre
 import { TwitchUserControllerService } from './services/controller/twitch-user-controller.service'
 import { TwitchStreamService } from './services/data/twitch-stream.service'
 import { TwitchUserService } from './services/data/twitch-user.service'
-import { TwitchStreamTrackingService } from './services/tracking/twitch-stream-tracking.service'
+import { TwitchLiveTrackingService } from './services/tracking/twitch-live-tracking.service'
 import { TwitchTokenService } from './services/twitch-token.service'
 import { TwitchService } from './services/twitch.service'
 
@@ -32,7 +32,7 @@ import { TwitchService } from './services/twitch.service'
     TwitchStreamService,
     TwitchUserControllerService,
     TwitchStreamControllerService,
-    TwitchStreamTrackingService,
+    TwitchLiveTrackingService,
   ],
   exports: [
     TwitchService,

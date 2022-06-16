@@ -13,8 +13,8 @@ import { TwitchUserControllerService } from '../controller/twitch-user-controlle
 import { TwitchStreamService } from '../data/twitch-stream.service'
 
 @Injectable()
-export class TwitchStreamTrackingService {
-  private readonly logger = baseLogger.child({ context: TwitchStreamTrackingService.name })
+export class TwitchLiveTrackingService {
+  private readonly logger = baseLogger.child({ context: TwitchLiveTrackingService.name })
 
   constructor(
     @Inject(ConfigService)
