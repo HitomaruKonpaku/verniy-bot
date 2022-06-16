@@ -4,6 +4,7 @@ import { ModuleRef } from '@nestjs/core'
 import { PermissionFlagsBits } from 'discord-api-types/v10'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../logger'
+import { TrackType } from '../../../track/enums/track-type.enum'
 import { BaseCommand } from '../base/base.command'
 import { TrackAddInstagramPostCommand } from './track-add/track-add-instagram-post.command'
 import { TrackAddTiktokVideoCommand } from './track-add/track-add-tiktok-video.command'
@@ -12,7 +13,6 @@ import { TrackAddTwitchUserStreamCommand } from './track-add/track-add-twitch-us
 import { TrackAddTwitterProfileCommand } from './track-add/track-add-twitter-profile.command'
 import { TrackAddTwitterSpaceCommand } from './track-add/track-add-twitter-space.command'
 import { TrackAddTwitterTweetCommand } from './track-add/track-add-twitter-tweet.command'
-import { TrackType } from './track-type.enum'
 
 @Injectable()
 export class TrackAddCommand extends BaseCommand {

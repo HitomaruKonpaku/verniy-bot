@@ -4,6 +4,7 @@ import { ModuleRef } from '@nestjs/core'
 import { PermissionFlagsBits } from 'discord-api-types/v10'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../logger'
+import { TrackType } from '../../../track/enums/track-type.enum'
 import { BaseCommand } from '../base/base.command'
 import { TrackRemoveInstagramPostCommand } from './track-remove/track-remove-instagram-post.command'
 import { TrackRemoveTiktokVideoCommand } from './track-remove/track-remove-tiktok-video.command'
@@ -12,7 +13,6 @@ import { TrackRemoveTwitchUserStreamCommand } from './track-remove/track-remove-
 import { TrackRemoveTwitterProfileCommand } from './track-remove/track-remove-twitter-profile.command'
 import { TrackRemoveTwitterSpaceCommand } from './track-remove/track-remove-twitter-space.command'
 import { TrackRemoveTwitterTweetCommand } from './track-remove/track-remove-twitter-tweet.command'
-import { TrackType } from './track-type.enum'
 
 @Injectable()
 export class TrackRemoveCommand extends BaseCommand {
