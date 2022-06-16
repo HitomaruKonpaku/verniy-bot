@@ -7,6 +7,8 @@ import { baseLogger } from '../../../../logger'
 import { TrackType } from '../../../track/enums/track-type.enum'
 import { BaseCommand } from '../base/base.command'
 import { TrackAddInstagramPostCommand } from './track-add/track-add-instagram-post.command'
+import { TrackAddInstagramProfileCommand } from './track-add/track-add-instagram-profile.command'
+import { TrackAddInstagramStoryCommand } from './track-add/track-add-instagram-story.command'
 import { TrackAddTiktokVideoCommand } from './track-add/track-add-tiktok-video.command'
 import { TrackAddTwitCastingLiveCommand } from './track-add/track-add-twitcasting-live.command'
 import { TrackAddTwitchLiveCommand } from './track-add/track-add-twitch-live.command'
@@ -73,7 +75,25 @@ export class TrackAddCommand extends BaseCommand {
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.INSTAGRAM_POST)
-      .setDescription('Track user post/story')
+      .setDescription('Track user post')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Instagram user')
+        .setRequired(true))
+      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
+    //
+    .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.INSTAGRAM_STORY)
+      .setDescription('Track user story')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Instagram user')
+        .setRequired(true))
+      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
+    //
+    .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.INSTAGRAM_PROFILE)
+      .setDescription('Track user profile')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Instagram user')
@@ -127,6 +147,10 @@ export class TrackAddCommand extends BaseCommand {
         return TrackAddTwitchLiveCommand
       case TrackType.INSTAGRAM_POST:
         return TrackAddInstagramPostCommand
+      case TrackType.INSTAGRAM_STORY:
+        return TrackAddInstagramStoryCommand
+      case TrackType.INSTAGRAM_PROFILE:
+        return TrackAddInstagramProfileCommand
       case TrackType.TIKTOK_VIDEO:
         return TrackAddTiktokVideoCommand
       default:

@@ -7,6 +7,8 @@ import { baseLogger } from '../../../../logger'
 import { TrackType } from '../../../track/enums/track-type.enum'
 import { BaseCommand } from '../base/base.command'
 import { TrackRemoveInstagramPostCommand } from './track-remove/track-remove-instagram-post.command'
+import { TrackRemoveInstagramProfileCommand } from './track-remove/track-remove-instagram-profile.command'
+import { TrackRemoveInstagramStoryCommand } from './track-remove/track-remove-instagram-story.command'
 import { TrackRemoveTiktokVideoCommand } from './track-remove/track-remove-tiktok-video.command'
 import { TrackRemoveTwitCastingLiveCommand } from './track-remove/track-remove-twitcasting-live.command'
 import { TrackRemoveTwitchLiveCommand } from './track-remove/track-remove-twitch-live.command'
@@ -62,7 +64,23 @@ export class TrackRemoveCommand extends BaseCommand {
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.INSTAGRAM_POST)
-      .setDescription('Untrack user post/story')
+      .setDescription('Untrack user post')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Instagram user')
+        .setRequired(true)))
+    //
+    .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.INSTAGRAM_STORY)
+      .setDescription('Untrack user story')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Instagram user')
+        .setRequired(true)))
+    //
+    .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.INSTAGRAM_PROFILE)
+      .setDescription('Untrack user profile')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Instagram user')
@@ -114,6 +132,10 @@ export class TrackRemoveCommand extends BaseCommand {
         return TrackRemoveTwitchLiveCommand
       case TrackType.INSTAGRAM_POST:
         return TrackRemoveInstagramPostCommand
+      case TrackType.INSTAGRAM_STORY:
+        return TrackRemoveInstagramStoryCommand
+      case TrackType.INSTAGRAM_PROFILE:
+        return TrackRemoveInstagramProfileCommand
       case TrackType.TIKTOK_VIDEO:
         return TrackRemoveTiktokVideoCommand
       default:

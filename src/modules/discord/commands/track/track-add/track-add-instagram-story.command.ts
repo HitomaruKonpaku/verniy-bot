@@ -4,16 +4,16 @@ import { InstagramUser } from '../../../../instagram/models/instagram-user.entit
 import { InstagramUserControllerService } from '../../../../instagram/services/controller/instagram-user-controller.service'
 import { InstagramUserService } from '../../../../instagram/services/data/instagram-user.service'
 import { InstagramUtils } from '../../../../instagram/utils/instagram.utils'
-import { TrackInstagramPostService } from '../../../../track/services/track-instagram-post.service'
+import { TrackInstagramStoryService } from '../../../../track/services/track-instagram-story.service'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
 @Injectable()
-export class TrackAddInstagramPostCommand extends TrackAddBaseSubcommand {
-  logger = baseLogger.child({ context: TrackAddInstagramPostCommand.name })
+export class TrackAddInstagramStoryCommand extends TrackAddBaseSubcommand {
+  logger = baseLogger.child({ context: TrackAddInstagramStoryCommand.name })
 
   constructor(
-    @Inject(TrackInstagramPostService)
-    protected readonly trackService: TrackInstagramPostService,
+    @Inject(TrackInstagramStoryService)
+    protected readonly trackService: TrackInstagramStoryService,
     @Inject(InstagramUserService)
     private readonly instagramUserService: InstagramUserService,
     @Inject(InstagramUserControllerService)
@@ -32,6 +32,6 @@ export class TrackAddInstagramPostCommand extends TrackAddBaseSubcommand {
 
   // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: InstagramUser): string {
-    return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram post`
+    return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram story`
   }
 }
