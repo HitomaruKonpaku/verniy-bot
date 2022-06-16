@@ -12,4 +12,17 @@ export class TrackTiktokVideoService extends TrackService<TrackTiktokVideo> {
   ) {
     super()
   }
+
+  public async getUsernamesForCheck(): Promise<string[]> {
+    const records = await this.repository
+      .createQueryBuilder('t')
+      .select('u.username')
+      .distinct()
+      .leftJoin('tiktok_user', 'u', 'u.id = t.user_id')
+      .andWhere('t.is_active = TRUE')
+      .andWhere('u.id NOTNULL')
+      .getRawMany()
+    const usernames = records.map((v) => v.tu_username)
+    return usernames
+  }
 }
