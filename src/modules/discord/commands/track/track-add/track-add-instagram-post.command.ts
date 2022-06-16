@@ -32,6 +32,6 @@ export class TrackAddInstagramPostCommand extends TrackAddBaseSubcommand {
 
   // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: InstagramUser): string {
-    return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram post`
+    return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram posts`
   }
 }

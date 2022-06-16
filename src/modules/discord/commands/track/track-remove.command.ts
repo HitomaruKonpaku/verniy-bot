@@ -64,7 +64,7 @@ export class TrackRemoveCommand extends BaseCommand {
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.INSTAGRAM_POST)
-      .setDescription('Untrack user post')
+      .setDescription('Untrack user posts')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Instagram user')
@@ -72,7 +72,7 @@ export class TrackRemoveCommand extends BaseCommand {
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.INSTAGRAM_STORY)
-      .setDescription('Untrack user story')
+      .setDescription('Untrack user stories')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Instagram user')
@@ -88,7 +88,7 @@ export class TrackRemoveCommand extends BaseCommand {
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.TIKTOK_VIDEO)
-      .setDescription('Untrack user video')
+      .setDescription('Untrack user videos')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('TikTok user, e.g. "hololive_english"')

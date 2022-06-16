@@ -75,7 +75,7 @@ export class TrackAddCommand extends BaseCommand {
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.INSTAGRAM_POST)
-      .setDescription('Track user post')
+      .setDescription('Track user posts')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Instagram user')
@@ -84,7 +84,7 @@ export class TrackAddCommand extends BaseCommand {
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.INSTAGRAM_STORY)
-      .setDescription('Track user story')
+      .setDescription('Track user stories')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Instagram user')
@@ -102,7 +102,7 @@ export class TrackAddCommand extends BaseCommand {
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.TIKTOK_VIDEO)
-      .setDescription('Track user video')
+      .setDescription('Track user videos')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('TikTok user, e.g. "hololive_english"')

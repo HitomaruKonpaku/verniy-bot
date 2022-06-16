@@ -33,7 +33,7 @@ export class TrackAddInstagramStoryCommand extends TrackAddBaseSubcommand {
 
   // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: InstagramUser): string {
-    return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram story`
+    return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram stories`
   }
 
   public async execute(interaction: CommandInteraction) {

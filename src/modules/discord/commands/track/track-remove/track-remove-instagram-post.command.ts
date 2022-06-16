@@ -26,6 +26,6 @@ export class TrackRemoveInstagramPostCommand extends TrackRemoveBaseSubcommand {
 
   // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: InstagramUser): string {
-    return `Untrack **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram post`
+    return `Untrack **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram posts`
   }
 }

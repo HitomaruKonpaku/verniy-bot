@@ -26,6 +26,6 @@ export class TrackRemoveInstagramStoryCommand extends TrackRemoveBaseSubcommand 
 
   // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: InstagramUser): string {
-    return `Untrack **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram story`
+    return `Untrack **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram stories`
   }
 }
