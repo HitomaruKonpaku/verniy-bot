@@ -22,7 +22,7 @@ export class TrackTiktokVideoService extends TrackService<TrackTiktokVideo> {
       .andWhere('t.is_active = TRUE')
       .andWhere('u.id NOTNULL')
       .getRawMany()
-    const usernames = records.map((v) => v.tu_username)
+    const usernames = records.map((v) => v.u_username)
     return usernames
   }
 }
