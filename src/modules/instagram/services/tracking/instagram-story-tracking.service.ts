@@ -1,4 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { MessageOptions } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackInstagramStoryService } from '../../../track/services/track-instagram-story.service'
@@ -50,18 +51,12 @@ export class InstagramStoryTrackingService {
               .filter((v) => v)
               .join('\n') || null
             const embed = InstagramUtils.getStoryEmbed(user, story)
-            // Send embed
-            await this.discordService.sendToChannel(
-              trackItem.discordChannelId,
-              { content, embeds: [embed] },
-            )
-            // Send file
-            if (story.imageUrl) {
-              await this.discordService.sendToChannel(
-                trackItem.discordChannelId,
-                { files: [story.imageUrl] },
-              )
+            const options: MessageOptions = {
+              content,
+              embeds: [embed],
+              files: [story.imageUrl].filter((v) => v),
             }
+            await this.discordService.sendToChannel(trackItem.discordChannelId, options)
           } catch (error) {
             this.logger.error(`notifyUserNewStories#send: ${error.message}`, {
               user: { id: user.id, username: user.username },
