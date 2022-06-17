@@ -40,9 +40,6 @@ export class InstagramUtils {
         inline: true,
       })
     }
-    if (post.displayUrl) {
-      embed.image = { url: post.displayUrl }
-    }
     return embed
   }
 
@@ -83,9 +80,6 @@ export class InstagramUtils {
         value: this.getEmbedLocalTime(story.expiringAt),
         inline: true,
       })
-    }
-    if (story.imageUrl) {
-      embed.image = { url: story.imageUrl }
     }
     return embed
   }

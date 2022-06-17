@@ -44,16 +44,24 @@ export class InstagramPostTrackingService {
         return
       }
       trackItems.forEach((trackItem) => {
-        posts.forEach((post) => {
+        posts.forEach(async (post) => {
           try {
             const content = [trackItem.discordMessage]
               .filter((v) => v)
               .join('\n') || null
             const embed = InstagramUtils.getPostEmbed(user, post)
-            this.discordService.sendToChannel(
+            // Send embed
+            await this.discordService.sendToChannel(
               trackItem.discordChannelId,
               { content, embeds: [embed] },
             )
+            // Send file
+            if (post.displayUrl) {
+              await this.discordService.sendToChannel(
+                trackItem.discordChannelId,
+                { files: [post.displayUrl] },
+              )
+            }
           } catch (error) {
             this.logger.error(`notifyUserNewPosts#send: ${error.message}`, {
               user: { id: user.id, username: user.username },
