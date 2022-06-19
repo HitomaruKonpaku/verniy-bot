@@ -30,7 +30,7 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
       if (!this.isUserTrackable(user)) {
         if (!await this.isAppOwner(interaction)) {
           this.logger.warn('execute: user untrackable', meta)
-          interaction.reply(this.getUntrackableMessage(user))
+          interaction.editReply(this.getUntrackableMessage(user))
           return
         }
       }
