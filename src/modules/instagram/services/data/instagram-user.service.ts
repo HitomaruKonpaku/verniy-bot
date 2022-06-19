@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/services/base-entity.service'
+import { TrackType } from '../../../track/enums/track-type.enum'
 import { InstagramUser } from '../../models/instagram-user.entity'
 
 @Injectable()
@@ -25,9 +26,10 @@ export class InstagramUserService extends BaseEntityService<InstagramUser> {
     const result = await this.repository
       .createQueryBuilder('u')
       .innerJoin(
-        'track_instagram_post',
-        'tip',
-        'tip.user_id = u.id AND tip.is_active = TRUE',
+        'track',
+        't',
+        't.user_id = u.id AND t.is_active = TRUE AND t.type IN (:...types)',
+        { types: [TrackType.INSTAGRAM_POST, TrackType.INSTAGRAM_STORY, TrackType.INSTAGRAM_PROFILE] },
       )
       .andWhere('u.is_active = TRUE')
       .getMany()
