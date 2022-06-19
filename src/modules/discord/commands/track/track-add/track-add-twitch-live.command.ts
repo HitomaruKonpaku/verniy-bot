@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
 import { TrackTwitchLiveService } from '../../../../track/services/track-twitch-live.service'
@@ -24,7 +25,6 @@ export class TrackAddTwitchLiveCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: TwitchUser): string {
     return `Tracking **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch`
   }

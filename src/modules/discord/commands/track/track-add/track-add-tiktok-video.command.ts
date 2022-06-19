@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
 import { TiktokUser } from '../../../../tiktok/models/tiktok-user.entity'
@@ -30,7 +31,6 @@ export class TrackAddTiktokVideoCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: TiktokUser): string {
     return `Tracking **[${user.username}](${TiktokUtils.getUserUrl(user.username)})** TikTok`
   }

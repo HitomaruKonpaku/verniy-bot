@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
 import { TrackTwitterSpaceService } from '../../../../track/services/track-twitter-space.service'
@@ -24,7 +25,6 @@ export class TrackAddTwitterSpaceCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: TwitterUser): string {
     return `Tracking **[${user.username}](${TwitterUtils.getUserUrl(user.username)})** Spaces`
   }

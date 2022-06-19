@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
 import { InstagramUser } from '../../../../instagram/models/instagram-user.entity'
@@ -30,7 +31,6 @@ export class TrackAddInstagramProfileCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: InstagramUser): string {
     return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram profile`
   }

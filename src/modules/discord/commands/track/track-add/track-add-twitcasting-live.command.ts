@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
 import { TrackTwitCastingLiveService } from '../../../../track/services/track-twitcasting-live.service'
@@ -24,7 +25,6 @@ export class TrackAddTwitCastingLiveCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: TwitCastingUser): string {
     return `Tracking **[${user.screenId}](${TwitCastingUtils.getUserUrl(user.screenId)})** TwitCasting`
   }

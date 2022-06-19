@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { bold, inlineCode } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction, MessageEmbedOptions, User } from 'discord.js'
@@ -29,7 +30,6 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: TwitterUser): string {
     return `Tracking **[${user.username}](${TwitterUtils.getUserUrl(user.username)})** tweets`
   }
