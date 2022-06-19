@@ -27,6 +27,14 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
         return
       }
 
+      if (!this.isUserTrackable(user)) {
+        if (!await this.isAppOwner(interaction)) {
+          this.logger.warn('execute: user untrackable', meta)
+          interaction.reply(this.getUntrackableMessage(user))
+          return
+        }
+      }
+
       await this.trackService.add(user.id, channelId, message, interaction.user.id)
       this.logger.warn('execute: added', meta)
 
@@ -41,6 +49,14 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
     }
 
     this.logger.debug('<-- execute', meta)
+  }
+
+  protected isUserTrackable(user: BaseExternalEntity): boolean {
+    return true
+  }
+
+  protected getUntrackableMessage(user: BaseExternalEntity): string {
+    return 'Unable to track this user!'
   }
 
   protected getSuccessEmbedDescription(user: BaseExternalEntity): string {

@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
@@ -31,7 +32,14 @@ export class TrackAddInstagramStoryCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  protected isUserTrackable(user: InstagramUser): boolean {
+    return !user.isPrivate
+  }
+
+  protected getUntrackableMessage(): string {
+    return 'Unable to track private user!'
+  }
+
   protected getSuccessEmbedDescription(user: InstagramUser): string {
     return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram stories`
   }
