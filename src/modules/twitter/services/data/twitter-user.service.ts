@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/services/base-entity.service'
+import { TrackType } from '../../../track/enums/track-type.enum'
 import { TwitterUser } from '../../models/twitter-user.entity'
 
 @Injectable()
@@ -45,11 +46,12 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
     const users = await this.repository
       .createQueryBuilder('tu')
       .leftJoin(
-        'track_twitter_profile',
-        'ttp',
-        'ttp.is_active = TRUE AND ttp.user_id = tu.id',
+        'track',
+        't',
+        't.user_id = tu.id AND t.is_active = TRUE AND t.type = :type',
+        { type: TrackType.TWITTER_PROFILE },
       )
-      .andWhere('ttp.user_id ISNULL')
+      .andWhere('t.user_id ISNULL')
       .getMany()
     return users
   }
