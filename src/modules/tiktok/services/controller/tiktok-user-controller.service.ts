@@ -48,7 +48,9 @@ export class TiktokUserControllerService {
       }
       return user
     } catch (error) {
-      this.logger.error(`fetchUser: ${error.message}`, { username })
+      if (error.response?.status !== 500) {
+        this.logger.error(`fetchUser: ${error.message}`, { username })
+      }
     }
     return null
   }
