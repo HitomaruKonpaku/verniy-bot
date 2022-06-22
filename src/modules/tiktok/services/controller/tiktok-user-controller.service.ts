@@ -26,7 +26,7 @@ export class TiktokUserControllerService {
       }
       const parser = new XMLParser()
       const userData = parser.parse(payload)?.rss?.channel
-      if (!userData) {
+      if (!userData || !userData.title) {
         return null
       }
       const user = await this.saveUser(userData)
