@@ -7,6 +7,7 @@ Discord tracking bot
   - User profile change
   - Spaces
 - TwitCasting
+- ~~YouTube~~
 - Twitch
 - Instagram
 - TikTok
@@ -26,27 +27,34 @@ Discord tracking bot
 
 ## Commands
 
-- **track_add**
-  - twitter_tweet
-  - twitter_profile
-  - twitter_space
-  - twitcasting_live
-  - twitch_live
-  - instagram_post
-  - instagram_story
-  - instagram_profile
-  - tiktok_video
+### track_add
 
-- **track_remove**
-  - Same as **track_add**
+> Add or update user tracking
 
-- **get**
-  - twitter
-    - user
-    - space
-  - twitcasting
-    - user
-    - movie
+- twitter_tweet
+- twitter_profile
+- twitter_space
+- twitcasting_live
+- twitch_live
+- instagram_post
+- instagram_story
+- instagram_profile
+- tiktok_video
+
+### track_remove
+
+> Remove user tracking
+
+- Same as [track_add](#track_add)
+
+### get
+
+- twitter
+  - user
+  - space
+- twitcasting
+  - user
+  - movie
 
 ## Getting Started
 
