@@ -20,7 +20,7 @@ import { TrackAddTwitterTweetCommand } from './track-add/track-add-twitter-tweet
 export class TrackAddCommand extends BaseCommand {
   public static readonly command = new SlashCommandBuilder()
     .setName('track_add')
-    .setDescription('Add tracking')
+    .setDescription('Add or update tracking')
     //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.TWITTER_TWEET)
