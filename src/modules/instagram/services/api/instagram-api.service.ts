@@ -42,8 +42,11 @@ export class InstagramApiService {
       const data = await instagramUserStoriesLimiter.schedule(async () => {
         this.logger.debug('--> getUserStories', { requestId, userId })
         const response = await getStories({ id: userId, sessionid: this.sessionId })
+        const { status } = response
         const storyCount = response.items?.length
-        this.logger.debug('<-- getUserStories', { requestId, userId, storyCount })
+        this.logger.debug('<-- getUserStories', {
+          requestId, userId, status, storyCount,
+        })
         return response
       })
       return data
