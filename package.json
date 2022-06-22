@@ -1,6 +1,6 @@
 {
   "name": "verniy-bot",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "description": "Discord tracking bot for Twitter/TwitCasting...",
   "scripts": {
     "start": "node dist/index",
