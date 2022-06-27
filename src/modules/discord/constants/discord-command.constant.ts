@@ -1,5 +1,6 @@
 import { ConfigCommand } from '../commands/config/config.command'
 import { GetCommand } from '../commands/get/get.command'
+import { StatusCommand } from '../commands/status/status.command'
 import { TrackAddCommand } from '../commands/track/track-add.command'
 import { TrackAddInstagramPostCommand } from '../commands/track/track-add/track-add-instagram-post.command'
 import { TrackAddInstagramProfileCommand } from '../commands/track/track-add/track-add-instagram-profile.command'
@@ -22,6 +23,7 @@ import { TrackRemoveTwitterSpaceCommand } from '../commands/track/track-remove/t
 import { TrackRemoveTwitterTweetCommand } from '../commands/track/track-remove/track-remove-twitter-tweet.command'
 
 export const DISCORD_APP_COMMANDS = [
+  StatusCommand,
   ConfigCommand,
   TrackAddCommand,
   TrackRemoveCommand,
@@ -29,6 +31,7 @@ export const DISCORD_APP_COMMANDS = [
 ]
 
 export const DISCORD_GUILD_COMMANDS = [
+  // StatusCommand,
   // ConfigCommand,
   // TrackAddCommand,
   // TrackRemoveCommand,
@@ -36,12 +39,16 @@ export const DISCORD_GUILD_COMMANDS = [
 ]
 
 export const DISCORD_GLOBAL_COMMANDS = [
+  // StatusCommand,
   // TrackAddCommand,
   // TrackRemoveCommand,
   // GetCommand,
 ]
 
 export const DISCORD_ALL_COMMANDS = [
+  // status
+  StatusCommand,
+
   // config
   ConfigCommand,
 
