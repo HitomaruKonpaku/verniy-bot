@@ -49,12 +49,17 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
         return
       }
 
+      // Only track user tweets from this table
       if (!await this.twitterFilteredStreamUserService.getOneById(user.id)) {
-        const owner = interaction.client.application.owner as User
-        const content = `> Due to Twitter API limitation, please contact ${bold(inlineCode(owner.tag))} to request to add this user to tracking list`
-        interaction.editReply(content)
-        this.logger.warn('<-- executeTweetCommand#ignore', { username, channelId })
-        return
+        if (!await this.isAppOwner(interaction)) {
+          const owner = interaction.client.application.owner as User
+          const content = `> Due to Twitter API limitation, please contact ${bold(inlineCode(owner.tag))} to request to add this user to tracking list`
+          await interaction.editReply(content)
+          this.logger.warn('<-- execute#ignore', { username, channelId })
+          return
+        }
+        await this.twitterFilteredStreamUserService.add(user.id)
+        this.logger.warn('execute#newFilteredStreamUser', { username })
       }
 
       await this.trackService.add(

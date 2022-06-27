@@ -40,4 +40,18 @@ export class TwitterFilteredStreamUserService extends BaseEntityService<TwitterF
   public async saveId(id: string) {
     await this.repository.save({ id, isActive: true })
   }
+
+  public async add(id: string) {
+    await this.repository.upsert(
+      {
+        id,
+        isActive: true,
+      },
+      { conflictPaths: ['id'] },
+    )
+  }
+
+  public async remove(id: string) {
+    await this.repository.update({ id }, { isActive: false })
+  }
 }
