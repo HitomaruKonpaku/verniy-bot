@@ -21,7 +21,7 @@ export class TrackTwitterSpaceService extends TrackService<TrackTwitterSpace> {
       .leftJoin('twitter_user', 'u', 'u.id = t.user_id')
       .andWhere('t.is_active = TRUE')
       .andWhere('u.is_active = TRUE')
-      .andWhere('u.protected = FALSE')
+      // .andWhere('u.protected = FALSE')
       .getRawMany()
     const ids = records.map((v) => v.user_id) as string[]
     return ids
