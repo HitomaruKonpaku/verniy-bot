@@ -54,6 +54,18 @@ export class TwitCastingMovieControllerService {
     return movie
   }
 
+  public async saveDraft(id: string, createdAt: number, userId: string) {
+    const movie: TwitCastingMovie = {
+      id,
+      isActive: true,
+      createdAt,
+      userId,
+      isLive: true,
+    }
+    await this.twitCastingMovieService.save(movie)
+    return movie
+  }
+
   public async save(data: TwitCastingApiMovie): Promise<TwitCastingMovie> {
     const movie: TwitCastingMovie = {
       id: data.id,
