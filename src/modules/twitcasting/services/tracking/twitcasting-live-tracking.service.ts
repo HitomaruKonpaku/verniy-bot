@@ -179,6 +179,7 @@ export class TwitCastingLiveTrackingService {
         if (user) {
           this.logger.debug('getMovieData: Saving draft movie', { id, screenId })
           newMovie = await this.twitCastingMovieControllerService.saveDraft(id, createdAt, user.id)
+          newMovie.user = user
           this.logger.warn('getMovieData: Using draft movie', { id, screenId })
         }
       }
