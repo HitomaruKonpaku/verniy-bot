@@ -113,7 +113,7 @@ export class TrackAddCommand extends BaseCommand {
 
   constructor(
     @Inject(ModuleRef)
-    private moduleRef: ModuleRef,
+    private readonly moduleRef: ModuleRef,
   ) {
     super()
   }

@@ -3,14 +3,14 @@
 import { ColorResolvable, CommandInteraction, MessageEmbedOptions } from 'discord.js'
 import winston from 'winston'
 import { BaseExternalEntity } from '../../../../database/models/base-external.entity'
-import { Track } from '../../../../track/base/track.entity'
-import { TrackService } from '../../../../track/base/track.service'
+import { Track } from '../../../../track/models/track.entity'
+import { TrackBaseService } from '../../../../track/services/base/track-base.service'
 import { BaseCommand } from '../../base/base.command'
 
 export abstract class TrackAddBaseSubcommand extends BaseCommand {
   protected abstract readonly logger: winston.Logger
 
-  protected abstract readonly trackService: TrackService<Track>
+  protected abstract readonly trackService: TrackBaseService<Track>
 
   protected abstract getUser(username: string): Promise<BaseExternalEntity>
 

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Repository } from 'typeorm'
-import { Track } from './track.entity'
+import { Track } from '../../models/track.entity'
 
-export abstract class TrackService<T extends Track> {
+export abstract class TrackBaseService<T extends Track> {
   public readonly repository: Repository<T>
 
   public async existUserId(userId: string) {

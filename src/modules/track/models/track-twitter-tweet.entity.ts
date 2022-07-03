@@ -1,6 +1,6 @@
 import { ChildEntity, Column } from 'typeorm'
-import { Track } from '../base/track.entity'
 import { TrackType } from '../enums/track-type.enum'
+import { Track } from './track.entity'
 
 @ChildEntity(TrackType.TWITTER_TWEET)
 export class TrackTwitterTweet extends Track {

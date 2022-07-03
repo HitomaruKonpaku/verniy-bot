@@ -21,7 +21,7 @@ export class DiscordClientService extends Client {
 
   constructor(
     @Inject(ModuleRef)
-    private moduleRef: ModuleRef,
+    private readonly moduleRef: ModuleRef,
     @Inject(DiscordDbService)
     private readonly discordDbService: DiscordDbService,
     @Inject(DiscordGuildService)

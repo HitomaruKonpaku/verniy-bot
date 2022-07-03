@@ -98,7 +98,7 @@ export class TrackRemoveCommand extends BaseCommand {
 
   constructor(
     @Inject(ModuleRef)
-    private moduleRef: ModuleRef,
+    private readonly moduleRef: ModuleRef,
   ) {
     super()
   }
