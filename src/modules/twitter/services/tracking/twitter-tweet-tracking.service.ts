@@ -148,7 +148,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
       await this.client.v2.updateStreamRules({
         add: newStreamRules.map((v) => ({ value: v })),
       })
-      this.logger.info('initStreamRules: Update completed')
+      this.logger.warn('initStreamRules: Update completed')
     } catch (error) {
       this.logger.error(`initStreamRules: ${error.message}`)
       const ms = ([10, 20, 30][retryCount] || 60) * 1000
