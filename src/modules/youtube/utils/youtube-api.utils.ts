@@ -8,7 +8,7 @@ export class YoutubeApiUtils {
   }
 
   public static getThumbnail(thumbnails: youtube_v3.Schema$ThumbnailDetails) {
-    const thumbnail = thumbnails?.maxres || thumbnails?.high || thumbnails?.medium || thumbnails?.default
+    const thumbnail = thumbnails?.maxres || thumbnails?.standard || thumbnails?.high || thumbnails?.medium || thumbnails?.default
     return thumbnail
   }
 }

@@ -3,6 +3,7 @@ import { baseLogger } from '../../../../logger'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackYoutubeLiveService } from '../../../track/services/track-youtube-live.service'
+import { YoutubeApiService } from '../api/youtube-api.service'
 
 @Injectable()
 export class YoutubeLiveTrackingService {
@@ -13,6 +14,8 @@ export class YoutubeLiveTrackingService {
     private readonly configService: ConfigService,
     @Inject(TrackYoutubeLiveService)
     private readonly trackYoutubeLiveService: TrackYoutubeLiveService,
+    @Inject(YoutubeApiService)
+    private readonly youtubeApiService: YoutubeApiService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) { }

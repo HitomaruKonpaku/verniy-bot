@@ -30,7 +30,7 @@ export class YoutubeApiService {
     this.logger.debug('--> getChannelsByIds', { requestId, idCount: ids.length })
     const { data } = await this.youtube.channels.list({
       id: ids,
-      part: ['id', 'snippet'],
+      part: ['id', 'snippet', 'contentDetails', 'statistics', 'status'],
       maxResults: 50,
     })
     this.logger.debug('<-- getChannelsByIds', { requestId })
@@ -45,7 +45,7 @@ export class YoutubeApiService {
     this.logger.debug('--> getVideosByIds', { requestId, idCount: ids.length })
     const { data } = await this.youtube.videos.list({
       id: ids,
-      part: ['id', 'snippet'],
+      part: ['id', 'snippet', 'contentDetails', 'statistics', 'status', 'liveStreamingDetails'],
       maxResults: 50,
     })
     this.logger.debug('<-- getVideosByIds', { requestId })
