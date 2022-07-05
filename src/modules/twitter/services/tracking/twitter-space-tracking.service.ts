@@ -11,6 +11,7 @@ import { TwitterSpace } from '../../models/twitter-space.entity'
 import { twitterSpacesByFleetsAvatarContentLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterSpaceUtils } from '../../utils/twitter-space.utils'
+import { TwitterUtils } from '../../utils/twitter.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
@@ -197,6 +198,7 @@ export class TwitterSpaceTrackingService {
         spaceId,
         { withCreator: true, withHosts: true, withSpeakers: true },
       )
+      this.logger.warn(`notifySpace: ${space.id}`, { url: TwitterUtils.getSpaceUrl(space.id), creator: space.creator?.username })
       const trackItems = await this.getTrackItems(space)
       if (!trackItems.length) {
         return
