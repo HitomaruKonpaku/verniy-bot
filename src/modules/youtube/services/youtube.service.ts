@@ -20,5 +20,8 @@ export class YoutubeService {
     if (config.live?.active) {
       await this.youtubeLiveTrackingService.start()
     }
+    if (config.cron?.active) {
+      // TODO
+    }
   }
 }
