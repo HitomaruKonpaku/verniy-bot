@@ -15,6 +15,7 @@ import { TrackAddTwitchLiveCommand } from './track-add/track-add-twitch-live.com
 import { TrackAddTwitterProfileCommand } from './track-add/track-add-twitter-profile.command'
 import { TrackAddTwitterSpaceCommand } from './track-add/track-add-twitter-space.command'
 import { TrackAddTwitterTweetCommand } from './track-add/track-add-twitter-tweet.command'
+import { TrackAddYoutubeLiveCommand } from './track-add/track-add-youtube-live.command'
 
 @Injectable()
 export class TrackAddCommand extends BaseCommand {
@@ -61,6 +62,15 @@ export class TrackAddCommand extends BaseCommand {
       .addStringOption((option) => option
         .setName('username')
         .setDescription('TwitCasting user, e.g. "nakiriayame"')
+        .setRequired(true))
+      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
+    //
+    .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.YOUTUBE_LIVE)
+      .setDescription('Track user live')
+      .addStringOption((option) => option
+        .setName('channel_id')
+        .setDescription('YouTube channel id')
         .setRequired(true))
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
     //
@@ -143,6 +153,8 @@ export class TrackAddCommand extends BaseCommand {
         return TrackAddTwitterSpaceCommand
       case TrackType.TWITCASTING_LIVE:
         return TrackAddTwitCastingLiveCommand
+      case TrackType.YOUTUBE_LIVE:
+        return TrackAddYoutubeLiveCommand
       case TrackType.TWITCH_LIVE:
         return TrackAddTwitchLiveCommand
       case TrackType.INSTAGRAM_POST:

@@ -15,6 +15,7 @@ import { TrackRemoveTwitchLiveCommand } from './track-remove/track-remove-twitch
 import { TrackRemoveTwitterProfileCommand } from './track-remove/track-remove-twitter-profile.command'
 import { TrackRemoveTwitterSpaceCommand } from './track-remove/track-remove-twitter-space.command'
 import { TrackRemoveTwitterTweetCommand } from './track-remove/track-remove-twitter-tweet.command'
+import { TrackRemoveYoutubeLiveCommand } from './track-remove/track-remove-youtube-live.command'
 
 @Injectable()
 export class TrackRemoveCommand extends BaseCommand {
@@ -52,6 +53,14 @@ export class TrackRemoveCommand extends BaseCommand {
       .addStringOption((option) => option
         .setName('username')
         .setDescription('TwitCasting user, e.g. "nakiriayame"')
+        .setRequired(true)))
+    //
+    .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.YOUTUBE_LIVE)
+      .setDescription('Untrack user live')
+      .addStringOption((option) => option
+        .setName('channel_id')
+        .setDescription('YouTube channel id')
         .setRequired(true)))
     //
     .addSubcommand((subcommand) => subcommand
@@ -128,6 +137,8 @@ export class TrackRemoveCommand extends BaseCommand {
         return TrackRemoveTwitterSpaceCommand
       case TrackType.TWITCASTING_LIVE:
         return TrackRemoveTwitCastingLiveCommand
+      case TrackType.YOUTUBE_LIVE:
+        return TrackRemoveYoutubeLiveCommand
       case TrackType.TWITCH_LIVE:
         return TrackRemoveTwitchLiveCommand
       case TrackType.INSTAGRAM_POST:

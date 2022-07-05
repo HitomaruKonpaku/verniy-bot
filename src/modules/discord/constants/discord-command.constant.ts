@@ -11,6 +11,7 @@ import { TrackAddTwitchLiveCommand } from '../commands/track/track-add/track-add
 import { TrackAddTwitterProfileCommand } from '../commands/track/track-add/track-add-twitter-profile.command'
 import { TrackAddTwitterSpaceCommand } from '../commands/track/track-add/track-add-twitter-space.command'
 import { TrackAddTwitterTweetCommand } from '../commands/track/track-add/track-add-twitter-tweet.command'
+import { TrackAddYoutubeLiveCommand } from '../commands/track/track-add/track-add-youtube-live.command'
 import { TrackRemoveCommand } from '../commands/track/track-remove.command'
 import { TrackRemoveInstagramPostCommand } from '../commands/track/track-remove/track-remove-instagram-post.command'
 import { TrackRemoveInstagramProfileCommand } from '../commands/track/track-remove/track-remove-instagram-profile.command'
@@ -21,6 +22,7 @@ import { TrackRemoveTwitchLiveCommand } from '../commands/track/track-remove/tra
 import { TrackRemoveTwitterProfileCommand } from '../commands/track/track-remove/track-remove-twitter-profile.command'
 import { TrackRemoveTwitterSpaceCommand } from '../commands/track/track-remove/track-remove-twitter-space.command'
 import { TrackRemoveTwitterTweetCommand } from '../commands/track/track-remove/track-remove-twitter-tweet.command'
+import { TrackRemoveYoutubeLiveCommand } from '../commands/track/track-remove/track-remove-youtube-live.command'
 
 export const DISCORD_APP_COMMANDS = [
   StatusCommand,
@@ -58,6 +60,7 @@ export const DISCORD_ALL_COMMANDS = [
   TrackAddTwitterProfileCommand,
   TrackAddTwitterSpaceCommand,
   TrackAddTwitCastingLiveCommand,
+  TrackAddYoutubeLiveCommand,
   TrackAddTwitchLiveCommand,
   TrackAddInstagramPostCommand,
   TrackAddInstagramStoryCommand,
@@ -70,6 +73,7 @@ export const DISCORD_ALL_COMMANDS = [
   TrackRemoveTwitterProfileCommand,
   TrackRemoveTwitterSpaceCommand,
   TrackRemoveTwitCastingLiveCommand,
+  TrackRemoveYoutubeLiveCommand,
   TrackRemoveTwitchLiveCommand,
   TrackRemoveInstagramPostCommand,
   TrackRemoveInstagramStoryCommand,

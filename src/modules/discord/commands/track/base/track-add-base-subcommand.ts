@@ -51,7 +51,7 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
     this.logger.debug('<-- execute', meta)
   }
 
-  protected isUserTrackable(user: BaseExternalEntity): boolean {
+  protected isUserTrackable(user: BaseExternalEntity): boolean | Promise<boolean> {
     return true
   }
 
