@@ -32,6 +32,7 @@
     "discord.js": "^13.7.0",
     "dotenv": "^16.0.1",
     "fast-xml-parser": "^4.0.8",
+    "googleapis": "^104.0.0",
     "instagram-api.js": "^1.1.0",
     "instagram-stories": "^1.2.2",
     "js-yaml": "^4.1.0",
