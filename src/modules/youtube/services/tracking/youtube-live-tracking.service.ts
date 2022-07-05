@@ -19,6 +19,5 @@ export class YoutubeLiveTrackingService {
 
   public async start() {
     this.logger.info('Starting...')
-    debugger
   }
 }
