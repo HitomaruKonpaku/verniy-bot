@@ -198,7 +198,7 @@ export class TwitterSpaceTrackingService {
         spaceId,
         { withCreator: true, withHosts: true, withSpeakers: true },
       )
-      this.logger.warn(`notifySpace: ${space.id}`, { url: TwitterUtils.getSpaceUrl(space.id), creator: space.creator?.username })
+      this.logger.warn(`notifySpace: ${space.id}`, { url: TwitterUtils.getSpaceUrl(space.id), state: space.state, creator: space.creator?.username })
       const trackItems = await this.getTrackItems(space)
       if (!trackItems.length) {
         return
