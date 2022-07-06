@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
+import { youtube_v3 } from '@googleapis/youtube'
 import { Inject, Injectable } from '@nestjs/common'
-import { youtube_v3 } from 'googleapis'
 import { baseLogger } from '../../../../logger'
 import { YoutubeApiUtils } from '../../utils/youtube-api.utils'
 import { YoutubeApiService } from '../api/youtube-api.service'

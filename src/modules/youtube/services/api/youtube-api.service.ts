@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
+import { youtube, youtube_v3 } from '@googleapis/youtube'
 import { Injectable } from '@nestjs/common'
 import { randomUUID } from 'crypto'
-import { google, youtube_v3 } from 'googleapis'
 import { baseLogger } from '../../../../logger'
 
 @Injectable()
@@ -53,7 +53,7 @@ export class YoutubeApiService {
   }
 
   public initClient() {
-    this.youtube = google.youtube({
+    this.youtube = youtube({
       version: 'v3',
       auth: this.apiKey,
     })

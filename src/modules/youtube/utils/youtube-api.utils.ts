@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { youtube_v3 } from 'googleapis'
+import { youtube_v3 } from '@googleapis/youtube'
 
 export class YoutubeApiUtils {
   public static getThumbnailUrl(thumbnails: youtube_v3.Schema$ThumbnailDetails) {
