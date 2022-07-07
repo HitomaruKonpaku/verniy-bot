@@ -3,6 +3,7 @@ import { codeBlock, SlashCommandBuilder, time } from '@discordjs/builders'
 import { Injectable } from '@nestjs/common'
 import { execSync } from 'child_process'
 import { CommandInteraction, MessageEmbedOptions, User } from 'discord.js'
+import { AppUtils } from '../../../../utils/app.utils'
 import { BaseCommand } from '../base/base.command'
 
 @Injectable()
@@ -29,7 +30,7 @@ export class StatusCommand extends BaseCommand {
         },
         {
           name: 'Commit hash',
-          value: `[${commitHash.slice(0, 7)}](https://github.com/HitomaruKonpaku/verniy-bot/commit/${commitHash})`,
+          value: `[${commitHash.slice(0, 7)}](${AppUtils.getCommitUrl(commitHash)})`,
         },
       ],
     }
