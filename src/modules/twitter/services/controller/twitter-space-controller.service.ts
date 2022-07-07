@@ -24,27 +24,33 @@ export class TwitterSpaceControllerService {
   ) { }
 
   public async getOneById(id: string, refresh = false) {
-    let twitterSpace = await this.twitterSpaceService.getOneById(id)
-    if (!twitterSpace || refresh) {
+    let space = !refresh
+      ? await this.twitterSpaceService.getOneById(id)
+      : null
+    if (!space) {
       const result = await this.twitterApiService.getSpaceById(id)
-      const space = result.data
-      twitterSpace = TwitterEntityUtils.buildSpace(space)
-      if (twitterSpace.state === SpaceState.LIVE) {
+      space = TwitterEntityUtils.buildSpace(result.data)
+      // Try to get playlist url
+      if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state)) {
         try {
-          twitterSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id)
-          twitterSpace.playlistActive = true
+          space.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id)
+          if (space.playlistUrl) {
+            space.playlistActive = true
+          }
         } catch (error) {
-          this.logger.error(`getOneById#getSpacePlaylistUrl: $${error.message}`, { id })
+          this.logger.error(`getOneById#getSpacePlaylistUrl: ${error.message}`, { id })
         }
       }
-      await this.twitterSpaceService.save(twitterSpace)
+      // Save
+      await this.twitterSpaceService.save(space)
+      // Try to get creator
       try {
-        await this.twitterUserControllerService.getOneById(twitterSpace.creatorId)
+        await this.twitterUserControllerService.getOneById(space.creatorId)
       } catch (error) {
-        this.logger.error(`getOneById#getUserById: $${error.message}`, { id })
+        this.logger.error(`getOneById#getUserById: ${error.message}`, { id })
       }
     }
-    return twitterSpace
+    return space
   }
 
   public async saveSpace(data: SpaceV2) {
