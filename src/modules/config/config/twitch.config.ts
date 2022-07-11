@@ -6,6 +6,10 @@ export const twitchConfig = {
     interval: 60000,
   },
 
+  chat: {
+    active: false,
+  },
+
   cron: {
     active: false,
   },
