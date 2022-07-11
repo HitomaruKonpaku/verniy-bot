@@ -9,7 +9,7 @@ import { TrackTwitchChatService } from '../../../track/services/track-twitch-cha
 export class TwitchChatTrackingService {
   private readonly logger = baseLogger.child({ context: TwitchChatTrackingService.name })
 
-  private readonly DEBUG = true
+  private readonly DEBUG = false
 
   private client: Client
 
