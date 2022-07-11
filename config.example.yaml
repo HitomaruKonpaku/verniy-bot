@@ -26,6 +26,8 @@ twitch:
   live:
     active: true
     interval: 60000
+  chat:
+    active: true
   cron:
     active: true
 
@@ -41,3 +43,6 @@ tiktok:
   track:
     active: true
     interval: 300000
+
+holodex:
+  active: false
