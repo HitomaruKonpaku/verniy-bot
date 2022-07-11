@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { bold, inlineCode } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction, MessageEmbedOptions, User } from 'discord.js'
+import { CommandInteraction, User } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackTwitterTweetService } from '../../../../track/services/track-twitter-tweet.service'
 import { TwitterUser } from '../../../../twitter/models/twitter-user.entity'
@@ -74,11 +74,7 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
       )
       this.logger.warn('execute: added', meta)
 
-      const embed: MessageEmbedOptions = {
-        description: this.getSuccessEmbedDescription(user),
-        color: this.getSuccessEmbedColor(user),
-      }
-      await interaction.editReply({ embeds: [embed] })
+      await this.onSuccess(interaction, user)
     } catch (error) {
       this.logger.error(`execute: ${error.message}`, meta)
       await interaction.editReply(error.message)

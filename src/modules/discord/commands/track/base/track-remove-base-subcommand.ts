@@ -30,17 +30,21 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
       await this.trackService.remove(user.id, channelId, interaction.user.id)
       this.logger.warn('execute: removed', meta)
 
-      const embed: MessageEmbedOptions = {
-        description: this.getSuccessEmbedDescription(user),
-        color: this.getSuccessEmbedColor(user),
-      }
-      await interaction.editReply({ embeds: [embed] })
+      await this.onSuccess(interaction, user)
     } catch (error) {
       this.logger.error(`execute: ${error.message}`, meta)
       await interaction.editReply(error.message)
     }
 
     this.logger.debug('<-- execute', meta)
+  }
+
+  protected async onSuccess(interaction: CommandInteraction, user: BaseExternalEntity) {
+    const embed: MessageEmbedOptions = {
+      description: this.getSuccessEmbedDescription(user),
+      color: this.getSuccessEmbedColor(user),
+    }
+    await interaction.editReply({ embeds: [embed] })
   }
 
   protected getSuccessEmbedDescription(user: BaseExternalEntity): string {

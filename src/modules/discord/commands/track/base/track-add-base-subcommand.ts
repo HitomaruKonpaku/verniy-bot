@@ -38,17 +38,21 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
       await this.trackService.add(user.id, channelId, message, interaction.user.id)
       this.logger.warn('execute: added', meta)
 
-      const embed: MessageEmbedOptions = {
-        description: this.getSuccessEmbedDescription(user),
-        color: this.getSuccessEmbedColor(user),
-      }
-      await interaction.editReply({ embeds: [embed] })
+      await this.onSuccess(interaction, user)
     } catch (error) {
       this.logger.error(`execute: ${error.message}`, meta)
       await interaction.editReply(error.message)
     }
 
     this.logger.debug('<-- execute', meta)
+  }
+
+  protected async onSuccess(interaction: CommandInteraction, user: BaseExternalEntity) {
+    const embed: MessageEmbedOptions = {
+      description: this.getSuccessEmbedDescription(user),
+      color: this.getSuccessEmbedColor(user),
+    }
+    await interaction.editReply({ embeds: [embed] })
   }
 
   protected isUserTrackable(user: BaseExternalEntity): boolean | Promise<boolean> {
