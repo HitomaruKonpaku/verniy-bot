@@ -57,9 +57,9 @@ export class TwitterTweetTrackingService extends EventEmitter {
       await this.stream.connect({ autoReconnect: true })
     } catch (error) {
       this.logger.error(`connect: ${error.message}`)
-      const ms = ([10, 20, 30][retryCount] || 60) * 1000
-      this.logger.info(`connect: Retry in ${ms}ms`)
-      await AppUtils.sleep(ms)
+      const retryMs = ([10, 20, 30][retryCount] || 60) * 1000
+      this.logger.info(`connect: Retry in ${retryMs}ms`)
+      await AppUtils.sleep(retryMs)
       this.connect(retryCount + 1)
     }
   }
@@ -152,9 +152,9 @@ export class TwitterTweetTrackingService extends EventEmitter {
       this.logger.warn('initStreamRules: Update completed')
     } catch (error) {
       this.logger.error(`initStreamRules: ${error.message}`)
-      const ms = ([10, 20, 30][retryCount] || 60) * 1000
-      this.logger.info(`initStreamRules: Retry in ${ms}ms`)
-      await AppUtils.sleep(ms)
+      const retryMs = ([10, 20, 30][retryCount] || 60) * 1000
+      this.logger.info(`initStreamRules: Retry in ${retryMs}ms`)
+      await AppUtils.sleep(retryMs)
       await this.initStreamRules(retryCount + 1)
     }
   }
