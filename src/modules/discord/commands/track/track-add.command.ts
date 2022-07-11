@@ -11,6 +11,7 @@ import { TrackAddInstagramProfileCommand } from './track-add/track-add-instagram
 import { TrackAddInstagramStoryCommand } from './track-add/track-add-instagram-story.command'
 import { TrackAddTiktokVideoCommand } from './track-add/track-add-tiktok-video.command'
 import { TrackAddTwitCastingLiveCommand } from './track-add/track-add-twitcasting-live.command'
+import { TrackAddTwitchChatCommand } from './track-add/track-add-twitch-chat.command'
 import { TrackAddTwitchLiveCommand } from './track-add/track-add-twitch-live.command'
 import { TrackAddTwitterProfileCommand } from './track-add/track-add-twitter-profile.command'
 import { TrackAddTwitterSpaceCommand } from './track-add/track-add-twitter-space.command'
@@ -84,6 +85,15 @@ export class TrackAddCommand extends BaseCommand {
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
     //
     .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.TWITCH_CHAT)
+      .setDescription('Track user chat')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Twitch user, e.g. "nakiriayame_hololive"')
+        .setRequired(true))
+      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
+    //
+    .addSubcommand((subcommand) => subcommand
       .setName(TrackType.INSTAGRAM_POST)
       .setDescription('Track user posts')
       .addStringOption((option) => option
@@ -95,15 +105,6 @@ export class TrackAddCommand extends BaseCommand {
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.INSTAGRAM_STORY)
       .setDescription('Track user stories')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Instagram user')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.INSTAGRAM_PROFILE)
-      .setDescription('Track user profile')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Instagram user')
@@ -153,29 +154,19 @@ export class TrackAddCommand extends BaseCommand {
 
   private getCommandService(subcommand: string) {
     this.logger.debug(`getCommandService: ${subcommand}`)
-    switch (subcommand) {
-      case TrackType.TWITTER_TWEET:
-        return TrackAddTwitterTweetCommand
-      case TrackType.TWITTER_PROFILE:
-        return TrackAddTwitterProfileCommand
-      case TrackType.TWITTER_SPACE:
-        return TrackAddTwitterSpaceCommand
-      case TrackType.TWITCASTING_LIVE:
-        return TrackAddTwitCastingLiveCommand
-      case TrackType.YOUTUBE_LIVE:
-        return TrackAddYoutubeLiveCommand
-      case TrackType.TWITCH_LIVE:
-        return TrackAddTwitchLiveCommand
-      case TrackType.INSTAGRAM_POST:
-        return TrackAddInstagramPostCommand
-      case TrackType.INSTAGRAM_STORY:
-        return TrackAddInstagramStoryCommand
-      case TrackType.INSTAGRAM_PROFILE:
-        return TrackAddInstagramProfileCommand
-      case TrackType.TIKTOK_VIDEO:
-        return TrackAddTiktokVideoCommand
-      default:
-        return null
-    }
+    const instance = {
+      [TrackType.TWITTER_TWEET]: TrackAddTwitterTweetCommand,
+      [TrackType.TWITTER_PROFILE]: TrackAddTwitterProfileCommand,
+      [TrackType.TWITTER_SPACE]: TrackAddTwitterSpaceCommand,
+      [TrackType.TWITCASTING_LIVE]: TrackAddTwitCastingLiveCommand,
+      [TrackType.YOUTUBE_LIVE]: TrackAddYoutubeLiveCommand,
+      [TrackType.TWITCH_LIVE]: TrackAddTwitchLiveCommand,
+      [TrackType.TWITCH_CHAT]: TrackAddTwitchChatCommand,
+      [TrackType.INSTAGRAM_POST]: TrackAddInstagramPostCommand,
+      [TrackType.INSTAGRAM_STORY]: TrackAddInstagramStoryCommand,
+      [TrackType.INSTAGRAM_PROFILE]: TrackAddInstagramProfileCommand,
+      [TrackType.TIKTOK_VIDEO]: TrackAddTiktokVideoCommand,
+    }[subcommand] || null
+    return instance
   }
 }

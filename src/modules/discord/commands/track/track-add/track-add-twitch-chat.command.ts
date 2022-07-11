@@ -1,19 +1,19 @@
 /* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
-import { TrackTwitchLiveService } from '../../../../track/services/track-twitch-live.service'
+import { TrackTwitchChatService } from '../../../../track/services/track-twitch-chat.service'
 import { TwitchUser } from '../../../../twitch/models/twitch-user.entity'
 import { TwitchUserControllerService } from '../../../../twitch/services/controller/twitch-user-controller.service'
 import { TwitchUtils } from '../../../../twitch/utils/twitch.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
 @Injectable()
-export class TrackAddTwitchLiveCommand extends TrackAddBaseSubcommand {
-  logger = baseLogger.child({ context: TrackAddTwitchLiveCommand.name })
+export class TrackAddTwitchChatCommand extends TrackAddBaseSubcommand {
+  logger = baseLogger.child({ context: TrackAddTwitchChatCommand.name })
 
   constructor(
-    @Inject(TrackTwitchLiveService)
-    protected readonly trackService: TrackTwitchLiveService,
+    @Inject(TrackTwitchChatService)
+    protected readonly trackService: TrackTwitchChatService,
     @Inject(TwitchUserControllerService)
     private readonly twitchUserControllerService: TwitchUserControllerService,
   ) {
@@ -26,6 +26,6 @@ export class TrackAddTwitchLiveCommand extends TrackAddBaseSubcommand {
   }
 
   protected getSuccessEmbedDescription(user: TwitchUser): string {
-    return `Tracking **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch live`
+    return `Tracking **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch chat`
   }
 }

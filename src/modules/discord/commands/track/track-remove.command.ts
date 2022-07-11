@@ -11,6 +11,7 @@ import { TrackRemoveInstagramProfileCommand } from './track-remove/track-remove-
 import { TrackRemoveInstagramStoryCommand } from './track-remove/track-remove-instagram-story.command'
 import { TrackRemoveTiktokVideoCommand } from './track-remove/track-remove-tiktok-video.command'
 import { TrackRemoveTwitCastingLiveCommand } from './track-remove/track-remove-twitcasting-live.command'
+import { TrackRemoveTwitchChatCommand } from './track-remove/track-remove-twitch-chat.command'
 import { TrackRemoveTwitchLiveCommand } from './track-remove/track-remove-twitch-live.command'
 import { TrackRemoveTwitterProfileCommand } from './track-remove/track-remove-twitter-profile.command'
 import { TrackRemoveTwitterSpaceCommand } from './track-remove/track-remove-twitter-space.command'
@@ -66,6 +67,14 @@ export class TrackRemoveCommand extends BaseCommand {
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.TWITCH_LIVE)
       .setDescription('Untrack user live')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Twitch user, e.g. "nakiriayame_hololive"')
+        .setRequired(true)))
+    //
+    .addSubcommand((subcommand) => subcommand
+      .setName(TrackType.TWITCH_CHAT)
+      .setDescription('Untrack user chat')
       .addStringOption((option) => option
         .setName('username')
         .setDescription('Twitch user, e.g. "nakiriayame_hololive"')
@@ -128,29 +137,19 @@ export class TrackRemoveCommand extends BaseCommand {
 
   private getCommandService(subcommand: string) {
     this.logger.debug(`getCommandService: ${subcommand}`)
-    switch (subcommand) {
-      case TrackType.TWITTER_TWEET:
-        return TrackRemoveTwitterTweetCommand
-      case TrackType.TWITTER_PROFILE:
-        return TrackRemoveTwitterProfileCommand
-      case TrackType.TWITTER_SPACE:
-        return TrackRemoveTwitterSpaceCommand
-      case TrackType.TWITCASTING_LIVE:
-        return TrackRemoveTwitCastingLiveCommand
-      case TrackType.YOUTUBE_LIVE:
-        return TrackRemoveYoutubeLiveCommand
-      case TrackType.TWITCH_LIVE:
-        return TrackRemoveTwitchLiveCommand
-      case TrackType.INSTAGRAM_POST:
-        return TrackRemoveInstagramPostCommand
-      case TrackType.INSTAGRAM_STORY:
-        return TrackRemoveInstagramStoryCommand
-      case TrackType.INSTAGRAM_PROFILE:
-        return TrackRemoveInstagramProfileCommand
-      case TrackType.TIKTOK_VIDEO:
-        return TrackRemoveTiktokVideoCommand
-      default:
-        return null
-    }
+    const instance = {
+      [TrackType.TWITTER_TWEET]: TrackRemoveTwitterTweetCommand,
+      [TrackType.TWITTER_PROFILE]: TrackRemoveTwitterProfileCommand,
+      [TrackType.TWITTER_SPACE]: TrackRemoveTwitterSpaceCommand,
+      [TrackType.TWITCASTING_LIVE]: TrackRemoveTwitCastingLiveCommand,
+      [TrackType.YOUTUBE_LIVE]: TrackRemoveYoutubeLiveCommand,
+      [TrackType.TWITCH_LIVE]: TrackRemoveTwitchLiveCommand,
+      [TrackType.TWITCH_CHAT]: TrackRemoveTwitchChatCommand,
+      [TrackType.INSTAGRAM_POST]: TrackRemoveInstagramPostCommand,
+      [TrackType.INSTAGRAM_STORY]: TrackRemoveInstagramStoryCommand,
+      [TrackType.INSTAGRAM_PROFILE]: TrackRemoveInstagramProfileCommand,
+      [TrackType.TIKTOK_VIDEO]: TrackRemoveTiktokVideoCommand,
+    }[subcommand] || null
+    return instance
   }
 }

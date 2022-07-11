@@ -1,18 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
-import { TrackTwitchLiveService } from '../../../../track/services/track-twitch-live.service'
+import { TrackTwitchChatService } from '../../../../track/services/track-twitch-chat.service'
 import { TwitchUser } from '../../../../twitch/models/twitch-user.entity'
 import { TwitchUserService } from '../../../../twitch/services/data/twitch-user.service'
 import { TwitchUtils } from '../../../../twitch/utils/twitch.utils'
 import { TrackRemoveBaseSubcommand } from '../base/track-remove-base-subcommand'
 
 @Injectable()
-export class TrackRemoveTwitchLiveCommand extends TrackRemoveBaseSubcommand {
-  logger = baseLogger.child({ context: TrackRemoveTwitchLiveCommand.name })
+export class TrackRemoveTwitchChatCommand extends TrackRemoveBaseSubcommand {
+  logger = baseLogger.child({ context: TrackRemoveTwitchChatCommand.name })
 
   constructor(
-    @Inject(TrackTwitchLiveService)
-    protected readonly trackService: TrackTwitchLiveService,
+    @Inject(TrackTwitchChatService)
+    protected readonly trackService: TrackTwitchChatService,
     @Inject(TwitchUserService)
     private readonly twitchUserService: TwitchUserService,
   ) {
@@ -26,6 +26,6 @@ export class TrackRemoveTwitchLiveCommand extends TrackRemoveBaseSubcommand {
 
   // eslint-disable-next-line class-methods-use-this
   protected getSuccessEmbedDescription(user: TwitchUser): string {
-    return `Untrack **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch live`
+    return `Untrack **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch chat`
   }
 }
