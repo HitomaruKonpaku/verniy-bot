@@ -28,6 +28,7 @@ export class TwitchChatTrackingService {
   }
 
   public async joinChannel(channel: string) {
+    this.logger.debug('joinChannel', { channel })
     try {
       return this.client.join(channel)
     } catch (error) {
@@ -51,7 +52,10 @@ export class TwitchChatTrackingService {
   private async joinDefaultChannels() {
     try {
       const usernames = await this.trackTwitchChatService.getUsernamesForChatCheck()
-      await Promise.allSettled(usernames.map((v) => this.joinChannel(v)))
+      if (usernames.length) {
+        this.logger.debug('joinDefaultChannels', { usernameCount: usernames.length })
+        await Promise.allSettled(usernames.map((v) => this.joinChannel(v)))
+      }
     } catch (error) {
       this.logger.error(`joinDefault: ${error.message}`)
     }
