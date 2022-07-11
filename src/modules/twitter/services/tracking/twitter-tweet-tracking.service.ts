@@ -81,6 +81,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
   private addStreamEventListeners() {
     const { stream } = this
     const ev = ETwitterStreamEvent
+
     stream.on(ev.Error, (error) => this.onError(error))
     stream.on(ev.ConnectError, (error) => this.logger.error(`ConnectError: ${error}`))
     stream.on(ev.Connected, () => this.logger.info('Connected'))
