@@ -110,6 +110,15 @@ export class TrackAddCommand extends BaseCommand {
         .setRequired(true))
       .addStringOption((option) => option.setName('message').setDescription('Discord message')))
     //
+    // .addSubcommand((subcommand) => subcommand
+    //   .setName(TrackType.INSTAGRAM_PROFILE)
+    //   .setDescription('Track user profile')
+    //   .addStringOption((option) => option
+    //     .setName('username')
+    //     .setDescription('Instagram user')
+    //     .setRequired(true))
+    //   .addStringOption((option) => option.setName('message').setDescription('Discord message')))
+    //
     .addSubcommand((subcommand) => subcommand
       .setName(TrackType.TIKTOK_VIDEO)
       .setDescription('Track user videos')
