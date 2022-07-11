@@ -36,6 +36,7 @@ Discord tracking bot
 - twitter_space
 - twitcasting_live
 - twitch_live
+- twitch_chat
 - instagram_post
 - instagram_story
 - instagram_profile
