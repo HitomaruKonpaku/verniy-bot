@@ -23,7 +23,6 @@ export class TwitchChatTrackingService {
   public async start() {
     this.logger.info('Starting...')
     this.initClient()
-    this.addClientEventListeners()
     await this.connect()
   }
 
@@ -66,6 +65,7 @@ export class TwitchChatTrackingService {
       options: { debug: this.DEBUG },
     })
     this.client = client
+    this.addClientEventListeners()
   }
 
   private addClientEventListeners() {
