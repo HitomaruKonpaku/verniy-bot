@@ -8,6 +8,7 @@ export enum TrackType {
   YOUTUBE_LIVE = 'youtube_live',
 
   TWITCH_LIVE = 'twitch_live',
+  TWITCH_CHAT = 'twitch_chat',
 
   INSTAGRAM_PROFILE = 'instagram_profile',
   INSTAGRAM_POST = 'instagram_post',

@@ -5,6 +5,7 @@ import { TrackInstagramProfile } from './models/track-instagram-profile.entity'
 import { TrackInstagramStory } from './models/track-instagram-story.entity'
 import { TrackTiktokVideo } from './models/track-tiktok-video.entity'
 import { TrackTwitCastingLive } from './models/track-twitcasting-live.entity'
+import { TrackTwitchChat } from './models/track-twitch-chat.entity'
 import { TrackTwitchLive } from './models/track-twitch-live.entity'
 import { TrackTwitterProfile } from './models/track-twitter-profile.entity'
 import { TrackTwitterSpace } from './models/track-twitter-space.entity'
@@ -15,6 +16,7 @@ import { TrackInstagramProfileService } from './services/track-instagram-profile
 import { TrackInstagramStoryService } from './services/track-instagram-story.service'
 import { TrackTiktokVideoService } from './services/track-tiktok-video.service'
 import { TrackTwitCastingLiveService } from './services/track-twitcasting-live.service'
+import { TrackTwitchChatService } from './services/track-twitch-chat.service'
 import { TrackTwitchLiveService } from './services/track-twitch-live.service'
 import { TrackTwitterProfileService } from './services/track-twitter-profile.service'
 import { TrackTwitterSpaceService } from './services/track-twitter-space.service'
@@ -28,6 +30,7 @@ const services = [
   TrackTwitCastingLiveService,
   TrackYoutubeLiveService,
   TrackTwitchLiveService,
+  TrackTwitchChatService,
   TrackInstagramProfileService,
   TrackInstagramPostService,
   TrackInstagramStoryService,
@@ -43,6 +46,7 @@ const services = [
       TrackTwitCastingLive,
       TrackYoutubeLive,
       TrackTwitchLive,
+      TrackTwitchChat,
       TrackInstagramProfile,
       TrackInstagramPost,
       TrackInstagramStory,
