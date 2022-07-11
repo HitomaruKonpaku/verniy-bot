@@ -7,6 +7,7 @@ import { TrackAddInstagramProfileCommand } from '../commands/track/track-add/tra
 import { TrackAddInstagramStoryCommand } from '../commands/track/track-add/track-add-instagram-story.command'
 import { TrackAddTiktokVideoCommand } from '../commands/track/track-add/track-add-tiktok-video.command'
 import { TrackAddTwitCastingLiveCommand } from '../commands/track/track-add/track-add-twitcasting-live.command'
+import { TrackAddTwitchChatCommand } from '../commands/track/track-add/track-add-twitch-chat.command'
 import { TrackAddTwitchLiveCommand } from '../commands/track/track-add/track-add-twitch-live.command'
 import { TrackAddTwitterProfileCommand } from '../commands/track/track-add/track-add-twitter-profile.command'
 import { TrackAddTwitterSpaceCommand } from '../commands/track/track-add/track-add-twitter-space.command'
@@ -18,6 +19,7 @@ import { TrackRemoveInstagramProfileCommand } from '../commands/track/track-remo
 import { TrackRemoveInstagramStoryCommand } from '../commands/track/track-remove/track-remove-instagram-story.command'
 import { TrackRemoveTiktokVideoCommand } from '../commands/track/track-remove/track-remove-tiktok-video.command'
 import { TrackRemoveTwitCastingLiveCommand } from '../commands/track/track-remove/track-remove-twitcasting-live.command'
+import { TrackRemoveTwitchChatCommand } from '../commands/track/track-remove/track-remove-twitch-chat.command'
 import { TrackRemoveTwitchLiveCommand } from '../commands/track/track-remove/track-remove-twitch-live.command'
 import { TrackRemoveTwitterProfileCommand } from '../commands/track/track-remove/track-remove-twitter-profile.command'
 import { TrackRemoveTwitterSpaceCommand } from '../commands/track/track-remove/track-remove-twitter-space.command'
@@ -62,6 +64,7 @@ export const DISCORD_ALL_COMMANDS = [
   TrackAddTwitCastingLiveCommand,
   TrackAddYoutubeLiveCommand,
   TrackAddTwitchLiveCommand,
+  TrackAddTwitchChatCommand,
   TrackAddInstagramPostCommand,
   TrackAddInstagramStoryCommand,
   TrackAddInstagramProfileCommand,
@@ -75,6 +78,7 @@ export const DISCORD_ALL_COMMANDS = [
   TrackRemoveTwitCastingLiveCommand,
   TrackRemoveYoutubeLiveCommand,
   TrackRemoveTwitchLiveCommand,
+  TrackRemoveTwitchChatCommand,
   TrackRemoveInstagramPostCommand,
   TrackRemoveInstagramStoryCommand,
   TrackRemoveInstagramProfileCommand,
