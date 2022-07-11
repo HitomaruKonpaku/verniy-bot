@@ -52,7 +52,7 @@ export class TwitchChatTrackingService {
     try {
       const usernames = await this.trackTwitchChatService.getUsernamesForChatCheck()
       if (usernames.length) {
-        this.logger.debug('joinDefaultChannels', { usernameCount: usernames.length })
+        this.logger.debug('joinDefaultChannels', { userCount: usernames.length })
         await Promise.allSettled(usernames.map((v) => this.joinChannel(v)))
       }
     } catch (error) {
