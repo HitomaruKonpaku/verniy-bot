@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { TrackTwitCastingLiveService } from '../../track/services/track-twitcasting-live.service'
+import { TwitCastingCronService } from './cron/twitcasting-cron.service'
 import { TwitCastingLiveTrackingService } from './tracking/twitcasting-live-tracking.service'
-import { TwitCastingCronService } from './twitcasting-cron.service'
 
 @Injectable()
 export class TwitCastingService {

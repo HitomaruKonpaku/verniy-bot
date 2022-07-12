@@ -9,10 +9,12 @@ import { TwitCastingApiPublicService } from './services/api/twitcasting-api-publ
 import { TwitCastingApiService } from './services/api/twitcasting-api.service'
 import { TwitCastingMovieControllerService } from './services/controller/twitcasting-movie-controller.service'
 import { TwitCastingUserControllerService } from './services/controller/twitcasting-user-controller.service'
+import { TwitCastingCronService } from './services/cron/twitcasting-cron.service'
+import { TwitCastingMovieCronService } from './services/cron/twitcasting-movie-cron.service'
+import { TwitCastingUserCronService } from './services/cron/twitcasting-user-cron.service'
 import { TwitCastingMovieService } from './services/data/twitcasting-movie.service'
 import { TwitCastingUserService } from './services/data/twitcasting-user.service'
 import { TwitCastingLiveTrackingService } from './services/tracking/twitcasting-live-tracking.service'
-import { TwitCastingCronService } from './services/twitcasting-cron.service'
 import { TwitCastingService } from './services/twitcasting.service'
 
 @Module({
@@ -35,6 +37,8 @@ import { TwitCastingService } from './services/twitcasting.service'
     TwitCastingMovieControllerService,
     TwitCastingLiveTrackingService,
     TwitCastingCronService,
+    TwitCastingUserCronService,
+    TwitCastingMovieCronService,
   ],
   exports: [
     TwitCastingService,
