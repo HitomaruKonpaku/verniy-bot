@@ -40,7 +40,7 @@ export class TwitCastingMovieCronService {
     await this.checkMovies()
   }
 
-  public async checkMovies() {
+  private async checkMovies() {
     this.logger.debug('--> checkMovies')
     try {
       const movies = await this.twitCastingMovieService.getManyLive()

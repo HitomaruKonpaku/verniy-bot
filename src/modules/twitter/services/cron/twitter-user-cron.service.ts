@@ -46,7 +46,7 @@ export class TwitterUserCronService {
     await this.checkUsers()
   }
 
-  public async checkUsers() {
+  private async checkUsers() {
     this.logger.info('--> checkUsers')
     try {
       const limiter = new Bottleneck({ maxConcurrent: 1 })
