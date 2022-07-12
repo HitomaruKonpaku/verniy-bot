@@ -12,13 +12,15 @@ import { TwitterApiService } from './services/api/twitter-api.service'
 import { TwitterClientService } from './services/api/twitter-client.service'
 import { TwitterSpaceControllerService } from './services/controller/twitter-space-controller.service'
 import { TwitterUserControllerService } from './services/controller/twitter-user-controller.service'
+import { TwitterCronService } from './services/cron/twitter-cron.service'
+import { TwitterSpaceCronService } from './services/cron/twitter-space-cron.service'
+import { TwitterUserCronService } from './services/cron/twitter-user-cron.service'
 import { TwitterFilteredStreamUserService } from './services/data/twitter-filtered-stream-user.service'
 import { TwitterSpaceService } from './services/data/twitter-space.service'
 import { TwitterUserService } from './services/data/twitter-user.service'
 import { TwitterProfileTrackingService } from './services/tracking/twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './services/tracking/twitter-space-tracking.service'
 import { TwitterTweetTrackingService } from './services/tracking/twitter-tweet-tracking.service'
-import { TwitterCronService } from './services/twitter-cron.service'
 import { TwitterTokenService } from './services/twitter-token.service'
 import { TwitterService } from './services/twitter.service'
 
@@ -49,6 +51,8 @@ import { TwitterService } from './services/twitter.service'
     TwitterProfileTrackingService,
     TwitterSpaceTrackingService,
     TwitterCronService,
+    TwitterUserCronService,
+    TwitterSpaceCronService,
   ],
   exports: [
     TwitterService,

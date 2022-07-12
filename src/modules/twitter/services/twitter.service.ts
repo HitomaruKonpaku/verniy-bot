@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
+import { TwitterCronService } from './cron/twitter-cron.service'
 import { TwitterProfileTrackingService } from './tracking/twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './tracking/twitter-space-tracking.service'
 import { TwitterTweetTrackingService } from './tracking/twitter-tweet-tracking.service'
-import { TwitterCronService } from './twitter-cron.service'
 
 @Injectable()
 export class TwitterService {

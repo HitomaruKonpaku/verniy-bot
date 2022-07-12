@@ -1,0 +1,78 @@
+import { Inject, Injectable } from '@nestjs/common'
+import Bottleneck from 'bottleneck'
+import { CronJob } from 'cron'
+import { CRON_TIME_ZONE } from '../../../../constants/cron.constant'
+import { baseLogger } from '../../../../logger'
+import { ArrayUtils } from '../../../../utils/array.utils'
+import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
+import { TwitterApiService } from '../api/twitter-api.service'
+import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
+import { TwitterUserService } from '../data/twitter-user.service'
+
+@Injectable()
+export class TwitterUserCronService {
+  private readonly logger = baseLogger.child({ context: TwitterUserCronService.name })
+
+  private readonly CRON_TIME = '0 0 */6 * * *'
+
+  private cronJob: CronJob
+
+  constructor(
+    @Inject(TwitterUserService)
+    private readonly twitterUserService: TwitterUserService,
+    @Inject(TwitterUserControllerService)
+    private readonly twitterUserControllerService: TwitterUserControllerService,
+    @Inject(TwitterApiService)
+    private readonly twitterApiService: TwitterApiService,
+  ) { }
+
+  public async start() {
+    this.logger.info('Starting...')
+    this.initCron()
+    this.cronJob.start()
+  }
+
+  private initCron() {
+    this.cronJob = new CronJob(
+      this.CRON_TIME,
+      () => this.onTick(),
+      null,
+      false,
+      CRON_TIME_ZONE,
+    )
+  }
+
+  private async onTick() {
+    await this.checkUsers()
+  }
+
+  public async checkUsers() {
+    this.logger.info('--> checkUsers')
+    try {
+      const limiter = new Bottleneck({ maxConcurrent: 1 })
+      const twitterUsers = await this.twitterUserService.getManyForCheck()
+      const chunks = ArrayUtils.splitIntoChunk(twitterUsers, TWITTER_API_LIST_SIZE)
+      await Promise.allSettled(chunks.map((chunk) => limiter.schedule(async () => {
+        try {
+          const ids = chunk.map((v) => v.id)
+          const users = await this.twitterApiService.getUsersByUserIds(ids)
+          const inactiveIdSet = new Set(ids)
+          users.forEach((user) => {
+            inactiveIdSet.delete(user.id_str)
+            this.twitterUserControllerService.saveUser(user)
+              .catch((error) => this.logger.error(`checkUsers#updateByUserObject: ${error.message}`, { id: user.id_str, user }))
+          })
+          inactiveIdSet.forEach((id) => {
+            this.twitterUserService.updateIsActive(id, false)
+              .catch((error) => this.logger.error(`checkUsers#updateIsActive: ${error.message}`, { id }))
+          })
+        } catch (error) {
+          // Ignore
+        }
+      })))
+    } catch (error) {
+      this.logger.error(`checkUsers: ${error.message}`)
+    }
+    this.logger.info('<-- checkUsers')
+  }
+}
