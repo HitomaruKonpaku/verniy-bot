@@ -56,7 +56,14 @@ export class InstagramPostTrackingService {
               embeds: [embed],
               files: [post.displayUrl].filter((v) => v),
             }
+            // Send base message with image
             await this.discordService.sendToChannel(trackItem.discordChannelId, options)
+            // Send video (optional)
+            if (post.isVideo && post.videoUrl) {
+              await this.discordService
+                .sendToChannel(trackItem.discordChannelId, { files: [post.videoUrl] })
+                .catch((error) => this.logger.error(`notifyUserNewPosts#sendVideo: ${error.message}`))
+            }
           } catch (error) {
             this.logger.error(`notifyUserNewPosts#send: ${error.message}`, {
               user: { id: user.id, username: user.username },
