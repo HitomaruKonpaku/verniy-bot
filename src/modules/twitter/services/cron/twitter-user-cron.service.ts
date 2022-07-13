@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
-import { CronJob } from 'cron'
-import { CRON_TIME_ZONE } from '../../../../constants/cron.constant'
 import { baseLogger } from '../../../../logger'
+import { BaseCronService } from '../../../../shared/services/base-cron.service'
 import { ArrayUtils } from '../../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -10,12 +9,10 @@ import { TwitterUserControllerService } from '../controller/twitter-user-control
 import { TwitterUserService } from '../data/twitter-user.service'
 
 @Injectable()
-export class TwitterUserCronService {
-  private readonly logger = baseLogger.child({ context: TwitterUserCronService.name })
+export class TwitterUserCronService extends BaseCronService {
+  protected readonly logger = baseLogger.child({ context: TwitterUserCronService.name })
 
-  private readonly CRON_TIME = '0 0 */6 * * *'
-
-  private cronJob: CronJob
+  protected cronTime = '0 0 */6 * * *'
 
   constructor(
     @Inject(TwitterUserService)
@@ -24,25 +21,11 @@ export class TwitterUserCronService {
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
-  ) { }
-
-  public async start() {
-    this.logger.info('Starting...')
-    this.initCron()
-    this.cronJob.start()
+  ) {
+    super()
   }
 
-  private initCron() {
-    this.cronJob = new CronJob(
-      this.CRON_TIME,
-      () => this.onTick(),
-      null,
-      false,
-      CRON_TIME_ZONE,
-    )
-  }
-
-  private async onTick() {
+  protected async onTick() {
     await this.checkUsers()
   }
 

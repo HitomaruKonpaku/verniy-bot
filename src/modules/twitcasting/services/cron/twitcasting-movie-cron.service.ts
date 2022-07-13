@@ -1,42 +1,25 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { CronJob } from 'cron'
-import { CRON_TIME_ZONE } from '../../../../constants/cron.constant'
 import { baseLogger } from '../../../../logger'
+import { BaseCronService } from '../../../../shared/services/base-cron.service'
 import { TwitCastingMovieControllerService } from '../controller/twitcasting-movie-controller.service'
 import { TwitCastingMovieService } from '../data/twitcasting-movie.service'
 
 @Injectable()
-export class TwitCastingMovieCronService {
-  private readonly logger = baseLogger.child({ context: TwitCastingMovieCronService.name })
+export class TwitCastingMovieCronService extends BaseCronService {
+  protected readonly logger = baseLogger.child({ context: TwitCastingMovieCronService.name })
 
-  private readonly CRON_TIME = '0 */5 * * * *'
-
-  private cronJob: CronJob
+  protected cronTime = '0 */5 * * * *'
 
   constructor(
     @Inject(TwitCastingMovieService)
     private readonly twitCastingMovieService: TwitCastingMovieService,
     @Inject(TwitCastingMovieControllerService)
     private readonly twitCastingMovieControllerService: TwitCastingMovieControllerService,
-  ) { }
-
-  public async start() {
-    this.logger.info('Starting...')
-    this.initCron()
-    this.cronJob.start()
+  ) {
+    super()
   }
 
-  private initCron() {
-    this.cronJob = new CronJob(
-      this.CRON_TIME,
-      () => this.onTick(),
-      null,
-      false,
-      CRON_TIME_ZONE,
-    )
-  }
-
-  private async onTick() {
+  protected async onTick() {
     await this.checkMovies()
   }
 
