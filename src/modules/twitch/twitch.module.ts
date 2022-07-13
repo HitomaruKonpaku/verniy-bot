@@ -9,6 +9,7 @@ import { TwitchApiService } from './services/api/twitch-api.service'
 import { TwitchStreamControllerService } from './services/controller/twitch-stream-controller.service'
 import { TwitchUserControllerService } from './services/controller/twitch-user-controller.service'
 import { TwitchCronService } from './services/cron/twitch-cron.service'
+import { TwitchUserCronService } from './services/cron/twitch-user-cron.service'
 import { TwitchStreamService } from './services/data/twitch-stream.service'
 import { TwitchUserService } from './services/data/twitch-user.service'
 import { TwitchChatTrackingService } from './services/tracking/twitch-chat-tracking.service'
@@ -37,6 +38,7 @@ import { TwitchService } from './services/twitch.service'
     TwitchLiveTrackingService,
     TwitchChatTrackingService,
     TwitchCronService,
+    TwitchUserCronService,
   ],
   exports: [
     TwitchService,
