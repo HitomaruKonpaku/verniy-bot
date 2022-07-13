@@ -75,6 +75,8 @@ export class TwitchChatTrackingService {
     client.on('connected', () => this.logger.debug('[WS] connected'))
     client.on('disconnected', () => this.logger.debug('[WS] disconnected'))
     client.on('reconnect', () => this.logger.debug('[WS] reconnect'))
+    client.on('ping', () => this.logger.debug('[WS] ping'))
+    client.on('pong', () => this.logger.debug('[WS] pong'))
     client.on('message', (channel, userstate, message, self) => this.onMessage(channel, userstate, message, self))
   }
 
