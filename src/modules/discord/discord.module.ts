@@ -10,6 +10,7 @@ import { TwitchModule } from '../twitch/twitch.module'
 import { TwitterModule } from '../twitter/twitter.module'
 import { YoutubeModule } from '../youtube/youtube.module'
 import { DISCORD_ALL_COMMANDS } from './constants/discord-command.constant'
+import { DiscordCronService } from './cron/discord-cron.service'
 import { DiscordChannel } from './models/discord-channel.entity'
 import { DiscordGuild } from './models/discord-guild.entity'
 import { DiscordMessage } from './models/discord-message.entity'
@@ -48,6 +49,7 @@ import { DiscordService } from './services/discord.service'
     DiscordGuildService,
     DiscordChannelService,
     DiscordMessageService,
+    DiscordCronService,
     ...DISCORD_ALL_COMMANDS,
   ],
   exports: [
