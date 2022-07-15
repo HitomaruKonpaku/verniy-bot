@@ -13,7 +13,7 @@ export class TrackTwitterSpaceService extends TrackBaseService<TrackTwitterSpace
     super()
   }
 
-  public async getUserIds() {
+  public async getUserIds(): Promise<string[]> {
     const query = `
 SELECT DISTINCT(user_id)
 FROM track AS t
@@ -24,7 +24,7 @@ WHERE t.type = 'twitter_space'
 ORDER BY t.created_at
     `
     const records = await this.repository.query(query)
-    const ids = records.map((v) => v.user_id) as string[]
+    const ids = records.map((v) => v.user_id)
     return ids
   }
 }
