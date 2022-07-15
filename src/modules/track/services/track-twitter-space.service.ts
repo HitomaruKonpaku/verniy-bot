@@ -14,15 +14,16 @@ export class TrackTwitterSpaceService extends TrackBaseService<TrackTwitterSpace
   }
 
   public async getUserIds() {
-    const records = await this.repository
-      .createQueryBuilder('t')
-      .select('t.user_id')
-      .distinct()
-      .leftJoin('twitter_user', 'u', 'u.id = t.user_id')
-      .andWhere('t.is_active = TRUE')
-      .andWhere('u.is_active = TRUE')
-      // .andWhere('u.protected = FALSE')
-      .getRawMany()
+    const query = `
+SELECT DISTINCT(user_id)
+FROM track AS t
+  LEFT JOIN twitter_user AS u ON u.id = t.user_id
+WHERE t.type = 'twitter_space'
+  AND t.is_active = TRUE
+  AND u.is_active = TRUE
+ORDER BY t.created_at
+    `
+    const records = await this.repository.query(query)
     const ids = records.map((v) => v.user_id) as string[]
     return ids
   }

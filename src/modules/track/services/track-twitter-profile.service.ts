@@ -14,14 +14,14 @@ export class TrackTwitterProfileService extends TrackBaseService<TrackTwitterPro
   }
 
   public async getUserIds() {
-    const records = await this.repository
-      .createQueryBuilder('t')
-      .select('t.user_id')
-      .distinct()
-      .andWhere('t.is_active = TRUE')
-      .addOrderBy('LENGTH(t.user_id)')
-      .addOrderBy('t.user_id')
-      .getRawMany()
+    const query = `
+SELECT DISTINCT(user_id)
+FROM track AS t
+WHERE t.type = 'twitter_profile'
+  AND t.is_active = TRUE
+ORDER BY t.created_at
+    `
+    const records = await this.repository.query(query)
     const ids = records.map((v) => v.user_id) as string[]
     return ids
   }
