@@ -14,15 +14,17 @@ export class TrackTwitchChatService extends TrackBaseService<TrackTwitchChat> {
   }
 
   public async getUsernamesForChatCheck(): Promise<string[]> {
-    const records = await this.repository
-      .createQueryBuilder('t')
-      .select('u.username')
-      .distinct()
-      .leftJoin('twitch_user', 'u', 'u.id = t.user_id')
-      .andWhere('t.is_active = TRUE')
-      .andWhere('u.id NOTNULL')
-      .getRawMany()
-    const ids = records.map((v) => v.u_username)
-    return ids
+    const query = `
+SELECT DISTINCT(username)
+FROM track AS t
+  LEFT JOIN twitch_user AS u ON u.id = t.user_id
+WHERE t.type = 'twitch_chat'
+  AND t.is_active = TRUE
+  AND u.id NOTNULL
+ORDER BY t.created_at
+    `
+    const records = await this.repository.query(query)
+    const usernames = records.map((v) => v.username)
+    return usernames
   }
 }
