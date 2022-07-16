@@ -4,6 +4,7 @@ import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { TwitterTweetTrackingService } from '../../twitter/services/tracking/twitter-tweet-tracking.service'
 import { TwitterUtils } from '../../twitter/utils/twitter.utils'
+import { HolodexApiService } from './api/holodex.service'
 
 @Injectable()
 export class HolodexService {
@@ -12,6 +13,8 @@ export class HolodexService {
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
+    @Inject(HolodexApiService)
+    private readonly holodexApiService: HolodexApiService,
     @Inject(TwitterTweetTrackingService)
     private readonly twitterTweetTrackingService: TwitterTweetTrackingService,
   ) { }
@@ -40,7 +43,16 @@ export class HolodexService {
       return
     }
 
-    // TODO: Forward youtube url to holodex !?
-    filterUrls.forEach((url) => this.logger.debug(`onTweetData: ${url}`))
+    await Promise.all(filterUrls.map((url) => this.postNotice(url)))
+  }
+
+  private async postNotice(url: string) {
+    this.logger.debug('postNotice', { url })
+    try {
+      const { status, data } = await this.holodexApiService.notice(url)
+      this.logger.debug('postNotice', { url, status, data })
+    } catch (error) {
+      this.logger.error(`postNotice: ${error.message}`, { url, status: error.response?.status })
+    }
   }
 }
