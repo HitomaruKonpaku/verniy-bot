@@ -4,7 +4,7 @@ import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { TwitterTweetTrackingService } from '../../twitter/services/tracking/twitter-tweet-tracking.service'
 import { TwitterUtils } from '../../twitter/utils/twitter.utils'
-import { HolodexApiService } from './api/holodex.service'
+import { HolodexApiService } from './api/holodex-api.service'
 
 @Injectable()
 export class HolodexService {
@@ -48,6 +48,9 @@ export class HolodexService {
 
   private async postNotice(url: string) {
     this.logger.debug('postNotice', { url })
+    if (!this.holodexApiService.apiKey) {
+      return
+    }
     try {
       const { status, data } = await this.holodexApiService.notice(url)
       this.logger.debug('postNotice', { url, status, data })

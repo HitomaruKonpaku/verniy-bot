@@ -18,7 +18,7 @@ export class HolodexApiService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private get apiKey() {
+  public get apiKey() {
     return process.env.HOLODEX_API_KEY
   }
 
