@@ -54,7 +54,7 @@ export class HolodexService {
 
     try {
       const { status, data } = await this.holodexApiService.notice(url)
-      this.logger.debug('postNotice', { url, status, data })
+      this.logger.info('postNotice', { url, status, data })
     } catch (error) {
       this.logger.error(`postNotice: ${error.message}`, { url, status: error.response?.status })
     }
