@@ -43,14 +43,15 @@ export class HolodexService {
       return
     }
 
-    await Promise.all(filterUrls.map((url) => this.postNotice(url)))
+    this.logger.debug('onTweetData', { urls })
+    await Promise.allSettled(filterUrls.map((url) => this.postNotice(url)))
   }
 
   private async postNotice(url: string) {
-    this.logger.debug('postNotice', { url })
     if (!this.holodexApiService.apiKey) {
       return
     }
+
     try {
       const { status, data } = await this.holodexApiService.notice(url)
       this.logger.debug('postNotice', { url, status, data })
