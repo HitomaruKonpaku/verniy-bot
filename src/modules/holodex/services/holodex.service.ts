@@ -43,7 +43,7 @@ export class HolodexService {
       return
     }
 
-    this.logger.debug('onTweetData', { urls })
+    this.logger.debug('onTweetData', { urls: filterUrls })
     await Promise.allSettled(filterUrls.map((url) => this.postNotice(url)))
   }
 
