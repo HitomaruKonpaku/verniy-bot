@@ -38,7 +38,7 @@ export class TwitCastingUserCronService extends BaseCronService {
     try {
       await this.twitCastingUserControllerService.getOneAndSaveById(id)
     } catch (error) {
-      if (error.response?.status === 403) {
+      if (error.response?.status === 404) {
         await this.updateIsActive(id)
       }
     }
