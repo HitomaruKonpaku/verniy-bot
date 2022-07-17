@@ -27,10 +27,29 @@ export class TwitCastingUserCronService extends BaseCronService {
     this.logger.debug('--> checkUsers')
     try {
       const users = await this.twitCastingUserService.getManyActive()
-      await Promise.allSettled(users.map((v) => this.twitCastingUserControllerService.getOneAndSaveById(v.id)))
+      await Promise.allSettled(users.map((v) => this.getUser(v.id)))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }
     this.logger.debug('<-- checkUsers')
+  }
+
+  private async getUser(id: string) {
+    try {
+      await this.twitCastingUserControllerService.getOneAndSaveById(id)
+    } catch (error) {
+      if (error.response?.status === 403) {
+        await this.updateIsActive(id)
+      }
+    }
+  }
+
+  private async updateIsActive(id: string) {
+    try {
+      await this.twitCastingUserService.updateIsActive(id, false)
+      this.logger.debug('updateIsActive: ok', { id })
+    } catch (error) {
+      this.logger.error(`updateIsActive: ${error.message}`, { id })
+    }
   }
 }

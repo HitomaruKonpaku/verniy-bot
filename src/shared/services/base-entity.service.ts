@@ -30,4 +30,8 @@ export abstract class BaseEntityService<T> {
     const result = await this.repository.save(data)
     return result
   }
+
+  public async updateIsActive(id: string, isActive: boolean): Promise<void | T> {
+    await this.repository.update({ id } as any, { isActive } as any)
+  }
 }
