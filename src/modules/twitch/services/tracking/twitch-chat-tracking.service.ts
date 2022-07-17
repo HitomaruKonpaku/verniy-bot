@@ -70,13 +70,15 @@ export class TwitchChatTrackingService {
 
   private addClientEventListeners() {
     const { client } = this
+    client.on('ping', () => this.logger.debug('[WS] ping'))
+    client.on('pong', () => this.logger.debug('[WS] pong'))
+
     client.on('connecting', () => this.logger.debug('[WS] connecting'))
     client.on('logon', () => this.logger.debug('[WS] logon'))
     client.on('connected', () => this.logger.debug('[WS] connected'))
     client.on('disconnected', () => this.logger.debug('[WS] disconnected'))
     client.on('reconnect', () => this.logger.debug('[WS] reconnect'))
-    client.on('ping', () => this.logger.debug('[WS] ping'))
-    client.on('pong', () => this.logger.debug('[WS] pong'))
+
     client.on('message', (channel, userstate, message, self) => this.onMessage(channel, userstate, message, self))
   }
 
@@ -96,6 +98,10 @@ export class TwitchChatTrackingService {
       return
     }
     try {
+      this.logger.warn(
+        `notifyMessage: ${userstate.username}`,
+        { channel, username: userstate.username, message },
+      )
       const trackItems = await this.getTrackItems(userId)
       if (!trackItems.length) {
         return
