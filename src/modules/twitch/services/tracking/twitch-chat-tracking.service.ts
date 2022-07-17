@@ -39,7 +39,6 @@ export class TwitchChatTrackingService {
   private async connect(retryCount = 0) {
     try {
       await this.client.connect()
-      await this.joinDefaultChannels()
     } catch (error) {
       this.logger.error(`connect: ${error.message}`)
       const retryMs = ([2, 4, 8, 16][retryCount] || 32) * 1000
@@ -49,6 +48,7 @@ export class TwitchChatTrackingService {
   }
 
   private async joinDefaultChannels() {
+    this.logger.warn('joinDefaultChannels')
     try {
       const usernames = await this.trackTwitchChatService.getUsernamesForChatCheck()
       if (usernames.length) {
@@ -56,7 +56,7 @@ export class TwitchChatTrackingService {
         await Promise.allSettled(usernames.map((v) => this.joinChannel(v)))
       }
     } catch (error) {
-      this.logger.error(`joinDefault: ${error.message}`)
+      this.logger.error(`joinDefaultChannels: ${error.message}`)
     }
   }
 
@@ -70,15 +70,18 @@ export class TwitchChatTrackingService {
 
   private addClientEventListeners() {
     const { client } = this
+    // ping pong
     client.on('ping', () => this.logger.debug('[WS] ping'))
     client.on('pong', () => this.logger.debug('[WS] pong'))
-
+    // connection
     client.on('connecting', () => this.logger.debug('[WS] connecting'))
     client.on('logon', () => this.logger.debug('[WS] logon'))
     client.on('connected', () => this.logger.debug('[WS] connected'))
     client.on('disconnected', () => this.logger.debug('[WS] disconnected'))
     client.on('reconnect', () => this.logger.debug('[WS] reconnect'))
-
+    //
+    client.on('connected', () => this.joinDefaultChannels())
+    // message
     client.on('message', (channel, userstate, message, self) => this.onMessage(channel, userstate, message, self))
   }
 
