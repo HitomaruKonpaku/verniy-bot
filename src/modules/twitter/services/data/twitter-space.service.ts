@@ -84,10 +84,6 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
     return spaces
   }
 
-  public async updateIsActive(id: string, isActive: boolean) {
-    await this.repository.update({ id }, { isActive })
-  }
-
   public async updatePlaylistActive(id: string, playlistActive: boolean) {
     await this.repository.update({ id }, { playlistActive })
   }
