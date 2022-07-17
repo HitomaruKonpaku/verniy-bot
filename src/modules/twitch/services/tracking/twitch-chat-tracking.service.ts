@@ -103,7 +103,7 @@ export class TwitchChatTrackingService {
     try {
       this.logger.warn(
         `notifyMessage: ${userstate.username}`,
-        { channel, username: userstate.username, message },
+        { channel, username: userstate.username, msg: message },
       )
       const trackItems = await this.getTrackItems(userId)
       if (!trackItems.length) {
@@ -120,7 +120,7 @@ export class TwitchChatTrackingService {
         )
       })
     } catch (error) {
-      this.logger.error(`notifyMessage: ${error.message}`, { channel, userstate, message })
+      this.logger.error(`notifyMessage: ${error.message}`, { channel, userstate, msg: message })
     }
   }
 
