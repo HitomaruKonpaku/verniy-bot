@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import axios from 'axios'
 import { randomUUID } from 'crypto'
-import { user } from 'instagram-api.js'
 import { getStories } from 'instagram-stories'
 import { baseLogger } from '../../../../logger'
 import { instagramUserLimiter, instagramUserStoriesLimiter } from '../../instagram.limiter'
@@ -23,13 +23,17 @@ export class InstagramApiService {
   public async getUser(username: string) {
     const requestId = randomUUID()
     try {
-      const data = await instagramUserLimiter.schedule(async () => {
+      const result = await instagramUserLimiter.schedule(async () => {
         this.logger.debug('--> getUser', { requestId, username })
-        const response = await user(username)
+        const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${username}`
+        const { data } = await axios.get(
+          url,
+          { headers: { 'x-ig-app-id': '936619743392459' } },
+        )
         this.logger.debug('<-- getUser', { requestId, username })
-        return response
+        return data?.data?.user
       })
-      return data
+      return result
     } catch (error) {
       this.logger.error(`getUser: ${error.message}`, { username })
       throw error
@@ -39,17 +43,17 @@ export class InstagramApiService {
   public async getUserStories(userId: string) {
     const requestId = randomUUID()
     try {
-      const data = await instagramUserStoriesLimiter.schedule(async () => {
+      const result = await instagramUserStoriesLimiter.schedule(async () => {
         this.logger.debug('--> getUserStories', { requestId, userId })
-        const response = await getStories({ id: userId, sessionid: this.sessionId })
-        const { status } = response
-        const storyCount = response.items?.length
+        const data = await getStories({ id: userId, sessionid: this.sessionId })
+        const { status } = data
+        const storyCount = data.items?.length
         this.logger.debug('<-- getUserStories', {
           requestId, userId, status, storyCount,
         })
-        return response
+        return data
       })
-      return data
+      return result
     } catch (error) {
       this.logger.error(`getUserStories: ${error.message}`, { userId })
       throw error
