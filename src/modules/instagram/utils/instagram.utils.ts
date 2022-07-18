@@ -46,9 +46,9 @@ export class InstagramUtils {
   public static getPostEmbedTitle(user: InstagramUser, post: InstagramPost) {
     const username = bold(inlineCode(user.username))
     if (post.videoUrl) {
-      return `${username} have a new video`
+      return `${username} posted a new video`
     }
-    return `${username} have a new image`
+    return `${username} posted a new image`
   }
 
   public static getStoryEmbed(user: InstagramUser, story: InstagramStory) {
