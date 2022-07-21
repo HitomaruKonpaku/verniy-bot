@@ -122,7 +122,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
       const usernames = users
         // .map((v) => v.username)
         .map((v) => (v.username.length < v.id.length ? v.username : v.id))
-      this.logger.debug('initStreamRules: buildStreamRules')
+      this.logger.debug('initStreamRules: buildStreamRules', { userCount: usernames.length })
       const newStreamRules = TwitterRuleUtils.buildStreamRulesByUsernames(
         usernames,
         this.configService.twitter.tweet.ruleLength,
