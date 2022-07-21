@@ -52,6 +52,8 @@ export class TwitterRuleUtils {
     // Build rules
     const rules = usernameChunks.map((chunk) => chunk.map((v) => this.OPERATORS.from + v).join(this.OPERATORS.or))
 
+    // console.debug(usernameChunks)
+    // console.debug(usernameChunks.reduce((pv, cv) => pv + cv.length, 0))
     // debugger
 
     return rules

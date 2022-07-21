@@ -128,8 +128,8 @@ export class TwitterTweetTrackingService extends EventEmitter {
         this.configService.twitter.tweet.ruleLength,
       )
       const curStreamRules = (await this.client.v2.streamRules()).data || []
-      this.logger.info('initStreamRules: curStreamRules', { length: curStreamRules.length })
-      this.logger.info('initStreamRules: newStreamRules', { length: newStreamRules.length })
+      this.logger.info('initStreamRules: curStreamRules', { length: curStreamRules.length, sizes: curStreamRules.map((v) => v.value.length) })
+      this.logger.info('initStreamRules: newStreamRules', { length: newStreamRules.length, sizes: newStreamRules.map((v) => v.length) })
       if (newStreamRules.length > this.configService.twitter.tweet.ruleLimit) {
         this.logger.error(`initStreamRules: Rule size (${newStreamRules.length}) exceed maximum limit (${this.configService.twitter.tweet.ruleLimit})`)
         this.logger.error('initStreamRules: Cancelled')
