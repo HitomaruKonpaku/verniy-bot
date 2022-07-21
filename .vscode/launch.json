@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "name": "[src] deploy-commands",
       "program": "${workspaceFolder}/src/deploy-commands.ts",
@@ -16,7 +16,7 @@
       ]
     },
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "name": "[src] worker",
       "program": "${workspaceFolder}/src/index.ts",
