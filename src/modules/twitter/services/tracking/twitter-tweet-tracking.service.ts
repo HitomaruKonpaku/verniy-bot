@@ -119,7 +119,10 @@ export class TwitterTweetTrackingService extends EventEmitter {
     this.logger.debug('initStreamRules')
     try {
       const users = await this.twitterFilteredStreamUserService.getUsersForInitRules()
-      const usernames = users.map((v) => v.username)
+      const usernames = users
+        // .map((v) => v.username)
+        .map((v) => (v.username.length < v.id.length ? v.username : v.id))
+      this.logger.debug('initStreamRules: buildStreamRules')
       const newStreamRules = TwitterRuleUtils.buildStreamRulesByUsernames(
         usernames,
         this.configService.twitter.tweet.ruleLength,
@@ -138,7 +141,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
         && newStreamRules.length === curStreamRules.length
         && newStreamRules.every((value) => curStreamRules.some((rule) => rule.value === value))
       if (isMatch) {
-        this.logger.info('initStreamRules: No update')
+        this.logger.info('initStreamRules: Skip')
         return
       }
       if (curStreamRules.length) {
@@ -149,10 +152,10 @@ export class TwitterTweetTrackingService extends EventEmitter {
       await this.client.v2.updateStreamRules({
         add: newStreamRules.map((v) => ({ value: v })),
       })
-      this.logger.warn('initStreamRules: Update completed')
+      this.logger.warn('initStreamRules: Updated')
     } catch (error) {
       this.logger.error(`initStreamRules: ${error.message}`)
-      const retryMs = ([10, 20, 30][retryCount] || 60) * 1000
+      const retryMs = ([5, 10, 20][retryCount] || 30) * 1000
       this.logger.info(`initStreamRules: Retry in ${retryMs}ms`)
       await AppUtils.sleep(retryMs)
       await this.initStreamRules(retryCount + 1)
