@@ -68,6 +68,11 @@ export class TwitterTweetTrackingService extends EventEmitter {
     return this.stream.close()
   }
 
+  public async reloadStreamRules() {
+    this.logger.warn('reloadStreamRules')
+    await this.initStreamRules()
+  }
+
   private initStream() {
     this.stream = this.client.v2.searchStream({
       autoConnect: false,
