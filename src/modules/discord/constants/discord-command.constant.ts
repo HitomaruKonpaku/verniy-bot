@@ -1,4 +1,10 @@
-import { ConfigCommand } from '../commands/config/config.command'
+import { GetTwitCastingMovieCommand } from '../commands/get/get-twitcasting/get-twitcasting-movie.command'
+import { GetTwitCastingMoviesByUserCommand } from '../commands/get/get-twitcasting/get-twitcasting-movies-by-user.command'
+import { GetTwitCastingUserCommand } from '../commands/get/get-twitcasting/get-twitcasting-user.command'
+import { GetTwitCastingCommand } from '../commands/get/get-twitcasting/get-twitcasting.command'
+import { GetTwitterSpaceCommand } from '../commands/get/get-twitter/get-twitter-space.command'
+import { GetTwitterUserCommand } from '../commands/get/get-twitter/get-twitter-user.command'
+import { GetTwitterCommand } from '../commands/get/get-twitter/get-twitter.command'
 import { GetCommand } from '../commands/get/get.command'
 import { StatusCommand } from '../commands/status/status.command'
 import { TrackAddCommand } from '../commands/track/track-add.command'
@@ -28,7 +34,6 @@ import { TrackRemoveYoutubeLiveCommand } from '../commands/track/track-remove/tr
 
 export const DISCORD_APP_COMMANDS = [
   StatusCommand,
-  ConfigCommand,
   TrackAddCommand,
   TrackRemoveCommand,
   GetCommand,
@@ -36,7 +41,6 @@ export const DISCORD_APP_COMMANDS = [
 
 export const DISCORD_GUILD_COMMANDS = [
   // StatusCommand,
-  // ConfigCommand,
   // TrackAddCommand,
   // TrackRemoveCommand,
   // GetCommand,
@@ -50,11 +54,10 @@ export const DISCORD_GLOBAL_COMMANDS = [
 ]
 
 export const DISCORD_ALL_COMMANDS = [
+  // admin
+
   // status
   StatusCommand,
-
-  // config
-  ConfigCommand,
 
   // track-add
   TrackAddCommand,
@@ -86,4 +89,11 @@ export const DISCORD_ALL_COMMANDS = [
 
   // get
   GetCommand,
+  GetTwitterCommand,
+  GetTwitterUserCommand,
+  GetTwitterSpaceCommand,
+  GetTwitCastingCommand,
+  GetTwitCastingUserCommand,
+  GetTwitCastingMovieCommand,
+  GetTwitCastingMoviesByUserCommand,
 ]
