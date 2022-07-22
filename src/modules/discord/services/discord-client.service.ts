@@ -137,10 +137,13 @@ export class DiscordClientService extends Client {
     }
 
     try {
-      this.logger.debug(
-        `handleCommandInteraction: Running command [${commandName}]`,
-        { user: { id: user.id, tag: user.tag } },
-      )
+      const meta = {
+        user: { id: user.id, tag: user.tag },
+        channel: { id: interaction.channelId, name: interaction.channel?.name },
+        guild: { id: interaction.guildId, name: interaction.guild?.name },
+        options: interaction.options?.data,
+      }
+      this.logger.debug(`handleCommandInteraction: Running command [${commandName}]`, meta)
       const instance = this.moduleRef.get(command)
       await instance?.execute?.(interaction)
     } catch (error) {
