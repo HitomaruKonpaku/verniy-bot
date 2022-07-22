@@ -2,6 +2,8 @@ import { GetTwitCastingMovieCommand } from '../commands/get/get-twitcasting/get-
 import { GetTwitCastingMoviesByUserCommand } from '../commands/get/get-twitcasting/get-twitcasting-movies-by-user.command'
 import { GetTwitCastingUserCommand } from '../commands/get/get-twitcasting/get-twitcasting-user.command'
 import { GetTwitCastingCommand } from '../commands/get/get-twitcasting/get-twitcasting.command'
+import { GetTwitchUserCommand } from '../commands/get/get-twitch/get-twitch-user.command'
+import { GetTwitchCommand } from '../commands/get/get-twitch/get-twitch.command'
 import { GetTwitterSpaceCommand } from '../commands/get/get-twitter/get-twitter-space.command'
 import { GetTwitterUserCommand } from '../commands/get/get-twitter/get-twitter-user.command'
 import { GetTwitterCommand } from '../commands/get/get-twitter/get-twitter.command'
@@ -96,4 +98,6 @@ export const DISCORD_ALL_COMMANDS = [
   GetTwitCastingUserCommand,
   GetTwitCastingMovieCommand,
   GetTwitCastingMoviesByUserCommand,
+  GetTwitchCommand,
+  GetTwitchUserCommand,
 ]

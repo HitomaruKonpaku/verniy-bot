@@ -6,6 +6,7 @@ import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { BaseCommand } from '../base/base.command'
 import { GetTwitCastingCommand } from './get-twitcasting/get-twitcasting.command'
+import { GetTwitchCommand } from './get-twitch/get-twitch.command'
 import { GetTwitterCommand } from './get-twitter/get-twitter.command'
 
 @Injectable()
@@ -77,6 +78,19 @@ export class GetCommand extends BaseCommand {
           .setName('id')
           .setDescription('Id')
           .setRequired(true))))
+    .addSubcommandGroup((group) => group
+      .setName('twitch')
+      .setDescription('Twitch')
+      .addSubcommand((subcommand) => subcommand
+        .setName('user')
+        .setDescription('User')
+        .addStringOption((option) => option
+          .setName('username')
+          .setDescription('username')
+          .setRequired(true))
+        .addBooleanOption((option) => option
+          .setName('refresh')
+          .setDescription('Refresh?'))))
 
   public async execute(interaction: CommandInteraction) {
     this.logger.debug('execute')
@@ -89,6 +103,7 @@ export class GetCommand extends BaseCommand {
     const instance = {
       twitter: GetTwitterCommand,
       twitcasting: GetTwitCastingCommand,
+      twitch: GetTwitchCommand,
     }[group] || null
     return instance
   }
