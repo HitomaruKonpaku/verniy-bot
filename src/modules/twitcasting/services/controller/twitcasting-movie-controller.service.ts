@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
 import { TwitCastingApiMovie, TwitCastingApiMovieInfo } from '../../interfaces/twitcasting-api.interface'
@@ -27,21 +28,26 @@ export class TwitCastingMovieControllerService {
 
   public async getMoviesByUserIds(id: string) {
     const limit = 50
+    const allMovies: TwitCastingMovie[] = []
     let offset = 0
     let movies: any[] = []
+
     do {
       try {
         this.logger.debug('getMoviesByUserIds', { id, limit, offset })
-        // eslint-disable-next-line no-await-in-loop
         const response = await this.twitCastingApiService.getMoviesByUserId(id, { limit, offset })
         movies = response.movies
-        // eslint-disable-next-line no-await-in-loop
-        await Promise.all(movies.map((v) => this.save(v)))
+        if (movies.length) {
+          const curMovies = await Promise.all(movies.map((v) => this.save(v)))
+          allMovies.push(...curMovies)
+        }
         offset += limit
       } catch (error) {
         this.logger.error(`getMoviesByUserIds: ${error.message}`, { id, limit, offset })
       }
     } while (movies.length)
+
+    return allMovies
   }
 
   /**
