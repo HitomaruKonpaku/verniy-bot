@@ -1,3 +1,4 @@
+import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
@@ -16,6 +17,19 @@ export class GetTwitchUserCommand extends GetBaseSubcommand {
     private readonly twitchUserControllerService: TwitchUserControllerService,
   ) {
     super()
+  }
+
+  public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
+    return subcommand
+      .setName('user')
+      .setDescription('User')
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('username')
+        .setRequired(true))
+      .addBooleanOption((option) => option
+        .setName('refresh')
+        .setDescription('Refresh?'))
   }
 
   public async execute(interaction: CommandInteraction) {

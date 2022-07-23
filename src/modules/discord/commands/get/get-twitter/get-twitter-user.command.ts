@@ -1,4 +1,4 @@
-import { bold, inlineCode } from '@discordjs/builders'
+import { bold, inlineCode, SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
@@ -20,6 +20,21 @@ export class GetTwitterUserCommand extends GetBaseSubcommand {
     private readonly twitterUserControllerService: TwitterUserControllerService,
   ) {
     super()
+  }
+
+  public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
+    return subcommand
+      .setName('user')
+      .setDescription('User')
+      .addStringOption((option) => option
+        .setName('id')
+        .setDescription('Id'))
+      .addStringOption((option) => option
+        .setName('username')
+        .setDescription('Username'))
+      .addBooleanOption((option) => option
+        .setName('refresh')
+        .setDescription('Refresh?'))
   }
 
   public async execute(interaction: CommandInteraction) {

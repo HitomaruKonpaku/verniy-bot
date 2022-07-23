@@ -23,74 +23,9 @@ export class GetCommand extends BaseCommand {
   public static readonly command = new SlashCommandBuilder()
     .setName('get')
     .setDescription('Get')
-    .addSubcommandGroup((group) => group
-      .setName('twitter')
-      .setDescription('Twitter')
-      .addSubcommand((subcommand) => subcommand
-        .setName('user')
-        .setDescription('User')
-        .addStringOption((option) => option
-          .setName('id')
-          .setDescription('Id'))
-        .addStringOption((option) => option
-          .setName('username')
-          .setDescription('Username'))
-        .addBooleanOption((option) => option
-          .setName('refresh')
-          .setDescription('Refresh?')))
-      .addSubcommand((subcommand) => subcommand
-        .setName('space')
-        .setDescription('Space')
-        .addStringOption((option) => option
-          .setName('id')
-          .setDescription('Id')
-          .setRequired(true))
-        .addBooleanOption((option) => option
-          .setName('refresh')
-          .setDescription('Refresh?'))))
-    .addSubcommandGroup((group) => group
-      .setName('twitcasting')
-      .setDescription('TwitCasting')
-      .addSubcommand((subcommand) => subcommand
-        .setName('user')
-        .setDescription('User')
-        .addStringOption((option) => option
-          .setName('id')
-          .setDescription('Id')
-          .setRequired(true))
-        .addBooleanOption((option) => option
-          .setName('refresh')
-          .setDescription('Refresh?')))
-      .addSubcommand((subcommand) => subcommand
-        .setName('movie')
-        .setDescription('Movie')
-        .addStringOption((option) => option
-          .setName('id')
-          .setDescription('Id')
-          .setRequired(true))
-        .addBooleanOption((option) => option
-          .setName('refresh')
-          .setDescription('Refresh?')))
-      .addSubcommand((subcommand) => subcommand
-        .setName('movies_by_user')
-        .setDescription('Movies by user')
-        .addStringOption((option) => option
-          .setName('id')
-          .setDescription('Id')
-          .setRequired(true))))
-    .addSubcommandGroup((group) => group
-      .setName('twitch')
-      .setDescription('Twitch')
-      .addSubcommand((subcommand) => subcommand
-        .setName('user')
-        .setDescription('User')
-        .addStringOption((option) => option
-          .setName('username')
-          .setDescription('username')
-          .setRequired(true))
-        .addBooleanOption((option) => option
-          .setName('refresh')
-          .setDescription('Refresh?'))))
+    .addSubcommandGroup((group) => GetTwitterCommand.getSubcommandGroup(group))
+    .addSubcommandGroup((group) => GetTwitCastingCommand.getSubcommandGroup(group))
+    .addSubcommandGroup((group) => GetTwitchCommand.getSubcommandGroup(group))
 
   public async execute(interaction: CommandInteraction) {
     this.logger.debug('execute')

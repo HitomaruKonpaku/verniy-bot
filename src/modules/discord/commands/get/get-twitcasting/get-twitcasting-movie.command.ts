@@ -1,3 +1,4 @@
+import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
@@ -16,6 +17,19 @@ export class GetTwitCastingMovieCommand extends GetBaseSubcommand {
     private readonly twitCastingMovieControllerService: TwitCastingMovieControllerService,
   ) {
     super()
+  }
+
+  public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
+    return subcommand
+      .setName('movie')
+      .setDescription('Movie')
+      .addStringOption((option) => option
+        .setName('id')
+        .setDescription('Id')
+        .setRequired(true))
+      .addBooleanOption((option) => option
+        .setName('refresh')
+        .setDescription('Refresh?'))
   }
 
   public async execute(interaction: CommandInteraction) {

@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+import { SlashCommandSubcommandGroupBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
 import { baseLogger } from '../../../../../logger'
@@ -15,6 +16,14 @@ export class GetTwitterCommand extends GetBaseSubcommandGroup {
     protected readonly moduleRef: ModuleRef,
   ) {
     super(moduleRef)
+  }
+
+  public static getSubcommandGroup(group: SlashCommandSubcommandGroupBuilder) {
+    return group
+      .setName('twitter')
+      .setDescription('Twitter')
+      .addSubcommand((subcommand) => GetTwitterUserCommand.getSubcommand(subcommand))
+      .addSubcommand((subcommand) => GetTwitterSpaceCommand.getSubcommand(subcommand))
   }
 
   protected getCommandService(subcommand: string) {

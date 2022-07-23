@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+import { SlashCommandSubcommandGroupBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
 import { baseLogger } from '../../../../../logger'
@@ -16,6 +17,15 @@ export class GetTwitCastingCommand extends GetBaseSubcommandGroup {
     protected readonly moduleRef: ModuleRef,
   ) {
     super(moduleRef)
+  }
+
+  public static getSubcommandGroup(group: SlashCommandSubcommandGroupBuilder) {
+    return group
+      .setName('twitcasting')
+      .setDescription('TwitCasting')
+      .addSubcommand((subcommand) => GetTwitCastingUserCommand.getSubcommand(subcommand))
+      .addSubcommand((subcommand) => GetTwitCastingMovieCommand.getSubcommand(subcommand))
+      .addSubcommand((subcommand) => GetTwitCastingMoviesByUserCommand.getSubcommand(subcommand))
   }
 
   protected getCommandService(subcommand: string) {
