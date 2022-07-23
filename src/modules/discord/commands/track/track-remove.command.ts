@@ -23,94 +23,17 @@ export class TrackRemoveCommand extends BaseCommand {
   public static readonly command = new SlashCommandBuilder()
     .setName('track_remove')
     .setDescription('Remove tracking')
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITTER_TWEET)
-      .setDescription('Untrack user tweets')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitter username, e.g. "nakiriayame"')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITTER_PROFILE)
-      .setDescription('Untrack user profile changes')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitter username, e.g. "nakiriayame"')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITTER_SPACE)
-      .setDescription('Untrack Spaces from user')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitter username, e.g. "nakiriayame"')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITCASTING_LIVE)
-      .setDescription('Untrack user live')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('TwitCasting user, e.g. "nakiriayame"')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.YOUTUBE_LIVE)
-      .setDescription('Untrack user live')
-      .addStringOption((option) => option
-        .setName('channel_id')
-        .setDescription('YouTube channel id')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITCH_LIVE)
-      .setDescription('Untrack user live')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitch user, e.g. "nakiriayame_hololive"')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITCH_CHAT)
-      .setDescription('Untrack user chat')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitch user, e.g. "nakiriayame_hololive"')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.INSTAGRAM_POST)
-      .setDescription('Untrack user posts')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Instagram user')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.INSTAGRAM_STORY)
-      .setDescription('Untrack user stories')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Instagram user')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.INSTAGRAM_PROFILE)
-      .setDescription('Untrack user profile')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Instagram user')
-        .setRequired(true)))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TIKTOK_VIDEO)
-      .setDescription('Untrack user videos')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('TikTok user, e.g. "hololive_english"')
-        .setRequired(true)))
+    .addSubcommand((subcommand) => TrackRemoveTwitterTweetCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackRemoveTwitterProfileCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackRemoveTwitterSpaceCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackRemoveTwitCastingLiveCommand.getSubcommand(subcommand))
+    // .addSubcommand((subcommand) => TrackRemoveYoutubeLiveCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackRemoveTwitchLiveCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackRemoveTwitchChatCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackRemoveInstagramPostCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackRemoveInstagramStoryCommand.getSubcommand(subcommand))
+    // .addSubcommand((subcommand) => TrackRemoveInstagramProfileCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackRemoveTiktokVideoCommand.getSubcommand(subcommand))
 
   private readonly logger = baseLogger.child({ context: TrackRemoveCommand.name })
 
