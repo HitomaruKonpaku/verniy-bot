@@ -1,10 +1,13 @@
 /* eslint-disable class-methods-use-this */
+import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../../logger'
+import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackTwitterSpaceService } from '../../../../track/services/track-twitter-space.service'
 import { TwitterUser } from '../../../../twitter/models/twitter-user.entity'
 import { TwitterUserControllerService } from '../../../../twitter/services/controller/twitter-user-controller.service'
 import { TwitterUtils } from '../../../../twitter/utils/twitter.utils'
+import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
 @Injectable()
@@ -18,6 +21,17 @@ export class TrackAddTwitterSpaceCommand extends TrackAddBaseSubcommand {
     private readonly twitterUserControllerService: TwitterUserControllerService,
   ) {
     super()
+  }
+
+  public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
+    return subcommand
+      .setName(TrackType.TWITTER_SPACE)
+      .setDescription('Track Spaces from user')
+      .addStringOption((option) => DiscordSlashCommandUtils.getUsernameOption(
+        option,
+        { description: 'Twitter username, e.g. "nakiriayame"' },
+      ))
+      .addStringOption((option) => DiscordSlashCommandUtils.getMessageOption(option))
   }
 
   protected async getUser(username: string): Promise<TwitterUser> {

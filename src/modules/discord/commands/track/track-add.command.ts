@@ -23,111 +23,17 @@ export class TrackAddCommand extends BaseCommand {
   public static readonly command = new SlashCommandBuilder()
     .setName('track_add')
     .setDescription('Add or update tracking')
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITTER_TWEET)
-      .setDescription('Track user tweets')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitter username, e.g. "nakiriayame"')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message'))
-      .addBooleanOption((option) => option
-        .setName('allow_reply')
-        .setDescription('Allow reply?'))
-      .addBooleanOption((option) => option
-        .setName('allow_retweet')
-        .setDescription('Allow retweet?')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITTER_PROFILE)
-      .setDescription('Track user profile changes')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitter username, e.g. "nakiriayame"')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITTER_SPACE)
-      .setDescription('Track Spaces from user')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitter username, e.g. "nakiriayame"')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITCASTING_LIVE)
-      .setDescription('Track user live')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('TwitCasting user, e.g. "nakiriayame"')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.YOUTUBE_LIVE)
-      .setDescription('Track user live')
-      .addStringOption((option) => option
-        .setName('channel_id')
-        .setDescription('YouTube channel id')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITCH_LIVE)
-      .setDescription('Track user live')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitch user, e.g. "nakiriayame_hololive"')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TWITCH_CHAT)
-      .setDescription('Track user chat')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Twitch user, e.g. "nakiriayame_hololive"')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.INSTAGRAM_POST)
-      .setDescription('Track user posts')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Instagram user')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.INSTAGRAM_STORY)
-      .setDescription('Track user stories')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('Instagram user')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    // .addSubcommand((subcommand) => subcommand
-    //   .setName(TrackType.INSTAGRAM_PROFILE)
-    //   .setDescription('Track user profile')
-    //   .addStringOption((option) => option
-    //     .setName('username')
-    //     .setDescription('Instagram user')
-    //     .setRequired(true))
-    //   .addStringOption((option) => option.setName('message').setDescription('Discord message')))
-    //
-    .addSubcommand((subcommand) => subcommand
-      .setName(TrackType.TIKTOK_VIDEO)
-      .setDescription('Track user videos')
-      .addStringOption((option) => option
-        .setName('username')
-        .setDescription('TikTok user, e.g. "hololive_english"')
-        .setRequired(true))
-      .addStringOption((option) => option.setName('message').setDescription('Discord message')))
+    .addSubcommand((subcommand) => TrackAddTwitterTweetCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackAddTwitterProfileCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackAddTwitterSpaceCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackAddTwitCastingLiveCommand.getSubcommand(subcommand))
+    // .addSubcommand((subcommand) => TrackAddYoutubeLiveCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackAddTwitchLiveCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackAddTwitchChatCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackAddInstagramPostCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackAddInstagramStoryCommand.getSubcommand(subcommand))
+    // .addSubcommand((subcommand) => TrackAddInstagramProfileCommand.getSubcommand(subcommand))
+    .addSubcommand((subcommand) => TrackAddTiktokVideoCommand.getSubcommand(subcommand))
 
   private readonly logger = baseLogger.child({ context: TrackAddCommand.name })
 

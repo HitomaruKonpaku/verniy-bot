@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
@@ -6,7 +7,9 @@ import { InstagramUser } from '../../../../instagram/models/instagram-user.entit
 import { InstagramUserControllerService } from '../../../../instagram/services/controller/instagram-user-controller.service'
 import { InstagramUserService } from '../../../../instagram/services/data/instagram-user.service'
 import { InstagramUtils } from '../../../../instagram/utils/instagram.utils'
+import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackInstagramStoryService } from '../../../../track/services/track-instagram-story.service'
+import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
 @Injectable()
@@ -22,6 +25,17 @@ export class TrackAddInstagramStoryCommand extends TrackAddBaseSubcommand {
     private readonly instagramUserControllerService: InstagramUserControllerService,
   ) {
     super()
+  }
+
+  public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
+    return subcommand
+      .setName(TrackType.INSTAGRAM_STORY)
+      .setDescription('Track user stories')
+      .addStringOption((option) => DiscordSlashCommandUtils.getUsernameOption(
+        option,
+        { description: 'Instagram user' },
+      ))
+      .addStringOption((option) => DiscordSlashCommandUtils.getMessageOption(option))
   }
 
   protected async getUser(username: string): Promise<InstagramUser> {

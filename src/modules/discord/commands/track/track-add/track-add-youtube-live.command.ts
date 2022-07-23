@@ -1,11 +1,14 @@
 /* eslint-disable class-methods-use-this */
+import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ColorResolvable, CommandInteraction, MessageEmbedOptions } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
+import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackYoutubeLiveService } from '../../../../track/services/track-youtube-live.service'
 import { YoutubeChannel } from '../../../../youtube/models/youtube-channel.entity'
 import { YoutubeChannelControllerService } from '../../../../youtube/services/controller/youtube-channel-controller.service'
 import { YoutubeUtils } from '../../../../youtube/utils/youtube.utils'
+import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
 @Injectable()
@@ -19,6 +22,17 @@ export class TrackAddYoutubeLiveCommand extends TrackAddBaseSubcommand {
     private readonly youtubeChannelControllerService: YoutubeChannelControllerService,
   ) {
     super()
+  }
+
+  public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
+    return subcommand
+      .setName(TrackType.YOUTUBE_LIVE)
+      .setDescription('Track channel live')
+      .addStringOption((option) => option
+        .setName('channel_id')
+        .setDescription('YouTube channel id')
+        .setRequired(true))
+      .addStringOption((option) => DiscordSlashCommandUtils.getMessageOption(option))
   }
 
   protected async getUser(id: string): Promise<YoutubeChannel> {

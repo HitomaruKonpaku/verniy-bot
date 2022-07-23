@@ -1,13 +1,15 @@
 /* eslint-disable class-methods-use-this */
-import { bold, inlineCode } from '@discordjs/builders'
+import { bold, inlineCode, SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { CommandInteraction, User } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
+import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackTwitterTweetService } from '../../../../track/services/track-twitter-tweet.service'
 import { TwitterUser } from '../../../../twitter/models/twitter-user.entity'
 import { TwitterUserControllerService } from '../../../../twitter/services/controller/twitter-user-controller.service'
 import { TwitterFilteredStreamUserService } from '../../../../twitter/services/data/twitter-filtered-stream-user.service'
 import { TwitterUtils } from '../../../../twitter/utils/twitter.utils'
+import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
 @Injectable()
@@ -23,6 +25,23 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
     private readonly twitterFilteredStreamUserService: TwitterFilteredStreamUserService,
   ) {
     super()
+  }
+
+  public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
+    return subcommand
+      .setName(TrackType.TWITTER_TWEET)
+      .setDescription('Track user tweets')
+      .addStringOption((option) => DiscordSlashCommandUtils.getUsernameOption(
+        option,
+        { description: 'Twitter username, e.g. "nakiriayame"' },
+      ))
+      .addStringOption((option) => DiscordSlashCommandUtils.getMessageOption(option))
+      .addBooleanOption((option) => option
+        .setName('allow_reply')
+        .setDescription('Allow reply?'))
+      .addBooleanOption((option) => option
+        .setName('allow_retweet')
+        .setDescription('Allow retweet?'))
   }
 
   protected async getUser(username: string): Promise<TwitterUser> {
