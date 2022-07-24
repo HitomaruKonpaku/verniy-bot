@@ -31,7 +31,11 @@ export class InstagramApiService {
           { headers: { 'x-ig-app-id': '936619743392459' } },
         )
         const user = data?.data?.user
-        this.logger.debug('<-- getUser', { requestId, username, postCount: user?.edge_owner_to_timeline_media?.edges?.length })
+        this.logger.debug('<-- getUser', {
+          requestId,
+          username,
+          postCount: user?.edge_owner_to_timeline_media?.edges?.length || -1,
+        })
         return user
       })
       return result
@@ -50,7 +54,10 @@ export class InstagramApiService {
         const { status } = data
         const storyCount = data.items?.length
         this.logger.debug('<-- getUserStories', {
-          requestId, userId, status, storyCount,
+          requestId,
+          userId,
+          status,
+          storyCount,
         })
         return data
       })
