@@ -30,8 +30,9 @@ export class InstagramApiService {
           url,
           { headers: { 'x-ig-app-id': '936619743392459' } },
         )
-        this.logger.debug('<-- getUser', { requestId, username })
-        return data?.data?.user
+        const user = data?.data?.user
+        this.logger.debug('<-- getUser', { requestId, username, postCount: user?.edge_owner_to_timeline_media?.edges?.length })
+        return user
       })
       return result
     } catch (error) {
