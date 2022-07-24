@@ -1,3 +1,7 @@
+import { AdminReloadConfigCommand } from '../commands/admin/admin-reload/admin-reload-config.command'
+import { AdminReloadTwitterStreamRulesCommand } from '../commands/admin/admin-reload/admin-reload-twitter-stream-rules.command'
+import { AdminReloadCommand } from '../commands/admin/admin-reload/admin-reload.command'
+import { AdminCommand } from '../commands/admin/admin.command'
 import { GetTwitCastingMovieCommand } from '../commands/get/get-twitcasting/get-twitcasting-movie.command'
 import { GetTwitCastingMoviesByUserCommand } from '../commands/get/get-twitcasting/get-twitcasting-movies-by-user.command'
 import { GetTwitCastingUserCommand } from '../commands/get/get-twitcasting/get-twitcasting-user.command'
@@ -35,6 +39,7 @@ import { TrackRemoveTwitterTweetCommand } from '../commands/track/track-remove/t
 import { TrackRemoveYoutubeLiveCommand } from '../commands/track/track-remove/track-remove-youtube-live.command'
 
 export const DISCORD_APP_COMMANDS = [
+  AdminCommand,
   StatusCommand,
   TrackAddCommand,
   TrackRemoveCommand,
@@ -42,6 +47,7 @@ export const DISCORD_APP_COMMANDS = [
 ]
 
 export const DISCORD_GUILD_COMMANDS = [
+  AdminCommand,
   // StatusCommand,
   // TrackAddCommand,
   // TrackRemoveCommand,
@@ -57,6 +63,10 @@ export const DISCORD_GLOBAL_COMMANDS = [
 
 export const DISCORD_ALL_COMMANDS = [
   // admin
+  AdminCommand,
+  AdminReloadCommand,
+  AdminReloadConfigCommand,
+  AdminReloadTwitterStreamRulesCommand,
 
   // status
   StatusCommand,
