@@ -43,7 +43,13 @@ export class HolodexService {
       return
     }
 
-    this.logger.debug('onTweetData', { urls: filterUrls })
+    const author = data.includes.users.find((v) => v.id === data.data.author_id)
+    const tweetUrl = TwitterUtils.getTweetUrl(author.username, data.data.id)
+    this.logger.debug('onTweetData', {
+      tweetUrl,
+      urls: filterUrls,
+    })
+
     await Promise.allSettled(filterUrls.map((url) => this.postNotice(url)))
   }
 
