@@ -36,7 +36,7 @@ export class InstagramApiService {
           },
         )
         const user = data?.data?.user
-        const postCount = user?.edge_owner_to_timeline_media?.edges?.length || -1,
+        const postCount = user?.edge_owner_to_timeline_media?.edges?.length || -1
         this.logger.debug('<-- getUser', {
           requestId,
           username,
