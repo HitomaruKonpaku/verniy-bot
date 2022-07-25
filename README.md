@@ -23,7 +23,7 @@ Discord tracking bot
 - [Twitter API v2 bearer token](https://developer.twitter.com/en/docs/twitter-api)
 - [TwitCasting API cliend id & secret](https://apiv2-doc.twitcasting.tv)
 - [Twitch API cliend id & secret](https://dev.twitch.tv/docs/api)
-- Instagram session id (optional)
+- Instagram session id
 
 ## Commands
 

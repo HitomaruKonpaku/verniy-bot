@@ -28,13 +28,19 @@ export class InstagramApiService {
         const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${username}`
         const { data } = await axios.get(
           url,
-          { headers: { 'x-ig-app-id': '936619743392459' } },
+          {
+            headers: {
+              cookie: `sessionid=${this.sessionId}`,
+              'x-ig-app-id': '936619743392459',
+            },
+          },
         )
         const user = data?.data?.user
+        const postCount = user?.edge_owner_to_timeline_media?.edges?.length || -1,
         this.logger.debug('<-- getUser', {
           requestId,
           username,
-          postCount: user?.edge_owner_to_timeline_media?.edges?.length || -1,
+          postCount,
         })
         return user
       })
@@ -51,8 +57,8 @@ export class InstagramApiService {
       const result = await instagramUserStoriesLimiter.schedule(async () => {
         this.logger.debug('--> getUserStories', { requestId, userId })
         const data = await getStories({ id: userId, sessionid: this.sessionId })
-        const { status } = data
-        const storyCount = data.items?.length
+        const status = data?.status
+        const storyCount = data?.items?.length
         this.logger.debug('<-- getUserStories', {
           requestId,
           userId,
