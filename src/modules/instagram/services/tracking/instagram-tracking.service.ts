@@ -37,7 +37,7 @@ export class InstagramTrackingService extends EventEmitter {
       this.logger.debug('checkUsers', { userCount: users.length })
       const limiter = new Bottleneck({ maxConcurrent: 1 })
       await Promise.all(users.map((user) => limiter.schedule(() => Promise.allSettled([
-        this.checkUserProfileAndPosts(user),
+        // this.checkUserProfileAndPosts(user),
         this.checkUserStories(user),
       ]))))
     } catch (error) {
