@@ -1,20 +1,18 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ColorResolvable, CommandInteraction, MessageEmbedOptions } from 'discord.js'
-import winston from 'winston'
+import { APIEmbed } from 'discord-api-types/v10'
+import { ChatInputCommandInteraction } from 'discord.js'
 import { BaseExternalEntity } from '../../../../database/models/base-external.entity'
 import { Track } from '../../../../track/models/track.entity'
 import { TrackBaseService } from '../../../../track/services/base/track-base.service'
-import { BaseCommand } from '../../base/base.command'
+import { BaseCommand } from '../../base/base-command'
 
 export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
-  protected abstract readonly logger: winston.Logger
-
   protected abstract readonly trackService: TrackBaseService<Track>
 
   protected abstract getUser(username: string): Promise<BaseExternalEntity>
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     const { username, channelId } = this.getInteractionBaseOptions(interaction)
     const meta = { username, channelId }
     this.logger.debug('--> execute', meta)
@@ -39,8 +37,8 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
     this.logger.debug('<-- execute', meta)
   }
 
-  protected async onSuccess(interaction: CommandInteraction, user: BaseExternalEntity) {
-    const embed: MessageEmbedOptions = {
+  protected async onSuccess(interaction: ChatInputCommandInteraction, user: BaseExternalEntity) {
+    const embed: APIEmbed = {
       description: this.getSuccessEmbedDescription(user),
       color: this.getSuccessEmbedColor(user),
     }
@@ -51,11 +49,11 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
     return '✅'
   }
 
-  protected getSuccessEmbedColor(user: BaseExternalEntity): ColorResolvable {
+  protected getSuccessEmbedColor(user: BaseExternalEntity): number {
     return 0x1d9bf0
   }
 
-  protected getInteractionBaseOptions(interaction: CommandInteraction) {
+  protected getInteractionBaseOptions(interaction: ChatInputCommandInteraction) {
     const { channelId } = interaction
     const username = interaction.options.getString('username', true)
     return { username, channelId }

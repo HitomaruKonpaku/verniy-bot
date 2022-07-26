@@ -1,15 +1,14 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../logger'
-import { BaseCommand } from '../base/base.command'
+import { BaseCommand } from '../base/base-command'
 import { AdminReloadCommand } from './admin-reload/admin-reload.command'
 
 @Injectable()
 export class AdminCommand extends BaseCommand {
-  private readonly logger = baseLogger.child({ context: AdminCommand.name })
+  protected readonly logger = baseLogger.child({ context: AdminCommand.name })
 
   constructor(
     @Inject(ModuleRef)
@@ -23,8 +22,8 @@ export class AdminCommand extends BaseCommand {
     .setDescription('Admin')
     .addSubcommandGroup((group) => AdminReloadCommand.getSubcommandGroup(group))
 
-  public async execute(interaction: CommandInteraction) {
-    this.logger.debug('execute')
+  public async execute(interaction: ChatInputCommandInteraction) {
+    await super.execute(interaction)
     const group = interaction.options.getSubcommandGroup()
     const instance = this.moduleRef.get(this.getCommandService(group))
     await instance?.execute?.(interaction)

@@ -1,5 +1,5 @@
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
+import { SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TiktokUser } from '../../../../tiktok/models/tiktok-user.entity'
 import { TiktokUserService } from '../../../../tiktok/services/data/tiktok-user.service'

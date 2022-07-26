@@ -1,12 +1,11 @@
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TwitterTweetTrackingService } from '../../../../twitter/services/tracking/twitter-tweet-tracking.service'
-import { AdminBaseSubcommand } from '../base/admin-base-subcommand'
+import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
-export class AdminReloadTwitterStreamRulesCommand extends AdminBaseSubcommand {
+export class AdminReloadTwitterStreamRulesCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: AdminReloadTwitterStreamRulesCommand.name })
 
   constructor(
@@ -22,7 +21,7 @@ export class AdminReloadTwitterStreamRulesCommand extends AdminBaseSubcommand {
       .setDescription('Reload Twitter stream rules')
   }
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
     await this.twitterTweetTrackingService.reloadStreamRules()

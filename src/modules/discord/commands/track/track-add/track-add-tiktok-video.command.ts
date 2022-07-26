@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
+import { SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TiktokUser } from '../../../../tiktok/models/tiktok-user.entity'
 import { TiktokUserControllerService } from '../../../../tiktok/services/controller/tiktok-user-controller.service'

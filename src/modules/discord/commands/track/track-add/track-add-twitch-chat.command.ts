@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackTwitchChatService } from '../../../../track/services/track-twitch-chat.service'
@@ -43,7 +42,7 @@ export class TrackAddTwitchChatCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  protected async onSuccess(interaction: CommandInteraction, user: TwitchUser) {
+  protected async onSuccess(interaction: ChatInputCommandInteraction, user: TwitchUser) {
     await this.twitchChatTrackingService.joinChannel(user.username)
     await super.onSuccess(interaction, user)
   }

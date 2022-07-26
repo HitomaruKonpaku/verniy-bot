@@ -1,4 +1,4 @@
-import { hideLinkEmbed, inlineCode } from '@discordjs/builders'
+import { hideLinkEmbed, inlineCode } from 'discord.js'
 
 export class TwitterProfileUtils {
   public static getBoolIcon(value: boolean): string {

@@ -1,13 +1,13 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandGroupBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
+import { SlashCommandSubcommandGroupBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
-import { GetBaseSubcommandGroup } from '../base/get-base-subcommand-group'
+import { BaseSubcommandGroupCommand } from '../../base/base-subcommand-group-command'
 import { GetTwitchUserCommand } from './get-twitch-user.command'
 
 @Injectable()
-export class GetTwitchCommand extends GetBaseSubcommandGroup {
+export class GetTwitchCommand extends BaseSubcommandGroupCommand {
   protected readonly logger = baseLogger.child({ context: GetTwitchCommand.name })
 
   constructor(

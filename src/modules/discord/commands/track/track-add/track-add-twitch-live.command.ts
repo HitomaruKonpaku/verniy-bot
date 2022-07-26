@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
+import { SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackTwitchLiveService } from '../../../../track/services/track-twitch-live.service'

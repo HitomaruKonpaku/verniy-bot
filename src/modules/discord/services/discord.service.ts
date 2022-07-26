@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import {
   Channel,
+  ChannelType,
   MessageOptions,
   MessagePayload,
   TextChannel,
@@ -74,7 +75,7 @@ export class DiscordService {
   public async getChannel<T extends Channel>(id: string) {
     try {
       const channel = await this.client.channels.fetch(id) as any as T
-      if (channel instanceof TextChannel) {
+      if (channel.type === ChannelType.GuildText) {
         this.logger.debug('getChannel: TextChannel', { id, name: channel.name })
       } else {
         this.logger.debug('getChannel: Channel', { id })
@@ -109,7 +110,7 @@ export class DiscordService {
         this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
         this.discordDbService.saveMessage(message)
         // Crosspost message
-        if (message.channel.type === 'GUILD_NEWS') {
+        if (message.channel.type === ChannelType.GuildNews) {
           await message.crosspost()
             .then(() => this.logger.info('Crossposted message!'))
             .catch((error) => this.logger.error(`sendToChannel#crosspost: ${error.message}`, { channelId, messageId: message.id }))

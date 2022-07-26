@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
 import {
+  ChannelType,
+  ChatInputCommandInteraction,
   Client,
   Collection,
-  CommandInteraction,
   Interaction,
-  TextChannel,
 } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
@@ -102,7 +102,7 @@ export class DiscordClientService extends Client {
 
   private async saveInteractionBaseData(interaction: Interaction) {
     await this.discordDbService.saveUser(interaction.user)
-    if (interaction.channel instanceof TextChannel) {
+    if (interaction.channel.type === ChannelType.GuildText) {
       await this.discordDbService.saveTextChannel(interaction.channel)
     }
     if (interaction.guild) {
@@ -117,7 +117,7 @@ export class DiscordClientService extends Client {
   private async handleInteractionCreate(interaction: Interaction) {
     this.saveInteractionBaseData(interaction)
     try {
-      if (interaction.isCommand()) {
+      if (interaction.isChatInputCommand()) {
         await this.handleCommandInteraction(interaction)
         return
       }
@@ -126,7 +126,7 @@ export class DiscordClientService extends Client {
     }
   }
 
-  private async handleCommandInteraction(interaction: CommandInteraction) {
+  private async handleCommandInteraction(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply()
 
     const { user, commandName } = interaction

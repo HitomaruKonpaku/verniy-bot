@@ -1,13 +1,12 @@
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TwitCastingMovieControllerService } from '../../../../twitcasting/services/controller/twitcasting-movie-controller.service'
 import { TwitCastingUserControllerService } from '../../../../twitcasting/services/controller/twitcasting-user-controller.service'
-import { GetBaseSubcommand } from '../base/get-base-subcommand'
+import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
-export class GetTwitCastingMoviesByUserCommand extends GetBaseSubcommand {
+export class GetTwitCastingMoviesByUserCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: GetTwitCastingMoviesByUserCommand.name })
 
   constructor(
@@ -29,7 +28,7 @@ export class GetTwitCastingMoviesByUserCommand extends GetBaseSubcommand {
         .setRequired(true))
   }
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
     if (!await this.isAppOwner(interaction)) {

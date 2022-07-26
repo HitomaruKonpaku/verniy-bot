@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { CronJob } from 'cron'
-import { ActivityTypes } from 'discord.js/typings/enums'
+import { ActivityType } from 'discord.js'
 import { CRON_TIME_ZONE } from '../../../constants/cron.constant'
 import { baseLogger } from '../../../logger'
 import { DiscordClientService } from '../services/discord-client.service'
@@ -28,7 +28,7 @@ export class DiscordCronService {
     try {
       const guildCount = await this.getGuildCount()
       const name = `${guildCount} servers`
-      this.client.user.setActivity({ name, type: ActivityTypes.WATCHING })
+      this.client.user.setActivity({ name, type: ActivityType.Watching })
     } catch (error) {
       this.logger.error(`onTick: ${error.message}`)
     }

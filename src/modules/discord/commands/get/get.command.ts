@@ -1,10 +1,9 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../logger'
-import { BaseCommand } from '../base/base.command'
+import { BaseCommand } from '../base/base-command'
 import { GetTwitCastingCommand } from './get-twitcasting/get-twitcasting.command'
 import { GetTwitchCommand } from './get-twitch/get-twitch.command'
 import { GetTwitterCommand } from './get-twitter/get-twitter.command'
@@ -27,8 +26,8 @@ export class GetCommand extends BaseCommand {
     .addSubcommandGroup((group) => GetTwitCastingCommand.getSubcommandGroup(group))
     .addSubcommandGroup((group) => GetTwitchCommand.getSubcommandGroup(group))
 
-  public async execute(interaction: CommandInteraction) {
-    this.logger.debug('execute')
+  public async execute(interaction: ChatInputCommandInteraction) {
+    await super.execute(interaction)
     const group = interaction.options.getSubcommandGroup()
     const instance = this.moduleRef.get(this.getCommandService(group))
     await instance?.execute?.(interaction)

@@ -1,10 +1,10 @@
+import { APIEmbed } from 'discord-api-types/v10'
 import {
   bold,
   codeBlock,
   inlineCode,
   time,
-} from '@discordjs/builders'
-import { MessageEmbedOptions } from 'discord.js'
+} from 'discord.js'
 import { TiktokUser } from '../models/tiktok-user.entity'
 import { TiktokVideo } from '../models/tiktok-video.entity'
 
@@ -27,7 +27,7 @@ export class TiktokUtils {
   }
 
   public static getVideoEmbed(video: TiktokVideo, user: TiktokUser, baseUrl?: string) {
-    const embed: MessageEmbedOptions = {
+    const embed: APIEmbed = {
       title: `${bold(inlineCode(user.username))} posted a new video`,
       description: [
         this.getVideoUrl(user.username, video.id),

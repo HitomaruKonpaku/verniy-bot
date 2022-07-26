@@ -1,11 +1,10 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
 import { PermissionFlagsBits } from 'discord-api-types/v10'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { TrackType } from '../../../track/enums/track-type.enum'
-import { BaseCommand } from '../base/base.command'
+import { BaseCommand } from '../base/base-command'
 import { TrackAddInstagramPostCommand } from './track-add/track-add-instagram-post.command'
 import { TrackAddInstagramProfileCommand } from './track-add/track-add-instagram-profile.command'
 import { TrackAddInstagramStoryCommand } from './track-add/track-add-instagram-story.command'
@@ -20,6 +19,15 @@ import { TrackAddYoutubeLiveCommand } from './track-add/track-add-youtube-live.c
 
 @Injectable()
 export class TrackAddCommand extends BaseCommand {
+  protected readonly logger = baseLogger.child({ context: TrackAddCommand.name })
+
+  constructor(
+    @Inject(ModuleRef)
+    private readonly moduleRef: ModuleRef,
+  ) {
+    super()
+  }
+
   public static readonly command = new SlashCommandBuilder()
     .setName('track_add')
     .setDescription('Add or update tracking')
@@ -35,16 +43,7 @@ export class TrackAddCommand extends BaseCommand {
     // .addSubcommand((subcommand) => TrackAddInstagramProfileCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackAddTiktokVideoCommand.getSubcommand(subcommand))
 
-  private readonly logger = baseLogger.child({ context: TrackAddCommand.name })
-
-  constructor(
-    @Inject(ModuleRef)
-    private readonly moduleRef: ModuleRef,
-  ) {
-    super()
-  }
-
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     if (interaction.guild) {
       const member = await interaction.guild.members.fetch(interaction.user.id)
       if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {

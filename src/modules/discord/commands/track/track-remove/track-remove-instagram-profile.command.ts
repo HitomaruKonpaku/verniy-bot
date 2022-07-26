@@ -1,5 +1,5 @@
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
+import { SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { InstagramUser } from '../../../../instagram/models/instagram-user.entity'
 import { InstagramUserService } from '../../../../instagram/services/data/instagram-user.service'

@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { ColorResolvable, CommandInteraction, MessageEmbedOptions } from 'discord.js'
+import { APIEmbed } from 'discord-api-types/v10'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackYoutubeLiveService } from '../../../../track/services/track-youtube-live.service'
@@ -38,7 +38,7 @@ export class TrackRemoveYoutubeLiveCommand extends TrackRemoveBaseSubcommand {
     return channel
   }
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     const { channelId } = interaction
     const ytChannelId = interaction.options.getString('channel_id', true)
     const meta = { ytChannelId, channelId }
@@ -55,7 +55,7 @@ export class TrackRemoveYoutubeLiveCommand extends TrackRemoveBaseSubcommand {
       await this.trackService.remove(channel.id, channelId, interaction.user.id)
       this.logger.warn('execute: removed', meta)
 
-      const embed: MessageEmbedOptions = {
+      const embed: APIEmbed = {
         description: this.getSuccessEmbedDescription(channel),
         color: this.getSuccessEmbedColor(),
       }
@@ -72,11 +72,11 @@ export class TrackRemoveYoutubeLiveCommand extends TrackRemoveBaseSubcommand {
     return `Untrack **[${channel.name || channel.id}](${YoutubeUtils.getChannelUrl(channel.id)})** YouTube live`
   }
 
-  protected getSuccessEmbedColor(): ColorResolvable {
+  protected getSuccessEmbedColor(): number {
     return 0xff0000
   }
 
-  protected async replyUserNotFound(interaction: CommandInteraction) {
+  protected async replyUserNotFound(interaction: ChatInputCommandInteraction) {
     const content = 'Channel not found'
     await interaction.editReply(content)
   }

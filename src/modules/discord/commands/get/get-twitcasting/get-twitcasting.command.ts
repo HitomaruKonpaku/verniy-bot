@@ -1,15 +1,15 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandGroupBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
+import { SlashCommandSubcommandGroupBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
-import { GetBaseSubcommandGroup } from '../base/get-base-subcommand-group'
+import { BaseSubcommandGroupCommand } from '../../base/base-subcommand-group-command'
 import { GetTwitCastingMovieCommand } from './get-twitcasting-movie.command'
 import { GetTwitCastingMoviesByUserCommand } from './get-twitcasting-movies-by-user.command'
 import { GetTwitCastingUserCommand } from './get-twitcasting-user.command'
 
 @Injectable()
-export class GetTwitCastingCommand extends GetBaseSubcommandGroup {
+export class GetTwitCastingCommand extends BaseSubcommandGroupCommand {
   protected readonly logger = baseLogger.child({ context: GetTwitCastingCommand.name })
 
   constructor(

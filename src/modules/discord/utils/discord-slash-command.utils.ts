@@ -1,4 +1,4 @@
-import { SlashCommandStringOption } from '@discordjs/builders'
+import { SlashCommandStringOption } from 'discord.js'
 
 interface OptionConfig {
   name?: string

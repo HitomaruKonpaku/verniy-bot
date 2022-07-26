@@ -1,14 +1,14 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandGroupBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
+import { SlashCommandSubcommandGroupBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
-import { GetBaseSubcommandGroup } from '../base/get-base-subcommand-group'
+import { BaseSubcommandGroupCommand } from '../../base/base-subcommand-group-command'
 import { GetTwitterSpaceCommand } from './get-twitter-space.command'
 import { GetTwitterUserCommand } from './get-twitter-user.command'
 
 @Injectable()
-export class GetTwitterCommand extends GetBaseSubcommandGroup {
+export class GetTwitterCommand extends BaseSubcommandGroupCommand {
   protected readonly logger = baseLogger.child({ context: GetTwitterCommand.name })
 
   constructor(

@@ -1,7 +1,12 @@
 /* eslint-disable class-methods-use-this */
-import { bold, inlineCode, SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction, User } from 'discord.js'
+import {
+  bold,
+  ChatInputCommandInteraction,
+  inlineCode,
+  SlashCommandSubcommandBuilder,
+  User,
+} from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackTwitterTweetService } from '../../../../track/services/track-twitter-tweet.service'
@@ -53,7 +58,7 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
     return `Tracking **[${user.username}](${TwitterUtils.getUserUrl(user.username)})** tweets`
   }
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     const { username, channelId, message } = this.getInteractionBaseOptions(interaction)
     const allowReply = interaction.options.getBoolean('allow_reply') ?? true
     const allowRetweet = interaction.options.getBoolean('allow_retweet') ?? true

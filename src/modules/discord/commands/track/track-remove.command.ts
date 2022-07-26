@@ -1,11 +1,10 @@
-import { SlashCommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
 import { PermissionFlagsBits } from 'discord-api-types/v10'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { TrackType } from '../../../track/enums/track-type.enum'
-import { BaseCommand } from '../base/base.command'
+import { BaseCommand } from '../base/base-command'
 import { TrackRemoveInstagramPostCommand } from './track-remove/track-remove-instagram-post.command'
 import { TrackRemoveInstagramProfileCommand } from './track-remove/track-remove-instagram-profile.command'
 import { TrackRemoveInstagramStoryCommand } from './track-remove/track-remove-instagram-story.command'
@@ -20,6 +19,15 @@ import { TrackRemoveYoutubeLiveCommand } from './track-remove/track-remove-youtu
 
 @Injectable()
 export class TrackRemoveCommand extends BaseCommand {
+  protected readonly logger = baseLogger.child({ context: TrackRemoveCommand.name })
+
+  constructor(
+    @Inject(ModuleRef)
+    private readonly moduleRef: ModuleRef,
+  ) {
+    super()
+  }
+
   public static readonly command = new SlashCommandBuilder()
     .setName('track_remove')
     .setDescription('Remove tracking')
@@ -35,16 +43,7 @@ export class TrackRemoveCommand extends BaseCommand {
     // .addSubcommand((subcommand) => TrackRemoveInstagramProfileCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackRemoveTiktokVideoCommand.getSubcommand(subcommand))
 
-  private readonly logger = baseLogger.child({ context: TrackRemoveCommand.name })
-
-  constructor(
-    @Inject(ModuleRef)
-    private readonly moduleRef: ModuleRef,
-  ) {
-    super()
-  }
-
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     if (interaction.guild) {
       const member = await interaction.guild.members.fetch(interaction.user.id)
       if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {

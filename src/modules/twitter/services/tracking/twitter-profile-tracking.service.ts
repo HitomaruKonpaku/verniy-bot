@@ -1,6 +1,5 @@
-import { bold, inlineCode } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { MessageOptions } from 'discord.js'
+import { bold, inlineCode, MessageOptions } from 'discord.js'
 import { UserV1 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { ArrayUtils } from '../../../../utils/array.utils'

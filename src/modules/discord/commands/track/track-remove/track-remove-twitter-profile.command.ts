@@ -1,5 +1,5 @@
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
+import { SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackTwitterProfileService } from '../../../../track/services/track-twitter-profile.service'

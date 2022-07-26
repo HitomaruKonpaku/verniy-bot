@@ -1,5 +1,5 @@
-import { codeBlock, inlineCode, time } from '@discordjs/builders'
-import { EmbedFieldData, MessageEmbedOptions } from 'discord.js'
+import { APIEmbed, APIEmbedField } from 'discord-api-types/v10'
+import { codeBlock, inlineCode, time } from 'discord.js'
 import { TrackTwitterSpace } from '../../track/models/track-twitter-space.entity'
 import { SpaceState } from '../enums/twitter-space.enum'
 import { TwitterSpace } from '../models/twitter-space.entity'
@@ -18,7 +18,7 @@ export class TwitterSpaceUtils {
 
   public static getEmbed(space: TwitterSpace, trackItem: TrackTwitterSpace) {
     const creator = space?.creator
-    const embed: MessageEmbedOptions = {
+    const embed: APIEmbed = {
       title: TwitterSpaceUtils.getEmbedTitle(space, trackItem),
       color: 0x1d9bf0,
       description: TwitterUtils.getSpaceUrl(space.id),
@@ -58,7 +58,7 @@ export class TwitterSpaceUtils {
   }
 
   public static getEmbedFields(space: TwitterSpace) {
-    const fields: EmbedFieldData[] = [
+    const fields: APIEmbedField[] = [
       {
         name: 'Title',
         value: codeBlock(space.title),

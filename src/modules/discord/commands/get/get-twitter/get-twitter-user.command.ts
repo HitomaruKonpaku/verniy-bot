@@ -1,14 +1,18 @@
-import { bold, inlineCode, SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
+import {
+  bold,
+  ChatInputCommandInteraction,
+  inlineCode,
+  SlashCommandSubcommandBuilder,
+} from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TwitterApiService } from '../../../../twitter/services/api/twitter-api.service'
 import { TwitterUserControllerService } from '../../../../twitter/services/controller/twitter-user-controller.service'
 import { TwitterUserService } from '../../../../twitter/services/data/twitter-user.service'
-import { GetBaseSubcommand } from '../base/get-base-subcommand'
+import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
-export class GetTwitterUserCommand extends GetBaseSubcommand {
+export class GetTwitterUserCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: GetTwitterUserCommand.name })
 
   constructor(
@@ -37,7 +41,7 @@ export class GetTwitterUserCommand extends GetBaseSubcommand {
         .setDescription('Refresh?'))
   }
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
     const id = interaction.options.getString('id')

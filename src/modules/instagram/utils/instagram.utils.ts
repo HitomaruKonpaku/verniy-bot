@@ -1,5 +1,5 @@
-import { bold, inlineCode, time } from '@discordjs/builders'
-import { MessageEmbedOptions } from 'discord.js'
+import { APIEmbed } from 'discord-api-types/v10'
+import { bold, inlineCode, time } from 'discord.js'
 import { InstagramPost } from '../models/instagram-post.entity'
 import { InstagramStory } from '../models/instagram-story.entity'
 import { InstagramUser } from '../models/instagram-user.entity'
@@ -18,7 +18,7 @@ export class InstagramUtils {
   }
 
   public static getPostEmbed(user: InstagramUser, post: InstagramPost) {
-    const embed: MessageEmbedOptions = {
+    const embed: APIEmbed = {
       title: this.getPostEmbedTitle(user, post),
       description: InstagramUtils.getPostUrl(post.shortcode),
       color: 0xDD2A7B,
@@ -52,7 +52,7 @@ export class InstagramUtils {
   }
 
   public static getStoryEmbed(user: InstagramUser, story: InstagramStory) {
-    const embed: MessageEmbedOptions = {
+    const embed: APIEmbed = {
       title: this.getStoryEmbedTitle(user),
       description: InstagramUtils.getStoryUrl(user.username, story.id),
       color: 0xDD2A7B,

@@ -1,12 +1,11 @@
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { ConfigService } from '../../../../config/services/config.service'
-import { AdminBaseSubcommand } from '../base/admin-base-subcommand'
+import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
-export class AdminReloadConfigCommand extends AdminBaseSubcommand {
+export class AdminReloadConfigCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: AdminReloadConfigCommand.name })
 
   constructor(
@@ -22,7 +21,7 @@ export class AdminReloadConfigCommand extends AdminBaseSubcommand {
       .setDescription('Reload config')
   }
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
     this.configService.reloadConfig()

@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { InstagramUser } from '../../../../instagram/models/instagram-user.entity'
 import { InstagramUserControllerService } from '../../../../instagram/services/controller/instagram-user-controller.service'
@@ -58,7 +57,7 @@ export class TrackAddInstagramStoryCommand extends TrackAddBaseSubcommand {
     return `Tracking **[${user.username}](${InstagramUtils.getUserUrl(user.username)})** Instagram stories`
   }
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     if (!await this.isAppOwner(interaction)) {
       this.logger.warn('execute: blocked')
       await this.replyOwnerOnly(interaction)

@@ -1,5 +1,5 @@
-import { bold, inlineCode } from '@discordjs/builders'
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { bold, inlineCode } from 'discord.js'
 import { ChatUserstate, Client } from 'tmi.js'
 import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/services/discord.service'

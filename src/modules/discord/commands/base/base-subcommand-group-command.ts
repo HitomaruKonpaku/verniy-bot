@@ -1,11 +1,8 @@
 import { ModuleRef } from '@nestjs/core'
-import { CommandInteraction } from 'discord.js'
-import { Logger } from 'winston'
-import { BaseCommand } from '../../base/base.command'
+import { ChatInputCommandInteraction } from 'discord.js'
+import { BaseCommand } from './base-command'
 
-export abstract class GetBaseSubcommandGroup extends BaseCommand {
-  protected readonly logger: Logger
-
+export abstract class BaseSubcommandGroupCommand extends BaseCommand {
   constructor(
     protected readonly moduleRef: ModuleRef,
   ) {
@@ -14,8 +11,8 @@ export abstract class GetBaseSubcommandGroup extends BaseCommand {
 
   protected abstract getCommandService(subcommand: string)
 
-  public async execute(interaction: CommandInteraction) {
-    this.logger.debug('execute')
+  public async execute(interaction: ChatInputCommandInteraction) {
+    await super.execute(interaction)
     const subcommand = interaction.options.getSubcommand()
     const instance = this.moduleRef.get(this.getCommandService(subcommand))
     await instance?.execute?.(interaction)

@@ -1,13 +1,12 @@
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
-import { CommandInteraction } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TwitchUserControllerService } from '../../../../twitch/services/controller/twitch-user-controller.service'
 import { TwitchUserService } from '../../../../twitch/services/data/twitch-user.service'
-import { GetBaseSubcommand } from '../base/get-base-subcommand'
+import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
-export class GetTwitchUserCommand extends GetBaseSubcommand {
+export class GetTwitchUserCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: GetTwitchUserCommand.name })
 
   constructor(
@@ -32,7 +31,7 @@ export class GetTwitchUserCommand extends GetBaseSubcommand {
         .setDescription('Refresh?'))
   }
 
-  public async execute(interaction: CommandInteraction) {
+  public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
     // const id = interaction.options.getString('id', true)

@@ -1,5 +1,5 @@
-import { codeBlock, time } from '@discordjs/builders'
-import { MessageEmbedOptions } from 'discord.js'
+import { APIEmbed } from 'discord-api-types/v10'
+import { codeBlock, time } from 'discord.js'
 import { TwitCastingMovie } from '../models/twitcasting-movie.entity'
 
 export class TwitCastingUtils {
@@ -13,7 +13,7 @@ export class TwitCastingUtils {
 
   public static getEmbed(movie: TwitCastingMovie) {
     const { user } = movie
-    const embed: MessageEmbedOptions = {
+    const embed: APIEmbed = {
       title: `${user.screenId} live!`,
       description: this.getMovieUrl(user.screenId, movie.id),
       url: this.getUserUrl(user.screenId),

@@ -1,14 +1,14 @@
 /* eslint-disable class-methods-use-this */
-import { SlashCommandSubcommandGroupBuilder } from '@discordjs/builders'
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
+import { SlashCommandSubcommandGroupBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
-import { AdminBaseSubcommandGroup } from '../base/admin-base-subcommand-group'
+import { BaseSubcommandGroupCommand } from '../../base/base-subcommand-group-command'
 import { AdminReloadConfigCommand } from './admin-reload-config.command'
 import { AdminReloadTwitterStreamRulesCommand } from './admin-reload-twitter-stream-rules.command'
 
 @Injectable()
-export class AdminReloadCommand extends AdminBaseSubcommandGroup {
+export class AdminReloadCommand extends BaseSubcommandGroupCommand {
   protected readonly logger = baseLogger.child({ context: AdminReloadCommand.name })
 
   constructor(
