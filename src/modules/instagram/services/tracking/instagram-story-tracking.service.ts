@@ -56,7 +56,21 @@ export class InstagramStoryTrackingService {
               embeds: [embed],
               files: [story.imageUrl].filter((v) => v),
             }
-            await this.discordService.sendToChannel(trackItem.discordChannelId, options)
+            const msg = await this.discordService.sendToChannel(trackItem.discordChannelId, options)
+            if (msg && story.videoUrls?.length) {
+              const urls = story.videoUrls.slice()
+              // eslint-disable-next-line no-plusplus
+              for (let index = 0; index < urls.length; index++) {
+                const url = urls[index]
+                try {
+                  // eslint-disable-next-line no-await-in-loop
+                  await msg.reply({ files: [url] })
+                  break
+                } catch (error) {
+                  this.logger.error(`notifyUserNewStories#replyVideo: ${error.message}`, { story, videoUrl: url })
+                }
+              }
+            }
           } catch (error) {
             this.logger.error(`notifyUserNewStories#send: ${error.message}`, {
               user: { id: user.id, username: user.username },

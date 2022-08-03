@@ -23,4 +23,6 @@ export class InstagramStory extends BaseExternalEntity {
   imageUrl?: string
 
   user?: InstagramUser
+
+  videoUrls?: string[]
 }

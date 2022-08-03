@@ -48,6 +48,14 @@ export class InstagramStoryControllerService {
       originalHeight: data.original_height || null,
       imageUrl: data.image_versions2?.candidates?.[0]?.url || null,
     })
+
+    story.videoUrls = []
+    if (data.video_versions?.length) {
+      story.videoUrls = data.video_versions
+        .map((v) => v?.url)
+        .filter((v) => v)
+    }
+
     return story
   }
 }
