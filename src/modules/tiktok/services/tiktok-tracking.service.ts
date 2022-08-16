@@ -108,18 +108,18 @@ export class TiktokTrackingService {
               .filter((v) => v)
               .join('\n') || null
             const embed = TiktokUtils.getVideoEmbed(video, user, this.tiktokProxyService.getProxyUrl())
-            const fileUrl = TiktokUtils.getVideoAttachmentUrl(user.username, video.id, this.tiktokProxyService.getProxyUrl())
+            // const fileUrl = TiktokUtils.getVideoAttachmentUrl(user.username, video.id, this.tiktokProxyService.getProxyUrl())
             await this.discordService.sendToChannel(
               trackItem.discordChannelId,
               { content, embeds: [embed] },
             )
-            await this.discordService
-              .sendToChannel(
-                trackItem.discordChannelId,
-                { files: [{ attachment: fileUrl, name: `${video.id}.mp4` }] },
-                { throwError: true },
-              )
-              .catch((error) => this.discordService.sendToChannel(trackItem.discordChannelId, `Unable to send video: ${error.message}`))
+            // await this.discordService
+            //   .sendToChannel(
+            //     trackItem.discordChannelId,
+            //     { files: [{ attachment: fileUrl, name: `${video.id}.mp4` }] },
+            //     { throwError: true },
+            //   )
+            //   .catch((error) => this.discordService.sendToChannel(trackItem.discordChannelId, `Unable to send video: ${error.message}`))
           } catch (error) {
             this.logger.error(`notifyUserNewVideos#send: ${error.message}`, {
               user: { id: user.id, username: user.username },
