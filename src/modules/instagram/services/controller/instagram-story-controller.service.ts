@@ -31,7 +31,7 @@ export class InstagramStoryControllerService {
       const newStories = await Promise.all(newItems.map((v) => this.saveStory(v)))
       return newStories
     } catch (error) {
-      this.logger.error(`getNewUserStories: ${error.message}`, { userId, username })
+      this.logger.error(`getNewUserStories: ${error.message}`, { username, userId })
     }
     return []
   }
