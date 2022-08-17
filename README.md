@@ -10,7 +10,7 @@ Discord tracking bot
 - ~~YouTube~~
 - Twitch
 - Instagram
-- TikTok
+- ~~TikTok~~
 
 ## Links
 
@@ -56,6 +56,8 @@ Discord tracking bot
 - twitcasting
   - user
   - movie
+- twitch
+  - user
 
 ## Getting Started
 
