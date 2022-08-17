@@ -38,7 +38,7 @@ export class InstagramTrackingService extends EventEmitter {
       this.logger.debug('checkUsers', { userCount: users.length })
 
       await Promise.all(users.reduce((pv, user) => {
-        pv.push(limiter.schedule(() => this.checkUserProfileAndPosts(user)))
+        // pv.push(limiter.schedule(() => this.checkUserProfileAndPosts(user)))
         pv.push(limiter.schedule(() => this.checkUserStories(user)))
         return pv
       }, []))
