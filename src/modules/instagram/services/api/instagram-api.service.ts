@@ -54,17 +54,18 @@ export class InstagramApiService {
     }
   }
 
-  public async getUserStories(userId: string) {
+  public async getUserStories(userId: string, username?: string) {
     const requestId = randomUUID()
     try {
       const result = await instagramUserStoriesLimiter.schedule(async () => {
-        this.logger.debug('--> getUserStories', { requestId, userId })
+        this.logger.debug('--> getUserStories', { requestId, userId, username })
         const data = await getStories({ id: userId, sessionid: this.sessionId })
         const status = data?.status
         const storyCount = data?.items?.length
         this.logger.debug('<-- getUserStories', {
           requestId,
           userId,
+          username,
           status,
           storyCount,
         })
@@ -72,7 +73,7 @@ export class InstagramApiService {
       })
       return result
     } catch (error) {
-      this.logger.error(`getUserStories: ${error.message}`, { userId })
+      this.logger.error(`getUserStories: ${error.message}`, { userId, username })
       throw error
     }
   }

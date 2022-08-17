@@ -14,9 +14,9 @@ export class InstagramStoryControllerService {
     public readonly instagramApiService: InstagramApiService,
   ) { }
 
-  public async getNewUserStories(userId: string) {
+  public async getNewUserStories(userId: string, username?: string) {
     try {
-      const response = await this.instagramApiService.getUserStories(userId)
+      const response = await this.instagramApiService.getUserStories(userId, username)
       const items: any[] = response?.items || []
       if (!items.length) {
         return []
@@ -31,7 +31,7 @@ export class InstagramStoryControllerService {
       const newStories = await Promise.all(newItems.map((v) => this.saveStory(v)))
       return newStories
     } catch (error) {
-      this.logger.error(`getNewUserStories: ${error.message}`, { userId })
+      this.logger.error(`getNewUserStories: ${error.message}`, { userId, username })
     }
     return []
   }

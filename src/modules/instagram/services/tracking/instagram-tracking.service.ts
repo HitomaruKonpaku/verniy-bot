@@ -73,7 +73,7 @@ export class InstagramTrackingService extends EventEmitter {
 
   private async checkUserStories(user: InstagramUser) {
     try {
-      const stories = await this.instagramStoryControllerService.getNewUserStories(user.id)
+      const stories = await this.instagramStoryControllerService.getNewUserStories(user.id, user.username)
       if (stories?.length) {
         this.emit(InstagramTrackingEvent.STORY, user, stories)
       }
