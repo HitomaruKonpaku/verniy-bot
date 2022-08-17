@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common'
-import Bottleneck from 'bottleneck'
 import { EventEmitter } from 'stream'
 import { baseLogger } from '../../../../logger'
 import { ConfigService } from '../../../config/services/config.service'
 import { InstagramTrackingEvent } from '../../enum/instagram-tracking-event.enum'
+import { instagramTrackingQueueLimiter } from '../../instagram.limiter'
 import { InstagramUser } from '../../models/instagram-user.entity'
 import { InstagramStoryControllerService } from '../controller/instagram-story-controller.service'
 import { InstagramUserControllerService } from '../controller/instagram-user-controller.service'
@@ -33,13 +33,15 @@ export class InstagramTrackingService extends EventEmitter {
 
   private async checkUsers() {
     try {
+      const limiter = instagramTrackingQueueLimiter
       const users = await this.instagramUserService.getManyForTracking()
       this.logger.debug('checkUsers', { userCount: users.length })
-      const limiter = new Bottleneck({ maxConcurrent: 1 })
-      await Promise.all(users.map((user) => limiter.schedule(() => Promise.allSettled([
-        // this.checkUserProfileAndPosts(user),
-        this.checkUserStories(user),
-      ]))))
+
+      await Promise.all(users.reduce((pv, user) => {
+        pv.push(limiter.schedule(() => this.checkUserProfileAndPosts(user)))
+        pv.push(limiter.schedule(() => this.checkUserStories(user)))
+        return pv
+      }, []))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }

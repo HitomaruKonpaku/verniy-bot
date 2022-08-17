@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import axios, { AxiosInstance } from 'axios'
 import { randomUUID } from 'crypto'
 import { getStories } from 'instagram-stories'
-import { USER_AGENT } from '../../../../constants/app.constant'
 import { baseLogger } from '../../../../logger'
 import { instagramUserLimiter, instagramUserStoriesLimiter } from '../../instagram.limiter'
 
@@ -79,14 +78,22 @@ export class InstagramApiService {
   }
 
   private initClient() {
+    const cookie = [
+      this.sessionId ? `sessionid=${this.sessionId}` : null,
+      this.dsUserId ? `ds_user_id=${this.dsUserId}` : null,
+    ].filter((v) => v).join('; ')
+
     this.client = axios.create({
       headers: {
-        'user-agent': USER_AGENT,
-        cookie: [
-          `sessionid=${this.sessionId}`,
-          `ds_user_id=${this.dsUserId}`,
-        ].join('; '),
+        // 'user-agent': USER_AGENT,
+        cookie,
+        'sec-ch-ua': '"Google Chrome";v="87", " Not;A Brand";v="99", "Chromium";v="87"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
         'x-ig-app-id': '936619743392459',
+        'x-ig-www-claim': 'hmac.AR0A6WzcCoXWstKAUuy1gRbCQFUs8FoZCp3ap2UMk_KQNBSH',
       },
     })
   }

@@ -1,4 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import Bottleneck from 'bottleneck'
 import { MessageOptions } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/services/discord.service'
@@ -12,6 +13,8 @@ import { InstagramTrackingService } from './instagram-tracking.service'
 @Injectable()
 export class InstagramPostTrackingService {
   private readonly logger = baseLogger.child({ context: InstagramPostTrackingService.name })
+
+  private readonly notificationLimiterGroup = new Bottleneck.Group({ maxConcurrent: 1 });
 
   constructor(
     @Inject(InstagramTrackingService)
@@ -35,7 +38,7 @@ export class InstagramPostTrackingService {
     if (!user || !posts?.length) {
       return
     }
-    this.notifyUserNewPosts(user, posts)
+    this.notifyUserNewPosts(user, posts.sort((a, b) => a.createdAt - b.createdAt))
   }
 
   private async notifyUserNewPosts(user: InstagramUser, posts: InstagramPost[]) {
@@ -44,6 +47,7 @@ export class InstagramPostTrackingService {
       if (!trackItems.length) {
         return
       }
+
       trackItems.forEach((trackItem) => {
         posts.forEach(async (post) => {
           try {
@@ -56,14 +60,20 @@ export class InstagramPostTrackingService {
               embeds: [embed],
               files: [post.displayUrl].filter((v) => v),
             }
-            // Send base message with image
-            await this.discordService.sendToChannel(trackItem.discordChannelId, options)
-            // Send video (optional)
-            if (post.isVideo && post.videoUrl) {
-              await this.discordService
-                .sendToChannel(trackItem.discordChannelId, { files: [post.videoUrl] })
-                .catch((error) => this.logger.error(`notifyUserNewPosts#sendVideo: ${error.message}`))
-            }
+
+            await this.notificationLimiterGroup
+              .key(trackItem.discordChannelId)
+              .schedule(async () => {
+                // Send base message with image
+                await this.discordService.sendToChannel(trackItem.discordChannelId, options)
+
+                // Send video (optional)
+                if (post.isVideo && post.videoUrl) {
+                  await this.discordService
+                    .sendToChannel(trackItem.discordChannelId, { files: [post.videoUrl] })
+                    .catch((error) => this.logger.error(`notifyUserNewPosts#sendVideo: ${error.message}`))
+                }
+              })
           } catch (error) {
             this.logger.error(`notifyUserNewPosts#send: ${error.message}`, {
               user: { id: user.id, username: user.username },

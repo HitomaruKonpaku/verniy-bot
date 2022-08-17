@@ -1,4 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import Bottleneck from 'bottleneck'
 import { MessageOptions } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/services/discord.service'
@@ -12,6 +13,8 @@ import { InstagramTrackingService } from './instagram-tracking.service'
 @Injectable()
 export class InstagramStoryTrackingService {
   private readonly logger = baseLogger.child({ context: InstagramStoryTrackingService.name })
+
+  private readonly notificationLimiterGroup = new Bottleneck.Group({ maxConcurrent: 1 });
 
   constructor(
     @Inject(InstagramTrackingService)
@@ -35,7 +38,7 @@ export class InstagramStoryTrackingService {
     if (!user || !stories?.length) {
       return
     }
-    this.notifyUserNewStories(user, stories)
+    this.notifyUserNewStories(user, stories.sort((a, b) => a.createdAt - b.createdAt))
   }
 
   private async notifyUserNewStories(user: InstagramUser, stories: InstagramStory[]) {
@@ -44,6 +47,7 @@ export class InstagramStoryTrackingService {
       if (!trackItems.length) {
         return
       }
+
       trackItems.forEach((trackItem) => {
         stories.forEach(async (story) => {
           try {
@@ -56,21 +60,29 @@ export class InstagramStoryTrackingService {
               embeds: [embed],
               files: [story.imageUrl].filter((v) => v),
             }
-            const msg = await this.discordService.sendToChannel(trackItem.discordChannelId, options)
-            if (msg && story.videoUrls?.length) {
-              const urls = story.videoUrls.slice()
-              // eslint-disable-next-line no-plusplus
-              for (let index = 0; index < urls.length; index++) {
-                const url = urls[index]
-                try {
-                  // eslint-disable-next-line no-await-in-loop
-                  await msg.reply({ files: [url] })
-                  break
-                } catch (error) {
-                  this.logger.error(`notifyUserNewStories#replyVideo: ${error.message}`, { story, videoUrl: url })
+
+            await this.notificationLimiterGroup
+              .key(trackItem.discordChannelId)
+              .schedule(async () => {
+                // Send base message
+                const msg = await this.discordService.sendToChannel(trackItem.discordChannelId, options)
+
+                // Send video (optional)
+                if (msg && story.videoUrls?.length) {
+                  const urls = story.videoUrls.slice()
+                  // eslint-disable-next-line no-plusplus
+                  for (let index = 0; index < urls.length; index++) {
+                    const url = urls[index]
+                    try {
+                      // eslint-disable-next-line no-await-in-loop
+                      await msg.reply({ files: [url] })
+                      break
+                    } catch (error) {
+                      this.logger.error(`notifyUserNewStories#replyVideo: ${error.message}`, { story, videoUrl: url })
+                    }
+                  }
                 }
-              }
-            }
+              })
           } catch (error) {
             this.logger.error(`notifyUserNewStories#send: ${error.message}`, {
               user: { id: user.id, username: user.username },
