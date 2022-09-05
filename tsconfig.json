@@ -1,18 +1,22 @@
 {
+  "exclude": [
+    "node_modules/*",
+  ],
   "compilerOptions": {
     "target": "ES2020",
+    "module": "CommonJS",
     "lib": [
       "ES2020",
       "DOM"
     ],
-    "module": "CommonJS",
-    "sourceMap": true,
     "outDir": "dist",
-    "importHelpers": false,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "strict": false,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "importHelpers": false,
     "experimentalDecorators": true,
+    "sourceMap": true,
   }
 }
