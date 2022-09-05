@@ -3,6 +3,7 @@ import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'disc
 import { baseLogger } from '../../../../../logger'
 import { TwitterSpaceControllerService } from '../../../../twitter/services/controller/twitter-space-controller.service'
 import { TwitterSpaceService } from '../../../../twitter/services/data/twitter-space.service'
+import { TwitterSpaceUtils } from '../../../../twitter/utils/twitter-space.utils'
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
@@ -34,7 +35,7 @@ export class GetTwitterSpaceCommand extends BaseCommand {
   public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
-    const id = interaction.options.getString('id', true)
+    const id = TwitterSpaceUtils.parseId(interaction.options.getString('id', true))
     const refresh = interaction.options.getBoolean('refresh')
     let rawSpace = refresh
       ? null

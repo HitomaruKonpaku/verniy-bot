@@ -13,6 +13,7 @@ import { TrackTwitterTweetService } from '../../../../track/services/track-twitt
 import { TwitterUser } from '../../../../twitter/models/twitter-user.entity'
 import { TwitterUserControllerService } from '../../../../twitter/services/controller/twitter-user-controller.service'
 import { TwitterFilteredStreamUserService } from '../../../../twitter/services/data/twitter-filtered-stream-user.service'
+import { TwitterUserUtils } from '../../../../twitter/utils/twitter-user.utils'
 import { TwitterUtils } from '../../../../twitter/utils/twitter.utils'
 import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
@@ -50,7 +51,7 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
   }
 
   protected async getUser(username: string): Promise<TwitterUser> {
-    const user = await this.twitterUserControllerService.getOneByUsername(username)
+    const user = await this.twitterUserControllerService.getOneByUsername(TwitterUserUtils.parseUsername(username))
     return user
   }
 
@@ -66,7 +67,7 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
     this.logger.debug('--> execute', meta)
 
     try {
-      const user = await this.twitterUserControllerService.getOneByUsername(username)
+      const user = await this.getUser(username)
       if (!user) {
         this.logger.warn('execute: user not found', meta)
         this.replyUserNotFound(interaction)

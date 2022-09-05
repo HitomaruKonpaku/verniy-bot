@@ -6,6 +6,12 @@ import { TwitterSpace } from '../models/twitter-space.entity'
 import { TwitterUtils } from './twitter.utils'
 
 export class TwitterSpaceUtils {
+  public static parseId(s: string): string {
+    const pattern = /(?<=spaces\/)\w+/
+    const value = pattern.exec(s)?.[0] || s
+    return value
+  }
+
   public static getMasterPlaylistUrl(url: string) {
     return url
       // Handle live playlist

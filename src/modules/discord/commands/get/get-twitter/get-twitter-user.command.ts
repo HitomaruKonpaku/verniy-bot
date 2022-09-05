@@ -9,6 +9,7 @@ import { baseLogger } from '../../../../../logger'
 import { TwitterApiService } from '../../../../twitter/services/api/twitter-api.service'
 import { TwitterUserControllerService } from '../../../../twitter/services/controller/twitter-user-controller.service'
 import { TwitterUserService } from '../../../../twitter/services/data/twitter-user.service'
+import { TwitterUserUtils } from '../../../../twitter/utils/twitter-user.utils'
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
@@ -46,7 +47,7 @@ export class GetTwitterUserCommand extends BaseCommand {
 
     const id = interaction.options.getString('id')
     const refresh = interaction.options.getBoolean('refresh')
-    const username = interaction.options.getString('username')
+    const username = TwitterUserUtils.parseUsername(interaction.options.getString('username'))
 
     if (!id && !username) {
       const content = `Required ${bold(inlineCode('id'))} or ${bold(inlineCode('username'))}`

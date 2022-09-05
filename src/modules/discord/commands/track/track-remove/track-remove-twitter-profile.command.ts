@@ -5,6 +5,7 @@ import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackTwitterProfileService } from '../../../../track/services/track-twitter-profile.service'
 import { TwitterUser } from '../../../../twitter/models/twitter-user.entity'
 import { TwitterUserService } from '../../../../twitter/services/data/twitter-user.service'
+import { TwitterUserUtils } from '../../../../twitter/utils/twitter-user.utils'
 import { TwitterUtils } from '../../../../twitter/utils/twitter.utils'
 import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackRemoveBaseSubcommand } from '../base/track-remove-base-subcommand'
@@ -33,7 +34,7 @@ export class TrackRemoveTwitterProfileCommand extends TrackRemoveBaseSubcommand 
   }
 
   protected async getUser(username: string): Promise<TwitterUser> {
-    const user = await this.twitterUserService.getOneByUsername(username)
+    const user = await this.twitterUserService.getOneByUsername(TwitterUserUtils.parseUsername(username))
     return user
   }
 

@@ -6,6 +6,7 @@ import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackTwitterProfileService } from '../../../../track/services/track-twitter-profile.service'
 import { TwitterUser } from '../../../../twitter/models/twitter-user.entity'
 import { TwitterUserControllerService } from '../../../../twitter/services/controller/twitter-user-controller.service'
+import { TwitterUserUtils } from '../../../../twitter/utils/twitter-user.utils'
 import { TwitterUtils } from '../../../../twitter/utils/twitter.utils'
 import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
@@ -35,7 +36,7 @@ export class TrackAddTwitterProfileCommand extends TrackAddBaseSubcommand {
   }
 
   protected async getUser(username: string): Promise<TwitterUser> {
-    const user = await this.twitterUserControllerService.getOneByUsername(username)
+    const user = await this.twitterUserControllerService.getOneByUsername(TwitterUserUtils.parseUsername(username))
     return user
   }
 
