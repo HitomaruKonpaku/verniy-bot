@@ -1,4 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import Bottleneck from 'bottleneck'
+import { MessageOptions } from 'discord.js'
 import { ETwitterStreamEvent, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
@@ -14,6 +16,8 @@ import { TiktokUserControllerService } from './controller/tiktok-user-controller
 @Injectable()
 export class TiktokTrackingService {
   private readonly logger = baseLogger.child({ context: TiktokTrackingService.name })
+
+  private readonly notificationLimiterGroup = new Bottleneck.Group({ maxConcurrent: 1 });
 
   private errorUserCount = 0
 
@@ -101,6 +105,7 @@ export class TiktokTrackingService {
       if (!trackItems.length) {
         return
       }
+
       trackItems.forEach((trackItem) => {
         user.newVideos.forEach(async (video) => {
           try {
@@ -108,18 +113,28 @@ export class TiktokTrackingService {
               .filter((v) => v)
               .join('\n') || null
             const embed = TiktokUtils.getVideoEmbed(video, user, this.tiktokProxyService.getProxyUrl())
-            // const fileUrl = TiktokUtils.getVideoAttachmentUrl(user.username, video.id, this.tiktokProxyService.getProxyUrl())
-            await this.discordService.sendToChannel(
-              trackItem.discordChannelId,
-              { content, embeds: [embed] },
-            )
-            // await this.discordService
-            //   .sendToChannel(
-            //     trackItem.discordChannelId,
-            //     { files: [{ attachment: fileUrl, name: `${video.id}.mp4` }] },
-            //     { throwError: true },
-            //   )
-            //   .catch((error) => this.discordService.sendToChannel(trackItem.discordChannelId, `Unable to send video: ${error.message}`))
+            const options: MessageOptions = {
+              content,
+              embeds: [embed],
+            }
+
+            await this.notificationLimiterGroup
+              .key(trackItem.discordChannelId)
+              .schedule(async () => {
+                // Send base message
+                await this.discordService.sendToChannel(trackItem.discordChannelId, options)
+
+                // Send video
+                if (video.src) {
+                  await this.discordService
+                    .sendToChannel(
+                      trackItem.discordChannelId,
+                      { files: [{ attachment: video.src, name: `${video.id}.mp4` }] },
+                      { throwError: true },
+                    )
+                    .catch((error) => this.discordService.sendToChannel(trackItem.discordChannelId, `Unable to send video: ${error.message}`))
+                }
+              })
           } catch (error) {
             this.logger.error(`notifyUserNewVideos#send: ${error.message}`, {
               user: { id: user.id, username: user.username },
