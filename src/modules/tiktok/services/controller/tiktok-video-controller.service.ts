@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
+import * as cheerio from 'cheerio'
 import { baseLogger } from '../../../../logger'
 import { TiktokApiService } from '../api/tiktok-api.service'
 import { TiktokVideoService } from '../data/tiktok-video.service'
@@ -33,6 +34,18 @@ export class TiktokVideoControllerService {
       userId,
       description: data.title || data.description || null,
     })
+    video.src = this.parseVideoSrc(data)
     return video
+  }
+
+  public parseVideoSrc(data: any) {
+    try {
+      const $ = cheerio.load(data?.description)
+      const src = $('video')?.[0]?.attribs?.src
+      return src
+    } catch (error) {
+      this.logger.error(`parseVideoSrc: ${error.message}`, { data })
+    }
+    return null
   }
 }

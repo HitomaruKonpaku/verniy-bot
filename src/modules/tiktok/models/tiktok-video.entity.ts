@@ -10,5 +10,7 @@ export class TiktokVideo extends BaseExternalEntity {
   @Column({ name: 'description', type: 'text', nullable: true })
   description?: string
 
+  src?: string
+
   user?: TiktokUser
 }
