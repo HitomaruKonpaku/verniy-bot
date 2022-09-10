@@ -108,7 +108,7 @@ export class DiscordService {
       const message = await channel.send(options)
       if (message) {
         this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
-        this.discordDbService.saveMessage(message)
+        // this.discordDbService.saveMessage(message)
         // Crosspost message
         if (message.channel.type === ChannelType.GuildNews) {
           await message.crosspost()
