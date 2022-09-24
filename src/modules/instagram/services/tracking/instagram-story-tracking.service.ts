@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
-import { MessageOptions } from 'discord.js'
+import { MessageCreateOptions } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackInstagramStoryService } from '../../../track/services/track-instagram-story.service'
@@ -55,7 +55,7 @@ export class InstagramStoryTrackingService {
               .filter((v) => v)
               .join('\n') || null
             const embed = InstagramUtils.getStoryEmbed(user, story)
-            const options: MessageOptions = {
+            const options: MessageCreateOptions = {
               content,
               embeds: [embed],
               files: [story.imageUrl].filter((v) => v),

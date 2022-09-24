@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
-import { MessageOptions } from 'discord.js'
+import { MessageCreateOptions } from 'discord.js'
 import { ETwitterStreamEvent, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
@@ -113,7 +113,7 @@ export class TiktokTrackingService {
               .filter((v) => v)
               .join('\n') || null
             const embed = TiktokUtils.getVideoEmbed(video, user, this.tiktokProxyService.getProxyUrl())
-            const options: MessageOptions = {
+            const options: MessageCreateOptions = {
               content,
               embeds: [embed],
             }

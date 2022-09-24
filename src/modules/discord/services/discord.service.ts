@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import {
   Channel,
   ChannelType,
-  MessageOptions,
+  MessageCreateOptions,
   MessagePayload,
   TextChannel,
 } from 'discord.js'
@@ -89,7 +89,7 @@ export class DiscordService {
 
   public async sendToChannel(
     channelId: string,
-    options: string | MessagePayload | MessageOptions,
+    options: string | MessagePayload | MessageCreateOptions,
     config?: { throwError?: boolean },
   ) {
     try {
