@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common'
 import axios from 'axios'
-import Bottleneck from 'bottleneck'
 import { baseLogger } from '../../../../logger'
 import { BaseCronService } from '../../../../shared/services/base-cron.service'
 import { ArrayUtils } from '../../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { TwitterSpace } from '../../models/twitter-space.entity'
+import { twitterSpacePlaylistLimiter } from '../../twitter.limiter'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 
@@ -33,6 +33,7 @@ export class TwitterSpaceCronService extends BaseCronService {
     this.logger.info('--> checkSpacesActive')
     try {
       const spaces = await this.twitterSpaceService.getManyForActiveCheck()
+      this.logger.debug('checkSpacesActive', { spaceCount: spaces.length })
       const chunks = ArrayUtils.splitIntoChunk(spaces, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map(async (chunk) => {
         try {
@@ -60,8 +61,9 @@ export class TwitterSpaceCronService extends BaseCronService {
   private async checkSpacesPlaylist() {
     this.logger.info('--> checkSpacesPlaylist')
     try {
-      const limiter = new Bottleneck({ maxConcurrent: 1 })
+      const limiter = twitterSpacePlaylistLimiter
       const spaces = await this.twitterSpaceService.getManyForPlaylistActiveCheck()
+      this.logger.debug('checkSpacesPlaylist', { spaceCount: spaces.length })
       await Promise.allSettled(spaces.map((v) => limiter.schedule(() => this.checkSpacePlaylist(v))))
     } catch (error) {
       this.logger.error(`checkSpacesPlaylist: ${error.message}`)

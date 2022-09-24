@@ -35,6 +35,7 @@ export class TwitterUserCronService extends BaseCronService {
     const limiter = new Bottleneck({ maxConcurrent: 1 })
     try {
       const users = await this.twitterUserService.getManyForCheck()
+      this.logger.debug('checkUsers', { userCount: users.length })
       const chunks = ArrayUtils.splitIntoChunk(users, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.getUserChunk(v))))
     } catch (error) {

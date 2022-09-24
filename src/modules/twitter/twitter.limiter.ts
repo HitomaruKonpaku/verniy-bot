@@ -57,3 +57,7 @@ export const twitterSpacesByFleetsAvatarContentLimiter = new Bottleneck({
   maxConcurrent: 1,
   minTime: 500,
 })
+
+export const twitterSpacePlaylistLimiter = new Bottleneck({
+  maxConcurrent: 2,
+})
