@@ -122,6 +122,7 @@ export class TwitterSpaceTrackingService {
       if (!userIds.length) {
         return
       }
+      this.logger.debug('checkNewSpacesByPublicApi', { userCount: userIds.length })
       const spaceIds = await this.getSpaceIdsByUserIdsByPublicApi(userIds)
       if (!spaceIds.length) {
         return
