@@ -41,7 +41,7 @@ export class InstagramTrackingService extends EventEmitter {
         // pv.push(limiter.schedule(() => this.checkUserProfileAndPosts(user)))
         pv.push(limiter.schedule(() => this.checkUserStories(user)))
         return pv
-      }, []))
+      }, [] as any[]))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }
