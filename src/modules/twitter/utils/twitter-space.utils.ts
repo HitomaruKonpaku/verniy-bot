@@ -43,23 +43,33 @@ export class TwitterSpaceUtils {
   }
 
   public static getEmbedTitle(space: TwitterSpace, track: TrackTwitterSpace) {
+    const trackUser = [space.creator, space.hosts || [], space.speakers || []]
+      .flat()
+      .find((user) => user.id === track.userId)
     const displayCreator = inlineCode(space.creator?.username || space.creatorId)
+    const displayGuest = inlineCode(trackUser?.username || track.userId)
+
     if (space.state === SpaceState.SCHEDULED) {
       return `${displayCreator} scheduled a Space`
     }
+
     if (space.state === SpaceState.ENDED) {
+      if (space.creatorId !== track.userId) {
+        return `${displayCreator} ended a Space (Guest: ${displayGuest})`
+      }
       return `${displayCreator} ended a Space`
     }
+
+    // SpaceState.LIVE
     if (space.creatorId !== track.userId) {
       if (space.hostIds?.includes?.(track.userId)) {
-        const displayGuest = inlineCode(space.hosts?.find?.((v) => v.id === track.userId)?.username || track.userId)
         return `${displayGuest} is co-hosting ${displayCreator}'s Space`
       }
       if (space.speakerIds?.includes?.(track.userId)) {
-        const displayGuest = inlineCode(space.speakers?.find?.((v) => v.id === track.userId)?.username || track.userId)
         return `${displayGuest} is speaking in ${displayCreator}'s Space`
       }
     }
+
     return `${displayCreator} is hosting a Space`
   }
 
