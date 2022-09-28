@@ -55,7 +55,7 @@ export class TwitterSpaceUtils {
 
     if (space.state === SpaceState.ENDED) {
       if (space.creatorId !== track.userId) {
-        return `${displayCreator} ended a Space (Guest: ${displayGuest})`
+        return `${displayCreator} ended a Space | Guest: ${displayGuest}`
       }
       return `${displayCreator} ended a Space`
     }
