@@ -147,15 +147,15 @@ export class TwitchChatTrackingService {
     }
 
     try {
-      this.logger.warn(
-        `notifyMessage: ${userstate.username}`,
-        { channel, username: userstate.username, msg: message },
-      )
-
       trackItems.forEach((trackItem) => {
         if (trackItem.filterKeywords?.length && !trackItem.filterKeywords.some((v) => message.toLowerCase().includes(v.toLowerCase()))) {
           return
         }
+
+        this.logger.warn(
+          `notifyMessage: ${userstate.username}`,
+          { channel, username: userstate.username, msg: message },
+        )
 
         const msgContent = `💬 ${bold(inlineCode(userstate['display-name']))} 📄 ${inlineCode(message)}`
         const content = [trackItem.discordMessage, msgContent]
