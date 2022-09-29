@@ -38,8 +38,8 @@ export class TrackTwitterTweetService extends TrackBaseService<TrackTwitterTweet
     userId: string,
     discordChannelId: string,
     discordMessage: string = null,
-    updatedBy: string = null,
     options: {
+      updatedBy?: string,
       allowReply?: boolean,
       allowRetweet?: boolean,
     } = {},
@@ -53,7 +53,6 @@ export class TrackTwitterTweetService extends TrackBaseService<TrackTwitterTweet
       userId,
       discordChannelId,
       discordMessage,
-      updatedBy,
       options,
     )
   }
