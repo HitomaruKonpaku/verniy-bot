@@ -91,8 +91,8 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
         user.id,
         channelId,
         message,
-        interaction.user.id,
         {
+          updatedBy: interaction.user.id,
           allowReply,
           allowRetweet,
         },

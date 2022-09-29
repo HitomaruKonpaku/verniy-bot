@@ -3,19 +3,24 @@ import { bold, inlineCode } from 'discord.js'
 import { ChatUserstate, Client } from 'tmi.js'
 import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/services/discord.service'
+import { TrackTwitchChat } from '../../../track/models/track-twitch-chat.entity'
 import { TrackTwitchChatService } from '../../../track/services/track-twitch-chat.service'
+import { TwitchUserService } from '../data/twitch-user.service'
 
 @Injectable()
 export class TwitchChatTrackingService {
   private readonly logger = baseLogger.child({ context: TwitchChatTrackingService.name })
 
-  private readonly DEBUG = false
+  private readonly debug = false
+  private readonly filterUserIds = new Set<string>()
 
   private client: Client
 
   constructor(
     @Inject(TrackTwitchChatService)
     private readonly trackTwitchChatService: TrackTwitchChatService,
+    @Inject(TwitchUserService)
+    private readonly twitchUserService: TwitchUserService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) { }
@@ -34,6 +39,14 @@ export class TwitchChatTrackingService {
       this.logger.error(`join: ${error.message}`, { channel })
     }
     return null
+  }
+
+  public addFilterUserId(id: string) {
+    if (!id) {
+      return
+    }
+    this.logger.debug('addFilterUserId', { id })
+    this.filterUserIds.add(id)
   }
 
   private async connect(retryCount = 0) {
@@ -60,9 +73,22 @@ export class TwitchChatTrackingService {
     }
   }
 
+  private async initFilterUserIds() {
+    this.logger.warn('initFilterUserIds')
+    try {
+      const userIds = await this.trackTwitchChatService.getFilterUserIdsForChatFilter()
+      if (userIds.length) {
+        this.logger.debug('initFilterUserIds', { userCount: userIds.length })
+        userIds.forEach((v) => this.addFilterUserId(v))
+      }
+    } catch (error) {
+      this.logger.error(`initFilterUserIds: ${error.message}`)
+    }
+  }
+
   private initClient() {
     const client = new Client({
-      options: { debug: this.DEBUG },
+      options: { debug: this.debug },
     })
     this.client = client
     this.addClientEventListeners()
@@ -79,41 +105,63 @@ export class TwitchChatTrackingService {
     client.on('connected', () => this.logger.debug('[WS] connected'))
     client.on('disconnected', () => this.logger.debug('[WS] disconnected'))
     client.on('reconnect', () => this.logger.debug('[WS] reconnect'))
-    //
+    // connected
     client.on('connected', () => this.joinDefaultChannels())
+    client.on('connected', () => this.initFilterUserIds())
     // message
     client.on('message', (channel, userstate, message, self) => this.onMessage(channel, userstate, message, self))
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private onMessage(channel: string, userstate: ChatUserstate, message: string, self: boolean) {
-    const username = userstate?.username?.toLowerCase?.()
-    const isBroadcaster = username === channel.substring(1).toLowerCase()
-    if (!isBroadcaster) {
-      return
-    }
-    this.notifyMessage(channel, userstate, message)
-  }
-
-  private async notifyMessage(channel: string, userstate: ChatUserstate, message: string) {
+  private async onMessage(channel: string, userstate: ChatUserstate, message: string, self: boolean) {
     const userId = userstate?.['user-id']
     if (!userId) {
       return
     }
+
+    const hostUsername = channel.substring(1).toLowerCase()
+    const isHost = userstate?.username?.toLowerCase?.() === hostUsername
+    if (isHost) {
+      const trackItems = await this.getTrackItems(userId)
+      this.notifyMessage(trackItems, channel, userstate, message)
+      return
+    }
+
+    const isFilterUser = this.filterUserIds.has(userId)
+    if (!isFilterUser) {
+      return
+    }
+
+    const host = await this.twitchUserService.getOneByUsername(hostUsername)
+    if (!host) {
+      return
+    }
+
+    const trackItems = await this.getTrackItems(host.id, userId)
+    this.notifyMessage(trackItems, channel, userstate, message)
+  }
+
+  private async notifyMessage(trackItems: TrackTwitchChat[], channel: string, userstate: ChatUserstate, message: string) {
+    if (!trackItems?.length) {
+      return
+    }
+
     try {
       this.logger.warn(
         `notifyMessage: ${userstate.username}`,
         { channel, username: userstate.username, msg: message },
       )
-      const trackItems = await this.getTrackItems(userId)
-      if (!trackItems.length) {
-        return
-      }
+
       trackItems.forEach((trackItem) => {
+        if (trackItem.filterKeywords?.length && !trackItem.filterKeywords.some((v) => message.toLowerCase().includes(v.toLowerCase()))) {
+          return
+        }
+
         const msgContent = `💬 ${bold(inlineCode(userstate['display-name']))} 📄 ${inlineCode(message)}`
         const content = [trackItem.discordMessage, msgContent]
           .filter((v) => v)
           .join('\n') || null
+
         this.discordService.sendToChannel(
           trackItem.discordChannelId,
           { content },
@@ -124,12 +172,12 @@ export class TwitchChatTrackingService {
     }
   }
 
-  private async getTrackItems(userId: string) {
+  private async getTrackItems(userId: string, filterUserId = '') {
     try {
-      const items = await this.trackTwitchChatService.getManyByUserId(userId)
+      const items = await this.trackTwitchChatService.getManyByUserId(userId, { filterUserId })
       return items
     } catch (error) {
-      this.logger.error(`getTrackItems: ${error.message}`, { userId })
+      this.logger.error(`getTrackItems: ${error.message}`, { userId, filterUserId })
     }
     return []
   }

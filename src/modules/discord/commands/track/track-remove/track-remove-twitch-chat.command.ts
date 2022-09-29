@@ -30,6 +30,10 @@ export class TrackRemoveTwitchChatCommand extends TrackRemoveBaseSubcommand {
         option,
         { description: 'Twitch user, e.g. "nakiriayame_hololive"' },
       ))
+      .addStringOption((option) => option
+        .setName('filter_username')
+        .setDescription('Author username')
+        .setRequired(false))
   }
 
   protected async getUser(username: string): Promise<TwitchUser> {

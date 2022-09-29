@@ -3,7 +3,7 @@
 import { APIEmbed } from 'discord-api-types/v10'
 import { ChatInputCommandInteraction } from 'discord.js'
 import { BaseExternalEntity } from '../../../../database/models/base-external.entity'
-import { Track } from '../../../../track/models/track.entity'
+import { Track } from '../../../../track/models/base/track.entity'
 import { TrackBaseService } from '../../../../track/services/base/track-base.service'
 import { BaseCommand } from '../../base/base-command'
 
@@ -13,14 +13,23 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
   protected abstract getUser(username: string): Promise<BaseExternalEntity>
 
   public async execute(interaction: ChatInputCommandInteraction) {
-    const { username, channelId, message } = this.getInteractionBaseOptions(interaction)
-    const meta = { username, channelId }
+    const options = this.getInteractionBaseOptions(interaction)
+    const meta = { ...options }
     this.logger.debug('--> execute', meta)
 
     try {
-      const user = await this.getUser(username)
+      const user = await this.getUser(options.username)
       if (!user) {
         this.logger.warn('execute: user not found', meta)
+        this.replyUserNotFound(interaction)
+        return
+      }
+
+      const filterUser = options.filterUsername
+        ? await this.getUser(options.filterUsername)
+        : null
+      if (options.filterUsername && !filterUser) {
+        this.logger.warn('execute: filterUser not found', meta)
         this.replyUserNotFound(interaction)
         return
       }
@@ -33,7 +42,16 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
         }
       }
 
-      await this.trackService.add(user.id, channelId, message, interaction.user.id)
+      await this.trackService.add(
+        user.id,
+        options.channelId,
+        options.message,
+        {
+          updatedBy: interaction.user.id,
+          filterUserId: filterUser?.id || '',
+          filterKeywords: options.filterKeywords,
+        },
+      )
       this.logger.warn('execute: added', meta)
 
       await this.onSuccess(interaction, user)
@@ -71,8 +89,24 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
 
   protected getInteractionBaseOptions(interaction: ChatInputCommandInteraction) {
     const { channelId } = interaction
-    const message = interaction.options.getString('message') || null
     const username = interaction.options.getString('username', true)
-    return { username, channelId, message }
+    const message = interaction.options.getString('message') || null
+    let filterUsername = interaction.options.getString('filter_username', false) || ''
+    let filterKeywords = interaction.options.getString('filter_keywords', false)?.split?.(',')?.filter?.((v) => v) || null
+
+    if (username.toLowerCase() === filterUsername?.toLowerCase()) {
+      filterUsername = ''
+    }
+    if (!filterKeywords?.length) {
+      filterKeywords = null
+    }
+
+    return {
+      username,
+      channelId,
+      message,
+      filterUsername,
+      filterKeywords,
+    }
   }
 }

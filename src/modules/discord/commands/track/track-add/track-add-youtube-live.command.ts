@@ -63,7 +63,14 @@ export class TrackAddYoutubeLiveCommand extends TrackAddBaseSubcommand {
         }
       }
 
-      await this.trackService.add(channel.id, channelId, message, interaction.user.id)
+      await this.trackService.add(
+        channel.id,
+        channelId,
+        message,
+        {
+          updatedBy: interaction.user.id,
+        },
+      )
       this.logger.warn('execute: added', meta)
 
       const embed: APIEmbed = {

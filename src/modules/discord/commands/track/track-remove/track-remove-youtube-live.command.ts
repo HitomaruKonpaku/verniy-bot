@@ -52,7 +52,12 @@ export class TrackRemoveYoutubeLiveCommand extends TrackRemoveBaseSubcommand {
         return
       }
 
-      await this.trackService.remove(channel.id, channelId, interaction.user.id)
+      await this.trackService.remove(
+        channel.id,
+        channelId,
+        null,
+        interaction.user.id,
+      )
       this.logger.warn('execute: removed', meta)
 
       const embed: APIEmbed = {

@@ -3,7 +3,7 @@
 import { APIEmbed } from 'discord-api-types/v10'
 import { ChatInputCommandInteraction } from 'discord.js'
 import { BaseExternalEntity } from '../../../../database/models/base-external.entity'
-import { Track } from '../../../../track/models/track.entity'
+import { Track } from '../../../../track/models/base/track.entity'
 import { TrackBaseService } from '../../../../track/services/base/track-base.service'
 import { BaseCommand } from '../../base/base-command'
 
@@ -13,19 +13,35 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
   protected abstract getUser(username: string): Promise<BaseExternalEntity>
 
   public async execute(interaction: ChatInputCommandInteraction) {
-    const { username, channelId } = this.getInteractionBaseOptions(interaction)
-    const meta = { username, channelId }
+    const options = this.getInteractionBaseOptions(interaction)
+    const meta = { ...options }
     this.logger.debug('--> execute', meta)
 
     try {
-      const user = await this.getUser(username)
+      const user = await this.getUser(options.username)
       if (!user) {
         this.logger.warn('execute: user not found', meta)
         this.replyUserNotFound(interaction)
         return
       }
 
-      await this.trackService.remove(user.id, channelId, interaction.user.id)
+      const filterUser = options.filterUsername
+        ? await this.getUser(options.filterUsername)
+        : null
+      if (options.filterUsername && !filterUser) {
+        this.logger.warn('execute: filterUser not found', meta)
+        this.replyUserNotFound(interaction)
+        return
+      }
+
+      await this.trackService.remove(
+        user.id,
+        options.channelId,
+        {
+          filterUserId: filterUser?.id || '',
+        },
+        interaction.user.id,
+      )
       this.logger.warn('execute: removed', meta)
 
       await this.onSuccess(interaction, user)
@@ -56,6 +72,16 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
   protected getInteractionBaseOptions(interaction: ChatInputCommandInteraction) {
     const { channelId } = interaction
     const username = interaction.options.getString('username', true)
-    return { username, channelId }
+    let filterUsername = interaction.options.getString('filter_username', false) || ''
+
+    if (username.toLowerCase() === filterUsername?.toLowerCase()) {
+      filterUsername = ''
+    }
+
+    return {
+      username,
+      channelId,
+      filterUsername,
+    }
   }
 }
