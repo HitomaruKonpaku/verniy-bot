@@ -30,6 +30,7 @@ export abstract class TrackBaseService<T extends Track> {
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
       .andWhere('user_id IN (:...userIds)', { userIds })
+      .andWhere('filter_user_id = :filterUserId', { filterUserId: options?.filterUserId || '' })
     const records = await query.getMany()
     return records
   }
