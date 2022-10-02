@@ -152,7 +152,7 @@ export class TwitchChatTrackingService {
           return
         }
 
-        this.logger.warn(
+        this.logger.info(
           `notifyMessage: ${userstate.username}`,
           { channel, username: userstate.username, msg: message },
         )
