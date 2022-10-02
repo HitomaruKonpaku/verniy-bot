@@ -109,12 +109,13 @@ export class DiscordService {
       if (message) {
         this.logger.info(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
         // this.discordDbService.saveMessage(message)
+
         // Crosspost message
-        if (message.channel.type === ChannelType.GuildNews) {
-          await message.crosspost()
-            .then(() => this.logger.info('Crossposted message!'))
-            .catch((error) => this.logger.error(`sendToChannel#crosspost: ${error.message}`, { channelId, messageId: message.id }))
-        }
+        // if (message.channel.type === ChannelType.GuildAnnouncement) {
+        //   await message.crosspost()
+        //     .then(() => this.logger.debug('Crossposted message!'))
+        //     .catch((error) => this.logger.error(`sendToChannel#crosspost: ${error.message}`, { channelId, messageId: message.id }))
+        // }
       }
       // Return message
       return message
