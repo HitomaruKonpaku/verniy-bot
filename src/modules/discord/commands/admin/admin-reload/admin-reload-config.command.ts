@@ -24,7 +24,7 @@ export class AdminReloadConfigCommand extends BaseCommand {
   public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
-    this.configService.reloadConfig()
+    this.configService.reload()
 
     await interaction.editReply('✅')
   }

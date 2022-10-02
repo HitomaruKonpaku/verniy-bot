@@ -22,7 +22,7 @@ export class ConfigService extends EventEmitter {
   constructor() {
     super()
     this.config = {}
-    this.reloadConfig()
+    this.reload()
   }
 
   public get twitter() {
@@ -53,7 +53,14 @@ export class ConfigService extends EventEmitter {
     return holodexConfig
   }
 
-  public applyConfig() {
+  public reload() {
+    this.load()
+    this.apply()
+    this.logger.warn('config reloaded')
+    this.emit(ConfigEvent.RELOAD)
+  }
+
+  public apply() {
     Object.assign(twitterConfig, this.config.twitter || {})
     Object.assign(twitcastingConfig, this.config.twitcasting || {})
     Object.assign(youtubeConfig, this.config.youtube || {})
@@ -63,14 +70,7 @@ export class ConfigService extends EventEmitter {
     Object.assign(holodexConfig, this.config.holodex || {})
   }
 
-  public reloadConfig() {
-    this.loadConfig()
-    this.applyConfig()
-    this.logger.warn('config reloaded')
-    this.emit(ConfigEvent.RELOAD)
-  }
-
-  public loadConfig() {
+  public load() {
     let config: any
 
     try {
