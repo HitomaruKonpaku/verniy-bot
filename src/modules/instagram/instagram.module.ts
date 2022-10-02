@@ -2,6 +2,7 @@ import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
+import { EnvironmentModule } from '../environment/environment.module'
 import { TrackModule } from '../track/track.module'
 import { InstagramPost } from './models/instagram-post.entity'
 import { InstagramStory } from './models/instagram-story.entity'
@@ -26,6 +27,7 @@ import { InstagramTrackingService } from './services/tracking/instagram-tracking
       InstagramPost,
       InstagramStory,
     ]),
+    EnvironmentModule,
     ConfigModule,
     TrackModule,
     forwardRef(() => DiscordModule),

@@ -9,7 +9,7 @@ export class EnvironmentService extends EventEmitter {
   private readonly logger = baseLogger.child({ context: EnvironmentService.name })
 
   public reload() {
-    const x = dotenv.config()
+    dotenv.config()
     this.logger.warn('environment reloaded')
     this.emit(EnvironmentEvent.RELOAD)
   }
