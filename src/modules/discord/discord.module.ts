@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
+import { EnvironmentModule } from '../environment/environment.module'
 import { HolodexModule } from '../holodex/holodex.module'
 import { InstagramModule } from '../instagram/instagram.module'
 import { TiktokModule } from '../tiktok/tiktok.module'
@@ -31,6 +32,7 @@ import { DiscordService } from './services/discord.service'
       DiscordChannel,
       DiscordMessage,
     ]),
+    EnvironmentModule,
     ConfigModule,
     TrackModule,
     forwardRef(() => TwitterModule),

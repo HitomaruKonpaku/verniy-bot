@@ -5,6 +5,7 @@ import { SlashCommandSubcommandGroupBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { BaseSubcommandGroupCommand } from '../../base/base-subcommand-group-command'
 import { AdminReloadConfigCommand } from './admin-reload-config.command'
+import { AdminReloadEnvironmentCommand } from './admin-reload-environment.command'
 import { AdminReloadTwitterStreamRulesCommand } from './admin-reload-twitter-stream-rules.command'
 
 @Injectable()
@@ -22,12 +23,14 @@ export class AdminReloadCommand extends BaseSubcommandGroupCommand {
     return group
       .setName('reload')
       .setDescription('Reload')
+      .addSubcommand((subcommand) => AdminReloadEnvironmentCommand.getSubcommand(subcommand))
       .addSubcommand((subcommand) => AdminReloadConfigCommand.getSubcommand(subcommand))
       .addSubcommand((subcommand) => AdminReloadTwitterStreamRulesCommand.getSubcommand(subcommand))
   }
 
   protected getCommandService(subcommand: string) {
     const instance = {
+      environment: AdminReloadEnvironmentCommand,
       config: AdminReloadConfigCommand,
       twitter_stream_rules: AdminReloadTwitterStreamRulesCommand,
     }[subcommand] || null

@@ -1,4 +1,5 @@
 import { AdminReloadConfigCommand } from '../commands/admin/admin-reload/admin-reload-config.command'
+import { AdminReloadEnvironmentCommand } from '../commands/admin/admin-reload/admin-reload-environment.command'
 import { AdminReloadTwitterStreamRulesCommand } from '../commands/admin/admin-reload/admin-reload-twitter-stream-rules.command'
 import { AdminReloadCommand } from '../commands/admin/admin-reload/admin-reload.command'
 import { AdminCommand } from '../commands/admin/admin.command'
@@ -65,6 +66,7 @@ export const DISCORD_ALL_COMMANDS = [
   // admin
   AdminCommand,
   AdminReloadCommand,
+  AdminReloadEnvironmentCommand,
   AdminReloadConfigCommand,
   AdminReloadTwitterStreamRulesCommand,
 
