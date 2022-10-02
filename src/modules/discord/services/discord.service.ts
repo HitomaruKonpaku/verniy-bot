@@ -95,7 +95,10 @@ export class DiscordService {
     try {
       // Get channel
       const channel = await this.getChannel<TextChannel>(channelId)
-      if (!channel) return null
+      if (!channel) {
+        return null
+      }
+
       // Try to save destination channel & guild
       this.discordDbService.saveTextChannel(channel)
       const guild = channel.guildId
@@ -104,6 +107,7 @@ export class DiscordService {
       if (guild) {
         this.discordDbService.saveGuild(guild)
       }
+
       // Send message
       const message = await channel.send(options)
       if (message) {
@@ -117,6 +121,7 @@ export class DiscordService {
         //     .catch((error) => this.logger.error(`sendToChannel#crosspost: ${error.message}`, { channelId, messageId: message.id }))
         // }
       }
+
       // Return message
       return message
     } catch (error) {
