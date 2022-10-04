@@ -63,7 +63,12 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
     const { username, channelId, message } = this.getInteractionBaseOptions(interaction)
     const allowReply = interaction.options.getBoolean('allow_reply') ?? true
     const allowRetweet = interaction.options.getBoolean('allow_retweet') ?? true
-    const meta = { username, channelId }
+    const meta = {
+      username,
+      channelId,
+      allowReply,
+      allowRetweet,
+    }
     this.logger.debug('--> execute', meta)
 
     try {

@@ -15,6 +15,7 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
   public async execute(interaction: ChatInputCommandInteraction) {
     const options = this.getInteractionBaseOptions(interaction)
     const meta = { ...options }
+    delete meta.message
     this.logger.debug('--> execute', meta)
 
     try {
