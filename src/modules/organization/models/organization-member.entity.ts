@@ -18,6 +18,9 @@ export class OrganizationMember {
   @Column({ type: 'text', nullable: true })
   name?: string
 
+  @Column({ name: 'sort_index', type: 'numeric', nullable: true })
+  sortIndex?: number
+
   @ManyToOne(() => Organization, (v) => v.members)
   @JoinColumn({ name: 'organization_id' })
   organization?: Organization
