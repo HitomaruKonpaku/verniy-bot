@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { OrganizationGroupMember } from './models/organization-group-member.entity'
 import { OrganizationGroup } from './models/organization-group.entity'
 import { OrganizationMember } from './models/organization-member.entity'
 import { Organization } from './models/organization.entity'
@@ -10,6 +11,7 @@ import { Organization } from './models/organization.entity'
       Organization,
       OrganizationGroup,
       OrganizationMember,
+      OrganizationGroupMember,
     ]),
   ],
   providers: [
