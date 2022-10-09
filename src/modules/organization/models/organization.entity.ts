@@ -12,6 +12,9 @@ export class Organization {
   @PrimaryColumn({ type: 'text' })
   id: string
 
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  isActive: boolean
+
   @Column({ type: 'text', nullable: true })
   name?: string
 

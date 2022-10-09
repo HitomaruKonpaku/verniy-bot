@@ -9,6 +9,9 @@ export class OrganizationGroupMember {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  isActive: boolean
+
   @Column({ name: 'group_id', type: 'text' })
   groupId: string
 

@@ -12,6 +12,9 @@ export class OrganizationMember {
   @PrimaryColumn({ type: 'text' })
   id: string
 
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  isActive: boolean
+
   @Column({ name: 'organization_id', type: 'text' })
   organizationId: string
 
