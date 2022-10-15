@@ -159,6 +159,7 @@ export class TwitterSpaceTrackingService {
     try {
       const newSpace = TwitterEntityUtils.buildSpace(space)
       const oldSpace = await this.twitterSpaceService.getOneById(space.id)
+
       if (newSpace.state === SpaceState.LIVE && !oldSpace?.playlistUrl) {
         // Try to get Space playlist url if not exist
         try {
@@ -168,12 +169,19 @@ export class TwitterSpaceTrackingService {
           this.logger.error(`updateSpace#getSpacePlaylistUrl: ${error.message}`, { space })
         }
       }
+
       await this.twitterSpaceService.save(newSpace)
       await this.updateSpaceCreator(newSpace)
+
       if (newSpace.state === oldSpace?.state) {
         return
       }
-      this.notifySpace(space.id)
+
+      await this.notifySpace(space.id)
+
+      if (newSpace.state === SpaceState.ENDED) {
+        await this.updateUnknownUsers()
+      }
     } catch (error) {
       this.logger.error(`updateSpace: ${error.message}`, { space })
     }
@@ -190,6 +198,20 @@ export class TwitterSpaceTrackingService {
       await this.twitterUserControllerService.getOneById(space.creatorId)
     } catch (error) {
       this.logger.error(`updateSpaceCreator: ${error.message}`, { space })
+    }
+  }
+
+  private async updateUnknownUsers() {
+    try {
+      const ids = await this.twitterSpaceService.getUnknownUserIds()
+      if (!ids.length) {
+        return
+      }
+      this.logger.log('updateUnknownUsers', { userCount: ids.length })
+      const users = await this.twitterApiService.getAllUsersByUserIds(ids)
+      await Promise.allSettled(users.map((user) => this.twitterUserControllerService.saveUser(user)))
+    } catch (error) {
+      this.logger.error(`updateUnknownUsers: ${error.message}`)
     }
   }
 
