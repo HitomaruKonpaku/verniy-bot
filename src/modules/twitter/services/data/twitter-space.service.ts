@@ -84,6 +84,43 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
     return spaces
   }
 
+  public async getUnknownUserIds(): Promise<string[]> {
+    const query = `
+WITH twitter_space_user AS (
+  SELECT creator_id AS id
+  FROM twitter_space
+  UNION
+  SELECT s2.value
+  FROM twitter_space AS s1
+    JOIN json_each(
+      (
+        SELECT host_ids
+        FROM twitter_space
+        WHERE id = s1.id
+      )
+    ) AS s2
+  UNION
+  SELECT s2.value
+  FROM twitter_space AS s1
+    JOIN json_each(
+      (
+        SELECT speaker_ids
+        FROM twitter_space
+        WHERE id = s1.id
+      )
+    ) AS s2
+)
+SELECT su.id
+FROM twitter_space_user AS su
+  LEFT JOIN twitter_user AS u ON u.id = su.id
+WHERE u.id ISNULL
+ORDER BY CAST (su.id AS NUMBER)
+    `
+    const records = await this.repository.query(query)
+    const ids = records.map((v) => v.id)
+    return ids
+  }
+
   public async updatePlaylistActive(id: string, playlistActive: boolean) {
     await this.repository.update({ id }, { playlistActive })
   }
