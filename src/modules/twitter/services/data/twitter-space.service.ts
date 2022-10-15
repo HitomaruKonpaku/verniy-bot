@@ -86,7 +86,7 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
 
   public async getUnknownUserIds(): Promise<string[]> {
     const query = `
-WITH twitter_space_user AS(
+WITH twitter_space_user AS (
   SELECT creator_id AS id
   FROM twitter_space
   UNION
