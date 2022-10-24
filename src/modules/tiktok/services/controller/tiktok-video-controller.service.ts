@@ -42,7 +42,11 @@ export class TiktokVideoControllerService {
     try {
       const $ = cheerio.load(data?.description)
       const src = $('video')?.[0]?.attribs?.src
-      return src
+      if (!src) {
+        return null
+      }
+      const origSrc = decodeURIComponent(src.substring(src.indexOf('http')))
+      return origSrc
     } catch (error) {
       this.logger.error(`parseVideoSrc: ${error.message}`, { data })
     }
