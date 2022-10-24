@@ -11,9 +11,17 @@ export class TiktokProxyService {
    * @see https://github.com/pablouser1/ProxiTok/wiki/Public-instances
    */
   private readonly INSTANCES_URLS = [
-    'https://proxitok.herokuapp.com',
+    'https://proxitok.pabloferreiro.es',
     'https://proxitok.pussthecat.org',
+    'https://tok.habedieeh.re',
+    'https://proxitok.esmailelbob.xyz',
+    'https://proxitok.dhusch.de',
     'https://proxitok.privacydev.net',
+    'https://proxitok.odyssey346.dev',
+    'https://tok.artemislena.eu',
+    'https://tok.adminforge.de',
+    'https://proxitok.manasiwibi.com',
+    'https://tik.hostux.net',
   ]
 
   private currentIndex = 0
