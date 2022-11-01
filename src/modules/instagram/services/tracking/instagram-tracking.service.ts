@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
+import { CronJob } from 'cron'
 import { EventEmitter } from 'stream'
+import { CRON_TIME_ZONE } from '../../../../constants/cron.constant'
 import { baseLogger } from '../../../../logger'
 import { ConfigService } from '../../../config/services/config.service'
 import { InstagramTrackingEvent } from '../../enum/instagram-tracking-event.enum'
@@ -13,6 +15,9 @@ import { InstagramUserService } from '../data/instagram-user.service'
 export class InstagramTrackingService extends EventEmitter {
   private readonly logger = baseLogger.child({ context: InstagramTrackingService.name })
 
+  private shouldCheckUserProfileAndPosts = true
+  private shouldCheckUserStories = true
+
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
@@ -24,6 +29,18 @@ export class InstagramTrackingService extends EventEmitter {
     private readonly instagramStoryControllerService: InstagramStoryControllerService,
   ) {
     super()
+
+    const cronTime = '0 0 */12 * * *'
+    const cronJob = new CronJob(
+      cronTime,
+      () => {
+        this.shouldCheckUserProfileAndPosts = true
+      },
+      null,
+      false,
+      CRON_TIME_ZONE,
+    )
+    cronJob.start()
   }
 
   public start() {
@@ -38,13 +55,19 @@ export class InstagramTrackingService extends EventEmitter {
       this.logger.debug('checkUsers', { userCount: users.length })
 
       await Promise.all(users.reduce((pv, user) => {
-        // pv.push(limiter.schedule(() => this.checkUserProfileAndPosts(user)))
-        pv.push(limiter.schedule(() => this.checkUserStories(user)))
+        if (this.shouldCheckUserProfileAndPosts) {
+          pv.push(limiter.schedule(() => this.checkUserProfileAndPosts(user)))
+        }
+        if (this.shouldCheckUserStories) {
+          pv.push(limiter.schedule(() => this.checkUserStories(user)))
+        }
         return pv
       }, [] as any[]))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }
+
+    this.shouldCheckUserProfileAndPosts = false
 
     const { interval } = this.configService.instagram.track
     setTimeout(() => this.checkUsers(), interval)
