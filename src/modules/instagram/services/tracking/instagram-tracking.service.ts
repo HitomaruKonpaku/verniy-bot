@@ -30,7 +30,7 @@ export class InstagramTrackingService extends EventEmitter {
   ) {
     super()
 
-    const cronTime = '0 0 */12 * * *'
+    const cronTime = '0 0 */3 * * *'
     const cronJob = new CronJob(
       cronTime,
       () => {
