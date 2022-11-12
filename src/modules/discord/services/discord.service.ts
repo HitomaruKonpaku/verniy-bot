@@ -11,6 +11,7 @@ import { ConfigService } from '../../config/services/config.service'
 import { HolodexService } from '../../holodex/services/holodex.service'
 import { InstagramService } from '../../instagram/services/instagram.service'
 import { TiktokService } from '../../tiktok/services/tiktok.service'
+import { TrackService } from '../../track/services/track.service'
 import { TwitCastingService } from '../../twitcasting/services/twitcasting.service'
 import { TwitchService } from '../../twitch/services/twitch.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
@@ -28,7 +29,9 @@ export class DiscordService {
     @Inject(DiscordClientService)
     private readonly client: DiscordClientService,
     @Inject(DiscordDbService)
-    private readonly discordDbService: DiscordDbService,
+    private readonly db: DiscordDbService,
+    @Inject(TrackService)
+    private readonly trackService: TrackService,
     @Inject(forwardRef(() => TwitterService))
     private readonly twitterService: TwitterService,
     @Inject(forwardRef(() => TwitCastingService))
@@ -83,6 +86,13 @@ export class DiscordService {
       return channel
     } catch (error) {
       this.logger.error(`getChannel: ${error.message}`, { id })
+
+      if (error.status === 404 && error.code === 10003) {
+        await this.trackService.deactivateByChannelId(id)
+          .then(() => this.logger.debug('deactivateByChannelId', { id }))
+          .catch((err) => this.logger.error(`deactivateByChannelId: ${err.message}`, { id }))
+      }
+
       return null
     }
   }
@@ -100,12 +110,12 @@ export class DiscordService {
       }
 
       // Try to save destination channel & guild
-      this.discordDbService.saveTextChannel(channel)
+      this.db.saveTextChannel(channel)
       const guild = channel.guildId
         ? await this.getGuild(channel.guildId)
         : null
       if (guild) {
-        this.discordDbService.saveGuild(guild)
+        this.db.saveGuild(guild)
       }
 
       // Send message
@@ -148,7 +158,7 @@ export class DiscordService {
 
   private async saveClientGuilds() {
     this.client.guilds.cache.forEach((guild) => {
-      this.discordDbService.saveGuild(guild)
+      this.db.saveGuild(guild)
     })
   }
 
@@ -157,7 +167,7 @@ export class DiscordService {
       const channelIds = []
       this.client.channels.cache.forEach((channel) => {
         if (channelIds.includes(channel.id) && channel instanceof TextChannel) {
-          this.discordDbService.saveTextChannel(channel)
+          this.db.saveTextChannel(channel)
         }
       })
     } catch (error) {

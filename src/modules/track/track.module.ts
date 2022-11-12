@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { Track } from './models/base/track.entity'
 import { TrackInstagramPost } from './models/track-instagram-post.entity'
 import { TrackInstagramProfile } from './models/track-instagram-profile.entity'
 import { TrackInstagramStory } from './models/track-instagram-story.entity'
@@ -22,8 +23,10 @@ import { TrackTwitterProfileService } from './services/track-twitter-profile.ser
 import { TrackTwitterSpaceService } from './services/track-twitter-space.service'
 import { TrackTwitterTweetService } from './services/track-twitter-tweet.service'
 import { TrackYoutubeLiveService } from './services/track-youtube-live.service'
+import { TrackService } from './services/track.service'
 
 const services = [
+  TrackService,
   TrackTwitterTweetService,
   TrackTwitterProfileService,
   TrackTwitterSpaceService,
@@ -40,6 +43,7 @@ const services = [
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      Track,
       TrackTwitterTweet,
       TrackTwitterProfile,
       TrackTwitterSpace,
