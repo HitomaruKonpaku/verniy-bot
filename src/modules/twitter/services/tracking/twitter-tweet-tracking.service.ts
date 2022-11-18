@@ -146,8 +146,15 @@ export class TwitterTweetTrackingService extends EventEmitter {
         this.logger.error('initStreamRules: Cancelled')
         return
       }
-      this.logger.debug('initStreamRules: curStreamRulesDetail', { rules: curStreamRules.map((v) => v.value) })
-      this.logger.debug('initStreamRules: newStreamRulesDetail', { rules: newStreamRules })
+      this.logger.debug('initStreamRules: curStreamRulesDetail', {
+        rules: curStreamRules
+          .map((v) => v.value)
+          .sort((a, b) => b.length - a.length || a.localeCompare(b)),
+      })
+      this.logger.debug('initStreamRules: newStreamRulesDetail', {
+        rules: newStreamRules
+          .sort((a, b) => b.length - a.length || a.localeCompare(b)),
+      })
       const isMatch = true
         && newStreamRules.length === curStreamRules.length
         && newStreamRules.every((value) => curStreamRules.some((rule) => rule.value === value))
