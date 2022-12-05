@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import { TrackListItem } from '../../discord/interfaces/track.interface'
 import { Track } from '../models/base/track.entity'
 
 @Injectable()
@@ -59,7 +60,8 @@ ORDER BY t.updated_at
     `
 
     const data: any[] = await this.repository.query(query, [discordChannelId])
-    const items = data.map((v) => ({
+    const items: TrackListItem[] = data.map((v) => ({
+      id: v.id,
       isActive: v.is_active,
       type: v.type,
       userId: v.user_id,
