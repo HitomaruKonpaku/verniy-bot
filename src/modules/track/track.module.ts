@@ -15,6 +15,7 @@ import { TrackYoutubeLive } from './models/track-youtube-live.entity'
 import { TrackInstagramPostService } from './services/track-instagram-post.service'
 import { TrackInstagramProfileService } from './services/track-instagram-profile.service'
 import { TrackInstagramStoryService } from './services/track-instagram-story.service'
+import { TrackListService } from './services/track-list.service'
 import { TrackTiktokVideoService } from './services/track-tiktok-video.service'
 import { TrackTwitCastingLiveService } from './services/track-twitcasting-live.service'
 import { TrackTwitchChatService } from './services/track-twitch-chat.service'
@@ -27,6 +28,7 @@ import { TrackService } from './services/track.service'
 
 const services = [
   TrackService,
+  TrackListService,
   TrackTwitterTweetService,
   TrackTwitterProfileService,
   TrackTwitterSpaceService,

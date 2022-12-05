@@ -26,6 +26,7 @@ import { TrackAddTwitterProfileCommand } from '../commands/track/track-add/track
 import { TrackAddTwitterSpaceCommand } from '../commands/track/track-add/track-add-twitter-space.command'
 import { TrackAddTwitterTweetCommand } from '../commands/track/track-add/track-add-twitter-tweet.command'
 import { TrackAddYoutubeLiveCommand } from '../commands/track/track-add/track-add-youtube-live.command'
+import { TrackListCommand } from '../commands/track/track-list.command'
 import { TrackRemoveCommand } from '../commands/track/track-remove.command'
 import { TrackRemoveInstagramPostCommand } from '../commands/track/track-remove/track-remove-instagram-post.command'
 import { TrackRemoveInstagramProfileCommand } from '../commands/track/track-remove/track-remove-instagram-profile.command'
@@ -42,14 +43,16 @@ import { TrackRemoveYoutubeLiveCommand } from '../commands/track/track-remove/tr
 export const DISCORD_APP_COMMANDS = [
   AdminCommand,
   StatusCommand,
+  TrackListCommand,
   TrackAddCommand,
   TrackRemoveCommand,
   GetCommand,
 ]
 
 export const DISCORD_GUILD_COMMANDS = [
-  AdminCommand,
+  // AdminCommand,
   // StatusCommand,
+  // TrackListCommand,
   // TrackAddCommand,
   // TrackRemoveCommand,
   // GetCommand,
@@ -57,6 +60,7 @@ export const DISCORD_GUILD_COMMANDS = [
 
 export const DISCORD_GLOBAL_COMMANDS = [
   // StatusCommand,
+  // TrackListCommand,
   // TrackAddCommand,
   // TrackRemoveCommand,
   // GetCommand,
@@ -72,6 +76,9 @@ export const DISCORD_ALL_COMMANDS = [
 
   // status
   StatusCommand,
+
+  // track-list
+  TrackListCommand,
 
   // track-add
   TrackAddCommand,
