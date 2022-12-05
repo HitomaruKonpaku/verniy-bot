@@ -51,14 +51,14 @@ export class TrackAddYoutubeLiveCommand extends TrackAddBaseSubcommand {
       const channel = await this.getUser(ytChannelId)
       if (!channel) {
         this.logger.warn('execute: channel not found', meta)
-        this.replyUserNotFound(interaction)
+        await this.replyUserNotFound(interaction)
         return
       }
 
       if (!await this.isUserTrackable(channel)) {
         if (!await this.isAppOwner(interaction)) {
           this.logger.warn('execute: channel untrackable', meta)
-          interaction.editReply(this.getUntrackableMessage())
+          await interaction.editReply(this.getUntrackableMessage())
           return
         }
       }

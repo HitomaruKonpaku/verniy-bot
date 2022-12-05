@@ -75,7 +75,7 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
       const user = await this.getUser(username)
       if (!user) {
         this.logger.warn('execute: user not found', meta)
-        this.replyUserNotFound(interaction)
+        await this.replyUserNotFound(interaction)
         return
       }
 

@@ -48,7 +48,7 @@ export class TrackRemoveYoutubeLiveCommand extends TrackRemoveBaseSubcommand {
       const channel = await this.getUser(ytChannelId)
       if (!channel) {
         this.logger.warn('execute: channel not found', meta)
-        this.replyUserNotFound(interaction)
+        await this.replyUserNotFound(interaction)
         return
       }
 

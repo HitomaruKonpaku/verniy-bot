@@ -6,6 +6,7 @@ import { TrackTwitchChatService } from '../../../../track/services/track-twitch-
 import { TwitchUser } from '../../../../twitch/models/twitch-user.entity'
 import { TwitchUserService } from '../../../../twitch/services/data/twitch-user.service'
 import { TwitchUtils } from '../../../../twitch/utils/twitch.utils'
+import { TrackRemoveFilter } from '../../../interfaces/track.interface'
 import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackRemoveBaseSubcommand } from '../base/track-remove-base-subcommand'
 
@@ -42,7 +43,10 @@ export class TrackRemoveTwitchChatCommand extends TrackRemoveBaseSubcommand {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  protected getSuccessEmbedDescription(user: TwitchUser): string {
-    return `Untrack **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch chat`
+  protected getSuccessEmbedDescription(
+    user: TwitchUser,
+    filter?: TrackRemoveFilter<TwitchUser>,
+  ): string {
+    return `Untrack${filter?.user ? ` **[${filter.user.username}](${TwitchUtils.getUserUrl(filter.user.username)})** from` : ''} **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch chat`
   }
 }

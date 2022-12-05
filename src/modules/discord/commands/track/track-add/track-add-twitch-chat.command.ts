@@ -9,6 +9,7 @@ import { TwitchUserControllerService } from '../../../../twitch/services/control
 import { TwitchUserService } from '../../../../twitch/services/data/twitch-user.service'
 import { TwitchChatTrackingService } from '../../../../twitch/services/tracking/twitch-chat-tracking.service'
 import { TwitchUtils } from '../../../../twitch/utils/twitch.utils'
+import { TrackAddFilter } from '../../../interfaces/track.interface'
 import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
@@ -53,20 +54,25 @@ export class TrackAddTwitchChatCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  protected async onSuccess(interaction: ChatInputCommandInteraction, user: TwitchUser) {
-    const { filterUsername } = this.getInteractionBaseOptions(interaction)
-    const filterUser = filterUsername
-      ? await this.twitchUserService.getOneByUsername(filterUsername)
-      : null
-    if (filterUser) {
-      this.twitchChatTrackingService.addFilterUserId(filterUser.id)
+  protected async onSuccess(
+    interaction: ChatInputCommandInteraction,
+    user: TwitchUser,
+    filter?: TrackAddFilter<TwitchUser>,
+  ) {
+    if (filter?.user) {
+      this.twitchChatTrackingService.addFilterUserId(filter.user.id)
     }
-
     await this.twitchChatTrackingService.joinChannel(user.username)
-    await super.onSuccess(interaction, user)
+    await super.onSuccess(interaction, user, filter)
   }
 
-  protected getSuccessEmbedDescription(user: TwitchUser): string {
-    return `Tracking **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch chat`
+  protected getSuccessEmbedDescription(
+    user: TwitchUser,
+    filter?: TrackAddFilter<TwitchUser>,
+  ): string {
+    return [
+      `Tracking${filter?.user ? ` **[${filter.user.username}](${TwitchUtils.getUserUrl(filter.user.username)})** from` : ''} **[${user.username}](${TwitchUtils.getUserUrl(user.username)})** Twitch chat`,
+      filter?.keywords?.length ? `Keywords: ${filter.keywords.join(', ')}` : '',
+    ].filter((v) => v).join('\n')
   }
 }

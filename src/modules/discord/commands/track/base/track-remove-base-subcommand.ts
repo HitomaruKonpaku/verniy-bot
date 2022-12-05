@@ -5,6 +5,7 @@ import { ChatInputCommandInteraction } from 'discord.js'
 import { BaseExternalEntity } from '../../../../database/models/base-external.entity'
 import { Track } from '../../../../track/models/base/track.entity'
 import { TrackBaseService } from '../../../../track/services/base/track-base.service'
+import { TrackRemoveFilter } from '../../../interfaces/track.interface'
 import { BaseCommand } from '../../base/base-command'
 
 export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
@@ -21,7 +22,7 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
       const user = await this.getUser(options.username)
       if (!user) {
         this.logger.warn('execute: user not found', meta)
-        this.replyUserNotFound(interaction)
+        await this.replyUserNotFound(interaction)
         return
       }
 
@@ -30,7 +31,7 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
         : null
       if (options.filterUsername && !filterUser) {
         this.logger.warn('execute: filterUser not found', meta)
-        this.replyUserNotFound(interaction)
+        await this.replyUserNotFound(interaction)
         return
       }
 
@@ -44,7 +45,7 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
       )
       this.logger.warn('execute: removed', meta)
 
-      await this.onSuccess(interaction, user)
+      await this.onSuccess(interaction, user, { user: filterUser })
     } catch (error) {
       this.logger.error(`execute: ${error.message}`, meta)
       await interaction.editReply(error.message)
@@ -53,15 +54,22 @@ export abstract class TrackRemoveBaseSubcommand extends BaseCommand {
     this.logger.debug('<-- execute', meta)
   }
 
-  protected async onSuccess(interaction: ChatInputCommandInteraction, user: BaseExternalEntity) {
+  protected async onSuccess(
+    interaction: ChatInputCommandInteraction,
+    user: BaseExternalEntity,
+    filter?: TrackRemoveFilter<BaseExternalEntity>,
+  ) {
     const embed: APIEmbed = {
-      description: this.getSuccessEmbedDescription(user),
+      description: this.getSuccessEmbedDescription(user, filter),
       color: this.getSuccessEmbedColor(user),
     }
     await interaction.editReply({ embeds: [embed] })
   }
 
-  protected getSuccessEmbedDescription(user: BaseExternalEntity): string {
+  protected getSuccessEmbedDescription(
+    user: BaseExternalEntity,
+    filter?: TrackRemoveFilter<BaseExternalEntity>,
+  ): string {
     return '✅'
   }
 
