@@ -32,9 +32,16 @@ export class TrackListCommand extends BaseCommand {
     while (tracks.length) {
       const track = tracks.shift()
       const curPayload = payloads.pop()
-      const newPayload = track.filterUsername
-        ? `${inlineCode(track.type)} ⏩ ${inlineCode(track.filterUsername)} ▶️ ${inlineCode(track.username)}`
-        : `${inlineCode(track.type)} ▶️ ${inlineCode(track.username)}`
+      const newPayload = [
+        inlineCode(track.type),
+        `▶️ ${inlineCode(track.username)}`,
+        track.filterUsername
+          ? `⏩ ${inlineCode(track.filterUsername)}`
+          : '',
+        track.filterKeywords?.length
+          ? `🗒️ ${inlineCode(track.filterKeywords.join(','))}`
+          : '',
+      ].map((v) => v.trim()).join(' ')
 
       if (!curPayload) {
         payloads.push(newPayload)

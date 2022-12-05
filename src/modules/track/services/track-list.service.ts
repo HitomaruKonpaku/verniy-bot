@@ -17,6 +17,7 @@ SELECT t.id,
   t.type,
   t.user_id,
   t.filter_user_id,
+  t.filter_keywords,
   COALESCE(
     u1.username,
     u2.screen_id,
@@ -65,6 +66,9 @@ ORDER BY t.updated_at
       username: v.username,
       filterUserId: v.filter_user_id,
       filterUsername: v.filter_username,
+      filterKeywords: v.filter_keywords
+        ? JSON.parse(v.filter_keywords)
+        : null,
     }))
     return items
   }
