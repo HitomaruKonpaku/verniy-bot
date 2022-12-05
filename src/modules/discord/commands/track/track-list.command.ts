@@ -34,7 +34,7 @@ export class TrackListCommand extends BaseCommand {
       const curPayload = payloads.pop()
       const newPayload = track.filterUsername
         ? `${inlineCode(track.type)} ⏩ ${inlineCode(track.filterUsername)} ▶️ ${inlineCode(track.username)}`
-        : `${inlineCode(track.type)} ⏩ ${inlineCode(track.username)}`
+        : `${inlineCode(track.type)} ▶️ ${inlineCode(track.username)}`
 
       if (!curPayload) {
         payloads.push(newPayload)
