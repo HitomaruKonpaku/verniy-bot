@@ -1,9 +1,4 @@
-import {
-  Column,
-  Entity,
-  TableInheritance,
-  Unique,
-} from 'typeorm'
+import { Column, Entity, TableInheritance, Unique } from 'typeorm'
 import { BaseEntity } from '../../../database/models/base.entity'
 import { TrackType } from '../../enums/track-type.enum'
 

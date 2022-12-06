@@ -1,11 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import {
-  Channel,
-  ChannelType,
-  MessageCreateOptions,
-  MessagePayload,
-  TextChannel,
-} from 'discord.js'
+import { Channel, ChannelType, MessageCreateOptions, MessagePayload, TextChannel } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { HolodexService } from '../../holodex/services/holodex.service'

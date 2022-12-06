@@ -1,12 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
-import {
-  ChannelType,
-  ChatInputCommandInteraction,
-  Client,
-  Collection,
-  Interaction,
-} from 'discord.js'
+import { ChannelType, ChatInputCommandInteraction, Client, Collection, Interaction } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { DISCORD_APP_COMMANDS } from '../constants/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constants/discord.constant'

@@ -1,9 +1,4 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryColumn,
-} from 'typeorm'
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm'
 import { OrganizationGroup } from './organization-group.entity'
 import { OrganizationMember } from './organization-member.entity'
 

@@ -1,10 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import {
-  Guild,
-  Message,
-  TextChannel,
-  User,
-} from 'discord.js'
+import { Guild, Message, TextChannel, User } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { DiscordChannelService } from './data/discord-channel.service'
 import { DiscordGuildService } from './data/discord-guild.service'

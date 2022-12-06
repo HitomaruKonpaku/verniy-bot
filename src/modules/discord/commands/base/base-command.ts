@@ -1,11 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  bold,
-  ChatInputCommandInteraction,
-  codeBlock,
-  inlineCode,
-} from 'discord.js'
+import { bold, ChatInputCommandInteraction, codeBlock, inlineCode } from 'discord.js'
 import { Logger } from 'winston'
 
 export abstract class BaseCommand {

@@ -1,10 +1,5 @@
 import { APIEmbed } from 'discord-api-types/v10'
-import {
-  bold,
-  codeBlock,
-  inlineCode,
-  time,
-} from 'discord.js'
+import { bold, codeBlock, inlineCode, time } from 'discord.js'
 import { TiktokUser } from '../models/tiktok-user.entity'
 import { TiktokVideo } from '../models/tiktok-video.entity'
 

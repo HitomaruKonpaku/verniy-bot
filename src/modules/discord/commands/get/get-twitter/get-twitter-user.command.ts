@@ -1,10 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import {
-  bold,
-  ChatInputCommandInteraction,
-  inlineCode,
-  SlashCommandSubcommandBuilder,
-} from 'discord.js'
+import { bold, ChatInputCommandInteraction, inlineCode, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TwitterApiService } from '../../../../twitter/services/api/twitter-api.service'
 import { TwitterUserControllerService } from '../../../../twitter/services/controller/twitter-user-controller.service'
