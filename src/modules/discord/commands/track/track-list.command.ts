@@ -1,12 +1,9 @@
+/* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
-import {
-  bold,
-  CommandInteraction,
-  inlineCode,
-  SlashCommandBuilder,
-} from 'discord.js'
+import { bold, ChannelType, ChatInputCommandInteraction, inlineCode, PermissionFlagsBits, SlashCommandBuilder, TextChannel } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { TrackListService } from '../../../track/services/track-list.service'
+import { TrackListItem } from '../../interfaces/track.interface'
 import { BaseCommand } from '../base/base-command'
 
 @Injectable()
@@ -15,7 +12,16 @@ export class TrackListCommand extends BaseCommand {
 
   public static readonly command = new SlashCommandBuilder()
     .setName('track_list')
-    .setDescription('Show current channel tracking')
+    .setDescription('Show channel tracking')
+    .addChannelOption((option) => option
+      .setName('channel')
+      .setDescription('By channel')
+      .setRequired(false)
+      .addChannelTypes(ChannelType.GuildText))
+    .addStringOption((option) => option
+      .setName('channel_id')
+      .setDescription('By channel id')
+      .setRequired(false))
 
   constructor(
     @Inject(TrackListService)
@@ -24,9 +30,54 @@ export class TrackListCommand extends BaseCommand {
     super()
   }
 
-  public async execute(interaction: CommandInteraction) {
-    const tracks = await this.trackListService.getManyByDiscordChannelId(interaction.channelId)
-    const msg = await interaction.editReply(`⏭️ ${bold(String(tracks.length))} ⏮️`)
+  public async execute(interaction: ChatInputCommandInteraction) {
+    let channel: TextChannel
+
+    try {
+      channel = await this.getTextChannel(interaction)
+    } catch (error) {
+      await interaction.editReply(error.message)
+      return
+    }
+
+    if (!channel) {
+      await interaction.editReply('Channel not found')
+      return
+    }
+
+    const canView = interaction.user.id === interaction.client.application.owner?.id
+      || channel.permissionsFor(interaction.user).has(PermissionFlagsBits.ViewChannel)
+    if (!canView) {
+      await this.replyMissingPermission(interaction, 'VIEW_CHANNEL')
+      return
+    }
+
+    const tracks = await this.trackListService.getManyByDiscordChannelId(channel.id)
+    const reply = await interaction.editReply(`▶️ ${bold(String(tracks.length))} ◀️`)
+    const payloads = this.getPayloads(tracks)
+
+    await Promise.all(payloads.map((v) => reply.reply({
+      embeds: [{
+        description: v,
+        color: 0x3ba55c,
+      }],
+    })))
+  }
+
+  private async getTextChannel(interaction: ChatInputCommandInteraction): Promise<TextChannel> {
+    const channelId = interaction.options.getString('channel_id', false)
+    if (channelId) {
+      const channel = await interaction.client.channels.fetch(channelId, { allowUnknownGuild: true })
+      if (!channel.isTextBased()) {
+        return null
+      }
+      return channel as TextChannel
+    }
+    const channel = interaction.options.getChannel('channel', false) as TextChannel
+    return channel || interaction.channel as TextChannel
+  }
+
+  private getPayloads(tracks: TrackListItem[]) {
     const payloads: string[] = []
 
     while (tracks.length) {
@@ -52,11 +103,6 @@ export class TrackListCommand extends BaseCommand {
       }
     }
 
-    await Promise.all(payloads.map((v) => msg.reply({
-      embeds: [{
-        description: v,
-        color: 0x3ba55c,
-      }],
-    })))
+    return payloads
   }
 }
