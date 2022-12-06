@@ -11,7 +11,7 @@ export class TrackListService {
     public readonly repository: Repository<Track>,
   ) { }
 
-  public async getManyByDiscordChannelId(discordChannelId: string) {
+  public async getManyByDiscordChannelId(discordChannelId: string): Promise<TrackListItem[]> {
     const query = `
 SELECT t.id,
   t.is_active,
