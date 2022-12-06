@@ -38,6 +38,7 @@
     "no-shadow": "off",
     "no-unused-vars": "off",
     "no-useless-constructor": "off",
+    "object-curly-newline": "off",
     "import/extensions": "off",
     "import/prefer-default-export": "off",
     "import/no-unresolved": "off",
