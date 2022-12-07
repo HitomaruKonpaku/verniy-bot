@@ -9,8 +9,8 @@ Discord tracking bot
 - TwitCasting
 - ~~YouTube~~
 - Twitch
-- Instagram
-- ~~TikTok~~
+- ~~Instagram~~ (unstable)
+- ~~TikTok~~ (unstable)
 
 ## Links
 
