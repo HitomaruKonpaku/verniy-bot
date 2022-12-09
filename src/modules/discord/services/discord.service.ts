@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { Channel, ChannelType, MessageCreateOptions, MessagePayload, TextChannel } from 'discord.js'
+import { Channel, ChannelType, DMChannel, Guild, MessageCreateOptions, MessagePayload, TextChannel } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/services/config.service'
 import { HolodexService } from '../../holodex/services/holodex.service'
@@ -72,11 +72,20 @@ export class DiscordService {
   public async getChannel<T extends Channel>(id: string) {
     try {
       const channel = await this.client.channels.fetch(id) as any as T
-      if (channel.type === ChannelType.GuildText) {
-        this.logger.debug('getChannel: TextChannel', { id, name: channel.name })
-      } else {
-        this.logger.debug('getChannel: Channel', { id })
+      const meta = {
+        id,
+        isDMBased: channel.isDMBased(),
+        isTextBased: channel.isTextBased(),
+        isThread: channel.isThread(),
+        isVoiceBased: channel.isVoiceBased(),
       }
+
+      if (channel.type === ChannelType.GuildText) {
+        this.logger.debug('getChannel: GuildText', { id, name: channel.name, ...meta })
+      } else {
+        this.logger.debug('getChannel: Channel', meta)
+      }
+
       return channel
     } catch (error) {
       this.logger.error(`getChannel: ${error.message}`, { id })
@@ -98,24 +107,38 @@ export class DiscordService {
   ) {
     try {
       // Get channel
-      const channel = await this.getChannel<TextChannel>(channelId)
+      const channel = await this.getChannel<Channel>(channelId)
       if (!channel) {
         return null
       }
 
-      // Try to save destination channel & guild
-      this.db.saveTextChannel(channel)
-      const guild = channel.guildId
-        ? await this.getGuild(channel.guildId)
-        : null
-      if (guild) {
-        this.db.saveGuild(guild)
+      let guild: Guild
+      if (channel instanceof TextChannel) {
+        // Try to save destination channel & guild
+        this.db.saveTextChannel(channel)
+        guild = channel.guildId
+          ? await this.getGuild(channel.guildId)
+          : null
+        if (guild) {
+          this.db.saveGuild(guild)
+        }
+      }
+
+      if (!channel.isTextBased()) {
+        return null
       }
 
       // Send message
       const message = await channel.send(options)
       if (message) {
-        this.logger.debug(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
+        if (channel instanceof TextChannel) {
+          this.logger.debug(`Message was sent to ${guild.name ? `[${guild.name}]` : ''}[#${channel.name}] (${channelId})`)
+        } else if (channel instanceof DMChannel) {
+          this.logger.debug(`Message was sent to ${channel.recipient.tag}`)
+        } else {
+          this.logger.debug(`Message was sent to ${channel.toString()}`)
+        }
+
         // this.discordDbService.saveMessage(message)
 
         // Crosspost message
@@ -134,6 +157,7 @@ export class DiscordService {
         throw error
       }
     }
+
     return null
   }
 
