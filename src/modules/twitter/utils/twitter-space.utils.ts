@@ -26,8 +26,8 @@ export class TwitterSpaceUtils {
     const creator = space?.creator
     const embed: APIEmbed = {
       title: TwitterSpaceUtils.getEmbedTitle(space, trackItem),
-      color: 0x1d9bf0,
       description: TwitterUtils.getSpaceUrl(space.id),
+      color: 0x1d9bf0,
       author: {
         name: `${creator?.name} (@${creator?.username})`,
         url: TwitterUtils.getUserUrl(creator?.username),
