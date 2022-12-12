@@ -56,7 +56,7 @@ export class InstagramTrackingService extends EventEmitter {
 
       await Promise.all(users.reduce((pv, user) => {
         if (this.shouldCheckUserProfileAndPosts) {
-          pv.push(limiter.schedule(() => this.checkUserProfileAndPosts(user)))
+          // pv.push(limiter.schedule(() => this.checkUserProfileAndPosts(user)))
         }
         if (this.shouldCheckUserStories) {
           pv.push(limiter.schedule(() => this.checkUserStories(user)))
