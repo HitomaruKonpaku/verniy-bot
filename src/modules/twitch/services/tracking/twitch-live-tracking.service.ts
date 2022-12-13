@@ -98,12 +98,15 @@ export class TwitchLiveTrackingService {
         return
       }
       trackItems.forEach((trackItem) => {
-        const content = [trackItem.discordMessage, TwitchUtils.getUserUrl(stream.user.username)]
+        const content = [trackItem.discordMessage]
           .filter((v) => v)
           .join('\n') || null
         this.discordService.sendToChannel(
           trackItem.discordChannelId,
-          { content },
+          {
+            content,
+            embeds: [TwitchUtils.getEmbed(stream)],
+          },
         )
       })
     } catch (error) {

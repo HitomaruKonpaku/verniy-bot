@@ -11,6 +11,7 @@ export class TwitchUtils {
       title: stream.game?.name
         ? `${inlineCode(stream.user.username)} is playing ${inlineCode(stream.game.name)}`
         : `${inlineCode(stream.user.username)} live!`,
+      description: TwitchUtils.getUserUrl(stream.user.username),
       color: 0x6441a5,
       author: {
         name: stream.user.username,
