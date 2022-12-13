@@ -30,13 +30,17 @@ export class TwitchStreamControllerService {
       isMature: data.is_mature || false,
     })
 
-    try {
-      stream.game = await this.twitchGameService.saveGame({
-        id: data.game_id,
-        name: data.game_name,
-      })
-    } catch (error) {
-      this.logger.error(`saveStream#saveGame: ${error.message}`, { data })
+    stream.thumbnailUrl = data.thumbnail_url
+
+    if (data.game_id) {
+      try {
+        stream.game = await this.twitchGameService.saveGame({
+          id: data.game_id,
+          name: data.game_name,
+        })
+      } catch (error) {
+        this.logger.error(`saveStream#saveGame: ${error.message}`, { data })
+      }
     }
 
     return stream

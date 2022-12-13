@@ -23,6 +23,8 @@ export class TwitchStream extends BaseExternalEntity {
   @Column({ name: 'is_mature', type: 'boolean', default: false })
   isMature?: boolean
 
+  thumbnailUrl?: string
+
   user?: TwitchUser
 
   game?: TwitchGame
