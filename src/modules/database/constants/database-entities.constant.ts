@@ -25,6 +25,7 @@ import { TrackTwitterTweet } from '../../track/models/track-twitter-tweet.entity
 import { TrackYoutubeLive } from '../../track/models/track-youtube-live.entity'
 import { TwitCastingMovie } from '../../twitcasting/models/twitcasting-movie.entity'
 import { TwitCastingUser } from '../../twitcasting/models/twitcasting-user.entity'
+import { TwitchGame } from '../../twitch/models/twitch-game.entity'
 import { TwitchStream } from '../../twitch/models/twitch-stream.entity'
 import { TwitchUser } from '../../twitch/models/twitch-user.entity'
 import { TwitterFilteredStreamUser } from '../../twitter/models/twitter-filtered-stream-user.entity'
@@ -53,6 +54,7 @@ export const DB_ENTITIES = [
 
   TwitchUser,
   TwitchStream,
+  TwitchGame,
 
   InstagramUser,
   InstagramPost,

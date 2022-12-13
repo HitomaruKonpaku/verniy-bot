@@ -1,5 +1,6 @@
 import { Column, Entity } from 'typeorm'
 import { BaseExternalEntity } from '../../database/models/base-external.entity'
+import { TwitchGame } from './twitch-game.entity'
 import { TwitchUser } from './twitch-user.entity'
 
 @Entity('twitch_stream')
@@ -23,4 +24,6 @@ export class TwitchStream extends BaseExternalEntity {
   isMature?: boolean
 
   user?: TwitchUser
+
+  game?: TwitchGame
 }
