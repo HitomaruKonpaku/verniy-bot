@@ -1,4 +1,4 @@
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, Index } from 'typeorm'
 import { DB_CURRENT_TIMESTAMP } from '../../database/constants/database.constant'
 import { BaseExternalEntity } from '../../database/models/base-external.entity'
 import { SpaceState } from '../enums/twitter-space.enum'
@@ -12,6 +12,7 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'creator_id', type: 'text' })
   creatorId: string
 
+  @Index()
   @Column({ name: 'state', type: 'text', default: SpaceState.LIVE })
   state: SpaceState
 
