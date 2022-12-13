@@ -77,7 +77,7 @@ export class TwitterSpaceCronService extends BaseCronService {
       await axios.head(space.playlistUrl)
       await this.updateSpacePlaylistActive(space.id, true)
     } catch (error) {
-      if (error.response?.status === 400) {
+      if ([400, 401].includes(error.response?.status)) {
         await this.updateSpacePlaylistActive(space.id, false)
         return
       }
