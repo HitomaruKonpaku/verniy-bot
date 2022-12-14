@@ -130,8 +130,10 @@ export class DiscordClientService extends Client {
       return
     }
 
+    const now = Date.now()
     try {
       const meta = {
+        id: interaction.id,
         user: { id: user.id, tag: user.tag },
         channel: { id: interaction.channelId, name: interaction.channel?.name },
         guild: { id: interaction.guildId, name: interaction.guild?.name },
@@ -143,6 +145,8 @@ export class DiscordClientService extends Client {
     } catch (error) {
       this.logger.error(`handleCommandInteraction: ${error.message}`, { command: commandName })
       await interaction.editReply('There was an error while executing this command!')
+    } finally {
+      this.logger.debug(`handleCommandInteraction: Executed command [${commandName}] took ${Date.now() - now}ms`, { id: interaction.id })
     }
   }
 }
