@@ -22,6 +22,10 @@ export class TwitterSpaceUtils {
       .replace(/playlist_\d+/g, 'master_playlist')
   }
 
+  public static toDynamicPlaylistUrl(url: string) {
+    return url.replace('master_playlist', 'dynamic_playlist')
+  }
+
   public static getEmbed(space: TwitterSpace, trackItem: TrackTwitterSpace) {
     const creator = space?.creator
     const embed: APIEmbed = {
