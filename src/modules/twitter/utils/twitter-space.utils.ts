@@ -84,6 +84,7 @@ export class TwitterSpaceUtils {
         value: codeBlock(space.title),
       },
     ]
+
     if (space.state === SpaceState.SCHEDULED) {
       fields.push(
         {
@@ -93,6 +94,7 @@ export class TwitterSpaceUtils {
         },
       )
     }
+
     if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state)) {
       fields.push(
         {
@@ -102,6 +104,7 @@ export class TwitterSpaceUtils {
         },
       )
     }
+
     if ([SpaceState.ENDED].includes(space.state)) {
       fields.push(
         {
@@ -111,6 +114,7 @@ export class TwitterSpaceUtils {
         },
       )
     }
+
     if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state)) {
       fields.push(
         {
@@ -119,6 +123,16 @@ export class TwitterSpaceUtils {
         },
       )
     }
+
+    if ([SpaceState.LIVE].includes(space.state)) {
+      fields.push(
+        {
+          name: 'Open with...',
+          value: `Copy [this link](${TwitterSpaceUtils.toDynamicPlaylistUrl(space.playlistUrl)}) & open with MPV / IINA / VLC...`,
+        },
+      )
+    }
+
     return fields
   }
 
