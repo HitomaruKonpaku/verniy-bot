@@ -4,6 +4,7 @@ import { baseLogger } from '../../../../logger'
 import { ArrayUtils } from '../../../../utils/array.utils'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
+import { TrackTwitterSpace } from '../../../track/models/track-twitter-space.entity'
 import { TrackTwitterSpaceService } from '../../../track/services/track-twitter-space.service'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { SpaceState } from '../../enums/twitter-space.enum'
@@ -172,12 +173,7 @@ export class TwitterSpaceTrackingService {
 
       await this.twitterSpaceService.save(newSpace)
       await this.updateSpaceCreator(newSpace)
-
-      if (newSpace.state === oldSpace?.state) {
-        return
-      }
-
-      await this.notifySpace(space.id)
+      await this.notifySpace(newSpace, oldSpace)
 
       if (newSpace.state === SpaceState.ENDED) {
         await this.updateUnknownUsers()
@@ -215,49 +211,81 @@ export class TwitterSpaceTrackingService {
     }
   }
 
-  private async notifySpace(spaceId: string) {
+  public async notifySpace(newSpace: TwitterSpace, oldSpace?: TwitterSpace) {
+    const spaceId = newSpace.id
     try {
       const space = await this.twitterSpaceService.getOneById(
         spaceId,
         { withCreator: true, withHosts: true, withSpeakers: true },
       )
-      this.logger.warn(`notifySpace: ${space.id}`, {
-        url: TwitterUtils.getSpaceUrl(space.id),
-        creator: space.creator?.username,
-        state: space.state,
-      })
-      const trackItems = await this.getTrackItems(space)
-      if (!trackItems.length) {
+
+      if (newSpace.state !== oldSpace?.state) {
+        await this.notifySpaceStateChanged(space)
         return
       }
-      trackItems.forEach((trackItem) => {
-        try {
-          const content = space.state !== SpaceState.ENDED
-            ? trackItem.discordMessage
-            : null
-          const embed = TwitterSpaceUtils.getEmbed(space, trackItem)
-          this.discordService.sendToChannel(
-            trackItem.discordChannelId,
-            { content, embeds: [embed] },
-          )
-        } catch (error) {
-          this.logger.error(`notifySpace#trackItem: ${error.message}`, { space, trackItem })
-        }
-      })
+
+      const newUserIds = ArrayUtils.difference(
+        TwitterSpaceUtils.getUserIds(newSpace),
+        TwitterSpaceUtils.getUserIds(oldSpace),
+      )
+      if (newUserIds.length) {
+        await this.notifySpaceUsersChanged(space, newUserIds)
+      }
     } catch (error) {
       this.logger.error(`notifySpace: ${error.message}`, { spaceId })
     }
   }
 
-  private async getTrackItems(space: TwitterSpace) {
+  private async notifySpaceStateChanged(space: TwitterSpace) {
+    this.logger.warn(`notifySpaceStateChanged: ${space.id}`, {
+      url: TwitterUtils.getSpaceUrl(space.id),
+      creator: space.creator?.username,
+      state: space.state,
+    })
+    const userIds = TwitterSpaceUtils.getUserIds(space)
+    const tracks = await this.getTrackItems(space.id, userIds)
+    await this.notifySpaceByTracks(space, tracks)
+  }
+
+  private async notifySpaceUsersChanged(space: TwitterSpace, userIds: string[]) {
+    this.logger.warn(`notifySpaceUsersChanged: ${space.id}`, {
+      url: TwitterUtils.getSpaceUrl(space.id),
+      creator: space.creator?.username,
+      state: space.state,
+      userIds,
+    })
+    const tracks = await this.getTrackItems(space.id, userIds)
+    await this.notifySpaceByTracks(space, tracks)
+  }
+
+  private async notifySpaceByTracks(space: TwitterSpace, tracks: TrackTwitterSpace[]) {
+    if (!tracks?.length) {
+      return
+    }
+    await Promise.allSettled(tracks.map((v) => this.notifySpaceByTrack(space, v)))
+  }
+
+  private async notifySpaceByTrack(space: TwitterSpace, track: TrackTwitterSpace) {
     try {
-      const ids = [space.creatorId, space.hostIds, space.speakerIds]
-        .flat()
-        .filter((v) => v)
-      const items = await this.trackTwitterSpaceService.getManyByUserIds(ids)
+      const content = space.state !== SpaceState.ENDED
+        ? track.discordMessage
+        : null
+      const embed = TwitterSpaceUtils.getEmbed(space, track)
+      await this.discordService.sendToChannel(
+        track.discordChannelId,
+        { content, embeds: [embed] },
+      )
+    } catch (error) {
+      this.logger.error(`notifySpaceByTrack: ${error.message}`, { space, track })
+    }
+  }
+
+  private async getTrackItems(spaceId: string, userIds: string[]) {
+    try {
+      const items = await this.trackTwitterSpaceService.getManyByUserIds(userIds)
       return items
     } catch (error) {
-      this.logger.error(`getTrackItems: ${error.message}`, { space })
+      this.logger.error(`getTrackItems: ${error.message}`, { spaceId, userIds })
     }
     return []
   }
