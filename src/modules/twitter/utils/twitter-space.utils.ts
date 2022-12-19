@@ -27,6 +27,10 @@ export class TwitterSpaceUtils {
   }
 
   public static getUserIds(space: TwitterSpace): string[] {
+    if (!space) {
+      return []
+    }
+
     const set = new Set<string>()
     set.add(space.creatorId)
     space.hostIds?.forEach?.((id) => set.add(id))
