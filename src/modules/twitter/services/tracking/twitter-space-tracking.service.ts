@@ -15,7 +15,6 @@ import { TwitterSpaceUtils } from '../../utils/twitter-space.utils'
 import { TwitterUtils } from '../../utils/twitter.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
-import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 import { TwitterUserService } from '../data/twitter-user.service'
@@ -37,8 +36,6 @@ export class TwitterSpaceTrackingService {
     private readonly twitterSpaceService: TwitterSpaceService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
-    @Inject(TwitterSpaceControllerService)
-    private readonly twitterSpaceControllerService: TwitterSpaceControllerService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
