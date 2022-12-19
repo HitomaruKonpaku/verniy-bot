@@ -12,7 +12,7 @@ export class TwitterSpaceUtils {
     return value
   }
 
-  public static getMasterPlaylistUrl(url: string) {
+  public static getMasterPlaylistUrl(url: string): string {
     return url
       // Handle live playlist
       .replace('?type=live', '')
@@ -22,8 +22,16 @@ export class TwitterSpaceUtils {
       .replace(/playlist_\d+/g, 'master_playlist')
   }
 
-  public static toDynamicPlaylistUrl(url: string) {
+  public static toDynamicPlaylistUrl(url: string): string {
     return url.replace('master_playlist', 'dynamic_playlist')
+  }
+
+  public static getUserIds(space: TwitterSpace): string[] {
+    const set = new Set<string>()
+    set.add(space.creatorId)
+    space.hostIds?.forEach?.((id) => set.add(id))
+    space.speakerIds?.forEach?.((id) => set.add(id))
+    return [...set]
   }
 
   public static getEmbed(space: TwitterSpace, trackItem: TrackTwitterSpace) {
