@@ -20,6 +20,10 @@ export class TwitchUtils {
       },
       fields: [
         {
+          name: 'Id',
+          value: codeBlock(stream.id),
+        },
+        {
           name: 'Title',
           value: codeBlock(stream.title),
         },
