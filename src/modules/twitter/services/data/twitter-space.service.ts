@@ -54,7 +54,7 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
     return space
   }
 
-  public async getLiveSpaceIds() {
+  public async getLiveSpaceIds(): Promise<string[]> {
     const query = `
 SELECT id
 FROM twitter_space
