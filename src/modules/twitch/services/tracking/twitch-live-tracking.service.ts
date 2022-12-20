@@ -11,6 +11,7 @@ import { TwitchApiService } from '../api/twitch-api.service'
 import { TwitchStreamControllerService } from '../controller/twitch-stream-controller.service'
 import { TwitchUserControllerService } from '../controller/twitch-user-controller.service'
 import { TwitchStreamService } from '../data/twitch-stream.service'
+import { TwitchUserService } from '../data/twitch-user.service'
 
 @Injectable()
 export class TwitchLiveTrackingService {
@@ -21,6 +22,8 @@ export class TwitchLiveTrackingService {
     private readonly configService: ConfigService,
     @Inject(TrackTwitchLiveService)
     private readonly trackTwitchLiveService: TrackTwitchLiveService,
+    @Inject(TwitchUserService)
+    private readonly twitchUserService: TwitchUserService,
     @Inject(TwitchStreamService)
     private readonly twitchStreamService: TwitchStreamService,
     @Inject(TwitchUserControllerService)
@@ -81,17 +84,17 @@ export class TwitchLiveTrackingService {
     try {
       const oldStream = await this.twitchStreamService.getOneById(stream.id)
       const newStream = await this.twitchStreamControllerService.saveStream(stream)
+      newStream.user = await this.twitchUserService.getOneById(newStream.userId)
       if (!oldStream) {
-        await this.notifyStream(newStream.id)
+        await this.notifyStream(newStream)
       }
     } catch (error) {
       this.logger.error(`updateStream: ${error.message}`, { stream })
     }
   }
 
-  private async notifyStream(streamId: string) {
+  private async notifyStream(stream: TwitchStream) {
     try {
-      const stream = await this.twitchStreamService.getOneById(streamId, { withUser: true })
       this.logger.warn(`notifyStream: ${stream.user.username}`, { url: TwitchUtils.getUserUrl(stream.user.username) })
       const trackItems = await this.getTrackItems(stream)
       if (!trackItems.length) {
@@ -110,7 +113,7 @@ export class TwitchLiveTrackingService {
         )
       })
     } catch (error) {
-      this.logger.error(`notifyStream: ${error.message}`, { streamId })
+      this.logger.error(`notifyStream: ${error.message}`, { stream })
     }
   }
 
