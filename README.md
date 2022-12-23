@@ -9,6 +9,7 @@ Discord tracking bot
 - TwitCasting
 - ~~YouTube~~
 - Twitch
+- [pixivFANBOX](https://www.fanbox.cc)
 - ~~Instagram~~ (unstable)
 - ~~TikTok~~ (unstable)
 
