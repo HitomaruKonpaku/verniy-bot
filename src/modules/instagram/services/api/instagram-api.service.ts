@@ -86,6 +86,10 @@ export class InstagramApiService {
     if (!this.dsUserId) {
       this.logger.error('INSTAGRAM_DS_USER_ID not found')
     }
+    this.logger.debug('initClient', {
+      sessionId: this.sessionId?.substring(0, 8),
+      dsUserId: this.dsUserId,
+    })
 
     const cookie = [
       this.sessionId ? `sessionid=${this.sessionId}` : null,
