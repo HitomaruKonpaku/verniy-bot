@@ -87,7 +87,7 @@ export class InstagramApiService {
       this.logger.error('INSTAGRAM_DS_USER_ID not found')
     }
     this.logger.debug('initClient', {
-      sessionId: this.sessionId?.substring(0, 8),
+      sessionId: this.sessionId?.substring(12, 24),
       dsUserId: this.dsUserId,
     })
 
