@@ -32,6 +32,11 @@ export class InstagramApiService {
     return process.env.INSTAGRAM_DS_USER_ID
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  private get csrfToken() {
+    return process.env.INSTAGRAM_CSRF_TOKEN
+  }
+
   public async getUser(username: string) {
     const requestId = randomUUID()
     try {
@@ -89,24 +94,26 @@ export class InstagramApiService {
     this.logger.debug('initClient', {
       sessionId: this.sessionId?.substring(12, 24),
       dsUserId: this.dsUserId,
+      csrfToken: this.csrfToken,
     })
 
     const cookie = [
       this.sessionId ? `sessionid=${this.sessionId}` : null,
       this.dsUserId ? `ds_user_id=${this.dsUserId}` : null,
+      this.csrfToken ? `csrftoken=${this.csrfToken}` : null,
     ].filter((v) => v).join('; ')
 
     this.client = axios.create({
       headers: {
         'user-agent': USER_AGENT,
         cookie,
-        'sec-ch-ua': '"Google Chrome";v="87", " Not;A Brand";v="99", "Chromium";v="87"',
-        'sec-ch-ua-mobile': '?0',
-        'sec-fetch-dest': 'empty',
-        'sec-fetch-mode': 'cors',
-        'sec-fetch-site': 'same-site',
+        authority: 'www.instagram.com',
+        referer: 'https://www.instagram.com/',
+        'x-asbd-id': '198387',
+        'x-csrftoken': this.csrfToken,
         'x-ig-app-id': '936619743392459',
-        'x-ig-www-claim': 'hmac.AR0A6WzcCoXWstKAUuy1gRbCQFUs8FoZCp3ap2UMk_KQNBSH',
+        'x-ig-www-claim': 'hmac.AR1lts5LQlM3J5rl2e7av5kDLO5qY6dGkuqruQMXFHBTbZ5y',
+        'x-requested-with': 'XMLHttpRequest',
       },
     })
   }
