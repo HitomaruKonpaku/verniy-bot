@@ -32,6 +32,7 @@ export class InstagramUserService extends BaseEntityService<InstagramUser> {
         { types: [TrackType.INSTAGRAM_POST, TrackType.INSTAGRAM_STORY, TrackType.INSTAGRAM_PROFILE] },
       )
       .andWhere('u.is_active = TRUE')
+      .addOrderBy('t.created_at', 'ASC')
       .getMany()
     return result
   }
