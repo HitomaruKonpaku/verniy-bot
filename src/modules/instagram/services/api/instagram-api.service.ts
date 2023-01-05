@@ -103,8 +103,8 @@ export class InstagramApiService {
     })
 
     const cookie = [
-      this.sessionId ? `sessionid=${this.sessionId}` : null,
       this.dsUserId ? `ds_user_id=${this.dsUserId}` : null,
+      this.sessionId ? `sessionid=${this.sessionId}` : null,
       this.csrfToken ? `csrftoken=${this.csrfToken}` : null,
     ].filter((v) => v).join('; ')
 
