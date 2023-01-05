@@ -5,6 +5,9 @@ import { TwitterTweet } from './twitter-tweet.entity'
 
 @Entity('twitter_user')
 export class TwitterUser extends BaseExternalEntity {
+  @Column({ name: 'updated_at', type: 'numeric', nullable: true })
+  updatedAt?: number
+
   @Column({ type: 'text' })
   username: string
 
