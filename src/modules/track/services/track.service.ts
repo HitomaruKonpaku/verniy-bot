@@ -15,8 +15,14 @@ export class TrackService extends TrackBaseService<Track> {
 
   public async deactivateByChannelId(channelId: string) {
     await this.repository.update(
-      { isActive: true, discordChannelId: channelId },
-      { isActive: false },
+      {
+        isActive: true,
+        discordChannelId: channelId,
+      },
+      {
+        isActive: false,
+        updatedAt: Date.now(),
+      },
     )
   }
 }
