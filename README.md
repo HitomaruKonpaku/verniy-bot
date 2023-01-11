@@ -38,9 +38,9 @@ Discord tracking bot
 - twitcasting_live
 - twitch_live
 - twitch_chat
-- instagram_post
-- instagram_story
-- instagram_profile
+- ~~instagram_post~~
+- ~~instagram_story~~
+- ~~instagram_profile~~
 - tiktok_video
 
 ### track_remove
