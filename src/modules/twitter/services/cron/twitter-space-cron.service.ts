@@ -6,6 +6,7 @@ import { ArrayUtils } from '../../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { TwitterSpace } from '../../models/twitter-space.entity'
 import { twitterSpacePlaylistLimiter } from '../../twitter.limiter'
+import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 
@@ -39,6 +40,12 @@ export class TwitterSpaceCronService extends BaseCronService {
         try {
           const ids = chunk.map((v) => v.id)
           const result = await this.twitterApiService.getSpacesByIds(ids)
+          if (result?.data?.length) {
+            await Promise.allSettled(result.data.map((v) => {
+              const space = TwitterEntityUtils.buildSpace(v)
+              return this.twitterSpaceService.save(space)
+            }))
+          }
           if (!result?.errors?.length) {
             return
           }
