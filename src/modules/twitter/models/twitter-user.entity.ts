@@ -32,6 +32,9 @@ export class TwitterUser extends BaseExternalEntity {
   @Column({ name: 'profile_banner_url', type: 'text', nullable: true })
   profileBannerUrl?: string
 
+  @Column({ name: 'is_retired', type: 'boolean', default: false })
+  isRetired?: boolean
+
   tweets?: TwitterTweet[]
 
   spaces?: TwitterSpace[]
