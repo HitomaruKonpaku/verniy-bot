@@ -57,9 +57,9 @@ export class TwitterEntityUtils {
         : null,
       lang: data.lang || null,
       title: data.title || null,
+      participantCount: data.participant_count || null,
       hostIds: data.host_ids || null,
       speakerIds: data.speaker_ids || null,
-      participantCount: data.participant_count || null,
     }
     return obj
   }
