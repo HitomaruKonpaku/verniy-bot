@@ -59,6 +59,7 @@ export class TwitterEntityUtils {
       title: data.title || null,
       hostIds: data.host_ids || null,
       speakerIds: data.speaker_ids || null,
+      participantCount: data.participant_count || null,
     }
     return obj
   }

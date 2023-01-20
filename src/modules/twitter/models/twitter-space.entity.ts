@@ -56,6 +56,9 @@ export class TwitterSpace extends BaseExternalEntity {
   })
   speakerIds?: string[]
 
+  @Column({ name: 'participant_count', type: 'numeric', nullable: true })
+  participantCount?: number
+
   @Column({ name: 'playlist_url', type: 'text', nullable: true })
   playlistUrl?: string
 
