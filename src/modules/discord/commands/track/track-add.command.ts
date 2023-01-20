@@ -38,8 +38,8 @@ export class TrackAddCommand extends BaseCommand {
     // .addSubcommand((subcommand) => TrackAddYoutubeLiveCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackAddTwitchLiveCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackAddTwitchChatCommand.getSubcommand(subcommand))
-    .addSubcommand((subcommand) => TrackAddInstagramPostCommand.getSubcommand(subcommand))
-    .addSubcommand((subcommand) => TrackAddInstagramStoryCommand.getSubcommand(subcommand))
+    // .addSubcommand((subcommand) => TrackAddInstagramPostCommand.getSubcommand(subcommand))
+    // .addSubcommand((subcommand) => TrackAddInstagramStoryCommand.getSubcommand(subcommand))
     // .addSubcommand((subcommand) => TrackAddInstagramProfileCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackAddTiktokVideoCommand.getSubcommand(subcommand))
 
