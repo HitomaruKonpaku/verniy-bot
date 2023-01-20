@@ -13,7 +13,7 @@ export class TwitterApiService {
 
   private readonly SPACE_LOOKUP_OPTIONS: Partial<SpaceV2CreatorLookupParams> = {
     expansions: ['creator_id', 'host_ids', 'speaker_ids'],
-    'space.fields': ['id', 'created_at', 'updated_at', 'creator_id', 'state', 'is_ticketed', 'scheduled_start', 'started_at', 'ended_at', 'lang', 'title', 'host_ids', 'speaker_ids'],
+    'space.fields': ['id', 'created_at', 'updated_at', 'creator_id', 'state', 'is_ticketed', 'scheduled_start', 'started_at', 'ended_at', 'lang', 'title', 'host_ids', 'speaker_ids', 'invited_user_ids', 'participant_count'],
     'user.fields': ['id', 'created_at', 'username', 'name', 'protected', 'verified', 'profile_image_url'],
   }
 
