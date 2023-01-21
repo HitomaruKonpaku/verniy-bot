@@ -45,8 +45,7 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
       this.isRunning = true
       this.logger.warn('Fetching...')
 
-      await interaction.editReply('Fetching...')
-
+      const msg = await interaction.editReply('Fetching...')
       const limiter = twitterAudioSpaceLimiter
       const results = await Promise.allSettled(reqSpaces.map((space) => limiter.schedule(async () => {
         try {
@@ -58,7 +57,8 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
       })))
 
       const fulfilledCount = results.filter((v) => v.status === 'fulfilled')
-      await interaction.followUp(`Updated ${fulfilledCount.length}/${reqSpaces.length} Spaces`)
+      this.logger.warn('Completed!', { fulfilledCount, total: reqSpaces.length })
+      await msg.reply(`Updated ${fulfilledCount.length}/${reqSpaces.length} Spaces`)
     } finally {
       this.isRunning = false
       this.logger.warn('Done!')
