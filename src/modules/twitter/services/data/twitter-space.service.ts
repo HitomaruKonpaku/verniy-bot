@@ -131,6 +131,6 @@ ORDER BY CAST (su.id AS NUMBER)
   }
 
   public async updatePlaylistActive(id: string, playlistActive: boolean) {
-    await this.repository.update({ id }, { playlistActive })
+    await this.updateFields(id, { playlistActive })
   }
 }

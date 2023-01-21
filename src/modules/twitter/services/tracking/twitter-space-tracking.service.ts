@@ -15,6 +15,7 @@ import { TwitterSpaceUtils } from '../../utils/twitter-space.utils'
 import { TwitterUtils } from '../../utils/twitter.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
+import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 import { TwitterUserService } from '../data/twitter-user.service'
@@ -36,6 +37,8 @@ export class TwitterSpaceTrackingService {
     private readonly twitterSpaceService: TwitterSpaceService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
+    @Inject(TwitterSpaceControllerService)
+    private readonly twitterSpaceControllerService: TwitterSpaceControllerService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
@@ -155,21 +158,19 @@ export class TwitterSpaceTrackingService {
 
   private async updateSpace(space: SpaceV2) {
     try {
-      const newSpace = TwitterEntityUtils.buildSpace(space)
       const oldSpace = await this.twitterSpaceService.getOneById(space.id)
+      let newSpace = await this.twitterSpaceService.save(TwitterEntityUtils.buildSpace(space))
 
-      if (newSpace.state === SpaceState.LIVE && !oldSpace?.playlistUrl) {
-        // Try to get Space playlist url if not exist
-        try {
-          newSpace.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(space.id)
-          newSpace.playlistActive = true
-        } catch (error) {
-          this.logger.error(`updateSpace#getSpacePlaylistUrl: ${error.message}`, { space })
-        }
+      // Get additional space data
+      try {
+        await this.twitterSpaceControllerService.saveAudioSpace(newSpace.id)
+        newSpace = await this.twitterSpaceService.getOneById(newSpace.id)
+      } catch (error) {
+        this.logger.error(`updateSpace#saveAudioSpace: ${error.message}`, { id: newSpace.id })
       }
 
-      await this.twitterSpaceService.save(newSpace)
       await this.updateSpaceCreator(newSpace)
+
       await this.notifySpace(newSpace, oldSpace)
 
       if (newSpace.state === SpaceState.ENDED) {

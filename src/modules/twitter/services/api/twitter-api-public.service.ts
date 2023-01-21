@@ -61,22 +61,40 @@ export class TwitterApiPublicService {
   }
 
   public async getAudioSpaceById(spaceId: string) {
-    const url = 'https://twitter.com/i/api/graphql/Uv5R_-Chxbn1FEkyUkSW2w/AudioSpaceById'
+    const url = 'https://api.twitter.com/graphql/xjTKygiBMpX44KU8ywLohQ/AudioSpaceById'
     const headers = await this.getHeaders()
     const { data } = await axios.get(url, {
       headers,
       params: {
         variables: {
           id: spaceId,
-          isMetatagsQuery: false,
-          withSuperFollowsUserFields: false,
-          withBirdwatchPivots: false,
+          isMetatagsQuery: true,
+          withSuperFollowsUserFields: true,
           withDownvotePerspective: false,
           withReactionsMetadata: false,
           withReactionsPerspective: false,
-          withSuperFollowsTweetFields: false,
-          withReplays: false,
-          withScheduledSpaces: false,
+          withSuperFollowsTweetFields: true,
+          withReplays: true,
+        },
+        features: {
+          spaces_2022_h2_clipping: true,
+          spaces_2022_h2_spaces_communities: true,
+          responsive_web_twitter_blue_verified_badge_is_enabled: true,
+          verified_phone_label_enabled: false,
+          view_counts_public_visibility_enabled: true,
+          longform_notetweets_consumption_enabled: false,
+          tweetypie_unmention_optimization_enabled: true,
+          responsive_web_uc_gql_enabled: true,
+          vibe_api_enabled: true,
+          responsive_web_edit_tweet_api_enabled: true,
+          graphql_is_translatable_rweb_tweet_is_translatable_enabled: true,
+          view_counts_everywhere_api_enabled: true,
+          standardized_nudges_misinfo: true,
+          tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: false,
+          responsive_web_graphql_timeline_navigation_enabled: true,
+          interactive_text_enabled: true,
+          responsive_web_text_conversations_enabled: false,
+          responsive_web_enhance_cards_enabled: false,
         },
       },
     })
@@ -90,9 +108,15 @@ export class TwitterApiPublicService {
     return data
   }
 
-  public async getSpacePlaylistUrl(spaceId: string): Promise<string> {
+  public async getSpacePlaylistUrl(spaceId: string, audioSpace?: AudioSpace): Promise<string> {
     this.logger.warn('getSpacePlaylistUrl', { spaceId })
-    const audioSpace = await this.getAudioSpaceById(spaceId)
+    if (!audioSpace) {
+      // eslint-disable-next-line no-param-reassign
+      audioSpace = await this.getAudioSpaceById(spaceId)
+    }
+    if (spaceId !== audioSpace.metadata.rest_id) {
+      throw new Error('Space id not match')
+    }
     this.logger.info('getSpacePlaylistUrl#audioSpace', { spaceId, audioSpace })
     const liveVideoStreamStatus = await this.getLiveVideoStreamStatus(audioSpace.metadata.media_key)
     this.logger.info('getSpacePlaylistUrl#liveVideoStreamStatus', { spaceId, liveVideoStreamStatus })

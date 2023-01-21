@@ -3,7 +3,7 @@ import { SpaceV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { ArrayUtils } from '../../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
-import { SpaceState } from '../../enums/twitter-space.enum'
+import { AudioSpaceMetadataState } from '../../enums/twitter-space.enum'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -29,29 +29,27 @@ export class TwitterSpaceControllerService {
     let space = !refresh
       ? await this.twitterSpaceService.getOneById(id)
       : null
+
     if (!space) {
       const result = await this.twitterApiService.getSpaceById(id)
-      space = TwitterEntityUtils.buildSpace(result.data)
-      // Try to get playlist url
-      if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state)) {
-        try {
-          space.playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id)
-          if (space.playlistUrl) {
-            space.playlistActive = true
-          }
-        } catch (error) {
-          this.logger.error(`getOneById#getSpacePlaylistUrl: ${error.message}`, { id })
-        }
+      space = await this.twitterSpaceService.save(TwitterEntityUtils.buildSpace(result.data))
+
+      // Get additional space data
+      try {
+        await this.saveAudioSpace(space.id)
+        space = await this.twitterSpaceService.getOneById(id)
+      } catch (error) {
+        this.logger.error(`getOneById#saveAudioSpace: ${error.message}`, { id })
       }
-      // Save
-      await this.twitterSpaceService.save(space)
-      // Try to get creator
+
+      // Get space creator
       try {
         await this.twitterUserControllerService.getOneById(space.creatorId)
       } catch (error) {
-        this.logger.error(`getOneById#getUserById: ${error.message}`, { id })
+        this.logger.error(`getOneById#getCreator: ${error.message}`, { id })
       }
     }
+
     return space
   }
 
@@ -105,5 +103,27 @@ export class TwitterSpaceControllerService {
   public async saveSpaces(data: SpaceV2[]) {
     const spaces = await this.twitterSpaceService.saveAll(data.map((v) => TwitterEntityUtils.buildSpace(v)))
     return spaces
+  }
+
+  public async saveAudioSpace(id: string) {
+    const audioSpace = await this.twitterApiPublicService.getAudioSpaceById(id)
+    let playlistUrl: string
+    let playlistActive: boolean
+
+    if (audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING) {
+      try {
+        playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id, audioSpace)
+        playlistActive = true
+      } catch (error) {
+        this.logger.error(`saveAudioSpace#getSpacePlaylistUrl: ${error.message}`, { id })
+      }
+    }
+
+    await this.twitterSpaceService.updateFields(id, {
+      totalLiveListeners: audioSpace.metadata.total_live_listeners,
+      totalReplayWatched: audioSpace.metadata.total_replay_watched,
+      playlistUrl,
+      playlistActive,
+    })
   }
 }
