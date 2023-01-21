@@ -1,7 +1,9 @@
+import { AudioSpaceMetadataState } from '../enums/twitter-space.enum'
+
 /* eslint-disable camelcase */
 export interface AudioSpaceMetadata {
   rest_id: string
-  state: string
+  state: AudioSpaceMetadataState
   title?: string
   media_key?: string
   created_at?: number
