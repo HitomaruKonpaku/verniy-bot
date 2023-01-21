@@ -10,7 +10,10 @@ import { BaseCommand } from '../../base/base-command'
 export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: UpdateTwitterSpaceStatsCommand.name })
 
-  private readonly limiter = new Bottleneck({ maxConcurrent: 5 })
+  private readonly limiter = new Bottleneck({
+    maxConcurrent: 1,
+    minTime: 250,
+  })
 
   private isRunning = false
 
@@ -47,7 +50,14 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
       this.isRunning = true
       this.logger.warn('Fetching...')
 
-      const results = await Promise.allSettled(reqSpaces.map((space) => this.limiter.schedule(() => this.twitterSpaceControllerService.saveAudioSpace(space.id))))
+      const results = await Promise.allSettled(reqSpaces.map((space) => this.limiter.schedule(async () => {
+        try {
+          await this.twitterSpaceControllerService.saveAudioSpace(space.id)
+        } catch (error) {
+          this.logger.error(`saveAudioSpace: ${error.message}`, { id: space.id })
+        }
+      })))
+
       const fulfilledCount = results.filter((v) => v.status === 'fulfilled')
       await interaction.editReply(`Updated ${fulfilledCount.length}/${reqSpaces.length} Spaces`)
     } finally {
