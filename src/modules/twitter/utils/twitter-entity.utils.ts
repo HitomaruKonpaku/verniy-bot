@@ -61,6 +61,14 @@ export class TwitterEntityUtils {
       hostIds: data.host_ids || null,
       speakerIds: data.speaker_ids || null,
     }
+
+    if (obj.hostIds === null) {
+      delete obj.hostIds
+    }
+    if (obj.speakerIds === null) {
+      delete obj.speakerIds
+    }
+
     return obj
   }
 }
