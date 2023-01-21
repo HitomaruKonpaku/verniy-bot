@@ -1,19 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common'
-import Bottleneck from 'bottleneck'
 import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TwitterSpaceControllerService } from '../../../../twitter/services/controller/twitter-space-controller.service'
 import { TwitterSpaceService } from '../../../../twitter/services/data/twitter-space.service'
+import { twitterAudioSpaceLimiter } from '../../../../twitter/twitter.limiter'
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
 export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: UpdateTwitterSpaceStatsCommand.name })
-
-  private readonly limiter = new Bottleneck({
-    maxConcurrent: 1,
-    minTime: 250,
-  })
 
   private isRunning = false
 
@@ -50,11 +45,13 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
       this.isRunning = true
       this.logger.warn('Fetching...')
 
-      const results = await Promise.allSettled(reqSpaces.map((space) => this.limiter.schedule(async () => {
+      const limiter = twitterAudioSpaceLimiter
+      const results = await Promise.allSettled(reqSpaces.map((space) => limiter.schedule(async () => {
         try {
           await this.twitterSpaceControllerService.saveAudioSpace(space.id)
         } catch (error) {
           this.logger.error(`saveAudioSpace: ${error.message}`, { id: space.id })
+          throw error
         }
       })))
 
