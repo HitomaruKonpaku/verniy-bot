@@ -39,6 +39,7 @@ import { TrackRemoveTwitterProfileCommand } from '../commands/track/track-remove
 import { TrackRemoveTwitterSpaceCommand } from '../commands/track/track-remove/track-remove-twitter-space.command'
 import { TrackRemoveTwitterTweetCommand } from '../commands/track/track-remove/track-remove-twitter-tweet.command'
 import { TrackRemoveYoutubeLiveCommand } from '../commands/track/track-remove/track-remove-youtube-live.command'
+import { UpdateTwitterSpaceStatsCommand } from '../commands/update/update-twitter/update-twitter-space-stats.command'
 import { UpdateTwitterSpaceCommand } from '../commands/update/update-twitter/update-twitter-space.command'
 import { UpdateTwitterCommand } from '../commands/update/update-twitter/update-twitter.command'
 import { UpdateCommand } from '../commands/update/update.command'
@@ -85,6 +86,7 @@ export const DISCORD_ALL_COMMANDS = [
   UpdateCommand,
   UpdateTwitterCommand,
   UpdateTwitterSpaceCommand,
+  UpdateTwitterSpaceStatsCommand,
 
   // status
   StatusCommand,

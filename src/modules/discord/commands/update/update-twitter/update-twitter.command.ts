@@ -4,6 +4,7 @@ import { ModuleRef } from '@nestjs/core'
 import { SlashCommandSubcommandGroupBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { BaseSubcommandGroupCommand } from '../../base/base-subcommand-group-command'
+import { UpdateTwitterSpaceStatsCommand } from './update-twitter-space-stats.command'
 import { UpdateTwitterSpaceCommand } from './update-twitter-space.command'
 
 @Injectable()
@@ -22,11 +23,13 @@ export class UpdateTwitterCommand extends BaseSubcommandGroupCommand {
       .setName('twitter')
       .setDescription('Twitter')
       .addSubcommand((subcommand) => UpdateTwitterSpaceCommand.getSubcommand(subcommand))
+      .addSubcommand((subcommand) => UpdateTwitterSpaceStatsCommand.getSubcommand(subcommand))
   }
 
   protected getCommandService(subcommand: string) {
     const instance = {
       space: UpdateTwitterSpaceCommand,
+      space_stats: UpdateTwitterSpaceStatsCommand,
     }[subcommand] || null
     return instance
   }
