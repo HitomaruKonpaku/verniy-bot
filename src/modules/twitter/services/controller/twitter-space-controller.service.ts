@@ -107,6 +107,8 @@ export class TwitterSpaceControllerService {
 
   public async saveAudioSpace(id: string) {
     const audioSpace = await this.twitterApiPublicService.getAudioSpaceById(id)
+    this.logger.info('saveAudioSpace', { id, audioSpace })
+
     let playlistUrl: string
     let playlistActive: boolean
 

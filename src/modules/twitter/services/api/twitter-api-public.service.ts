@@ -113,11 +113,11 @@ export class TwitterApiPublicService {
     if (!audioSpace) {
       // eslint-disable-next-line no-param-reassign
       audioSpace = await this.getAudioSpaceById(spaceId)
+      this.logger.info('getSpacePlaylistUrl#audioSpace', { spaceId, audioSpace })
     }
     if (spaceId !== audioSpace.metadata.rest_id) {
       throw new Error('Space id not match')
     }
-    this.logger.info('getSpacePlaylistUrl#audioSpace', { spaceId, audioSpace })
     const liveVideoStreamStatus = await this.getLiveVideoStreamStatus(audioSpace.metadata.media_key)
     this.logger.info('getSpacePlaylistUrl#liveVideoStreamStatus', { spaceId, liveVideoStreamStatus })
     const dynamicUrl = liveVideoStreamStatus.source.location
