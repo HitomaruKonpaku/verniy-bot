@@ -20,6 +20,7 @@ export class AdminCommand extends BaseCommand {
   public static readonly command = new SlashCommandBuilder()
     .setName('admin')
     .setDescription('Admin')
+    .setDefaultMemberPermissions(0)
     .addSubcommandGroup((group) => AdminReloadCommand.getSubcommandGroup(group))
 
   public async execute(interaction: ChatInputCommandInteraction) {

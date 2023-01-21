@@ -31,6 +31,7 @@ export class TrackAddCommand extends BaseCommand {
   public static readonly command = new SlashCommandBuilder()
     .setName('track_add')
     .setDescription('Add or update tracking')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((subcommand) => TrackAddTwitterTweetCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackAddTwitterProfileCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackAddTwitterSpaceCommand.getSubcommand(subcommand))

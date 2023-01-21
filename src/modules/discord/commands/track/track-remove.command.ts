@@ -31,6 +31,7 @@ export class TrackRemoveCommand extends BaseCommand {
   public static readonly command = new SlashCommandBuilder()
     .setName('track_remove')
     .setDescription('Remove tracking')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
     .addSubcommand((subcommand) => TrackRemoveTwitterTweetCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackRemoveTwitterProfileCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => TrackRemoveTwitterSpaceCommand.getSubcommand(subcommand))
