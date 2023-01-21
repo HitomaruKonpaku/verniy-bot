@@ -127,7 +127,7 @@ export class TwitterSpaceUtils {
       )
     }
 
-    if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state)) {
+    if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state) && space.playlistUrl) {
       fields.push(
         {
           name: 'Playlist url',
@@ -136,7 +136,7 @@ export class TwitterSpaceUtils {
       )
     }
 
-    if ([SpaceState.LIVE].includes(space.state)) {
+    if ([SpaceState.LIVE].includes(space.state) && space.playlistUrl) {
       fields.push(
         {
           name: 'Open with...',
