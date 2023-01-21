@@ -39,4 +39,8 @@ export abstract class BaseEntityService<T> {
   public async updateIsActive(id: string, isActive: boolean): Promise<void | T> {
     await this.repository.update({ id } as any, { isActive } as any)
   }
+
+  public async updateFields(id: string, fields: Partial<Omit<T, 'id'>>): Promise<void | T> {
+    await this.repository.update({ id } as any, fields as any)
+  }
 }
