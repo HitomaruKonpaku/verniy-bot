@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { SpaceV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
+import { ArrayUtils } from '../../../../utils/array.utils'
+import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { SpaceState } from '../../enums/twitter-space.enum'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'
@@ -53,8 +55,55 @@ export class TwitterSpaceControllerService {
     return space
   }
 
+  public async getManyByIds(ids: string[]) {
+    this.logger.debug('getManyByIds', { idCount: ids.length })
+    const res = await this.twitterApiService.getSpacesByIds(ids)
+    if (res.errors?.length) {
+      try {
+        const errorIds = res.errors
+          .filter((error) => error.resource_type === 'space' && error.type.includes('resource-not-found'))
+          .map((error) => error.resource_id)
+        await Promise.all(errorIds.map(async (id) => {
+          const active = false
+          try {
+            this.logger.debug('updateIsActive', { id, active })
+            await this.twitterSpaceService.updateIsActive(id, active)
+          } catch (error) {
+            this.logger.error(`updateIsActive: ${error.message}`, { id })
+          }
+        }))
+      } catch (error) {
+        // ignore
+      }
+    }
+
+    const spaces = res.data.length
+      ? await this.saveSpaces(res.data)
+      : []
+    return spaces
+  }
+
+  public async getAllByIds(ids: string[]) {
+    this.logger.debug('getAllByIds', { idCount: ids.length })
+    if (!ids?.length) {
+      return []
+    }
+
+    const idChunks = ArrayUtils.splitIntoChunk(ids, TWITTER_API_LIST_SIZE)
+    const results = await Promise.allSettled(idChunks.map((idChunk) => this.getManyByIds(idChunk)))
+    const spaces = results
+      .map((result) => (result.status === 'fulfilled' ? result.value : []))
+      .flat()
+    return spaces
+  }
+
   public async saveSpace(data: SpaceV2) {
     const space = await this.twitterSpaceService.save(TwitterEntityUtils.buildSpace(data))
     return space
+  }
+
+  public async saveSpaces(data: SpaceV2[]) {
+    const spaces = await this.twitterSpaceService.saveAll(data.map((v) => TwitterEntityUtils.buildSpace(v)))
+    return spaces
   }
 }
