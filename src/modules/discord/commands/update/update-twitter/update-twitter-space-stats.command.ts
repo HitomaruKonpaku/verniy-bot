@@ -56,9 +56,9 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
         }
       })))
 
-      const fulfilledCount = results.filter((v) => v.status === 'fulfilled')
-      this.logger.warn('Completed!', { fulfilledCount, total: reqSpaces.length })
-      await msg.reply(`Updated ${fulfilledCount.length}/${reqSpaces.length} Spaces`)
+      const fulfilledCount = results.filter((v) => v.status === 'fulfilled').length
+      this.logger.warn('Completed!', { total: reqSpaces.length, fulfilledCount })
+      await msg.reply(`Updated ${fulfilledCount}/${reqSpaces.length} Spaces`)
     } finally {
       this.isRunning = false
       this.logger.warn('Done!')
