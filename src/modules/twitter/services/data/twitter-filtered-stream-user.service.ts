@@ -30,6 +30,7 @@ export class TwitterFilteredStreamUserService extends BaseEntityService<TwitterF
       .createQueryBuilder('tfsu')
       .leftJoinAndMapOne('tfsu.user', 'twitter_user', 'tu', 'tu.id = tfsu.id')
       .andWhere('tfsu.is_active = TRUE')
+      .andWhere('tu.is_retired = FALSE')
       .addOrderBy('LENGTH(tu.username)', 'DESC')
       .addOrderBy('CAST(tu.id AS INTERGER)')
       .getMany()
