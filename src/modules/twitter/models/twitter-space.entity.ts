@@ -59,6 +59,12 @@ export class TwitterSpace extends BaseExternalEntity {
   })
   speakerIds?: string[]
 
+  @Column({ name: 'total_live_listeners', type: 'numeric', nullable: true })
+  totalLiveListeners?: number
+
+  @Column({ name: 'total_replay_watched', type: 'numeric', nullable: true })
+  totalReplayWatched?: number
+
   @Column({ name: 'playlist_url', type: 'text', nullable: true })
   playlistUrl?: string
 
