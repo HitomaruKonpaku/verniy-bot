@@ -161,12 +161,14 @@ export class TwitterSpaceTrackingService {
       const oldSpace = await this.twitterSpaceService.getOneById(space.id)
       let newSpace = await this.twitterSpaceService.save(TwitterEntityUtils.buildSpace(space))
 
-      // Get additional space data
-      try {
-        await this.twitterSpaceControllerService.saveAudioSpace(newSpace.id)
-        newSpace = await this.twitterSpaceService.getOneById(newSpace.id)
-      } catch (error) {
-        this.logger.error(`updateSpace#saveAudioSpace: ${error.message}`, { id: newSpace.id })
+      if (newSpace.state === SpaceState.LIVE && !oldSpace?.playlistUrl) {
+        // Get additional space data
+        try {
+          await this.twitterSpaceControllerService.saveAudioSpace(newSpace.id)
+          newSpace = await this.twitterSpaceService.getOneById(newSpace.id)
+        } catch (error) {
+          this.logger.error(`updateSpace#saveAudioSpace: ${error.message}`, { id: newSpace.id })
+        }
       }
 
       await this.updateSpaceCreator(newSpace)
