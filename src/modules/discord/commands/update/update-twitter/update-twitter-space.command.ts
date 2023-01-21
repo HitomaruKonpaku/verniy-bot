@@ -9,6 +9,8 @@ import { BaseCommand } from '../../base/base-command'
 export class UpdateTwitterSpaceCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: UpdateTwitterSpaceCommand.name })
 
+  private isRunning = false
+
   constructor(
     @Inject(TwitterSpaceService)
     protected readonly twitterSpaceService: TwitterSpaceService,
@@ -27,13 +29,26 @@ export class UpdateTwitterSpaceCommand extends BaseCommand {
   public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
-    const reqSpaces = await this.twitterSpaceService.repository.find({ where: { isActive: true } })
+    if (this.isRunning) {
+      await interaction.editReply('Running...')
+      return
+    }
+
+    const reqSpaces = await this.twitterSpaceService.getAllActive()
     if (!reqSpaces.length) {
       await interaction.editReply('Space(s) not found')
       return
     }
 
-    const resSpaces = await this.twitterSpaceControllerService.getAllByIds(reqSpaces.map((v) => v.id))
-    await interaction.editReply(`Updated ${resSpaces.length}/${reqSpaces.length} Spaces`)
+    try {
+      this.isRunning = true
+      this.logger.warn('Fetching...')
+
+      const resSpaces = await this.twitterSpaceControllerService.getAllByIds(reqSpaces.map((v) => v.id))
+      await interaction.editReply(`Updated ${resSpaces.length}/${reqSpaces.length} Spaces`)
+    } finally {
+      this.isRunning = false
+      this.logger.warn('Done!')
+    }
   }
 }
