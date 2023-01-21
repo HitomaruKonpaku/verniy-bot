@@ -2,12 +2,9 @@ import { Inject, Injectable } from '@nestjs/common'
 import axios from 'axios'
 import { baseLogger } from '../../../../logger'
 import { BaseCronService } from '../../../../shared/services/base-cron.service'
-import { ArrayUtils } from '../../../../utils/array.utils'
-import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { TwitterSpace } from '../../models/twitter-space.entity'
 import { twitterSpacePlaylistLimiter } from '../../twitter.limiter'
-import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
-import { TwitterApiService } from '../api/twitter-api.service'
+import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 
 @Injectable()
@@ -19,8 +16,8 @@ export class TwitterSpaceCronService extends BaseCronService {
   constructor(
     @Inject(TwitterSpaceService)
     private readonly twitterSpaceService: TwitterSpaceService,
-    @Inject(TwitterApiService)
-    private readonly twitterApiService: TwitterApiService,
+    @Inject(TwitterSpaceControllerService)
+    private readonly twitterSpaceControllerService: TwitterSpaceControllerService,
   ) {
     super()
   }
@@ -35,30 +32,7 @@ export class TwitterSpaceCronService extends BaseCronService {
     try {
       const spaces = await this.twitterSpaceService.getManyForActiveCheck()
       this.logger.debug('checkSpacesActive', { spaceCount: spaces.length })
-      const chunks = ArrayUtils.splitIntoChunk(spaces, TWITTER_API_LIST_SIZE)
-      await Promise.allSettled(chunks.map(async (chunk) => {
-        try {
-          const ids = chunk.map((v) => v.id)
-          const result = await this.twitterApiService.getSpacesByIds(ids)
-          if (result?.data?.length) {
-            await Promise.allSettled(result.data.map((v) => {
-              const space = TwitterEntityUtils.buildSpace(v)
-              return this.twitterSpaceService.save(space)
-            }))
-          }
-          if (!result?.errors?.length) {
-            return
-          }
-          await Promise.allSettled(result.errors.map(async (error) => {
-            if (!(error.resource_type === 'space' && error.type.includes('resource-not-found'))) {
-              return
-            }
-            await this.updateSpaceActive(error.resource_id, false)
-          }))
-        } catch (error) {
-          // Ignore
-        }
-      }))
+      await this.twitterSpaceControllerService.getAllByIds(spaces.map((v) => v.id))
     } catch (error) {
       this.logger.error(`checkSpacesActive: ${error.message}`)
     }
@@ -91,15 +65,6 @@ export class TwitterSpaceCronService extends BaseCronService {
       this.logger.error(`checkSpacePlaylist: ${error.message}`, { id: space.id, playlistUrl: space.playlistUrl })
     }
     this.logger.debug('<-- checkSpacePlaylist', { id: space.id })
-  }
-
-  private async updateSpaceActive(id: string, active: boolean) {
-    this.logger.debug('updateSpaceActive', { id, active })
-    try {
-      await this.twitterSpaceService.updateIsActive(id, active)
-    } catch (error) {
-      this.logger.error(`updateSpaceActive: ${error.message}`, { id })
-    }
   }
 
   private async updateSpacePlaylistActive(id: string, active: boolean) {
