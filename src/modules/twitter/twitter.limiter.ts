@@ -67,5 +67,5 @@ export const twitterAudioSpaceLimiter = new Bottleneck({
   minTime: 1000,
   reservoir: 400,
   reservoirRefreshAmount: 400,
-  reservoirRefreshInterval,
+  reservoirRefreshInterval: 20 * 60 * 1000,
 })
