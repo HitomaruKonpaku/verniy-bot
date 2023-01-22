@@ -124,6 +124,8 @@ export class TwitterSpaceControllerService {
     await this.twitterSpaceService.updateFields(id, {
       totalLiveListeners: audioSpace.metadata.total_live_listeners,
       totalReplayWatched: audioSpace.metadata.total_replay_watched,
+      isAvailableForReplay: audioSpace.metadata.is_space_available_for_replay,
+      isAvailableForClipping: audioSpace.metadata.is_space_available_for_clipping,
       playlistUrl,
       playlistActive,
     })

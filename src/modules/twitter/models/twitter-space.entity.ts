@@ -65,6 +65,12 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'total_replay_watched', type: 'numeric', nullable: true })
   totalReplayWatched?: number
 
+  @Column({ name: 'is_available_for_replay', type: 'boolean', nullable: true })
+  isAvailableForReplay?: boolean
+
+  @Column({ name: 'is_available_for_clipping', type: 'boolean', nullable: true })
+  isAvailableForClipping?: boolean
+
   @Column({ name: 'playlist_url', type: 'text', nullable: true })
   playlistUrl?: string
 
