@@ -34,9 +34,6 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'title', type: 'text', nullable: true })
   title?: string
 
-  @Column({ name: 'participant_count', type: 'numeric', nullable: true })
-  participantCount?: number
-
   @Column({
     name: 'host_ids',
     type: 'text',
@@ -58,6 +55,9 @@ export class TwitterSpace extends BaseExternalEntity {
     },
   })
   speakerIds?: string[]
+
+  @Column({ name: 'participant_count', type: 'numeric', nullable: true })
+  participantCount?: number
 
   @Column({ name: 'total_live_listeners', type: 'numeric', nullable: true })
   totalLiveListeners?: number
