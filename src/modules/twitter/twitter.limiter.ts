@@ -10,8 +10,8 @@ export const twitterGuestTokenLimiter = new Bottleneck({ maxConcurrent: 1 })
 export const twitterUserShowLimiter = new Bottleneck({
   maxConcurrent: 5,
   reservoir: 900,
-  reservoirRefreshAmount: 900,
   reservoirRefreshInterval,
+  reservoirRefreshAmount: 900,
 })
 
 /**
@@ -20,8 +20,8 @@ export const twitterUserShowLimiter = new Bottleneck({
 export const twitterUserLookupLimiter = new Bottleneck({
   maxConcurrent: 5,
   reservoir: 300,
-  reservoirRefreshAmount: 300,
   reservoirRefreshInterval,
+  reservoirRefreshAmount: 300,
 })
 
 /**
@@ -29,8 +29,8 @@ export const twitterUserLookupLimiter = new Bottleneck({
  */
 export const twitterSpaceLimiter = new Bottleneck({
   reservoir: 300,
-  reservoirRefreshAmount: 300,
   reservoirRefreshInterval,
+  reservoirRefreshAmount: 300,
 })
 
 /**
@@ -49,8 +49,8 @@ export const twitterSpacesByCreatorIdsLimiter = new Bottleneck({
   maxConcurrent: 1,
   minTime: 1100,
   reservoir: 300,
-  reservoirRefreshAmount: 300,
   reservoirRefreshInterval,
+  reservoirRefreshAmount: 300,
 })
 
 export const twitterSpacesByFleetsAvatarContentLimiter = new Bottleneck({
@@ -63,9 +63,10 @@ export const twitterSpacePlaylistLimiter = new Bottleneck({
 })
 
 export const twitterAudioSpaceLimiter = new Bottleneck({
-  maxConcurrent: 1,
+  maxConcurrent: 5,
   minTime: 1000,
-  reservoir: 400,
-  reservoirRefreshAmount: 400,
-  reservoirRefreshInterval: 20 * 60 * 1000,
+  reservoir: 10,
+  reservoirIncreaseInterval: 20 * 1000,
+  reservoirIncreaseAmount: 10,
+  reservoirIncreaseMaximum: 10,
 })
