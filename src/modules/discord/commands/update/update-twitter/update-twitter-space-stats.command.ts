@@ -47,14 +47,21 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
 
       const msg = await interaction.editReply('Fetching...')
       const limiter = twitterAudioSpaceLimiter
-      const results = await Promise.allSettled(reqSpaces.map((space) => limiter.schedule(async () => {
-        try {
-          await this.twitterSpaceControllerService.saveAudioSpace(space.id)
-        } catch (error) {
-          this.logger.error(`saveAudioSpace: ${error.message}`, { id: space.id })
-          throw error
-        }
-      })))
+      const results = await Promise.allSettled(reqSpaces.map(async (space) => {
+        let isSuccess = false
+        do {
+          try {
+            // eslint-disable-next-line no-await-in-loop
+            await limiter.schedule(() => this.twitterSpaceControllerService.saveAudioSpace(space.id))
+            isSuccess = true
+          } catch (error) {
+            this.logger.error(`saveAudioSpace: ${error.message}`, { id: space.id })
+            if (error.response?.status !== 429) {
+              throw error
+            }
+          }
+        } while (!isSuccess)
+      }))
 
       const fulfilledCount = results.filter((v) => v.status === 'fulfilled').length
       this.logger.warn('Completed!', { total: reqSpaces.length, fulfilledCount })
