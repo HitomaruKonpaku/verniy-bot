@@ -2,14 +2,14 @@
 
 Discord tracking bot
 
-- Twitter
+- [Twitter](https://twitter.com)
   - User tweet
   - User profile change
   - Spaces
-- TwitCasting
-- ~~YouTube~~
-- Twitch
-- [pixivFANBOX](https://www.fanbox.cc)
+- [TwitCasting](https://twitcasting.tv)
+- ~~[YouTube](https://youtube.com)~~
+- [Twitch](https://www.twitch.tv)
+- [pixivFANBOX](https://fanbox.cc)
 - ~~Instagram~~ (unstable)
 - ~~TikTok~~ (unstable)
 
