@@ -55,20 +55,12 @@ export class TwitterEntityUtils {
       endedAt: data.ended_at
         ? new Date(data.ended_at).getTime()
         : null,
-      lang: data.lang || null,
-      title: data.title || null,
-      participantCount: data.participant_count || null,
-      hostIds: data.host_ids || null,
-      speakerIds: data.speaker_ids || null,
+      lang: data.lang,
+      title: data.title,
+      hostIds: data.host_ids,
+      speakerIds: data.speaker_ids,
+      participantCount: data.participant_count,
     }
-
-    if (obj.hostIds === null) {
-      delete obj.hostIds
-    }
-    if (obj.speakerIds === null) {
-      delete obj.speakerIds
-    }
-
     return obj
   }
 }
