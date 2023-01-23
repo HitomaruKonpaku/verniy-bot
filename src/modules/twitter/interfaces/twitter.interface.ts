@@ -60,7 +60,13 @@ export interface AudioSpaceMetadata {
 
 export interface AudioSpaceParticipantUser {
   rest_id: string
-  [key: string]: any
+}
+
+export interface AudioSpaceParticipantUserResults extends AudioSpaceParticipantUser {
+  result: {
+    has_nft_avatar?: boolean
+    is_blue_verified?: boolean
+  }
 }
 
 export interface AudioSpaceParticipant {
@@ -72,7 +78,8 @@ export interface AudioSpaceParticipant {
   is_verified: boolean
   is_muted_by_admin: boolean
   is_muted_by_guest: boolean
-  user: AudioSpaceParticipantUser
+  user_results: AudioSpaceParticipantUserResults
+  user?: AudioSpaceParticipantUser
   [key: string]: any
 }
 
