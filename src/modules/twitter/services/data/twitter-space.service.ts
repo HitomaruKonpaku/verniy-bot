@@ -19,7 +19,7 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
   public async getAllActive() {
     const spaces = await this.repository.find({
       where: { isActive: true },
-      order: { createdAt: 'DESC' },
+      order: { createdAt: 'ASC' },
     })
     return spaces
   }
