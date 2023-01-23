@@ -18,6 +18,9 @@ export class TwitterEntityUtils {
       verified: data.verified,
       profileImageUrl: TwitterUtils.getUserProfileImageUrl(data.profile_image_url_https),
       profileBannerUrl: TwitterUtils.getUserProfileBannerUrl(data.profile_banner_url),
+      followersCount: data.followers_count,
+      followingCount: data.friends_count,
+      tweetCount: data.statuses_count,
     }
     return obj
   }
@@ -33,6 +36,9 @@ export class TwitterEntityUtils {
       protected: data.protected,
       verified: data.verified,
       profileImageUrl: TwitterUtils.getUserProfileImageUrl(data.profile_image_url),
+      followersCount: data.public_metrics?.followers_count,
+      followingCount: data.public_metrics?.following_count,
+      tweetCount: data.public_metrics?.tweet_count,
     }
     return obj
   }
