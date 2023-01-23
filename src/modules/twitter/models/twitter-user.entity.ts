@@ -8,6 +8,9 @@ export class TwitterUser extends BaseExternalEntity {
   @Column({ name: 'updated_at', type: 'numeric', nullable: true })
   updatedAt?: number
 
+  @Column({ name: 'is_retired', type: 'boolean', default: false })
+  isRetired?: boolean
+
   @Column({ type: 'text' })
   username: string
 
@@ -31,9 +34,6 @@ export class TwitterUser extends BaseExternalEntity {
 
   @Column({ name: 'profile_banner_url', type: 'text', nullable: true })
   profileBannerUrl?: string
-
-  @Column({ name: 'is_retired', type: 'boolean', default: false })
-  isRetired?: boolean
 
   tweets?: TwitterTweet[]
 
