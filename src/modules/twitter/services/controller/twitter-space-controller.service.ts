@@ -4,6 +4,7 @@ import { baseLogger } from '../../../../logger'
 import { ArrayUtils } from '../../../../utils/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { AudioSpaceMetadataState } from '../../enums/twitter-space.enum'
+import { twitterAudioSpaceLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -36,7 +37,11 @@ export class TwitterSpaceControllerService {
 
       // Get additional space data
       try {
-        await this.saveAudioSpace(space.id)
+        const limiter = twitterAudioSpaceLimiter
+        await limiter.schedule(
+          { priority: 4 },
+          () => this.saveAudioSpace(space.id),
+        )
         space = await this.twitterSpaceService.getOneById(id)
       } catch (error) {
         this.logger.error(`getOneById#saveAudioSpace: ${error.message}`, { id })

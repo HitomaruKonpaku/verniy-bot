@@ -3,12 +3,14 @@ import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'disc
 import { baseLogger } from '../../../../../logger'
 import { TwitterSpaceControllerService } from '../../../../twitter/services/controller/twitter-space-controller.service'
 import { TwitterSpaceService } from '../../../../twitter/services/data/twitter-space.service'
-import { twitterAudioSpaceLimiter } from '../../../../twitter/twitter.limiter'
+import { twitterAudioSpaceBatchLimiter } from '../../../../twitter/twitter.limiter'
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
 export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: UpdateTwitterSpaceStatsCommand.name })
+
+  private readonly limiter = twitterAudioSpaceBatchLimiter
 
   private isRunning = false
 
@@ -19,6 +21,10 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
     protected readonly twitterSpaceControllerService: TwitterSpaceControllerService,
   ) {
     super()
+
+    this.limiter.on('depleted', (empty) => {
+      this.logger.warn('limiter depleted', { empty })
+    })
   }
 
   public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
@@ -46,13 +52,12 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
       this.logger.warn('Fetching...')
 
       const msg = await interaction.editReply('Fetching...')
-      const limiter = twitterAudioSpaceLimiter
       const results = await Promise.allSettled(reqSpaces.map(async (space) => {
         let isSuccess = false
         do {
           try {
             // eslint-disable-next-line no-await-in-loop
-            await limiter.schedule(() => this.twitterSpaceControllerService.saveAudioSpace(space.id))
+            await this.limiter.schedule(() => this.twitterSpaceControllerService.saveAudioSpace(space.id))
             isSuccess = true
           } catch (error) {
             this.logger.error(`saveAudioSpace: ${error.message}`, { id: space.id })
