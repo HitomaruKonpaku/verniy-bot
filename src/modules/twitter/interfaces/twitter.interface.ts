@@ -85,7 +85,8 @@ export interface AudioSpaceParticipants {
 
 export interface AudioSpace {
   metadata: AudioSpaceMetadata
-  participants: AudioSpaceParticipants
+  is_subscribed?: boolean
+  participants?: AudioSpaceParticipants
   sharings?: any
 }
 
