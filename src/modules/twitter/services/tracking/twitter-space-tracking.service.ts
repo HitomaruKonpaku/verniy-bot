@@ -26,8 +26,9 @@ import { TwitterTokenService } from '../twitter-token.service'
 export class TwitterSpaceTrackingService {
   private readonly logger = baseLogger.child({ context: TwitterSpaceTrackingService.name })
 
-  private newSpacesCheckInterval = 60000;
-  private liveSpacesCheckInterval = 30000;
+  private liveSpacesCheckInterval = 30000
+  private newSpacesCheckInterval = 60000
+  private newSpacesFleetlineCheckInterval = 30000
 
   constructor(
     @Inject(ConfigService)
@@ -57,6 +58,7 @@ export class TwitterSpaceTrackingService {
   public async start() {
     this.logger.info('Starting...')
     await this.checkNewSpaces()
+    await this.checkNewSpacesByFleetline()
     await this.checkLiveSpaces()
   }
 
@@ -109,19 +111,48 @@ export class TwitterSpaceTrackingService {
       }
       this.logger.debug('checkNewSpacesByAvatarContent', { userCount: userIds.length })
       const spaceIds = await this.getSpacesByAvatarContent(userIds)
-      if (!spaceIds.length) {
-        return
-      }
-      const chunks = ArrayUtils.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
-      await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
+      await this.getNewSpaces(spaceIds)
     } catch (error) {
       this.logger.error(`checkNewSpacesByAvatarContent: ${error.message}`)
     }
   }
 
+  private async checkNewSpacesByFleetline() {
+    if (!this.twitterTokenService.getAuthToken()) {
+      return
+    }
+
+    try {
+      const spaceIds = await this.getSpacesByFleetline()
+      await this.getNewSpaces(spaceIds)
+    } catch (error) {
+      this.logger.error(`checkNewSpacesByFleetline: ${error.message}`)
+    }
+
+    const interval = this.newSpacesFleetlineCheckInterval
+    setTimeout(() => this.checkNewSpacesByFleetline(), interval)
+  }
+
   // #endregion
 
   // #region Get
+
+  private async getNewSpaces(curSpaceIds: string[]) {
+    if (!curSpaceIds?.length) {
+      return
+    }
+
+    this.logger.debug('getNewSpaces', { curSpaceIds })
+    const spaces = await this.twitterSpaceService.getManyByIds(curSpaceIds)
+    const newSpaceIds = curSpaceIds.filter((id) => !spaces.some((space) => space.id === id))
+    if (!newSpaceIds?.length) {
+      return
+    }
+
+    this.logger.debug('getNewSpaces', { newSpaceIds })
+    const idChunks = ArrayUtils.splitIntoChunk(newSpaceIds, TWITTER_API_LIST_SIZE)
+    await Promise.allSettled(idChunks.map((ids) => this.getSpacesByIds(ids)))
+  }
 
   private async getSpacesByIds(ids: string[]) {
     try {
@@ -162,6 +193,19 @@ export class TwitterSpaceTrackingService {
       return spaceIds
     } catch (error) {
       this.logger.error(`getSpacesByAvatarContent: ${error.message}`)
+    }
+    return []
+  }
+
+  private async getSpacesByFleetline() {
+    try {
+      const result = await this.twitterPublicApiService.getSpacesByFleetsFleetline()
+      const spaceIds = result.threads
+        .map((v) => v.live_content?.audiospace?.broadcast_id)
+        .filter((v) => v) || []
+      return spaceIds
+    } catch (error) {
+      this.logger.error(`getSpacesByFleetline: ${error.message}`)
     }
     return []
   }
