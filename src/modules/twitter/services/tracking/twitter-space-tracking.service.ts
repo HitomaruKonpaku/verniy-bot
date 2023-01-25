@@ -109,8 +109,10 @@ export class TwitterSpaceTrackingService {
       if (!userIds.length) {
         return
       }
+
       this.logger.debug('checkNewSpacesByAvatarContent', { userCount: userIds.length })
       const spaceIds = await this.getSpacesByAvatarContent(userIds)
+      this.logger.debug('checkNewSpacesByAvatarContent', { idCount: spaceIds.length, ids: spaceIds })
       await this.getNewSpaces(spaceIds)
     } catch (error) {
       this.logger.error(`checkNewSpacesByAvatarContent: ${error.message}`)
@@ -124,6 +126,7 @@ export class TwitterSpaceTrackingService {
 
     try {
       const spaceIds = await this.getSpacesByFleetline()
+      this.logger.debug('checkNewSpacesByFleetline', { idCount: spaceIds.length, ids: spaceIds })
       await this.getNewSpaces(spaceIds)
     } catch (error) {
       this.logger.error(`checkNewSpacesByFleetline: ${error.message}`)
@@ -149,7 +152,7 @@ export class TwitterSpaceTrackingService {
       return
     }
 
-    this.logger.debug('getNewSpaces', { newSpaceIds })
+    this.logger.warn('getNewSpaces', { newSpaceIds })
     const idChunks = ArrayUtils.splitIntoChunk(newSpaceIds, TWITTER_API_LIST_SIZE)
     await Promise.allSettled(idChunks.map((ids) => this.getSpacesByIds(ids)))
   }
