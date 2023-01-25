@@ -5,9 +5,9 @@ import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'disc
 import { baseLogger } from '../../../../../logger'
 import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackYoutubeLiveService } from '../../../../track/services/track-youtube-live.service'
-import { YoutubeChannel } from '../../../../youtube/models/youtube-channel.entity'
-import { YoutubeChannelControllerService } from '../../../../youtube/services/controller/youtube-channel-controller.service'
-import { YoutubeUtils } from '../../../../youtube/utils/youtube.utils'
+import { YoutubeChannel } from '../../../../youtube/model/youtube-channel.entity'
+import { YoutubeChannelControllerService } from '../../../../youtube/service/controller/youtube-channel-controller.service'
+import { YoutubeUtil } from '../../../../youtube/util/youtube.util'
 import { DiscordSlashCommandUtils } from '../../../utils/discord-slash-command.utils'
 import { TrackAddBaseSubcommand } from '../base/track-add-base-subcommand'
 
@@ -96,7 +96,7 @@ export class TrackAddYoutubeLiveCommand extends TrackAddBaseSubcommand {
   }
 
   protected getSuccessEmbedDescription(channel: YoutubeChannel): string {
-    return `Tracking **[${channel.name || channel.id}](${YoutubeUtils.getChannelUrl(channel.id)})** YouTube live`
+    return `Tracking **[${channel.name || channel.id}](${YoutubeUtil.getChannelUrl(channel.id)})** YouTube live`
   }
 
   protected getSuccessEmbedColor(): number {

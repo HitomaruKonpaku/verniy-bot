@@ -2,8 +2,8 @@
 import { youtube_v3 } from '@googleapis/youtube'
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
-import { YoutubeApiUtils } from '../../utils/youtube-api.utils'
-import { YoutubeApiService } from '../api/youtube-api.service'
+import { YoutubeEntityUtil } from '../../util/youtube-entity.util'
+import { YoutubeChannelApiService } from '../api/youtube-channel-api.service'
 import { YoutubeChannelService } from '../data/youtube-channel.service'
 
 @Injectable()
@@ -13,14 +13,14 @@ export class YoutubeChannelControllerService {
   constructor(
     @Inject(YoutubeChannelService)
     private readonly youtubeChannelService: YoutubeChannelService,
-    @Inject(YoutubeApiService)
-    private readonly youtubeApiService: YoutubeApiService,
+    @Inject(YoutubeChannelApiService)
+    private readonly youtubeChannelApiService: YoutubeChannelApiService,
   ) { }
 
   public async getOneById(id: string) {
     let channel = await this.youtubeChannelService.getOneById(id)
     if (!channel) {
-      const result = await this.youtubeApiService.getChannelsByIds([id])
+      const result = await this.youtubeChannelApiService.list([id])
       const item = result?.items?.[0]
       if (item) {
         channel = await this.saveChannel(item)
@@ -30,17 +30,7 @@ export class YoutubeChannelControllerService {
   }
 
   public async saveChannel(data: youtube_v3.Schema$Channel) {
-    const channel = await this.youtubeChannelService.save({
-      id: data.id,
-      isActive: true,
-      createdAt: data.snippet?.publishedAt
-        ? new Date(data.snippet.publishedAt).getTime()
-        : 0,
-      name: data.snippet?.title || null,
-      description: data.snippet?.description || null,
-      country: data.snippet?.country || null,
-      thumbnailUrl: YoutubeApiUtils.getThumbnailUrl(data.snippet?.thumbnails) || null,
-    })
+    const channel = await this.youtubeChannelService.save(YoutubeEntityUtil.buildChannel(data))
     return channel
   }
 }

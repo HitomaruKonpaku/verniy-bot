@@ -9,7 +9,7 @@ import { TrackService } from '../../track/services/track.service'
 import { TwitCastingService } from '../../twitcasting/services/twitcasting.service'
 import { TwitchService } from '../../twitch/services/twitch.service'
 import { TwitterService } from '../../twitter/services/twitter.service'
-import { YoutubeService } from '../../youtube/services/youtube.service'
+import { YoutubeService } from '../../youtube/service/youtube.service'
 import { DiscordClientService } from './discord-client.service'
 import { DiscordDbService } from './discord-db.service'
 

@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { youtube_v3 } from '@googleapis/youtube'
 
-export class YoutubeApiUtils {
+export class YoutubeApiUtil {
   public static getThumbnailUrl(thumbnails: youtube_v3.Schema$ThumbnailDetails) {
     const url = this.getThumbnail(thumbnails)?.url
     return url

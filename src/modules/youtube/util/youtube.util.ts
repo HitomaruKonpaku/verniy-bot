@@ -1,4 +1,4 @@
-export class YoutubeUtils {
+export class YoutubeUtil {
   public static getChannelUrl(id: string) {
     return `https://www.youtube.com/channel/${id}`
   }

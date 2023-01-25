@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/services/base-entity.service'
-import { YoutubeVideo } from '../../models/youtube-video.entity'
+import { YoutubeChannel } from '../../model/youtube-channel.entity'
 
 @Injectable()
-export class YoutubeVideoService extends BaseEntityService<YoutubeVideo> {
+export class YoutubeChannelService extends BaseEntityService<YoutubeChannel> {
   constructor(
-    @InjectRepository(YoutubeVideo)
-    public readonly repository: Repository<YoutubeVideo>,
+    @InjectRepository(YoutubeChannel)
+    public readonly repository: Repository<YoutubeChannel>,
   ) {
     super()
   }

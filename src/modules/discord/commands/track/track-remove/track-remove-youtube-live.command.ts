@@ -5,9 +5,9 @@ import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'disc
 import { baseLogger } from '../../../../../logger'
 import { TrackType } from '../../../../track/enums/track-type.enum'
 import { TrackYoutubeLiveService } from '../../../../track/services/track-youtube-live.service'
-import { YoutubeChannel } from '../../../../youtube/models/youtube-channel.entity'
-import { YoutubeChannelService } from '../../../../youtube/services/data/youtube-channel.service'
-import { YoutubeUtils } from '../../../../youtube/utils/youtube.utils'
+import { YoutubeChannel } from '../../../../youtube/model/youtube-channel.entity'
+import { YoutubeChannelService } from '../../../../youtube/service/data/youtube-channel.service'
+import { YoutubeUtil } from '../../../../youtube/util/youtube.util'
 import { TrackRemoveBaseSubcommand } from '../base/track-remove-base-subcommand'
 
 @Injectable()
@@ -74,7 +74,7 @@ export class TrackRemoveYoutubeLiveCommand extends TrackRemoveBaseSubcommand {
   }
 
   protected getSuccessEmbedDescription(channel: YoutubeChannel): string {
-    return `Untrack **[${channel.name || channel.id}](${YoutubeUtils.getChannelUrl(channel.id)})** YouTube live`
+    return `Untrack **[${channel.name || channel.id}](${YoutubeUtil.getChannelUrl(channel.id)})** YouTube live`
   }
 
   protected getSuccessEmbedColor(): number {

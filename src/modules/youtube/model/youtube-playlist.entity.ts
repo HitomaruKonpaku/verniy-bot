@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm'
 import { BaseExternalEntity } from '../../database/models/base-external.entity'
-import { PrivacyStatus } from '../enums/youtube.enum'
+import { PrivacyStatus } from '../enum/youtube.enum'
 import { YoutubeChannel } from './youtube-channel.entity'
 import { YoutubePlaylistItem } from './youtube-playlist-item.entity'
 
