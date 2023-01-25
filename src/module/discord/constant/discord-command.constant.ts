@@ -12,6 +12,8 @@ import { GetTwitchCommand } from '../command/get/get-twitch/get-twitch.command'
 import { GetTwitterSpaceCommand } from '../command/get/get-twitter/get-twitter-space.command'
 import { GetTwitterUserCommand } from '../command/get/get-twitter/get-twitter-user.command'
 import { GetTwitterCommand } from '../command/get/get-twitter/get-twitter.command'
+import { GetYoutubeChannelCommand } from '../command/get/get-youtube/get-youtube-channel.command'
+import { GetYoutubeCommand } from '../command/get/get-youtube/get-youtube.command'
 import { GetCommand } from '../command/get/get.command'
 import { StatusCommand } from '../command/status/status.command'
 import { TrackAddCommand } from '../command/track/track-add.command'
@@ -131,6 +133,8 @@ export const DISCORD_ALL_COMMANDS = [
   GetTwitCastingUserCommand,
   GetTwitCastingMovieCommand,
   GetTwitCastingMoviesByUserCommand,
+  GetYoutubeCommand,
+  GetYoutubeChannelCommand,
   GetTwitchCommand,
   GetTwitchUserCommand,
 ]

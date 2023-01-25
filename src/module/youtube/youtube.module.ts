@@ -8,11 +8,16 @@ import { YoutubePlaylistItem } from './model/youtube-playlist-item.entity'
 import { YoutubePlaylist } from './model/youtube-playlist.entity'
 import { YoutubeVideo } from './model/youtube-video.entity'
 import { YoutubeApiService } from './service/api/youtube-api.service'
+import { YoutubeChannelApiService } from './service/api/youtube-channel-api.service'
+import { YoutubePlaylistApiService } from './service/api/youtube-playlist-api.service'
+import { YoutubePlaylistItemApiService } from './service/api/youtube-playlist-item-api.service'
+import { YoutubeVideoApiService } from './service/api/youtube-video-api.service'
 import { YoutubeChannelControllerService } from './service/controller/youtube-channel-controller.service'
 import { YoutubeVideoControllerService } from './service/controller/youtube-video-controller.service'
 import { YoutubeChannelService } from './service/data/youtube-channel.service'
 import { YoutubeVideoService } from './service/data/youtube-video.service'
 import { YoutubeLiveTrackingService } from './service/tracking/youtube-live-tracking.service'
+import { YoutubeClientService } from './service/youtube-client.service'
 import { YoutubeService } from './service/youtube.service'
 
 @Module({
@@ -29,7 +34,12 @@ import { YoutubeService } from './service/youtube.service'
   ],
   providers: [
     YoutubeService,
+    YoutubeClientService,
     YoutubeApiService,
+    YoutubeChannelApiService,
+    YoutubeVideoApiService,
+    YoutubePlaylistApiService,
+    YoutubePlaylistItemApiService,
     YoutubeChannelService,
     YoutubeVideoService,
     YoutubeChannelControllerService,

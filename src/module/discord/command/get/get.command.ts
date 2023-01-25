@@ -7,6 +7,7 @@ import { BaseCommand } from '../base/base-command'
 import { GetTwitCastingCommand } from './get-twitcasting/get-twitcasting.command'
 import { GetTwitchCommand } from './get-twitch/get-twitch.command'
 import { GetTwitterCommand } from './get-twitter/get-twitter.command'
+import { GetYoutubeCommand } from './get-youtube/get-youtube.command'
 
 @Injectable()
 export class GetCommand extends BaseCommand {
@@ -24,6 +25,7 @@ export class GetCommand extends BaseCommand {
     .setDescription('Get')
     .addSubcommandGroup((group) => GetTwitterCommand.getSubcommandGroup(group))
     .addSubcommandGroup((group) => GetTwitCastingCommand.getSubcommandGroup(group))
+    .addSubcommandGroup((group) => GetYoutubeCommand.getSubcommandGroup(group))
     .addSubcommandGroup((group) => GetTwitchCommand.getSubcommandGroup(group))
 
   public async execute(interaction: ChatInputCommandInteraction) {
@@ -37,6 +39,7 @@ export class GetCommand extends BaseCommand {
     const instance = {
       twitter: GetTwitterCommand,
       twitcasting: GetTwitCastingCommand,
+      youtube: GetYoutubeCommand,
       twitch: GetTwitchCommand,
     }[group] || null
     return instance

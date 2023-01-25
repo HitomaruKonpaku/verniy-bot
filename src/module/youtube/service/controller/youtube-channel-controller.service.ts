@@ -21,7 +21,7 @@ export class YoutubeChannelControllerService {
     let channel = await this.youtubeChannelService.getOneById(id)
     if (!channel) {
       const result = await this.youtubeChannelApiService.list([id])
-      const item = result?.items?.[0]
+      const item = result.items?.[0]
       if (item) {
         channel = await this.saveChannel(item)
       }

@@ -9,6 +9,7 @@ export class YoutubeEntityUtil {
       id: data.id,
       isActive: true,
       createdAt: new Date(data.snippet.publishedAt || 0).getTime(),
+      updatedAt: Date.now(),
       name: data.snippet.title,
       description: data.snippet.description,
       thumbnailUrl: YoutubeApiUtil.getThumbnailUrl(data.snippet.thumbnails),
