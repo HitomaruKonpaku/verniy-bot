@@ -6,8 +6,8 @@ import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { AudioSpaceMetadataState } from '../../enums/twitter-space.enum'
 import { twitterAudioSpaceLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
-import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
+import { TwitterPublicApiService } from '../api/twitter-public-api.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 import { TwitterUserControllerService } from './twitter-user-controller.service'
 
@@ -22,8 +22,8 @@ export class TwitterSpaceControllerService {
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
-    @Inject(TwitterApiPublicService)
-    private readonly twitterApiPublicService: TwitterApiPublicService,
+    @Inject(TwitterPublicApiService)
+    private readonly twitterPublicApiService: TwitterPublicApiService,
   ) { }
 
   public async getOneById(id: string, refresh = false) {
@@ -111,7 +111,7 @@ export class TwitterSpaceControllerService {
   }
 
   public async saveAudioSpace(id: string) {
-    const audioSpace = await this.twitterApiPublicService.getAudioSpaceById(id)
+    const audioSpace = await this.twitterPublicApiService.getAudioSpaceById(id)
     this.logger.info('saveAudioSpace', { id, audioSpace })
 
     let playlistUrl: string
@@ -119,7 +119,7 @@ export class TwitterSpaceControllerService {
 
     if (audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING) {
       try {
-        playlistUrl = await this.twitterApiPublicService.getSpacePlaylistUrl(id, audioSpace)
+        playlistUrl = await this.twitterPublicApiService.getSpacePlaylistUrl(id, audioSpace)
         playlistActive = true
       } catch (error) {
         this.logger.error(`saveAudioSpace#getSpacePlaylistUrl: ${error.message}`, { id })

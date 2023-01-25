@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../logger'
 import { TWITTER_GUEST_TOKEN_DURATION } from '../constants/twitter.constant'
 import { twitterGuestTokenLimiter } from '../twitter.limiter'
-import { TwitterApiPublicService } from './api/twitter-api-public.service'
+import { TwitterPublicApiService } from './api/twitter-public-api.service'
 
 @Injectable()
 export class TwitterTokenService {
@@ -12,8 +12,8 @@ export class TwitterTokenService {
   private guestTokenCreatedAt: number
 
   constructor(
-    @Inject(forwardRef(() => TwitterApiPublicService))
-    private readonly twitterApiPublicService: TwitterApiPublicService,
+    @Inject(forwardRef(() => TwitterPublicApiService))
+    private readonly twitterPublicApiService: TwitterPublicApiService,
   ) { }
 
   public async getGuestToken(forceRefresh = false) {
@@ -21,7 +21,7 @@ export class TwitterTokenService {
       const tokenDeltaTime = Date.now() - (this.guestTokenCreatedAt || 0)
       if (forceRefresh || !(this.guestToken && tokenDeltaTime < TWITTER_GUEST_TOKEN_DURATION)) {
         this.logger.debug('--> getGuestToken')
-        this.guestToken = await this.twitterApiPublicService.getGuestToken()
+        this.guestToken = await this.twitterPublicApiService.getGuestToken()
         this.guestTokenCreatedAt = Date.now()
         this.logger.debug('<-- getGuestToken', { guestToken: this.guestToken })
       }

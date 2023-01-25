@@ -13,8 +13,8 @@ import { twitterAudioSpaceLimiter, twitterSpacesByFleetsAvatarContentLimiter } f
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
 import { TwitterSpaceUtils } from '../../utils/twitter-space.utils'
 import { TwitterUtils } from '../../utils/twitter.utils'
-import { TwitterApiPublicService } from '../api/twitter-api-public.service'
 import { TwitterApiService } from '../api/twitter-api.service'
+import { TwitterPublicApiService } from '../api/twitter-public-api.service'
 import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
@@ -43,8 +43,8 @@ export class TwitterSpaceTrackingService {
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
-    @Inject(TwitterApiPublicService)
-    private readonly twitterApiPublicService: TwitterApiPublicService,
+    @Inject(TwitterPublicApiService)
+    private readonly twitterPublicApiService: TwitterPublicApiService,
     @Inject(TwitterTokenService)
     private readonly twitterTokenService: TwitterTokenService,
     @Inject(forwardRef(() => DiscordService))
@@ -142,7 +142,7 @@ export class TwitterSpaceTrackingService {
     try {
       const limiter = twitterSpacesByFleetsAvatarContentLimiter
       const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
-      const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterApiPublicService.getSpacesByFleetsAvatarContent(v))))
+      const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterPublicApiService.getSpacesByFleetsAvatarContent(v))))
       const spaceIds = result
         .filter((v) => v.status === 'fulfilled')
         .map((v: any) => Object.values(v.value.users))
