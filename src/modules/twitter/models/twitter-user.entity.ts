@@ -1,16 +1,10 @@
 import { Column, Entity } from 'typeorm'
-import { BaseExternalEntity } from '../../database/models/base-external.entity'
+import { BaseExternalUserEntity } from '../../database/models/base-external-user.entity'
 import { TwitterSpace } from './twitter-space.entity'
 import { TwitterTweet } from './twitter-tweet.entity'
 
 @Entity('twitter_user')
-export class TwitterUser extends BaseExternalEntity {
-  @Column({ name: 'updated_at', type: 'numeric', nullable: true })
-  updatedAt?: number
-
-  @Column({ name: 'is_retired', type: 'boolean', default: false })
-  isRetired?: boolean
-
+export class TwitterUser extends BaseExternalUserEntity {
   @Column({ type: 'text' })
   username: string
 

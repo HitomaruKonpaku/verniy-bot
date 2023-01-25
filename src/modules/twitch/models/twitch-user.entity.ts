@@ -1,9 +1,9 @@
 import { Column, Entity } from 'typeorm'
-import { BaseExternalEntity } from '../../database/models/base-external.entity'
+import { BaseExternalUserEntity } from '../../database/models/base-external-user.entity'
 import { TwitchStream } from './twitch-stream.entity'
 
 @Entity('twitch_user')
-export class TwitchUser extends BaseExternalEntity {
+export class TwitchUser extends BaseExternalUserEntity {
   @Column({ name: 'username', type: 'text' })
   username: string
 

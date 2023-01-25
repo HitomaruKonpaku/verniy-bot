@@ -1,9 +1,9 @@
 import { Column, Entity } from 'typeorm'
-import { BaseExternalEntity } from '../../database/models/base-external.entity'
+import { BaseExternalUserEntity } from '../../database/models/base-external-user.entity'
 import { TwitCastingMovie } from './twitcasting-movie.entity'
 
 @Entity('twitcasting_user')
-export class TwitCastingUser extends BaseExternalEntity {
+export class TwitCastingUser extends BaseExternalUserEntity {
   @Column({ name: 'screen_id', type: 'text' })
   screenId: string
 
