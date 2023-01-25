@@ -7,7 +7,9 @@ import { TwitterGraphqlApi } from '../../apis/twitter-graphql.api'
 import { TwitterGuestApi } from '../../apis/twitter-guest.api'
 import { TwitterLiveVideoStreamApi } from '../../apis/twitter-live-video-stream.api'
 import { TWITTER_PUBLIC_AUTHORIZATION } from '../../constants/twitter.constant'
-import { AudioSpace, LiveVideoStreamStatus } from '../../interfaces/twitter.interface'
+import { AvatarContent, Fleetline } from '../../interfaces/twitter-fleet.interface'
+import { AudioSpace } from '../../interfaces/twitter-graphql.interface'
+import { Status } from '../../interfaces/twitter-live-video-stream.interface'
 import { TwitterSpaceUtils } from '../../utils/twitter-space.utils'
 import { TwitterTokenService } from '../twitter-token.service'
 
@@ -43,7 +45,7 @@ export class TwitterPublicApiService {
     return data.guest_token
   }
 
-  public async getSpacesByFleetsAvatarContent(userIds: string[]) {
+  public async getSpacesByFleetsAvatarContent(userIds: string[]): Promise<AvatarContent> {
     const requestId = randomUUID()
     try {
       this.logger.debug('--> getSpacesByFleetsAvatarContent', { requestId, userCount: userIds.length })
@@ -59,6 +61,21 @@ export class TwitterPublicApiService {
     }
   }
 
+  public async getSpacesByFleetsFleetline(): Promise<Fleetline> {
+    const requestId = randomUUID()
+    try {
+      this.logger.debug('--> getSpacesByFleetsFleetline', { requestId })
+      const { data } = await TwitterFleetApi.getFleetline(
+        this.getCookieHeaders(),
+      )
+      this.logger.debug('<-- getSpacesByFleetsFleetline', { requestId })
+      return data
+    } catch (error) {
+      this.logger.error(`getSpacesByFleetsFleetline: ${error.message}`, { requestId })
+      throw error
+    }
+  }
+
   public async getAudioSpaceById(spaceId: string): Promise<AudioSpace> {
     const { data } = await TwitterGraphqlApi.getAudioSpaceById(
       spaceId,
@@ -67,7 +84,7 @@ export class TwitterPublicApiService {
     return data?.data?.audioSpace
   }
 
-  public async getLiveVideoStreamStatus(mediaKey: string): Promise<LiveVideoStreamStatus> {
+  public async getLiveVideoStreamStatus(mediaKey: string): Promise<Status> {
     const { data } = await TwitterLiveVideoStreamApi.getStatus(
       mediaKey,
       await this.getGuestTokenHeaders(),

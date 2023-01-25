@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import { AudioSpaceMetadataState } from '../enums/twitter-space.enum'
+
+import { AudioSpaceMetadataState } from '../enums/twitter-graphql.enum'
 
 export interface AudioSpaceMetadata {
   rest_id: string
@@ -95,18 +96,4 @@ export interface AudioSpace {
   is_subscribed?: boolean
   participants?: AudioSpaceParticipants
   sharings?: any
-}
-
-export interface LiveVideoStreamStatus {
-  source: {
-    location: string
-    noRedirectPlaybackUrl: string
-    status: string
-    streamType: string
-  }
-  sessionId: string
-  chatToken: string
-  lifecycleToken: string
-  shareUrl: string
-  chatPermissionType: string
 }

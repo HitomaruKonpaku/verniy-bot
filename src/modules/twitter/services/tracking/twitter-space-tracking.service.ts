@@ -8,6 +8,7 @@ import { TrackTwitterSpace } from '../../../track/models/track-twitter-space.ent
 import { TrackTwitterSpaceService } from '../../../track/services/track-twitter-space.service'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { SpaceState } from '../../enums/twitter-space.enum'
+import { AvatarContent } from '../../interfaces/twitter-fleet.interface'
 import { TwitterSpace } from '../../models/twitter-space.entity'
 import { twitterAudioSpaceLimiter, twitterSpacesByFleetsAvatarContentLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtils } from '../../utils/twitter-entity.utils'
@@ -154,9 +155,9 @@ export class TwitterSpaceTrackingService {
       const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterPublicApiService.getSpacesByFleetsAvatarContent(v))))
       const spaceIds = result
         .filter((v) => v.status === 'fulfilled')
-        .map((v: any) => Object.values(v.value.users))
+        .map((v: PromiseFulfilledResult<AvatarContent>) => Object.values(v.value.users))
         .flat()
-        .map((v: any) => v?.spaces?.live_content?.audiospace?.broadcast_id)
+        .map((v) => v?.spaces?.live_content?.audiospace?.broadcast_id)
         .filter((v) => v) || []
       return spaceIds
     } catch (error) {
