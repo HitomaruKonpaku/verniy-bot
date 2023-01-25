@@ -61,7 +61,7 @@ export class TwitchChatTrackingService {
   }
 
   private async joinDefaultChannels() {
-    this.logger.warn('joinDefaultChannels')
+    this.logger.debug('joinDefaultChannels')
     try {
       const usernames = await this.trackTwitchChatService.getUsernamesForChatCheck()
       if (usernames.length) {
@@ -74,7 +74,7 @@ export class TwitchChatTrackingService {
   }
 
   private async initFilterUserIds() {
-    this.logger.warn('initFilterUserIds')
+    this.logger.debug('initFilterUserIds')
     try {
       const userIds = await this.trackTwitchChatService.getFilterUserIdsForChatFilter()
       if (userIds.length) {
