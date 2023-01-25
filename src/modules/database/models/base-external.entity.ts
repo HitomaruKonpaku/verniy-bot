@@ -10,4 +10,7 @@ export abstract class BaseExternalEntity {
 
   @Column({ name: 'created_at', type: 'numeric', default: () => DB_CURRENT_TIMESTAMP })
   createdAt?: number
+
+  @Column({ name: 'updated_at', type: 'numeric', nullable: true })
+  updatedAt?: number
 }

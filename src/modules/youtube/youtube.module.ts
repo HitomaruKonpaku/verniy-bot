@@ -4,6 +4,8 @@ import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
 import { TrackModule } from '../track/track.module'
 import { YoutubeChannel } from './models/youtube-channel.entity'
+import { YoutubePlaylistItem } from './models/youtube-playlist-item.entity'
+import { YoutubePlaylist } from './models/youtube-playlist.entity'
 import { YoutubeVideo } from './models/youtube-video.entity'
 import { YoutubeApiService } from './services/api/youtube-api.service'
 import { YoutubeChannelControllerService } from './services/controller/youtube-channel-controller.service'
@@ -18,6 +20,8 @@ import { YoutubeService } from './services/youtube.service'
     TypeOrmModule.forFeature([
       YoutubeChannel,
       YoutubeVideo,
+      YoutubePlaylist,
+      YoutubePlaylistItem,
     ]),
     ConfigModule,
     TrackModule,

@@ -33,6 +33,8 @@ import { TwitterSpace } from '../../twitter/models/twitter-space.entity'
 import { TwitterTweet } from '../../twitter/models/twitter-tweet.entity'
 import { TwitterUser } from '../../twitter/models/twitter-user.entity'
 import { YoutubeChannel } from '../../youtube/models/youtube-channel.entity'
+import { YoutubePlaylistItem } from '../../youtube/models/youtube-playlist-item.entity'
+import { YoutubePlaylist } from '../../youtube/models/youtube-playlist.entity'
 import { YoutubeVideo } from '../../youtube/models/youtube-video.entity'
 
 export const DB_ENTITIES = [
@@ -51,6 +53,8 @@ export const DB_ENTITIES = [
 
   YoutubeChannel,
   YoutubeVideo,
+  YoutubePlaylist,
+  YoutubePlaylistItem,
 
   TwitchUser,
   TwitchStream,
