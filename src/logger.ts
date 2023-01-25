@@ -1,6 +1,6 @@
 import winston, { format } from 'winston'
 import DailyRotateFile from 'winston-daily-rotate-file'
-import { LOGGER_DATE_PATTERN, LOGGER_DIR } from './constants/logger.constant'
+import { LOGGER_DATE_PATTERN, LOGGER_DIR } from './constant/logger.constant'
 
 function getPrintFormat() {
   return format.printf((info) => {

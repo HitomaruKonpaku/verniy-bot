@@ -1,6 +1,6 @@
 import { CronJob } from 'cron'
 import winston from 'winston'
-import { CRON_TIME_ZONE } from '../../constants/cron.constant'
+import { CRON_TIME_ZONE } from '../../constant/cron.constant'
 
 export abstract class BaseCronService {
   protected readonly abstract logger: winston.Logger

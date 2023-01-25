@@ -3,7 +3,7 @@
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
 import 'dotenv/config'
-import { DISCORD_GLOBAL_COMMANDS, DISCORD_GUILD_COMMANDS } from './modules/discord/constants/discord-command.constant'
+import { DISCORD_GLOBAL_COMMANDS, DISCORD_GUILD_COMMANDS } from './module/discord/constant/discord-command.constant'
 
 const updateGuildCommands = true
 const updateGlobalCommands = true

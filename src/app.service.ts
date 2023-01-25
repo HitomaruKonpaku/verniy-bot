@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { DiscordService } from './modules/discord/services/discord.service'
+import { DiscordService } from './module/discord/service/discord.service'
 
 @Injectable()
 export class AppService {
