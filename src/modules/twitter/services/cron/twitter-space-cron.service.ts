@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import axios from 'axios'
 import { baseLogger } from '../../../../logger'
-import { BaseCronService } from '../../../../shared/services/base-cron.service'
+import { BaseCronService } from '../../../../shared/service/base-cron.service'
 import { TwitterSpace } from '../../models/twitter-space.entity'
 import { twitterSpacePlaylistLimiter } from '../../twitter.limiter'
 import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'

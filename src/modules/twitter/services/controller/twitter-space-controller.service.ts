@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { SpaceV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
-import { ArrayUtils } from '../../../../utils/array.utils'
+import { ArrayUtil } from '../../../../util/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { AudioSpaceMetadataState } from '../../enums/twitter-graphql.enum'
 import { twitterAudioSpaceLimiter } from '../../twitter.limiter'
@@ -92,7 +92,7 @@ export class TwitterSpaceControllerService {
       return []
     }
 
-    const idChunks = ArrayUtils.splitIntoChunk(ids, TWITTER_API_LIST_SIZE)
+    const idChunks = ArrayUtil.splitIntoChunk(ids, TWITTER_API_LIST_SIZE)
     const results = await Promise.allSettled(idChunks.map((idChunk) => this.getManyByIds(idChunk)))
     const spaces = results
       .map((result) => (result.status === 'fulfilled' ? result.value : []))

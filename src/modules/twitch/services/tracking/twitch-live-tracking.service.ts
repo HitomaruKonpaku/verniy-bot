@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
-import { ArrayUtils } from '../../../../utils/array.utils'
+import { ArrayUtil } from '../../../../util/array.utils'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackTwitchLiveService } from '../../../track/services/track-twitch-live.service'
@@ -48,7 +48,7 @@ export class TwitchLiveTrackingService {
       if (!userIds.length) {
         return
       }
-      const chunks = ArrayUtils.splitIntoChunk(userIds, TWITCH_API_LIST_SIZE)
+      const chunks = ArrayUtil.splitIntoChunk(userIds, TWITCH_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((v) => this.twitchUserControllerService.fetchUsersByIds(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)
@@ -58,7 +58,7 @@ export class TwitchLiveTrackingService {
   private async checkStreams() {
     try {
       const userIds = await this.trackTwitchLiveService.getUserIdsForLiveCheck()
-      const chunks = ArrayUtils.splitIntoChunk(userIds, TWITCH_API_LIST_SIZE)
+      const chunks = ArrayUtil.splitIntoChunk(userIds, TWITCH_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((v) => this.checkStreamsByUserIds(v)))
     } catch (error) {
       this.logger.error(`checkStreams: ${error.message}`)

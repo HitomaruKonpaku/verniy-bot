@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
 import { baseLogger } from '../../../../logger'
-import { BaseCronService } from '../../../../shared/services/base-cron.service'
-import { ArrayUtils } from '../../../../utils/array.utils'
+import { BaseCronService } from '../../../../shared/service/base-cron.service'
+import { ArrayUtil } from '../../../../util/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { TwitterUser } from '../../models/twitter-user.entity'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -36,7 +36,7 @@ export class TwitterUserCronService extends BaseCronService {
     try {
       const users = await this.twitterUserService.getManyForCheck()
       this.logger.debug('checkUsers', { userCount: users.length })
-      const chunks = ArrayUtils.splitIntoChunk(users, TWITTER_API_LIST_SIZE)
+      const chunks = ArrayUtil.splitIntoChunk(users, TWITTER_API_LIST_SIZE)
       await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.getUserChunk(v))))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)

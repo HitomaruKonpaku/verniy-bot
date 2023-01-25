@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
-import { BaseCronService } from '../../../../shared/services/base-cron.service'
+import { BaseCronService } from '../../../../shared/service/base-cron.service'
 import { TwitCastingMovieControllerService } from '../controller/twitcasting-movie-controller.service'
 import { TwitCastingMovieService } from '../data/twitcasting-movie.service'
 

@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { SpaceV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
-import { ArrayUtils } from '../../../../utils/array.utils'
+import { ArrayUtil } from '../../../../util/array.utils'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackTwitterSpace } from '../../../track/models/track-twitter-space.entity'
@@ -71,7 +71,7 @@ export class TwitterSpaceTrackingService {
     try {
       const spaceIds = await this.twitterSpaceService.getLiveSpaceIds()
       if (spaceIds.length) {
-        const chunks = ArrayUtils.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
+        const chunks = ArrayUtil.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
       }
     } catch (error) {
@@ -87,7 +87,7 @@ export class TwitterSpaceTrackingService {
       const userIds = await this.trackTwitterSpaceService.getUserIds()
       if (userIds.length) {
         this.logger.debug('checkNewSpaces', { userCount: userIds.length })
-        const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+        const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.getSpaces(v)))
       }
     } catch (error) {
@@ -153,7 +153,7 @@ export class TwitterSpaceTrackingService {
     }
 
     this.logger.warn('getNewSpaces', { newSpaceIds })
-    const idChunks = ArrayUtils.splitIntoChunk(newSpaceIds, TWITTER_API_LIST_SIZE)
+    const idChunks = ArrayUtil.splitIntoChunk(newSpaceIds, TWITTER_API_LIST_SIZE)
     await Promise.allSettled(idChunks.map((ids) => this.getSpacesByIds(ids)))
   }
 
@@ -185,7 +185,7 @@ export class TwitterSpaceTrackingService {
     }
     try {
       const limiter = twitterSpacesByFleetsAvatarContentLimiter
-      const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+      const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
       const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterPublicApiService.getSpacesByFleetsAvatarContent(v))))
       const spaceIds = result
         .filter((v) => v.status === 'fulfilled')
@@ -293,7 +293,7 @@ export class TwitterSpaceTrackingService {
         return
       }
 
-      const newUserIds = ArrayUtils.difference(
+      const newUserIds = ArrayUtil.difference(
         TwitterSpaceUtils.getUserIds(newSpace),
         TwitterSpaceUtils.getUserIds(oldSpace),
       )

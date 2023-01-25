@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { randomUUID } from 'crypto'
 import { SpaceV2CreatorLookupParams, UserV1 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
-import { ArrayUtils } from '../../../../utils/array.utils'
+import { ArrayUtil } from '../../../../util/array.utils'
 import { TWITTER_API_LIST_SIZE } from '../../constants/twitter.constant'
 import { twitterSpaceLimiter, twitterSpacesByCreatorIdsLimiter, twitterSpacesByIdsLimiter, twitterUserLookupLimiter, twitterUserShowLimiter } from '../../twitter.limiter'
 import { TwitterClientService } from './twitter-client.service'
@@ -57,7 +57,7 @@ export class TwitterApiService {
   }
 
   public async getAllUsersByUserIds(userIds: string[]): Promise<UserV1[]> {
-    const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+    const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
     const results = await Promise.allSettled(chunks.map((v) => this.getUsersByUserIds(v)))
     const users = results.filter((v) => v.status === 'fulfilled').flatMap((v: any) => v.value)
     return users
@@ -79,7 +79,7 @@ export class TwitterApiService {
   }
 
   public async getAllUsersByUsernames(usernames: string[]): Promise<UserV1[]> {
-    const chunks = ArrayUtils.splitIntoChunk(usernames, TWITTER_API_LIST_SIZE)
+    const chunks = ArrayUtil.splitIntoChunk(usernames, TWITTER_API_LIST_SIZE)
     const results = await Promise.allSettled(chunks.map((v) => this.getUsersByUsernames(v)))
     const users = results.filter((v) => v.status === 'fulfilled').flatMap((v: any) => v.value)
     return users

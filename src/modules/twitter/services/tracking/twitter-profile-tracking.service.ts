@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { bold, inlineCode, MessageCreateOptions } from 'discord.js'
 import { UserV1 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
-import { ArrayUtils } from '../../../../utils/array.utils'
+import { ArrayUtil } from '../../../../util/array.utils'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackTwitterProfileService } from '../../../track/services/track-twitter-profile.service'
@@ -42,7 +42,7 @@ export class TwitterProfileTrackingService {
       const userIds = await this.trackTwitterProfileService.getUserIds()
       if (userIds.length) {
         this.logger.debug('execute', { userCount: userIds.length })
-        const chunks = ArrayUtils.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+        const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.checkUsers(v)))
       }
     } catch (error) {

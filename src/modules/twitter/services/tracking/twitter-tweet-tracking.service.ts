@@ -3,7 +3,7 @@ import { hideLinkEmbed } from 'discord.js'
 import { EventEmitter } from 'events'
 import { ETwitterStreamEvent, TweetStream, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
-import { AppUtils } from '../../../../utils/app.utils'
+import { AppUtil } from '../../../../util/app.utils'
 import { ConfigService } from '../../../config/services/config.service'
 import { DiscordService } from '../../../discord/services/discord.service'
 import { TrackTwitterTweetService } from '../../../track/services/track-twitter-tweet.service'
@@ -59,7 +59,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
       this.logger.error(`connect: ${error.message}`)
       const retryMs = ([10, 20, 30][retryCount] || 60) * 1000
       this.logger.info(`connect: Retry in ${retryMs}ms`)
-      await AppUtils.sleep(retryMs)
+      await AppUtil.sleep(retryMs)
       this.connect(retryCount + 1)
     }
   }
@@ -175,7 +175,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
       this.logger.error(`initStreamRules: ${error.message}`)
       const retryMs = ([5, 10, 20][retryCount] || 30) * 1000
       this.logger.info(`initStreamRules: Retry in ${retryMs}ms`)
-      await AppUtils.sleep(retryMs)
+      await AppUtil.sleep(retryMs)
       await this.initStreamRules(retryCount + 1)
     }
   }

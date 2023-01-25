@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { BaseEntityService } from '../../../../shared/services/base-entity.service'
+import { BaseEntityService } from '../../../../shared/service/base-entity.service'
 import { TwitterFilteredStreamUser } from '../../models/twitter-filtered-stream-user.entity'
 
 @Injectable()
