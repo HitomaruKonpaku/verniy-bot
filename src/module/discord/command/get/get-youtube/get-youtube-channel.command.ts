@@ -37,12 +37,13 @@ export class GetYoutubeChannelCommand extends BaseCommand {
 
     const id = YoutubeChannelUtil.parseId(interaction.options.getString('id', true))
     const refresh = interaction.options.getBoolean('refresh')
+      && await this.isAppOwner(interaction)
     let channel = refresh
       ? null
       : await this.youtubeChannelService.getOneById(id)
 
     if (!channel) {
-      channel = await this.youtubeChannelControllerService.getOneById(id)
+      channel = await this.youtubeChannelControllerService.getOneById(id, refresh)
     }
 
     if (!channel) {

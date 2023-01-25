@@ -17,8 +17,10 @@ export class YoutubeChannelControllerService {
     private readonly youtubeChannelApiService: YoutubeChannelApiService,
   ) { }
 
-  public async getOneById(id: string) {
-    let channel = await this.youtubeChannelService.getOneById(id)
+  public async getOneById(id: string, refresh = false) {
+    let channel = refresh
+      ? null
+      : await this.youtubeChannelService.getOneById(id)
     if (!channel) {
       const result = await this.youtubeChannelApiService.list([id])
       const item = result.items?.[0]
