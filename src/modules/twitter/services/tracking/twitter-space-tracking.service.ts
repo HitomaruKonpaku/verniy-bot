@@ -59,6 +59,26 @@ export class TwitterSpaceTrackingService {
     await this.checkLiveSpaces()
   }
 
+  // #region Checkers
+
+  /**
+   * Get & update all current live Spaces
+   */
+  private async checkLiveSpaces() {
+    try {
+      const spaceIds = await this.twitterSpaceService.getLiveSpaceIds()
+      if (spaceIds.length) {
+        const chunks = ArrayUtils.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
+        await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
+      }
+    } catch (error) {
+      this.logger.error(`checkLiveSpaces: ${error.message}`)
+    }
+
+    const interval = this.liveSpacesCheckInterval
+    setTimeout(() => this.checkLiveSpaces(), interval)
+  }
+
   private async checkNewSpaces() {
     try {
       const userIds = await this.trackTwitterSpaceService.getUserIds()
@@ -80,20 +100,27 @@ export class TwitterSpaceTrackingService {
     }
   }
 
-  private async checkLiveSpaces() {
+  private async checkNewSpacesByPublicApi() {
     try {
-      const spaceIds = await this.twitterSpaceService.getLiveSpaceIds()
-      if (spaceIds.length) {
-        const chunks = ArrayUtils.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
-        await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
+      const userIds = await this.trackTwitterSpaceService.getUserIds()
+      if (!userIds.length) {
+        return
       }
+      this.logger.debug('checkNewSpacesByPublicApi', { userCount: userIds.length })
+      const spaceIds = await this.getSpaceIdsByUserIdsByPublicApi(userIds)
+      if (!spaceIds.length) {
+        return
+      }
+      const chunks = ArrayUtils.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
+      await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
     } catch (error) {
-      this.logger.error(`checkLiveSpaces: ${error.message}`)
+      this.logger.error(`checkNewSpacesByPublicApi: ${error.message}`)
     }
-
-    const interval = this.liveSpacesCheckInterval
-    setTimeout(() => this.checkLiveSpaces(), interval)
   }
+
+  // #endregion
+
+  // #region Get
 
   private async getSpacesByIds(ids: string[]) {
     try {
@@ -117,24 +144,6 @@ export class TwitterSpaceTrackingService {
     }
   }
 
-  private async checkNewSpacesByPublicApi() {
-    try {
-      const userIds = await this.trackTwitterSpaceService.getUserIds()
-      if (!userIds.length) {
-        return
-      }
-      this.logger.debug('checkNewSpacesByPublicApi', { userCount: userIds.length })
-      const spaceIds = await this.getSpaceIdsByUserIdsByPublicApi(userIds)
-      if (!spaceIds.length) {
-        return
-      }
-      const chunks = ArrayUtils.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
-      await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
-    } catch (error) {
-      this.logger.error(`checkNewSpacesByPublicApi: ${error.message}`)
-    }
-  }
-
   private async getSpaceIdsByUserIdsByPublicApi(userIds: string[]): Promise<string[]> {
     if (!userIds?.length) {
       return []
@@ -155,6 +164,10 @@ export class TwitterSpaceTrackingService {
     }
     return []
   }
+
+  // #endregion
+
+  // #region Update
 
   private async updateSpace(space: SpaceV2) {
     try {
@@ -214,6 +227,10 @@ export class TwitterSpaceTrackingService {
       this.logger.error(`updateUnknownUsers: ${error.message}`)
     }
   }
+
+  // #endregion
+
+  // #region Notification
 
   public async notifySpace(newSpace: TwitterSpace, oldSpace?: TwitterSpace) {
     const spaceId = newSpace.id
@@ -293,4 +310,6 @@ export class TwitterSpaceTrackingService {
     }
     return []
   }
+
+  // #endregion
 }
