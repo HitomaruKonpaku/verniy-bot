@@ -8,6 +8,8 @@ import { YoutubeApiService } from './youtube-api.service'
 export class YoutubePlaylistApiService extends YoutubeApiService {
   protected logger = baseLogger.child({ context: YoutubePlaylistApiService.name })
 
+  private readonly part = ['id', 'snippet', 'contentDetails', 'status']
+
   /**
    * @see https://developers.google.com/youtube/v3/docs/playlists/list
    */
@@ -17,7 +19,7 @@ export class YoutubePlaylistApiService extends YoutubeApiService {
   ) {
     const { data } = await this.youtube.playlists.list({
       id: ids,
-      part: ['id', 'snippet', 'contentDetails', 'status'],
+      part: this.part,
       maxResults: this.maxResults,
       ...options,
     })

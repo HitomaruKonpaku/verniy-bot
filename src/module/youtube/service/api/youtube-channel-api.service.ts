@@ -8,6 +8,8 @@ import { YoutubeApiService } from './youtube-api.service'
 export class YoutubeChannelApiService extends YoutubeApiService {
   protected logger = baseLogger.child({ context: YoutubeChannelApiService.name })
 
+  private readonly part = ['id', 'snippet', 'contentDetails', 'status', 'statistics']
+
   /**
    * @see https://developers.google.com/youtube/v3/docs/channels/list
    */
@@ -17,7 +19,7 @@ export class YoutubeChannelApiService extends YoutubeApiService {
   ) {
     const { data } = await this.youtube.channels.list({
       id: ids,
-      part: ['id', 'snippet', 'contentDetails', 'status', 'statistics'],
+      part: this.part,
       maxResults: this.maxResults,
       ...options,
     })
