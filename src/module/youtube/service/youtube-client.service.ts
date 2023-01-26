@@ -16,7 +16,7 @@ export class YoutubeClientService {
   protected initClient() {
     const key = process.env.YOUTUBE_API_KEY
     if (!key) {
-      this.logger.warn('YOUTUBE_API_KEY not found')
+      this.logger.error('YOUTUBE_API_KEY not found')
     }
     this.youtube = youtube({ version: 'v3', auth: key })
   }
