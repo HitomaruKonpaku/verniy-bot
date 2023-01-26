@@ -3,7 +3,8 @@ import { youtube_v3 } from '@googleapis/youtube'
 
 export class YoutubeApiUtil {
   public static getThumbnailUrl(thumbnails: youtube_v3.Schema$ThumbnailDetails) {
-    const url = this.getThumbnail(thumbnails)?.url?.replace?.(/s\d+.+/, 's0')
+    const url = this.getThumbnail(thumbnails)?.url
+      ?.replace?.(/s\d+.+/, 's0')
     return url
   }
 
