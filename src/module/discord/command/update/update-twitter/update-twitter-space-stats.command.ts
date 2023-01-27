@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'disc
 import { baseLogger } from '../../../../../logger'
 import { TwitterSpaceControllerService } from '../../../../twitter/service/controller/twitter-space-controller.service'
 import { TwitterSpaceService } from '../../../../twitter/service/data/twitter-space.service'
-import { twitterAudioSpaceBatchLimiter } from '../../../../twitter/twitter.limiter'
+import { twitterAudioSpaceBatchLimiter, twitterAudioSpaceLimiter } from '../../../../twitter/twitter.limiter'
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
@@ -22,8 +22,14 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
   ) {
     super()
 
+    this.limiter.on('empty', () => {
+      this.logger.warn('[LIMITER] empty')
+    })
+    this.limiter.on('idle', () => {
+      this.logger.warn('[LIMITER] idle')
+    })
     this.limiter.on('depleted', (empty) => {
-      this.logger.warn('limiter depleted', { empty })
+      this.logger.warn('[LIMITER] depleted', { empty })
     })
   }
 
@@ -57,7 +63,11 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
         do {
           try {
             // eslint-disable-next-line no-await-in-loop
-            await this.limiter.schedule(() => this.twitterSpaceControllerService.saveAudioSpace(space.id))
+            await this.limiter.schedule(
+              () => twitterAudioSpaceLimiter.schedule(
+                () => this.twitterSpaceControllerService.saveAudioSpace(space.id),
+              ),
+            )
             isSuccess = true
           } catch (error) {
             this.logger.error(`saveAudioSpace: ${error.message}`, { id: space.id })
