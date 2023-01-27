@@ -2,8 +2,6 @@ import Bottleneck from 'bottleneck'
 
 const reservoirRefreshInterval = 15 * 60 * 1000
 
-const audioSpaceReservoirRefreshInterval = 16 * 60 * 1000
-
 export const twitterGuestTokenLimiter = new Bottleneck({ maxConcurrent: 1 })
 
 /**
@@ -73,7 +71,7 @@ export const twitterAudioSpaceLimiter = new Bottleneck({
 })
 
 export const twitterAudioSpaceBatchLimiter = new Bottleneck({
-  reservoir: 450,
-  reservoirRefreshInterval: audioSpaceReservoirRefreshInterval,
-  reservoirRefreshAmount: 450,
+  reservoir: 150,
+  reservoirRefreshInterval: 5 * 60 * 1000,
+  reservoirRefreshAmount: 150,
 })
