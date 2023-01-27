@@ -44,6 +44,8 @@ import { TrackRemoveYoutubeLiveCommand } from '../command/track/track-remove/tra
 import { UpdateTwitterSpaceStatsCommand } from '../command/update/update-twitter/update-twitter-space-stats.command'
 import { UpdateTwitterSpaceCommand } from '../command/update/update-twitter/update-twitter-space.command'
 import { UpdateTwitterCommand } from '../command/update/update-twitter/update-twitter.command'
+import { UpdateYoutubeChannelCommand } from '../command/update/update-youtube/update-youtube-channel.command'
+import { UpdateYoutubeCommand } from '../command/update/update-youtube/update-youtube.command'
 import { UpdateCommand } from '../command/update/update.command'
 
 export const DISCORD_APP_COMMANDS = [
@@ -89,6 +91,8 @@ export const DISCORD_ALL_COMMANDS = [
   UpdateTwitterCommand,
   UpdateTwitterSpaceCommand,
   UpdateTwitterSpaceStatsCommand,
+  UpdateYoutubeCommand,
+  UpdateYoutubeChannelCommand,
 
   // status
   StatusCommand,

@@ -5,6 +5,7 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { BaseCommand } from '../base/base-command'
 import { UpdateTwitterCommand } from './update-twitter/update-twitter.command'
+import { UpdateYoutubeCommand } from './update-youtube/update-youtube.command'
 
 @Injectable()
 export class UpdateCommand extends BaseCommand {
@@ -22,6 +23,7 @@ export class UpdateCommand extends BaseCommand {
     .setDescription('Update')
     .setDefaultMemberPermissions(0)
     .addSubcommandGroup((group) => UpdateTwitterCommand.getSubcommandGroup(group))
+    .addSubcommandGroup((group) => UpdateYoutubeCommand.getSubcommandGroup(group))
 
   public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
@@ -40,6 +42,7 @@ export class UpdateCommand extends BaseCommand {
   private getCommandService(group: string) {
     const instance = {
       twitter: UpdateTwitterCommand,
+      youtube: UpdateYoutubeCommand,
     }[group] || null
     return instance
   }
