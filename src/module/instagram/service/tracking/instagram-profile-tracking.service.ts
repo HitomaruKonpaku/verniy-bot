@@ -58,8 +58,7 @@ export class InstagramProfileTrackingService {
   }
 
   private async onProfileChange(newUser: InstagramUser, oldUser: InstagramUser) {
-    // TODO
-    debugger
+    this.logger.debug('onProfileChange', { newUser, oldUser })
   }
 
   private async getTrackItems(user: InstagramUser) {
