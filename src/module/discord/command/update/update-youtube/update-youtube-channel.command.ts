@@ -49,7 +49,7 @@ export class UpdateYoutubeChannelCommand extends BaseCommand {
       this.logger.warn('Fetching...')
 
       this.logger.debug('execute', { idCount: ids.length })
-      const responses = await Promise.allSettled(idChunks.map((v) => this.youtubeChannelControllerService.getManyByIds(v)))
+      const responses = await Promise.allSettled(idChunks.map((v) => this.youtubeChannelControllerService.getManyByIds(v, true)))
       const channels = responses
         .filter((v) => v.status === 'fulfilled')
         .map((v: PromiseFulfilledResult<YoutubeChannel[]>) => v.value)
