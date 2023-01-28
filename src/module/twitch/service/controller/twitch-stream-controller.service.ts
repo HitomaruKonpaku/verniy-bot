@@ -23,10 +23,10 @@ export class TwitchStreamControllerService {
       isActive: true,
       createdAt: new Date(data.started_at).getTime(),
       userId: data.user_id,
-      gameId: data.game_id || null,
-      type: data.type || null,
-      title: data.title || null,
-      language: data.language || null,
+      gameId: data.game_id,
+      type: data.type,
+      title: data.title,
+      language: data.language,
       isMature: data.is_mature || false,
     })
 

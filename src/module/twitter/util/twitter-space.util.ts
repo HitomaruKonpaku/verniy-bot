@@ -131,7 +131,7 @@ export class TwitterSpaceUtil {
       fields.push(
         {
           name: 'Playlist url',
-          value: codeBlock(space.playlistUrl || null),
+          value: codeBlock(space.playlistUrl),
         },
       )
     }

@@ -42,11 +42,11 @@ export class InstagramStoryControllerService {
       isActive: true,
       createdAt: data.taken_at,
       userId: String(data.user.pk),
-      expiringAt: data.expiring_at || null,
-      code: data.code || null,
-      originalWidth: data.original_width || null,
-      originalHeight: data.original_height || null,
-      imageUrl: data.image_versions2?.candidates?.[0]?.url || null,
+      expiringAt: data.expiring_at,
+      code: data.code,
+      originalWidth: data.original_width,
+      originalHeight: data.original_height,
+      imageUrl: data.image_versions2?.candidates?.[0]?.url,
     })
 
     story.videoUrls = []

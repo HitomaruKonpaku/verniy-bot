@@ -67,12 +67,12 @@ export class TwitterUtil {
   }
 
   public static getUserProfileImageUrl(baseUrl: string): string {
-    const url = baseUrl?.replace?.('_normal', '') || null
+    const url = baseUrl?.replace?.('_normal', '')
     return url
   }
 
   public static getUserProfileBannerUrl(baseUrl: string): string {
-    const url = baseUrl || null
+    const url = baseUrl
     return url
   }
 }

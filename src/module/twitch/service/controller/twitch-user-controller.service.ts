@@ -44,11 +44,11 @@ export class TwitchUserControllerService {
       createdAt: new Date(data.created_at).getTime(),
       username: data.login,
       displayName: data.display_name,
-      type: data.type || null,
-      broadcasterType: data.broadcaster_type || null,
-      description: data.description || null,
-      profileImageUrl: data.profile_image_url || null,
-      offlineImageUrl: data.offline_image_url || null,
+      type: data.type,
+      broadcasterType: data.broadcaster_type,
+      description: data.description,
+      profileImageUrl: data.profile_image_url,
+      offlineImageUrl: data.offline_image_url,
     })
     return user
   }
