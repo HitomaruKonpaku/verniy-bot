@@ -1,6 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { bold, inlineCode, MessageCreateOptions } from 'discord.js'
-import { UserV1 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
 import { ConfigService } from '../../../config/service/config.service'
@@ -55,13 +54,20 @@ export class TwitterProfileTrackingService {
 
   private async checkUsers(userIds: string[]) {
     try {
+      const oldUsers = await this.twitterUserService.getManyByIds(userIds)
       const users = await this.twitterApiService.getUsersByUserIds(userIds)
-      const inactiveUserIdSet = new Set(userIds)
+      await this.twitterUserControllerService.saveUsers(users)
+
+      const newUsers = await this.twitterUserService.getManyByIds(userIds)
+      const inactiveUserIds = ArrayUtil.difference(userIds, users.map((v) => v.id_str))
+
       users.forEach((user) => {
-        inactiveUserIdSet.delete(user.id_str)
-        this.checkActiveUserProfile(user)
+        const oldUser = oldUsers.find((v) => v.id === user.id_str)
+        const newUser = newUsers.find((v) => v.id === user.id_str)
+        this.checkUserProfile(newUser, oldUser)
       })
-      inactiveUserIdSet.forEach((id) => {
+
+      inactiveUserIds.forEach((id) => {
         this.checkInactiveUserProfile(id)
       })
     } catch (error) {
@@ -76,17 +82,6 @@ export class TwitterProfileTrackingService {
       await this.checkUserProfile(newUser, oldUser)
     } catch (error) {
       this.logger.error(`checkInactiveUserProfile: ${error.message}`, { id })
-    }
-  }
-
-  private async checkActiveUserProfile(user: UserV1) {
-    try {
-      const oldUser = await this.twitterUserService.getOneById(user.id_str)
-      const newUser = await this.twitterUserControllerService.saveUser(user)
-        .then(() => this.twitterUserService.getOneById(user.id_str))
-      await this.checkUserProfile(newUser, oldUser)
-    } catch (error) {
-      this.logger.error(`checkActiveUserProfile: ${error.message}`, { id: user.id_str })
     }
   }
 
