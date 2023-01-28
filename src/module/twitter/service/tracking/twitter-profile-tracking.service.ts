@@ -83,6 +83,7 @@ export class TwitterProfileTrackingService {
     try {
       const oldUser = await this.twitterUserService.getOneById(user.id_str)
       const newUser = await this.twitterUserControllerService.saveUser(user)
+        .then(() => this.twitterUserService.getOneById(user.id_str))
       await this.checkUserProfile(newUser, oldUser)
     } catch (error) {
       this.logger.error(`checkActiveUserProfile: ${error.message}`, { id: user.id_str })
@@ -93,6 +94,7 @@ export class TwitterProfileTrackingService {
     if (!newUser || !oldUser) {
       return
     }
+
     try {
       const detectConditions = [
         newUser.isActive !== oldUser.isActive,
