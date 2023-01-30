@@ -74,7 +74,6 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
             if (error.response?.status !== 429) {
               throw error
             }
-            this.limiter.updateSettings({ reservoir: 0 })
           }
         } while (!isSuccess)
       }))
