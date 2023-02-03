@@ -66,10 +66,13 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
     const query = `
 SELECT id
 FROM twitter_space
-WHERE state = 'live'
-  OR (
-    state = 'scheduled'
-    AND strftime('%s', 'now') * 1000 >= scheduled_start
+WHERE is_active = TRUE
+  AND (
+    state = 'live'
+    OR (
+      state = 'scheduled'
+      AND strftime('%s', 'now') * 1000 >= scheduled_start
+    )
   )
     `
     const spaces = await this.repository.query(query)
