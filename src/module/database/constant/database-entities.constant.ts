@@ -5,10 +5,6 @@ import { DiscordUser } from '../../discord/model/discord-user.entity'
 import { InstagramPost } from '../../instagram/model/instagram-post.entity'
 import { InstagramStory } from '../../instagram/model/instagram-story.entity'
 import { InstagramUser } from '../../instagram/model/instagram-user.entity'
-import { OrganizationGroupMember } from '../../organization/model/organization-group-member.entity'
-import { OrganizationGroup } from '../../organization/model/organization-group.entity'
-import { OrganizationMember } from '../../organization/model/organization-member.entity'
-import { Organization } from '../../organization/model/organization.entity'
 import { TiktokUser } from '../../tiktok/model/tiktok-user.entity'
 import { TiktokVideo } from '../../tiktok/model/tiktok-video.entity'
 import { Track } from '../../track/model/base/track.entity'
@@ -79,9 +75,4 @@ export const DB_ENTITIES = [
   TrackInstagramPost,
   TrackInstagramStory,
   TrackTiktokVideo,
-
-  Organization,
-  OrganizationGroup,
-  OrganizationMember,
-  OrganizationGroupMember,
 ]
