@@ -140,8 +140,4 @@ ORDER BY CAST (su.id AS NUMBER)
     const ids = records.map((v) => v.id)
     return ids
   }
-
-  public async updatePlaylistActive(id: string, playlistActive: boolean) {
-    await this.updateFields(id, { playlistActive })
-  }
 }
