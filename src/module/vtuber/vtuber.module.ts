@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { VtuberOrgMember } from './model/vtuber-org-member.entity'
+import { VtuberGroupMember } from './model/vtuber-group-member.entity'
+import { VtuberGroup } from './model/vtuber-group.entity'
 import { VtuberOrg } from './model/vtuber-org.entity'
 import { VtuberUser } from './model/vtuber-user.entity'
 
@@ -9,7 +10,8 @@ import { VtuberUser } from './model/vtuber-user.entity'
     TypeOrmModule.forFeature([
       VtuberUser,
       VtuberOrg,
-      VtuberOrgMember,
+      VtuberGroup,
+      VtuberGroupMember,
     ]),
   ],
   providers: [
