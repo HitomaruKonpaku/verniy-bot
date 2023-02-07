@@ -6,8 +6,8 @@ import { TwitterSpaceService } from '../../../../twitter/service/data/twitter-sp
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
-export class UpdateTwitterSpaceCommand extends BaseCommand {
-  protected readonly logger = baseLogger.child({ context: UpdateTwitterSpaceCommand.name })
+export class UpdateTwitterSpaceDataCommand extends BaseCommand {
+  protected readonly logger = baseLogger.child({ context: UpdateTwitterSpaceDataCommand.name })
 
   private isRunning = false
 
@@ -22,8 +22,8 @@ export class UpdateTwitterSpaceCommand extends BaseCommand {
 
   public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
     return subcommand
-      .setName('space')
-      .setDescription('Space')
+      .setName('space_data')
+      .setDescription('Space data')
   }
 
   public async execute(interaction: ChatInputCommandInteraction) {

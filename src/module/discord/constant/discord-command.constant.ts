@@ -42,7 +42,7 @@ import { TrackRemoveTwitterSpaceCommand } from '../command/track/track-remove/tr
 import { TrackRemoveTwitterTweetCommand } from '../command/track/track-remove/track-remove-twitter-tweet.command'
 import { TrackRemoveYoutubeLiveCommand } from '../command/track/track-remove/track-remove-youtube-live.command'
 import { UpdateTwitterSpaceStatsCommand } from '../command/update/update-twitter/update-twitter-space-stats.command'
-import { UpdateTwitterSpaceCommand } from '../command/update/update-twitter/update-twitter-space.command'
+import { UpdateTwitterSpaceDataCommand } from '../command/update/update-twitter/update-twitter-space.command'
 import { UpdateTwitterCommand } from '../command/update/update-twitter/update-twitter.command'
 import { UpdateYoutubeChannelCommand } from '../command/update/update-youtube/update-youtube-channel.command'
 import { UpdateYoutubeCommand } from '../command/update/update-youtube/update-youtube.command'
@@ -89,7 +89,7 @@ export const DISCORD_ALL_COMMANDS = [
   // update
   UpdateCommand,
   UpdateTwitterCommand,
-  UpdateTwitterSpaceCommand,
+  UpdateTwitterSpaceDataCommand,
   UpdateTwitterSpaceStatsCommand,
   UpdateYoutubeCommand,
   UpdateYoutubeChannelCommand,
