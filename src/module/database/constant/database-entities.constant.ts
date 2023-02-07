@@ -28,6 +28,9 @@ import { TwitterFilteredStreamUser } from '../../twitter/model/twitter-filtered-
 import { TwitterSpace } from '../../twitter/model/twitter-space.entity'
 import { TwitterTweet } from '../../twitter/model/twitter-tweet.entity'
 import { TwitterUser } from '../../twitter/model/twitter-user.entity'
+import { VtuberOrgMember } from '../../vtuber/model/vtuber-org-member.entity'
+import { VtuberOrg } from '../../vtuber/model/vtuber-org.entity'
+import { VtuberUser } from '../../vtuber/model/vtuber-user.entity'
 import { YoutubeChannel } from '../../youtube/model/youtube-channel.entity'
 import { YoutubePlaylistItem } from '../../youtube/model/youtube-playlist-item.entity'
 import { YoutubePlaylist } from '../../youtube/model/youtube-playlist.entity'
@@ -75,4 +78,8 @@ export const DB_ENTITIES = [
   TrackInstagramPost,
   TrackInstagramStory,
   TrackTiktokVideo,
+
+  VtuberUser,
+  VtuberOrg,
+  VtuberOrgMember,
 ]
