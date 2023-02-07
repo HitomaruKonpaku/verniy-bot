@@ -5,6 +5,7 @@ import { SlashCommandSubcommandGroupBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { BaseSubcommandGroupCommand } from '../../base/base-subcommand-group-command'
 import { UpdateTwitterSpaceDataCommand } from './update-twitter-space-data.command'
+import { UpdateTwitterSpacePlaylistUrlCommand } from './update-twitter-space-playlist-url.command'
 import { UpdateTwitterSpaceStatsCommand } from './update-twitter-space-stats.command'
 
 @Injectable()
@@ -24,12 +25,14 @@ export class UpdateTwitterCommand extends BaseSubcommandGroupCommand {
       .setDescription('Twitter')
       .addSubcommand((subcommand) => UpdateTwitterSpaceDataCommand.getSubcommand(subcommand))
       .addSubcommand((subcommand) => UpdateTwitterSpaceStatsCommand.getSubcommand(subcommand))
+      .addSubcommand((subcommand) => UpdateTwitterSpacePlaylistUrlCommand.getSubcommand(subcommand))
   }
 
   protected getCommandService(subcommand: string) {
     const instance = {
       space_data: UpdateTwitterSpaceDataCommand,
       space_stats: UpdateTwitterSpaceStatsCommand,
+      space_playlist_url: UpdateTwitterSpacePlaylistUrlCommand,
     }[subcommand] || null
     return instance
   }

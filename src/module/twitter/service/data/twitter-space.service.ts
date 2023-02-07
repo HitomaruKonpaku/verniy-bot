@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { IsNull, Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/service/base-entity.service'
 import { TwitterSpace } from '../../model/twitter-space.entity'
 import { TwitterUserService } from './twitter-user.service'
@@ -139,5 +139,13 @@ ORDER BY CAST (su.id AS NUMBER)
     const records = await this.repository.query(query)
     const ids = records.map((v) => v.id)
     return ids
+  }
+
+  public async patchPlaylistUrl(id: string, playlistUrl: string) {
+    const result = await this.repository.update(
+      { id, playlistUrl: IsNull() },
+      { playlistUrl },
+    )
+    return result
   }
 }
