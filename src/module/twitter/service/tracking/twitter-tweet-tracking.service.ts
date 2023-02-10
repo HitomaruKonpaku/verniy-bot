@@ -217,8 +217,8 @@ export class TwitterTweetTrackingService extends EventEmitter {
           const originTweetUrl = TwitterUtil.getRetweetStatusUrl(data)
           const icon = '🔁'
           content = [
-            hideLinkEmbed(originTweetUrl),
-            `${icon} ${tweetUrl}`,
+            originTweetUrl,
+            `${icon} ${hideLinkEmbed(tweetUrl)}`,
           ].join('\n')
         }
       } catch (error) {
