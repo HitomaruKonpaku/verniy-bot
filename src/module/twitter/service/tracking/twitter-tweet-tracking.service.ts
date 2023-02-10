@@ -208,10 +208,18 @@ export class TwitterTweetTrackingService extends EventEmitter {
       try {
         if (TwitterUtil.isReplyStatus(data)) {
           const originTweetUrl = TwitterUtil.getReplyStatusUrl(data)
-          content = [tweetUrl, `💬 ${originTweetUrl}`].join('\n')
+          const icon = '💬'
+          content = [
+            originTweetUrl,
+            `${icon} ${tweetUrl}`,
+          ].join('\n')
         } else if (TwitterUtil.isRetweetStatus(data)) {
           const originTweetUrl = TwitterUtil.getRetweetStatusUrl(data)
-          content = [hideLinkEmbed(tweetUrl), `🔁 ${originTweetUrl}`].join('\n')
+          const icon = '🔁'
+          content = [
+            hideLinkEmbed(originTweetUrl),
+            `${icon} ${tweetUrl}`,
+          ].join('\n')
         }
       } catch (error) {
         this.logger.error(`onData: Parsing tweet error: ${error.message}`, { data })
