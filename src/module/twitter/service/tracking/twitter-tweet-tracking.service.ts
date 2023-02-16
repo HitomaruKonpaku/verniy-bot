@@ -89,14 +89,14 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
     stream.on(ev.Error, (error) => this.onError(error))
     stream.on(ev.ConnectError, (error) => this.logger.error(`ConnectError: ${error}`))
-    stream.on(ev.Connected, () => this.logger.info('Connected'))
+    stream.on(ev.Connected, () => this.logger.warn('Connected'))
     stream.on(ev.ConnectionLost, () => this.logger.error('ConnectionLost'))
     stream.on(ev.ConnectionClosed, () => this.logger.error('ConnectionClosed'))
     stream.on(ev.ConnectionClosed, () => this.onConnectionClosed())
     stream.on(ev.ReconnectError, (error) => this.logger.error(`ReconnectError: ${error}`))
     stream.on(ev.ReconnectAttempt, (tries) => this.logger.warn(`ReconnectAttempt: ${tries}`))
     stream.on(ev.ReconnectLimitExceeded, () => this.logger.error('ReconnectLimitExceeded'))
-    stream.on(ev.Reconnected, () => this.logger.info('Reconnected'))
+    stream.on(ev.Reconnected, () => this.logger.warn('Reconnected'))
 
     stream.on(ev.Data, (data) => this.onData(data))
     stream.on(ev.Data, (data) => this.emit(ETwitterStreamEvent.Data, data))
