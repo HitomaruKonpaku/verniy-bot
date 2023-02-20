@@ -133,7 +133,7 @@ SELECT su.id
 FROM twitter_space_user AS su
   LEFT JOIN twitter_user AS u ON u.id = su.id
 WHERE u.id ISNULL
-  AND u.id NOT IN('1261213933089652738')
+  AND su.id NOT IN('1261213933089652738')
 ORDER BY CAST(su.id AS NUMBER)
     `
     const records = await this.repository.query(query)
