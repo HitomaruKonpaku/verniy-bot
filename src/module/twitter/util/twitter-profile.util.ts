@@ -1,8 +1,9 @@
 import { hideLinkEmbed, inlineCode } from 'discord.js'
+import { EmojiUtil } from '../../../util/emoji.util'
 
 export class TwitterProfileUtil {
   public static getBoolIcon(value: boolean): string {
-    return value ? '✅' : '❌'
+    return EmojiUtil.fromBool(value)
   }
 
   public static getStringOldLine(value: string): string {
