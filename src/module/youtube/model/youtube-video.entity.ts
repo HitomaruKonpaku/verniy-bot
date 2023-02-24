@@ -12,6 +12,18 @@ export class YoutubeVideo extends BaseExternalEntity {
   @Column({ name: 'category_id', type: 'text', nullable: true })
   categoryId?: string
 
+  @Column({ name: 'is_live_content', type: 'boolean', nullable: true })
+  isLiveContent?: boolean
+
+  @Column({ name: 'is_live', type: 'boolean', nullable: true })
+  isLive?: boolean
+
+  @Column({ name: 'is_upcoming', type: 'boolean', nullable: true })
+  isUpcoming?: boolean
+
+  @Column({ name: 'is_members_only', type: 'boolean', nullable: true })
+  isMembersOnly?: boolean
+
   @Column({ name: 'title', type: 'text', nullable: true })
   title?: string
 
