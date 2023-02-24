@@ -42,7 +42,7 @@ export class TwitterSpaceUtil {
     const creator = space?.creator
     const embed: APIEmbed = {
       title: TwitterSpaceUtil.getEmbedTitle(space, trackItem),
-      description: TwitterUtil.getSpaceUrl(space.id),
+      description: TwitterSpaceUtil.getEmbedDescription(space),
       color: 0x1d9bf0,
       author: {
         name: `${creator?.name} (@${creator?.username})`,
@@ -89,10 +89,24 @@ export class TwitterSpaceUtil {
     return `${displayCreator} is hosting a Space`
   }
 
+  public static getEmbedDescription(space: TwitterSpace) {
+    const emojis: string[] = []
+    if (space.isAvailableForReplay) {
+      emojis.push('⏺️')
+    }
+    if (space.isAvailableForClipping) {
+      emojis.push('✂️')
+    }
+    return [
+      TwitterUtil.getSpaceUrl(space.id),
+      emojis.join(''),
+    ].join(' ')
+  }
+
   public static getEmbedFields(space: TwitterSpace) {
     const fields: APIEmbedField[] = [
       {
-        name: 'Title',
+        name: '📄 Title',
         value: codeBlock(space.title),
       },
     ]
@@ -130,7 +144,7 @@ export class TwitterSpaceUtil {
     if ([SpaceState.LIVE, SpaceState.ENDED].includes(space.state) && space.playlistUrl) {
       fields.push(
         {
-          name: 'Playlist url',
+          name: '🔗 Playlist url',
           value: codeBlock(space.playlistUrl),
         },
       )
