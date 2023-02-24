@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { Channel, ChannelType, DMChannel, Guild, MessageCreateOptions, MessagePayload, TextChannel } from 'discord.js'
+import { Channel, ChannelType, DMChannel, Guild, MessageCreateOptions, MessagePayload, StageChannel, TextChannel, VoiceChannel } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/service/config.service'
 import { HolodexService } from '../../holodex/service/holodex.service'
@@ -108,7 +108,10 @@ export class DiscordService {
     try {
       // Get channel
       const channel = await this.getChannel<Channel>(channelId)
-      if (!channel) {
+      const canSend = channel
+        && channel.isTextBased()
+        && !(channel instanceof VoiceChannel || channel instanceof StageChannel)
+      if (!canSend) {
         return null
       }
 
@@ -122,10 +125,6 @@ export class DiscordService {
         if (guild) {
           this.db.saveGuild(guild)
         }
-      }
-
-      if (!channel.isTextBased()) {
-        return null
       }
 
       // Send message
