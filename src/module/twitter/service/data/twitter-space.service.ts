@@ -33,31 +33,41 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
     },
   ) {
     const query = this.repository
-      .createQueryBuilder('ts')
-      .andWhere('ts.id = :id', { id })
+      .createQueryBuilder('s')
+      .andWhere('s.id = :id', { id })
     if (options?.withCreator) {
       query.leftJoinAndMapOne(
-        'ts.creator',
+        's.creator',
         'twitter_user',
-        'tu',
-        'tu.id = ts.creator_id',
+        'u',
+        'u.id = s.creator_id',
+      )
+    }
+    if (options?.withHosts) {
+      query.leftJoinAndMapMany(
+        's.hosts',
+        'twitter_user',
+        'u_h',
+        'u_h.id IN (SELECT tmp.value FROM json_each(s.host_ids) AS tmp)',
+      )
+    }
+    if (options?.withSpeakers) {
+      query.leftJoinAndMapMany(
+        's.speakers',
+        'twitter_user',
+        'u_s',
+        'u_s.id IN (SELECT tmp.value FROM json_each(s.speaker_ids) AS tmp)',
       )
     }
     const space = await query.getOne()
-    if (options?.withHosts && space?.hostIds?.length) {
-      space.hosts = await this.twitterUserService.getManyByIds(space.hostIds)
-    }
-    if (options?.withSpeakers && space?.speakerIds?.length) {
-      space.speakers = await this.twitterUserService.getManyByIds(space.speakerIds)
-    }
     return space
   }
 
   public async getRawOneById(id: string) {
     const space = await this.repository
-      .createQueryBuilder('ts')
-      .select('ts.*')
-      .andWhere('ts.id = :id', { id })
+      .createQueryBuilder('s')
+      .select('s.*')
+      .andWhere('s.id = :id', { id })
       .getRawOne()
     return space
   }
