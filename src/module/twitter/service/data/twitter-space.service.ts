@@ -17,10 +17,11 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
   }
 
   public async getAllActive() {
-    const spaces = await this.repository.find({
-      where: { isActive: true },
-      order: { createdAt: 'ASC' },
-    })
+    const spaces = await this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .addOrderBy('RANDOM()')
+      .getMany()
     return spaces
   }
 
