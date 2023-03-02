@@ -152,6 +152,14 @@ export class UpdateYoutubeChannelCommand extends BaseCommand {
       'UCzUNASdzI4PV5SlqtYwAkKQ',
     ]
 
+    const vomsIds = [
+      'UCajhBT4nMrg3DLS-bLL2RCg',
+      'UCaFhsCKSSS821N-EcWmPkUQ',
+      'UC3vzVK_N_SUVKqbX69L_X4g',
+      'UCE5VgVGRPfNCjXPeTe1QJHA',
+      'UCivDgaCAh7WPBoKA24WNwJQ',
+    ]
+
     switch (org) {
       case 'org_hololive':
         return [...hololiveIds]
@@ -161,6 +169,7 @@ export class UpdateYoutubeChannelCommand extends BaseCommand {
         return [
           ...hololiveIds,
           ...vspoIds,
+          ...vomsIds,
         ]
     }
   }
