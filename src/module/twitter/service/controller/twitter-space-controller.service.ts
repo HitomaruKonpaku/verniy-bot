@@ -116,8 +116,12 @@ export class TwitterSpaceControllerService {
 
     let playlistUrl: string
     let playlistActive: boolean
+    const canGetPlaylistUrl = false
+      || audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING
+      || audioSpace.metadata.is_space_available_for_replay
 
-    if (audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING) {
+    if (canGetPlaylistUrl) {
+      this.logger.info('saveAudioSpace#getSpacePlaylistUrl', { id })
       try {
         playlistUrl = await this.twitterPublicApiService.getSpacePlaylistUrl(id, audioSpace)
         playlistActive = true
