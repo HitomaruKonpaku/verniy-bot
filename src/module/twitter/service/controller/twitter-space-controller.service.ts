@@ -4,6 +4,7 @@ import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
 import { TWITTER_API_LIST_SIZE } from '../../constant/twitter.constant'
 import { AudioSpaceMetadataState } from '../../enum/twitter-graphql.enum'
+import { TwitterSaveAudioSpaceOption } from '../../interface/twitter-option.interface'
 import { twitterAudioSpaceLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -110,7 +111,7 @@ export class TwitterSpaceControllerService {
     return spaces
   }
 
-  public async saveAudioSpace(id: string) {
+  public async saveAudioSpace(id: string, options?: TwitterSaveAudioSpaceOption) {
     const audioSpace = await this.twitterPublicApiService.getAudioSpaceById(id)
     this.logger.info('saveAudioSpace', { id, audioSpace })
 
@@ -120,7 +121,7 @@ export class TwitterSpaceControllerService {
       || audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING
       || audioSpace.metadata.is_space_available_for_replay
 
-    if (canGetPlaylistUrl) {
+    if (canGetPlaylistUrl && options?.skipPlaylistUrl) {
       this.logger.info('saveAudioSpace#getSpacePlaylistUrl', { id })
       try {
         playlistUrl = await this.twitterPublicApiService.getSpacePlaylistUrl(id, audioSpace)
