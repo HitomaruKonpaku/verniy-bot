@@ -65,7 +65,7 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
             // eslint-disable-next-line no-await-in-loop
             await this.limiter.schedule(
               () => twitterAudioSpaceLimiter.schedule(
-                () => this.twitterSpaceControllerService.saveAudioSpace(space.id),
+                () => this.twitterSpaceControllerService.saveAudioSpace(space.id, { skipPlaylistUrl: !!space.playlistUrl }),
               ),
             )
             isSuccess = true
