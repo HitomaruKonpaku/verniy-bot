@@ -117,9 +117,8 @@ export class TwitterSpaceControllerService {
 
     let playlistUrl: string
     let playlistActive: boolean
-    const canGetPlaylistUrl = false
-      || audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING
-      || audioSpace.metadata.is_space_available_for_replay
+    const canGetPlaylistUrl = !options?.skipPlaylistUrl
+      && (audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING || audioSpace.metadata.is_space_available_for_replay)
 
     if (canGetPlaylistUrl) {
       this.logger.info('saveAudioSpace#getSpacePlaylistUrl', { id })
