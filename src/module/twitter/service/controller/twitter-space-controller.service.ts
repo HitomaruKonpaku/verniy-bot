@@ -121,7 +121,7 @@ export class TwitterSpaceControllerService {
       || audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING
       || audioSpace.metadata.is_space_available_for_replay
 
-    if (canGetPlaylistUrl && options?.skipPlaylistUrl) {
+    if (canGetPlaylistUrl) {
       this.logger.info('saveAudioSpace#getSpacePlaylistUrl', { id })
       try {
         playlistUrl = await this.twitterPublicApiService.getSpacePlaylistUrl(id, audioSpace)
