@@ -98,7 +98,7 @@ export class TwitterProfileTrackingService {
         newUser.location !== oldUser.location,
         newUser.description !== oldUser.description,
         newUser.protected !== oldUser.protected,
-        // newUser.verified !== oldUser.verified,
+        newUser.verified !== oldUser.verified,
         newUser.profileImageUrl !== oldUser.profileImageUrl,
         newUser.profileBannerUrl !== oldUser.profileBannerUrl,
       ]
