@@ -32,6 +32,7 @@ export class TwitterFilteredStreamUserService extends BaseEntityService<TwitterF
       .andWhere('tfsu.is_active = TRUE')
       .andWhere('tu.is_active = TRUE')
       .andWhere('tu.is_retired = FALSE')
+      .andWhere('tu.protected = FALSE')
       .addOrderBy('LENGTH(tu.username)', 'DESC')
       .addOrderBy('CAST(tu.id AS INTERGER)')
       .getMany()
