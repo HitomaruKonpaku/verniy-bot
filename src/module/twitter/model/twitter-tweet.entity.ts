@@ -7,11 +7,14 @@ export class TwitterTweet extends BaseExternalEntity {
   @Column({ name: 'author_id', type: 'text' })
   authorId: string
 
-  @Column({ name: 'text', type: 'text' })
-  text: string
+  @Column({ name: 'lang', type: 'text', nullable: true })
+  lang?: string
 
-  @Column({ name: 'truncated', type: 'boolean', default: false })
-  truncated?: boolean
+  @Column({ name: 'text', type: 'text', nullable: true })
+  text?: string
+
+  @Column({ name: 'is_translatable', type: 'boolean', nullable: true })
+  isTranslatable?: boolean
 
   @Column({ name: 'in_reply_to_status_id', type: 'text', nullable: true })
   inReplyToStatusId?: string
@@ -19,14 +22,15 @@ export class TwitterTweet extends BaseExternalEntity {
   @Column({ name: 'in_reply_to_user_id', type: 'text', nullable: true })
   inReplyToUserId?: string
 
-  @Column({ name: 'is_quote_status', type: 'boolean', default: false })
-  isQuoteStatus?: boolean
+  @Column({ name: 'retweeted_status_id', type: 'text', nullable: true })
+  retweetedStatusId?: string
 
   @Column({ name: 'quoted_status_id', type: 'text', nullable: true })
   quotedStatusId?: string
 
-  @Column({ name: 'lang', type: 'text', nullable: true })
-  lang?: string
-
   user?: TwitterUser
+
+  retweetedStatus?: TwitterTweet
+
+  quotedStatus?: TwitterTweet
 }
