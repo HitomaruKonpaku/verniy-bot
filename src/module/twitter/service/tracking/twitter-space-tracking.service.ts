@@ -15,7 +15,7 @@ import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterSpaceUtil } from '../../util/twitter-space.util'
 import { TwitterUtil } from '../../util/twitter.util'
 import { TwitterApiService } from '../api/twitter-api.service'
-import { TwitterPublicApiService } from '../api/twitter-public-api.service'
+import { TwitterGraphqlSpaceService } from '../api/twitter-graphql-space.service'
 import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
@@ -45,8 +45,8 @@ export class TwitterSpaceTrackingService {
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
-    @Inject(TwitterPublicApiService)
-    private readonly twitterPublicApiService: TwitterPublicApiService,
+    @Inject(TwitterGraphqlSpaceService)
+    private readonly twitterGraphqlSpaceService: TwitterGraphqlSpaceService,
     @Inject(TwitterTokenService)
     private readonly twitterTokenService: TwitterTokenService,
     @Inject(forwardRef(() => DiscordService))
@@ -186,7 +186,7 @@ export class TwitterSpaceTrackingService {
     try {
       const limiter = twitterSpacesByFleetsAvatarContentLimiter
       const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
-      const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterPublicApiService.getSpacesByFleetsAvatarContent(v))))
+      const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.twitterGraphqlSpaceService.getSpacesByFleetsAvatarContent(v))))
       const spaceIds = result
         .filter((v) => v.status === 'fulfilled')
         .map((v: PromiseFulfilledResult<AvatarContent>) => Object.values(v.value.users))
@@ -202,7 +202,7 @@ export class TwitterSpaceTrackingService {
 
   private async getSpacesByFleetline() {
     try {
-      const result = await this.twitterPublicApiService.getSpacesByFleetsFleetline()
+      const result = await this.twitterGraphqlSpaceService.getSpacesByFleetsFleetline()
       const spaceIds = result.threads
         .map((v) => v.live_content?.audiospace?.broadcast_id)
         .filter((v) => v) || []

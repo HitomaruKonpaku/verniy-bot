@@ -8,7 +8,7 @@ import { TwitterSaveAudioSpaceOption } from '../../interface/twitter-option.inte
 import { twitterAudioSpaceLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterApiService } from '../api/twitter-api.service'
-import { TwitterPublicApiService } from '../api/twitter-public-api.service'
+import { TwitterGraphqlSpaceService } from '../api/twitter-graphql-space.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 import { TwitterUserControllerService } from './twitter-user-controller.service'
 
@@ -23,8 +23,8 @@ export class TwitterSpaceControllerService {
     private readonly twitterUserControllerService: TwitterUserControllerService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
-    @Inject(TwitterPublicApiService)
-    private readonly twitterPublicApiService: TwitterPublicApiService,
+    @Inject(TwitterGraphqlSpaceService)
+    private readonly twitterGraphqlSpaceService: TwitterGraphqlSpaceService,
   ) { }
 
   public async getOneById(id: string, refresh = false) {
@@ -112,7 +112,7 @@ export class TwitterSpaceControllerService {
   }
 
   public async saveAudioSpace(id: string, options?: TwitterSaveAudioSpaceOption) {
-    const audioSpace = await this.twitterPublicApiService.getAudioSpaceById(id)
+    const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceById(id)
     this.logger.info('saveAudioSpace', { id, audioSpace })
 
     let playlistUrl: string
@@ -123,7 +123,7 @@ export class TwitterSpaceControllerService {
     if (canGetPlaylistUrl) {
       this.logger.info('saveAudioSpace#getSpacePlaylistUrl', { id })
       try {
-        playlistUrl = await this.twitterPublicApiService.getSpacePlaylistUrl(id, audioSpace)
+        playlistUrl = await this.twitterGraphqlSpaceService.getSpacePlaylistUrl(id, audioSpace)
         playlistActive = true
       } catch (error) {
         this.logger.error(`saveAudioSpace#getSpacePlaylistUrl: ${error.message}`, { id })

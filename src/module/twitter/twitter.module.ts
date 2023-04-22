@@ -9,14 +9,18 @@ import { TwitterTweet } from './model/twitter-tweet.entity'
 import { TwitterUser } from './model/twitter-user.entity'
 import { TwitterApiService } from './service/api/twitter-api.service'
 import { TwitterClientService } from './service/api/twitter-client.service'
+import { TwitterGraphqlSpaceService } from './service/api/twitter-graphql-space.service'
+import { TwitterGraphqlUserService } from './service/api/twitter-graphql-user.service'
 import { TwitterPublicApiService } from './service/api/twitter-public-api.service'
 import { TwitterSpaceControllerService } from './service/controller/twitter-space-controller.service'
+import { TwitterTweetControllerService } from './service/controller/twitter-tweet-controller.service'
 import { TwitterUserControllerService } from './service/controller/twitter-user-controller.service'
 import { TwitterCronService } from './service/cron/twitter-cron.service'
 import { TwitterSpaceCronService } from './service/cron/twitter-space-cron.service'
 import { TwitterUserCronService } from './service/cron/twitter-user-cron.service'
 import { TwitterFilteredStreamUserService } from './service/data/twitter-filtered-stream-user.service'
 import { TwitterSpaceService } from './service/data/twitter-space.service'
+import { TwitterTweetService } from './service/data/twitter-tweet.service'
 import { TwitterUserService } from './service/data/twitter-user.service'
 import { TwitterProfileTrackingService } from './service/tracking/twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './service/tracking/twitter-space-tracking.service'
@@ -39,30 +43,47 @@ import { TwitterService } from './service/twitter.service'
   providers: [
     TwitterService,
     TwitterTokenService,
+
     TwitterClientService,
     TwitterApiService,
     TwitterPublicApiService,
+    TwitterGraphqlUserService,
+    TwitterGraphqlSpaceService,
+
     TwitterFilteredStreamUserService,
     TwitterUserService,
+    TwitterTweetService,
     TwitterSpaceService,
+
     TwitterUserControllerService,
+    TwitterTweetControllerService,
     TwitterSpaceControllerService,
+
     TwitterTweetTrackingService,
     TwitterProfileTrackingService,
     TwitterSpaceTrackingService,
+
     TwitterCronService,
     TwitterUserCronService,
     TwitterSpaceCronService,
   ],
   exports: [
     TwitterService,
+
     TwitterApiService,
     TwitterPublicApiService,
+    TwitterGraphqlUserService,
+    TwitterGraphqlSpaceService,
+
     TwitterFilteredStreamUserService,
     TwitterUserService,
+    TwitterTweetService,
     TwitterSpaceService,
+
     TwitterUserControllerService,
+    TwitterTweetControllerService,
     TwitterSpaceControllerService,
+
     TwitterTweetTrackingService,
   ],
 })
