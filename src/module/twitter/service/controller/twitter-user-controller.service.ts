@@ -37,12 +37,12 @@ export class TwitterUserControllerService {
   }
 
   public async saveUser(data: UserV1) {
-    const user = await this.twitterUserService.save(TwitterEntityUtil.buildUser(data))
+    const user = await this.twitterUserService.save(TwitterEntityUtil.buildUserV1(data))
     return user
   }
 
   public async saveUsers(data: UserV1[]) {
-    const users = await this.twitterUserService.saveAll(data.map((v) => TwitterEntityUtil.buildUser(v)))
+    const users = await this.twitterUserService.saveAll(data.map((v) => TwitterEntityUtil.buildUserV1(v)))
     return users
   }
 

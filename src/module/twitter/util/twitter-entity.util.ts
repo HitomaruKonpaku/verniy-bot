@@ -1,11 +1,32 @@
 import { SpaceV2, UserV1, UserV2 } from 'twitter-api-v2'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { TwitterSpace } from '../model/twitter-space.entity'
+import { TwitterTweet } from '../model/twitter-tweet.entity'
 import { TwitterUser } from '../model/twitter-user.entity'
 import { TwitterUtil } from './twitter.util'
 
 export class TwitterEntityUtil {
-  public static buildUser(data: UserV1): TwitterUser {
+  public static buildUser(result: any): TwitterUser {
+    const { legacy } = result
+    const obj: TwitterUser = {
+      id: result.rest_id,
+      createdAt: new Date(legacy.created_at).getTime(),
+      username: legacy.screen_name,
+      name: legacy.name,
+      location: legacy.location,
+      description: TwitterUtil.getUserDescription(legacy),
+      protected: !!legacy.protected,
+      verified: !!legacy.verified,
+      profileImageUrl: TwitterUtil.getUserProfileImageUrl(legacy.profile_image_url_https),
+      profileBannerUrl: TwitterUtil.getUserProfileBannerUrl(legacy.profile_banner_url),
+      followersCount: legacy.followers_count,
+      followingCount: legacy.friends_count,
+      tweetCount: legacy.statuses_count,
+    }
+    return obj
+  }
+
+  public static buildUserV1(data: UserV1): TwitterUser {
     const obj: TwitterUser = {
       id: data.id_str,
       isActive: true,
@@ -39,6 +60,23 @@ export class TwitterEntityUtil {
       followersCount: data.public_metrics?.followers_count,
       followingCount: data.public_metrics?.following_count,
       tweetCount: data.public_metrics?.tweet_count,
+    }
+    return obj
+  }
+
+  public static buildTweet(result: any): TwitterTweet {
+    const { legacy } = result
+    const obj: TwitterTweet = {
+      id: result.rest_id,
+      createdAt: new Date(legacy.created_at).getTime(),
+      authorId: legacy.user_id_str,
+      lang: legacy.lang,
+      text: legacy.full_text,
+      isTranslatable: result.is_translatable,
+      inReplyToStatusId: legacy.in_reply_to_status_id_str,
+      inReplyToUserId: legacy.in_reply_to_user_id_str,
+      retweetedStatusId: legacy.retweeted_status_result?.result?.rest_id,
+      quotedStatusId: result.quoted_status_result?.result.rest_id,
     }
     return obj
   }
