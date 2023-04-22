@@ -23,7 +23,7 @@ export class TwitterTweetControllerService {
 
     const tweet = await this.dbLimiter.key(id).schedule(async () => {
       let tmpTweet = await this.twitterTweetService.getOneById(result.rest_id)
-      if (tmpTweet) {
+      if (!tmpTweet) {
         tmpTweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
       }
 
