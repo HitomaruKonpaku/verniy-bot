@@ -50,7 +50,7 @@ export class TwitterGraphqlApi {
     userId: string,
     headers: TwitterAuthGuestTokenHeaders,
   ) {
-    const url = 'graphql/CdG2Vuc1v6F5JyEngGpxVw/UserTweets'
+    const url = 'graphql/zQxfEr5IFxQ2QZ-XMJlKew/UserTweetsAndReplies'
     const response = await axios.get(url, {
       baseURL: TWITTER_API_URL,
       headers,
