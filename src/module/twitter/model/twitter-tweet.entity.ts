@@ -28,7 +28,7 @@ export class TwitterTweet extends BaseExternalEntity {
   @Column({ name: 'quoted_status_id', type: 'text', nullable: true })
   quotedStatusId?: string
 
-  user?: TwitterUser
+  author?: TwitterUser
 
   retweetedStatus?: TwitterTweet
 

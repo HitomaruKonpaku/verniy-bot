@@ -12,4 +12,25 @@ export class TwitterTweetService extends BaseEntityService<TwitterTweet> {
   ) {
     super()
   }
+
+  public async getOneById(
+    id: string,
+    options?: {
+      withAuthor?: boolean
+    },
+  ) {
+    const query = this.repository
+      .createQueryBuilder('t')
+      .andWhere('t.id = :id', { id })
+    if (options?.withAuthor) {
+      query.leftJoinAndMapOne(
+        't.author',
+        'twitter_user',
+        'u',
+        'u.id = t.author_id',
+      )
+    }
+    const tweet = await query.getOne()
+    return tweet
+  }
 }

@@ -56,7 +56,7 @@ export class TwitterProfileTrackingService {
     try {
       const oldUsers = await this.twitterUserService.getManyByIds(userIds)
       const users = await this.twitterApiService.getUsersByUserIds(userIds)
-      await this.twitterUserControllerService.saveUsers(users)
+      await this.twitterUserControllerService.saveUsersV1(users)
 
       const newUsers = await this.twitterUserService.getManyByIds(userIds)
       const inactiveUserIds = ArrayUtil.difference(userIds, users.map((v) => v.id_str))

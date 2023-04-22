@@ -1,9 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import Bottleneck from 'bottleneck'
 import { hideLinkEmbed } from 'discord.js'
 import { EventEmitter } from 'events'
 import { ETwitterStreamEvent, TweetStream, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { AppUtil } from '../../../../util/app.util'
+import { ArrayUtil } from '../../../../util/array.util'
 import { ConfigService } from '../../../config/service/config.service'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitterTweetService } from '../../../track/service/track-twitter-tweet.service'
@@ -11,8 +13,11 @@ import { TwitterRuleUtil } from '../../util/twitter-rule.util'
 import { TwitterUtil } from '../../util/twitter.util'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterClientService } from '../api/twitter-client.service'
+import { TwitterGraphqlUserService } from '../api/twitter-graphql-user.service'
+import { TwitterTweetControllerService } from '../controller/twitter-tweet-controller.service'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterFilteredStreamUserService } from '../data/twitter-filtered-stream-user.service'
+import { TwitterTweetService } from '../data/twitter-tweet.service'
 
 @Injectable()
 export class TwitterTweetTrackingService extends EventEmitter {
@@ -27,12 +32,18 @@ export class TwitterTweetTrackingService extends EventEmitter {
     private readonly twitterClientService: TwitterClientService,
     @Inject(TwitterFilteredStreamUserService)
     private readonly twitterFilteredStreamUserService: TwitterFilteredStreamUserService,
+    @Inject(TwitterTweetService)
+    private readonly twitterTweetService: TwitterTweetService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
+    @Inject(TwitterTweetControllerService)
+    private readonly twitterTweetControllerService: TwitterTweetControllerService,
     @Inject(TrackTwitterTweetService)
     private readonly trackTwitterTweetService: TrackTwitterTweetService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
+    @Inject(TwitterGraphqlUserService)
+    private readonly twitterGraphqlUserService: TwitterGraphqlUserService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) {
@@ -49,6 +60,59 @@ export class TwitterTweetTrackingService extends EventEmitter {
     await this.initUsers()
     await this.initStreamRules()
     await this.connect()
+    // await this.checkUserTweets()
+  }
+
+  private async checkUserTweets() {
+    try {
+      const users = await this.twitterFilteredStreamUserService.getUsersForInitRules()
+      const userIds = users.map((v) => v.id)
+      await Promise.allSettled(userIds.map((id) => this.getUserTweets(id)))
+    } catch (error) {
+      this.logger.error(`checkUserTweets: ${error.message}`)
+    }
+
+    setTimeout(() => this.checkUserTweets(), 10000)
+  }
+
+  private async getUserTweets(userId: string) {
+    try {
+      const data = await this.twitterGraphqlUserService.getUserTweetsAndReplies(userId)
+      const entries = data.user.result.timeline_v2.timeline.instructions.find((v) => v.type === 'TimelineAddEntries')?.entries || []
+      const itemContents = entries.map((v) => v.content.itemContent).filter((v) => v) || []
+      // eslint-disable-next-line no-underscore-dangle
+      const tweetResults = itemContents.map((v) => v.tweet_results.result).filter((v) => v && v.__typename === 'Tweet') || []
+      await this.handleTweetResults(tweetResults)
+    } catch (error) {
+      this.logger.error(`getUserTweets: ${error.message}`, { userId })
+    }
+  }
+
+  private async handleTweetResults(results: any[]) {
+    try {
+      const curTweetIds = results.map((v) => v.rest_id)
+      const oldTweetIds = await this.twitterTweetService.getManyByIds(curTweetIds).then((tweets) => tweets.map((tweet) => tweet.id))
+      const newTweetIds = ArrayUtil.difference(curTweetIds, oldTweetIds)
+      if (!newTweetIds.length) {
+        return
+      }
+
+      const limiter = new Bottleneck({ maxConcurrent: 1 })
+      const newResults = results.filter((v) => newTweetIds.includes(v.rest_id)).reverse()
+      await Promise.allSettled(newResults.map((result) => limiter.schedule(async () => this.handleTweetResult(result))))
+    } catch (error) {
+      this.logger.error(`handleTweetResults: ${error.message}`, { results })
+    }
+  }
+
+  private async handleTweetResult(result: any) {
+    try {
+      const tweet = await this.twitterTweetControllerService.saveTweet(result)
+      console.warn(tweet.id)
+      // TODO: send tweet to discord
+    } catch (error) {
+      this.logger.error(`handleTweetResult: ${error.message}`, { result })
+    }
   }
 
   public async connect(retryCount = 0) {
@@ -114,7 +178,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
         const missingIds = userIds.filter((id) => !users.some((user) => user.id_str === id))
         this.logger.warn('initUsers: Failed to get some users by ids', { idCount: missingIds, ids: missingIds })
       }
-      await Promise.allSettled(users.map((v) => this.twitterUserControllerService.saveUser(v)))
+      await Promise.allSettled(users.map((v) => this.twitterUserControllerService.saveUserV1(v)))
     } catch (error) {
       this.logger.error(`initUsers: ${error.message}`)
     }

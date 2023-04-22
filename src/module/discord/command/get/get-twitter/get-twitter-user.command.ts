@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { bold, ChatInputCommandInteraction, inlineCode, SlashCommandSubcommandBuilder } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder, bold, inlineCode } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TwitterApiService } from '../../../../twitter/service/api/twitter-api.service'
 import { TwitterUserControllerService } from '../../../../twitter/service/controller/twitter-user-controller.service'
@@ -61,7 +61,7 @@ export class GetTwitterUserCommand extends BaseCommand {
       const user = id
         ? await this.twitterApiService.getUserById(id)
         : await this.twitterApiService.getUserByUsername(username)
-      await this.twitterUserControllerService.saveUser(user)
+      await this.twitterUserControllerService.saveUserV1(user)
       rawUser = await this.twitterUserService.getRawOneById(user.id_str)
     }
 

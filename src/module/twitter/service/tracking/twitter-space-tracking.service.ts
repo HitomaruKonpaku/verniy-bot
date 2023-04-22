@@ -270,7 +270,7 @@ export class TwitterSpaceTrackingService {
       }
       this.logger.log('updateUnknownUsers', { userCount: ids.length })
       const users = await this.twitterApiService.getAllUsersByUserIds(ids)
-      await Promise.allSettled(users.map((user) => this.twitterUserControllerService.saveUser(user)))
+      await Promise.allSettled(users.map((user) => this.twitterUserControllerService.saveUserV1(user)))
     } catch (error) {
       this.logger.error(`updateUnknownUsers: ${error.message}`)
     }

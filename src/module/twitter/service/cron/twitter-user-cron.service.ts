@@ -53,7 +53,7 @@ export class TwitterUserCronService extends BaseCronService {
       users.forEach((user) => {
         inactiveIdSet.delete(user.id_str)
         this.twitterUserControllerService
-          .saveUser(user)
+          .saveUserV1(user)
           .catch((error) => this.logger.error(`getUserChunk#updateByUserObject: ${error.message}`, { id: user.id_str, user }))
       })
 
