@@ -53,6 +53,10 @@ export const twitterSpacesByCreatorIdsLimiter = new Bottleneck({
   reservoirRefreshAmount: 300,
 })
 
+export const twitterUserTweetsLimiter = new Bottleneck({
+  maxConcurrent: 2,
+})
+
 export const twitterSpacesByFleetsAvatarContentLimiter = new Bottleneck({
   maxConcurrent: 1,
   minTime: 500,

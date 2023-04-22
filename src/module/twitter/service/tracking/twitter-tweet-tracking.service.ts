@@ -64,15 +64,21 @@ export class TwitterTweetTrackingService extends EventEmitter {
   }
 
   private async checkUserTweets() {
+    this.logger.debug('--> checkUserTweets')
+
     try {
       const users = await this.twitterFilteredStreamUserService.getUsersForInitRules()
-      const userIds = users.map((v) => v.id)
-      await Promise.allSettled(userIds.map((id) => this.getUserTweets(id)))
+      if (users.length) {
+        this.logger.debug('checkUserTweets', { userCount: users.length })
+        const userIds = users.map((v) => v.id)
+        await Promise.allSettled(userIds.map((id) => this.getUserTweets(id)))
+      }
     } catch (error) {
       this.logger.error(`checkUserTweets: ${error.message}`)
     }
 
     setTimeout(() => this.checkUserTweets(), 10000)
+    this.logger.debug('<-- checkUserTweets')
   }
 
   private async getUserTweets(userId: string) {
@@ -82,6 +88,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
       const itemContents = entries.map((v) => v.content.itemContent).filter((v) => v) || []
       // eslint-disable-next-line no-underscore-dangle
       const tweetResults = itemContents.map((v) => v.tweet_results.result).filter((v) => v && v.__typename === 'Tweet') || []
+      this.logger.debug('getUserTweets', { userId, resultCount: tweetResults.length })
       await this.handleTweetResults(tweetResults)
     } catch (error) {
       this.logger.error(`getUserTweets: ${error.message}`, { userId })
