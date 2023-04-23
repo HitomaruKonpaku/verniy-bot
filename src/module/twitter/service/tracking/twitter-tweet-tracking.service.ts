@@ -9,6 +9,7 @@ import { ArrayUtil } from '../../../../util/array.util'
 import { ConfigService } from '../../../config/service/config.service'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitterTweetService } from '../../../track/service/track-twitter-tweet.service'
+import { TwitterTweet } from '../../model/twitter-tweet.entity'
 import { TwitterRuleUtil } from '../../util/twitter-rule.util'
 import { TwitterUtil } from '../../util/twitter.util'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -22,6 +23,13 @@ import { TwitterTweetService } from '../data/twitter-tweet.service'
 @Injectable()
 export class TwitterTweetTrackingService extends EventEmitter {
   private readonly logger = baseLogger.child({ context: TwitterTweetTrackingService.name })
+
+  /**
+   * Limit send per discord channel id
+   */
+  private readonly broadcastLimiter = new Bottleneck.Group({ maxConcurrent: 1 })
+
+  private interval = 10000
 
   private stream: TweetStream<TweetV2SingleStreamResult>
 
@@ -77,7 +85,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
       this.logger.error(`checkUserTweets: ${error.message}`)
     }
 
-    setTimeout(() => this.checkUserTweets(), 10000)
+    setTimeout(() => this.checkUserTweets(), this.interval)
     this.logger.debug('<-- checkUserTweets')
   }
 
@@ -115,11 +123,72 @@ export class TwitterTweetTrackingService extends EventEmitter {
   private async handleTweetResult(result: any) {
     try {
       const tweet = await this.twitterTweetControllerService.saveTweet(result)
-      console.warn(tweet.id)
-      // TODO: send tweet to discord
+      await this.broadcastTweet(tweet)
     } catch (error) {
       this.logger.error(`handleTweetResult: ${error.message}`, { result })
     }
+  }
+
+  private async broadcastTweet(tweet: TwitterTweet) {
+    try {
+      const trackItems = await this.getTrackItemsByTweet(tweet)
+      if (!trackItems.length) {
+        return
+      }
+
+      let tweetUrl = TwitterUtil.getTweetUrlById(tweet.id)
+      try {
+        tweetUrl = TwitterUtil.getTweetUrl(tweet.author.username, tweet.id)
+      } catch (error) {
+        this.logger.error(`broadcastTweet#getTweetUrl: ${error.message}`, { tweet })
+      }
+      this.logger.info(`broadcastTweet: ${tweetUrl}`)
+
+      let content = tweetUrl
+      try {
+        if (tweet.inReplyToStatusId) {
+          const icon = '💬'
+          const origTweetUrl = TwitterUtil.getTweetUrlById(tweet.inReplyToStatusId)
+          content = [origTweetUrl, `${icon} ${tweetUrl}`].join('\n')
+        } else if (tweet.retweetedStatusId) {
+          const icon = '🔁'
+          const origTweetUrl = TwitterUtil.getTweetUrlById(tweet.retweetedStatusId)
+          content = [origTweetUrl, `${icon} ${tweetUrl}`].join('\n')
+        }
+      } catch (error) {
+        this.logger.error(`broadcastTweet: Parsing tweet error: ${error.message}`, { tweet })
+      }
+
+      trackItems.forEach((trackItem) => {
+        const channelContent = [content]
+          .filter((v) => v)
+          .join('\n')
+        this.broadcastLimiter
+          .key(trackItem.discordChannelId)
+          .schedule(() => this.discordService.sendToChannel(
+            trackItem.discordChannelId,
+            { content: channelContent },
+          ))
+      })
+    } catch (error) {
+      this.logger.error(`broadcastTweet: ${error.message}`, { tweet })
+    }
+  }
+
+  private async getTrackItemsByTweet(tweet: TwitterTweet) {
+    try {
+      const items = await this.trackTwitterTweetService.getManyByUserId(
+        tweet.authorId,
+        {
+          allowReply: !!tweet.inReplyToStatusId,
+          allowRetweet: !!tweet.retweetedStatusId,
+        },
+      )
+      return items
+    } catch (error) {
+      this.logger.error(`getTrackItemsByTweet: ${error.message}`, { tweet })
+    }
+    return []
   }
 
   public async connect(retryCount = 0) {
@@ -322,17 +391,16 @@ export class TwitterTweetTrackingService extends EventEmitter {
           allowRetweet: isRetweet,
         },
       )
-      items = items
-        .filter((record) => {
-          if (!record?.filterKeywords?.length) {
-            return true
-          }
-          const text = data.data.text || ''
-          const urls = TwitterUtil.getTweetEntityUrls(data)
-          const contents = [text, ...urls].filter((v) => v).map((v) => v.toLowerCase())
-          const existKeyword = record.filterKeywords.some((keyword) => contents.some((v) => v.includes(keyword.toLowerCase())))
-          return existKeyword
-        })
+      items = items.filter((record) => {
+        if (!record?.filterKeywords?.length) {
+          return true
+        }
+        const text = data.data.text || ''
+        const urls = TwitterUtil.getTweetEntityUrls(data)
+        const contents = [text, ...urls].filter((v) => v).map((v) => v.toLowerCase())
+        const existKeyword = record.filterKeywords.some((keyword) => contents.some((v) => v.includes(keyword.toLowerCase())))
+        return existKeyword
+      })
       return items
     } catch (error) {
       this.logger.error(`getTrackItems: ${error.message}`, { data })

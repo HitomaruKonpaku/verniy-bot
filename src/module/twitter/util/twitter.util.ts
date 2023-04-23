@@ -14,6 +14,10 @@ export class TwitterUtil {
     return `https://twitter.com/${username}/status/${tweetId}`
   }
 
+  public static getTweetUrlById(tweetId: string): string {
+    return TwitterUtil.getTweetUrl('i', tweetId)
+  }
+
   public static getSpaceUrl(spaceId: string): string {
     return `https://twitter.com/i/spaces/${spaceId}`
   }
