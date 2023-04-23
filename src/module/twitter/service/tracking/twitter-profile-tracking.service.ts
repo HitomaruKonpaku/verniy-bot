@@ -16,6 +16,8 @@ import { TwitterUserService } from '../data/twitter-user.service'
 export class TwitterProfileTrackingService {
   private readonly logger = baseLogger.child({ context: TwitterProfileTrackingService.name })
 
+  private interval = 60000
+
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
@@ -29,7 +31,9 @@ export class TwitterProfileTrackingService {
     private readonly twitterApiService: TwitterApiService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
-  ) { }
+  ) {
+    this.interval = this.configService.twitter.profile.interval
+  }
 
   public async start() {
     this.logger.info('Starting...')
@@ -43,13 +47,32 @@ export class TwitterProfileTrackingService {
         this.logger.debug('execute', { userCount: userIds.length })
         const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
         await Promise.allSettled(chunks.map((v) => this.checkUsers(v)))
+        await this.checkUsersByGql(userIds)
       }
     } catch (error) {
       this.logger.error(`execute: ${error.message}`)
     }
 
-    const { interval } = this.configService.twitter.profile
-    setTimeout(() => this.execute(), interval)
+    setTimeout(() => this.execute(), this.interval)
+  }
+
+  private async checkUsersByGql(ids: string[]) {
+    this.logger.debug('checkUsersByGql', { idCount: ids.length })
+    await Promise.allSettled(ids.map((id) => this.checkUserByGql(id)))
+  }
+
+  private async checkUserByGql(id: string) {
+    try {
+      const oldUser = await this.twitterUserService.getOneById(id)
+      const newUser = await this.twitterUserControllerService.getUserByRestId(id)
+      if (newUser) {
+        await this.checkUserProfile(newUser, oldUser)
+      } else {
+        await this.checkInactiveUserProfile(id)
+      }
+    } catch (error) {
+      this.logger.error(`checkUserByGql: ${error.message}`, { id })
+    }
   }
 
   private async checkUsers(userIds: string[]) {
@@ -95,10 +118,10 @@ export class TwitterProfileTrackingService {
         newUser.isActive !== oldUser.isActive,
         newUser.username !== oldUser.username,
         newUser.name !== oldUser.name,
-        newUser.location !== oldUser.location,
-        newUser.description !== oldUser.description,
         newUser.protected !== oldUser.protected,
         newUser.verified !== oldUser.verified,
+        newUser.location !== oldUser.location,
+        newUser.description !== oldUser.description,
         newUser.profileImageUrl !== oldUser.profileImageUrl,
         newUser.profileBannerUrl !== oldUser.profileBannerUrl,
       ]
