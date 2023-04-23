@@ -11,17 +11,20 @@ export class TwitterUser extends BaseExternalUserEntity {
   @Column({ type: 'text', nullable: true })
   name?: string
 
-  @Column({ type: 'text', nullable: true })
-  location?: string
-
-  @Column({ type: 'text', nullable: true })
-  description?: string
-
   @Column({ type: 'boolean', default: false })
   protected?: boolean
 
   @Column({ type: 'boolean', default: false })
   verified?: boolean
+
+  @Column({ name: 'verified_type', type: 'text', nullable: true })
+  verifiedType?: string
+
+  @Column({ type: 'text', nullable: true })
+  location?: string
+
+  @Column({ type: 'text', nullable: true })
+  description?: string
 
   @Column({ name: 'profile_image_url', type: 'text', nullable: true })
   profileImageUrl?: string
