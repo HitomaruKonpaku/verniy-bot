@@ -57,8 +57,9 @@ export class TwitterProfileTrackingService {
 
   private async checkUsersByGql(ids: string[]) {
     this.logger.debug('--> checkUsersByGql', { idCount: ids.length })
-    await Promise.allSettled(ids.map((id) => this.checkUserByGql(id)))
-    this.logger.debug('<-- checkUsersByGql')
+    const result = await Promise.allSettled(ids.map((id) => this.checkUserByGql(id)))
+    const failedCount = result.filter((v) => v.status === 'rejected').length
+    this.logger.debug('<-- checkUsersByGql', { idCount: ids.length, failedCount })
   }
 
   private async checkUserByGql(id: string) {
@@ -72,6 +73,7 @@ export class TwitterProfileTrackingService {
       }
     } catch (error) {
       this.logger.error(`checkUserByGql: ${error.message}`, { id })
+      throw error
     }
   }
 
