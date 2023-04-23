@@ -5,7 +5,6 @@ import { ArrayUtil } from '../../../../util/array.util'
 import { ConfigService } from '../../../config/service/config.service'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitterProfileService } from '../../../track/service/track-twitter-profile.service'
-import { TWITTER_API_LIST_SIZE } from '../../constant/twitter.constant'
 import { TwitterUser } from '../../model/twitter-user.entity'
 import { TwitterProfileUtil } from '../../util/twitter-profile.util'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -45,8 +44,8 @@ export class TwitterProfileTrackingService {
       const userIds = await this.trackTwitterProfileService.getUserIds()
       if (userIds.length) {
         this.logger.debug('execute', { userCount: userIds.length })
-        const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
-        await Promise.allSettled(chunks.map((v) => this.checkUsers(v)))
+        // const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
+        // await Promise.allSettled(chunks.map((v) => this.checkUsers(v)))
         await this.checkUsersByGql(userIds)
       }
     } catch (error) {
