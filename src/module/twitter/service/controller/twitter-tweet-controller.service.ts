@@ -29,7 +29,7 @@ export class TwitterTweetControllerService {
 
       try {
         const subResult = result.core.user_results.result
-        tmpTweet.author = await this.twitterUserControllerService.saveUser(subResult)
+        tmpTweet.author = await this.twitterUserControllerService.patchUser(subResult)
       } catch (error) {
         this.logger.error(`saveTweet#user: ${error.message}`, { id, result })
       }

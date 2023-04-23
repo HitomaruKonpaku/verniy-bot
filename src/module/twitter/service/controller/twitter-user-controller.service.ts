@@ -4,6 +4,7 @@ import { UserV1, UserV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterApiService } from '../api/twitter-api.service'
+import { TwitterGraphqlUserService } from '../api/twitter-graphql-user.service'
 import { TwitterUserService } from '../data/twitter-user.service'
 
 @Injectable()
@@ -17,7 +18,19 @@ export class TwitterUserControllerService {
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterApiService)
     private readonly twitterApiService: TwitterApiService,
+    @Inject(TwitterGraphqlUserService)
+    private readonly twitterGraphqlUserService: TwitterGraphqlUserService,
   ) { }
+
+  public async getUserByRestId(id: string) {
+    const data = await this.twitterGraphqlUserService.getUserByRestId(id)
+    const { result } = data.user
+    if (!result?.rest_id) {
+      return null
+    }
+    const user = await this.saveUser(result)
+    return user
+  }
 
   public async getOneById(id: string, refresh = false) {
     let user = !refresh
@@ -41,7 +54,12 @@ export class TwitterUserControllerService {
 
   public async saveUser(result: any) {
     const id = result.rest_id
+    const user = await this.dbLimiter.key(id).schedule(() => this.twitterUserService.save(TwitterEntityUtil.buildUser(result)))
+    return user
+  }
 
+  public async patchUser(result: any) {
+    const id = result.rest_id
     const user = await this.dbLimiter.key(id).schedule(async () => {
       let tmpUser = await this.twitterUserService.getOneById(id)
       if (!tmpUser) {
@@ -49,7 +67,6 @@ export class TwitterUserControllerService {
       }
       return tmpUser
     })
-
     return user
   }
 
