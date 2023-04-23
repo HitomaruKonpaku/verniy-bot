@@ -71,6 +71,8 @@ export class TwitterTweetTrackingService extends EventEmitter {
     // await this.checkUserTweets()
   }
 
+  // #region new tracker
+
   private async checkUserTweets() {
     this.logger.debug('--> checkUserTweets')
 
@@ -190,6 +192,10 @@ export class TwitterTweetTrackingService extends EventEmitter {
     }
     return []
   }
+
+  // #endregion
+
+  // #region legacy tracker
 
   public async connect(retryCount = 0) {
     try {
@@ -407,4 +413,6 @@ export class TwitterTweetTrackingService extends EventEmitter {
     }
     return []
   }
+
+  // #endregion
 }
