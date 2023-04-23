@@ -10,6 +10,7 @@ export class TwitterEntityUtil {
     const { legacy } = result
     const obj: TwitterUser = {
       id: result.rest_id,
+      isActive: true,
       createdAt: new Date(legacy.created_at).getTime(),
       username: legacy.screen_name,
       name: legacy.name,
@@ -30,6 +31,7 @@ export class TwitterEntityUtil {
   public static buildUserV1(data: UserV1): TwitterUser {
     const obj: TwitterUser = {
       id: data.id_str,
+      isActive: true,
       createdAt: new Date(data.created_at).getTime(),
       username: data.screen_name,
       name: data.name,
@@ -49,6 +51,7 @@ export class TwitterEntityUtil {
   public static buildUserV2(data: UserV2): TwitterUser {
     const obj: TwitterUser = {
       id: data.id,
+      isActive: true,
       createdAt: new Date(data.created_at).getTime(),
       username: data.username,
       name: data.name,
