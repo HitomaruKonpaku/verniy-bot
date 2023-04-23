@@ -10,21 +10,31 @@ export class TwitterTokenService {
 
   private guestToken: string
   private guestTokenCreatedAt: number
+  private guestTokenReservoir = 0
+  private guestTokenReservoirRefreshAmount = 500
 
   constructor(
     @Inject(forwardRef(() => TwitterPublicApiService))
     private readonly twitterPublicApiService: TwitterPublicApiService,
-  ) { }
+  ) {
+    this.resetGuestTokenReservoir()
+  }
 
   public async getGuestToken(forceRefresh = false) {
-    const token = await twitterGuestTokenLimiter.schedule(async () => {
+    const limiter = twitterGuestTokenLimiter
+    const token = await limiter.schedule(async () => {
       const tokenDeltaTime = Date.now() - (this.guestTokenCreatedAt || 0)
-      if (forceRefresh || !(this.guestToken && tokenDeltaTime < TWITTER_GUEST_TOKEN_DURATION)) {
+      const canRefresh = forceRefresh
+        || this.guestTokenReservoir <= 0
+        || !(this.guestToken && tokenDeltaTime < TWITTER_GUEST_TOKEN_DURATION)
+      if (canRefresh) {
         this.logger.debug('--> getGuestToken')
         this.guestToken = await this.twitterPublicApiService.getGuestToken()
         this.guestTokenCreatedAt = Date.now()
         this.logger.debug('<-- getGuestToken', { guestToken: this.guestToken })
+        this.resetGuestTokenReservoir()
       }
+      this.guestTokenReservoir -= 1
       return Promise.resolve(this.guestToken)
     })
     return token
@@ -34,5 +44,9 @@ export class TwitterTokenService {
   public getAuthToken() {
     const token = process.env.TWITTER_AUTH_TOKEN
     return token
+  }
+
+  private resetGuestTokenReservoir() {
+    this.guestTokenReservoir = this.guestTokenReservoirRefreshAmount
   }
 }
