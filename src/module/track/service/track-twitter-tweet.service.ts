@@ -15,9 +15,9 @@ export class TrackTwitterTweetService extends TrackBaseService<TrackTwitterTweet
 
   public async getManyByUserId(
     userId: string,
-    options: {
-      allowReply: boolean
-      allowRetweet: boolean
+    options?: {
+      allowReply?: boolean
+      allowRetweet?: boolean
     },
   ) {
     const query = this.repository
