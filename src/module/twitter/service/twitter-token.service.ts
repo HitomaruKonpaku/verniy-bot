@@ -23,10 +23,11 @@ export class TwitterTokenService {
   public async getGuestToken(forceRefresh = false) {
     const limiter = twitterGuestTokenLimiter
     const token = await limiter.schedule(async () => {
-      const tokenDeltaTime = Date.now() - (this.guestTokenCreatedAt || 0)
+      const tokenAliveDuration = Date.now() - (this.guestTokenCreatedAt || 0)
       const canRefresh = forceRefresh
+        || !this.guestToken
         || this.guestTokenReservoir <= 0
-        || !(this.guestToken && tokenDeltaTime < TWITTER_GUEST_TOKEN_DURATION)
+        || tokenAliveDuration >= TWITTER_GUEST_TOKEN_DURATION
       if (canRefresh) {
         this.logger.debug('--> getGuestToken')
         this.guestToken = await this.twitterPublicApiService.getGuestToken()
