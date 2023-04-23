@@ -32,38 +32,55 @@ export class TwitterUserCronService extends BaseCronService {
 
   private async checkUsers() {
     this.logger.info('--> checkUsers')
-    const limiter = new Bottleneck({ maxConcurrent: 1 })
     try {
       const users = await this.twitterUserService.getManyForCheck()
-      this.logger.debug('checkUsers', { userCount: users.length })
-      const chunks = ArrayUtil.splitIntoChunk(users, TWITTER_API_LIST_SIZE)
-      await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.getUserChunk(v))))
+      if (users.length) {
+        await this.updateUsersLegacy(users)
+        await this.updateUsers(users)
+      }
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }
     this.logger.info('<-- checkUsers')
   }
 
+  private async updateUsers(users: TwitterUser[]) {
+    this.logger.debug('--> updateUsers', { userCount: users.length })
+    const result = await Promise.allSettled(users.map(async (user) => {
+      const newUser = await this.twitterUserControllerService.getUserByRestId(user.id)
+      if (!newUser) {
+        await this.twitterUserService.updateFields(user.id, { isActive: false })
+      }
+    }))
+    const failedCount = result.filter((v) => v.status === 'rejected').length
+    this.logger.debug('<-- updateUsers', { userCount: users.length, failedCount })
+  }
+
+  private async updateUsersLegacy(users: TwitterUser[]) {
+    this.logger.debug('--> updateUsersLegacy', { userCount: users.length })
+    const limiter = new Bottleneck({ maxConcurrent: 1 })
+    const chunks = ArrayUtil.splitIntoChunk(users, TWITTER_API_LIST_SIZE)
+    const result = await Promise.allSettled(chunks.map((v) => limiter.schedule(() => this.getUserChunk(v))))
+    const failedCount = result.filter((v) => v.status === 'rejected').length
+    this.logger.debug('<-- updateUsersLegacy', { userCount: users.length, failedCount })
+  }
+
   private async getUserChunk(chunk: TwitterUser[]) {
-    try {
-      const ids = chunk.map((v) => v.id)
-      const users = await this.twitterApiService.getUsersByUserIds(ids)
-      const inactiveIdSet = new Set(ids)
+    const ids = chunk.map((v) => v.id)
+    const users = await this.twitterApiService.getUsersByUserIds(ids)
+    const inactiveIdSet = new Set(ids)
 
-      users.forEach((user) => {
-        inactiveIdSet.delete(user.id_str)
-        this.twitterUserControllerService
-          .saveUserV1(user)
-          .catch((error) => this.logger.error(`getUserChunk#updateByUserObject: ${error.message}`, { id: user.id_str, user }))
-      })
+    users.forEach((user) => {
+      inactiveIdSet.delete(user.id_str)
+      this.twitterUserControllerService
+        .saveUserV1(user)
+        .catch((error) => this.logger.error(`getUserChunk#saveUserV1: ${error.message}`, { id: user.id_str, user }))
+    })
 
-      inactiveIdSet.forEach((id) => {
-        this.twitterUserService
-          .updateIsActive(id, false)
-          .catch((error) => this.logger.error(`getUserChunk#updateIsActive: ${error.message}`, { id }))
-      })
-    } catch (error) {
-      // Ignore
-    }
+    inactiveIdSet.forEach((id) => {
+      this.twitterUserService
+        .updateFields(id, { isActive: false })
+        .catch((error) => this.logger.error(`getUserChunk#updateFields: ${error.message}`, { id }))
+    })
   }
 }
