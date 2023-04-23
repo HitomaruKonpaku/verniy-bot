@@ -15,7 +15,7 @@ export class TwitterEntityUtil {
       name: legacy.name,
       protected: !!legacy.protected,
       verified: !!result.is_blue_verified,
-      verifiedType: legacy.verified_type || null,
+      verifiedType: legacy.verified_type?.toLowerCase() || null,
       location: legacy.location,
       description: TwitterUtil.getUserDescription(legacy),
       profileImageUrl: TwitterUtil.getUserProfileImageUrl(legacy.profile_image_url_https),
