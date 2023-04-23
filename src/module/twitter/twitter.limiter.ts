@@ -53,7 +53,15 @@ export const twitterSpacesByCreatorIdsLimiter = new Bottleneck({
   reservoirRefreshAmount: 300,
 })
 
-export const twitterUserTweetsLimiter = new Bottleneck({
+export const twitterGqlUserByRestIdLimiter = new Bottleneck({
+  maxConcurrent: 2,
+})
+
+export const twitterGqlUserByScreenNameLimiter = new Bottleneck({
+  maxConcurrent: 2,
+})
+
+export const twitterGqlUserTweetsLimiter = new Bottleneck({
   maxConcurrent: 2,
 })
 
