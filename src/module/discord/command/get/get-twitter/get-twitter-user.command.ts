@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder, bold, inlineCode } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
-import { TwitterApiService } from '../../../../twitter/service/api/twitter-api.service'
 import { TwitterUserControllerService } from '../../../../twitter/service/controller/twitter-user-controller.service'
 import { TwitterUserService } from '../../../../twitter/service/data/twitter-user.service'
 import { TwitterUserUtil } from '../../../../twitter/util/twitter-user.util'
@@ -12,8 +11,6 @@ export class GetTwitterUserCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: GetTwitterUserCommand.name })
 
   constructor(
-    @Inject(TwitterApiService)
-    private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterUserControllerService)
@@ -59,10 +56,13 @@ export class GetTwitterUserCommand extends BaseCommand {
 
     if (!rawUser) {
       const user = id
-        ? await this.twitterApiService.getUserById(id)
-        : await this.twitterApiService.getUserByUsername(username)
-      await this.twitterUserControllerService.saveUserV1(user)
-      rawUser = await this.twitterUserService.getRawOneById(user.id_str)
+        ? await this.twitterUserControllerService.getUserByRestId(id)
+        : await this.twitterUserControllerService.getUserByScreenName(username)
+      if (!user) {
+        await this.replyUserNotFound(interaction)
+        return
+      }
+      rawUser = await this.twitterUserService.getRawOneById(user.id)
     }
 
     await this.replyObject(interaction, rawUser)

@@ -32,6 +32,16 @@ export class TwitterUserControllerService {
     return user
   }
 
+  public async getUserByScreenName(screenName: string) {
+    const data = await this.twitterGraphqlUserService.getUserByScreenName(screenName)
+    const { result } = data.user
+    if (!result?.rest_id) {
+      return null
+    }
+    const user = await this.saveUser(result)
+    return user
+  }
+
   public async getOneById(id: string, refresh = false) {
     let user = !refresh
       ? await this.twitterUserService.getOneById(id)
