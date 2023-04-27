@@ -64,7 +64,7 @@ export class TwitterGraphqlApi {
       params: {
         variables: {
           userId,
-          count: 10,
+          count: 20,
           includePromotedContent: true,
           withQuickPromoteEligibilityTweetFields: true,
           withVoice: true,
@@ -107,7 +107,7 @@ export class TwitterGraphqlApi {
       params: {
         variables: {
           userId,
-          count: 10,
+          count: 20,
           includePromotedContent: true,
           withCommunity: true,
           withVoice: true,
