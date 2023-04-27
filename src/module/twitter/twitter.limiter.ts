@@ -54,15 +54,15 @@ export const twitterSpacesByCreatorIdsLimiter = new Bottleneck({
 })
 
 export const twitterGqlUserByRestIdLimiter = new Bottleneck({
-  maxConcurrent: 2,
+  maxConcurrent: 5,
 })
 
 export const twitterGqlUserByScreenNameLimiter = new Bottleneck({
-  maxConcurrent: 2,
+  maxConcurrent: 5,
 })
 
 export const twitterGqlUserTweetsLimiter = new Bottleneck({
-  maxConcurrent: 2,
+  maxConcurrent: 5,
 })
 
 export const twitterSpacesByFleetsAvatarContentLimiter = new Bottleneck({
