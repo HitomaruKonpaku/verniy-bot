@@ -1,4 +1,4 @@
-import { SpaceV2, UserV1, UserV2 } from 'twitter-api-v2'
+import { SpaceV2, TweetV2, UserV1, UserV2 } from 'twitter-api-v2'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { TwitterSpace } from '../model/twitter-space.entity'
 import { TwitterTweet } from '../model/twitter-tweet.entity'
@@ -79,6 +79,27 @@ export class TwitterEntityUtil {
       inReplyToUserId: legacy.in_reply_to_user_id_str,
       retweetedStatusId: legacy.retweeted_status_result?.result?.rest_id,
       quotedStatusId: result.quoted_status_result?.result.rest_id,
+    }
+    return obj
+  }
+
+  public static buildTweetV2(data: TweetV2): TwitterTweet {
+    const obj: TwitterTweet = {
+      id: data.id,
+      createdAt: new Date(data.created_at).getTime(),
+      authorId: data.author_id,
+      lang: data.lang,
+      text: data.text,
+    }
+    if (data.referenced_tweets?.length) {
+      const referencedTweet = data.referenced_tweets[0]
+      if (referencedTweet.type === 'replied_to') {
+        obj.inReplyToUserId = referencedTweet.id
+      } else if (referencedTweet.type === 'retweeted') {
+        obj.retweetedStatusId = referencedTweet.id
+      } else if (referencedTweet.type === 'quoted') {
+        obj.quotedStatusId = referencedTweet.id
+      }
     }
     return obj
   }

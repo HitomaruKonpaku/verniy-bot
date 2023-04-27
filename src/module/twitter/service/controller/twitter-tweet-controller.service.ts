@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
+import { TweetV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterTweetService } from '../data/twitter-tweet.service'
@@ -55,6 +56,11 @@ export class TwitterTweetControllerService {
       return tmpTweet
     })
 
+    return tweet
+  }
+
+  public async saveTweetV2(data: TweetV2) {
+    const tweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweetV2(data))
     return tweet
   }
 }
