@@ -3,5 +3,4 @@ export enum SpaceState {
   LIVE = 'live',
   ENDED = 'ended',
   CANCELED = 'canceled',
-  TIMED_OUT = 'time_out',
 }

@@ -22,9 +22,8 @@ export class TwitterSpaceUtil {
       case AudioSpaceMetadataState.RUNNING:
         return SpaceState.LIVE
       case AudioSpaceMetadataState.ENDED:
-        return SpaceState.ENDED
       case AudioSpaceMetadataState.TIMED_OUT:
-        return SpaceState.TIMED_OUT
+        return SpaceState.ENDED
       default:
         return null
     }
