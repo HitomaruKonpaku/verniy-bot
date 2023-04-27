@@ -27,13 +27,13 @@ export class TwitterService {
     this.logger.info('Starting...')
     const config = this.configService.twitter
     if (config.tweet?.active) {
-      await this.twitterTweetTrackingService.start()
+      this.twitterTweetTrackingService.start()
     }
     if (config.profile?.active) {
-      await this.twitterProfileTrackingService.start()
+      this.twitterProfileTrackingService.start()
     }
     if (config.space?.active) {
-      await this.twitterSpaceTrackingService.start()
+      this.twitterSpaceTrackingService.start()
     }
     if (config.cron?.active) {
       this.twitterCronService.start()
