@@ -64,11 +64,11 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
   public async start() {
     this.logger.info('Starting...')
-    this.initStream()
-    await this.initUsers()
-    await this.initStreamRules()
-    await this.connect()
-    // await this.checkUserTweets()
+    // this.initStream()
+    // await this.initUsers()
+    // await this.initStreamRules()
+    // await this.connect()
+    await this.checkUserTweets()
   }
 
   // #region new tracker
