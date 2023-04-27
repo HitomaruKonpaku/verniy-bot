@@ -26,9 +26,9 @@ import { TwitterTokenService } from '../twitter-token.service'
 export class TwitterSpaceTrackingService {
   private readonly logger = baseLogger.child({ context: TwitterSpaceTrackingService.name })
 
-  private liveSpacesCheckInterval = 30000
+  private liveSpacesCheckInterval = 60000
   private newSpacesCheckInterval = 60000
-  private newSpacesFleetlineCheckInterval = 30000
+  private newSpacesFleetlineCheckInterval = 60000
 
   constructor(
     @Inject(ConfigService)
@@ -57,7 +57,7 @@ export class TwitterSpaceTrackingService {
 
   public async start() {
     this.logger.info('Starting...')
-    await this.checkNewSpaces()
+    await this.checkNewSpacesByAvatarContent()
     await this.checkNewSpacesByFleetline()
     await this.checkLiveSpaces()
   }
@@ -71,8 +71,9 @@ export class TwitterSpaceTrackingService {
     try {
       const spaceIds = await this.twitterSpaceService.getLiveSpaceIds()
       if (spaceIds.length) {
-        const chunks = ArrayUtil.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
-        await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
+        // const chunks = ArrayUtil.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
+        // await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
+        await Promise.allSettled(spaceIds.map((id) => this.getSpaceById(id)))
       }
     } catch (error) {
       this.logger.error(`checkLiveSpaces: ${error.message}`)
@@ -82,41 +83,25 @@ export class TwitterSpaceTrackingService {
     setTimeout(() => this.checkLiveSpaces(), interval)
   }
 
-  private async checkNewSpaces() {
+  private async checkNewSpacesByAvatarContent() {
+    if (!this.twitterTokenService.getAuthToken()) {
+      return
+    }
+
     try {
       const userIds = await this.trackTwitterSpaceService.getUserIds()
       if (userIds.length) {
-        this.logger.debug('checkNewSpaces', { userCount: userIds.length })
-        const chunks = ArrayUtil.splitIntoChunk(userIds, TWITTER_API_LIST_SIZE)
-        await Promise.allSettled(chunks.map((v) => this.getSpaces(v)))
+        this.logger.debug('checkNewSpacesByAvatarContent', { userCount: userIds.length })
+        const spaceIds = await this.getSpacesByAvatarContent(userIds)
+        this.logger.debug('checkNewSpacesByAvatarContent', { spaceCount: spaceIds.length, ids: spaceIds })
+        await this.getNewSpaces(spaceIds)
       }
-    } catch (error) {
-      this.logger.error(`checkNewSpaces: ${error.message}`)
-    }
-
-    const interval = this.newSpacesCheckInterval
-    setTimeout(() => this.checkNewSpaces(), interval)
-
-    if (this.twitterTokenService.getAuthToken()) {
-      // Use public API to get Spaces
-      setTimeout(() => this.checkNewSpacesByAvatarContent(), interval / 2)
-    }
-  }
-
-  private async checkNewSpacesByAvatarContent() {
-    try {
-      const userIds = await this.trackTwitterSpaceService.getUserIds()
-      if (!userIds.length) {
-        return
-      }
-
-      this.logger.debug('checkNewSpacesByAvatarContent', { userCount: userIds.length })
-      const spaceIds = await this.getSpacesByAvatarContent(userIds)
-      this.logger.debug('checkNewSpacesByAvatarContent', { idCount: spaceIds.length, ids: spaceIds })
-      await this.getNewSpaces(spaceIds)
     } catch (error) {
       this.logger.error(`checkNewSpacesByAvatarContent: ${error.message}`)
     }
+
+    const interval = this.newSpacesCheckInterval
+    setTimeout(() => this.checkNewSpacesByAvatarContent(), interval)
   }
 
   private async checkNewSpacesByFleetline() {
@@ -152,9 +137,26 @@ export class TwitterSpaceTrackingService {
       return
     }
 
-    this.logger.warn('getNewSpaces', { newSpaceIds })
-    const idChunks = ArrayUtil.splitIntoChunk(newSpaceIds, TWITTER_API_LIST_SIZE)
-    await Promise.allSettled(idChunks.map((ids) => this.getSpacesByIds(ids)))
+    // this.logger.warn('getNewSpaces', { newSpaceIds })
+    // const idChunks = ArrayUtil.splitIntoChunk(newSpaceIds, TWITTER_API_LIST_SIZE)
+    // await Promise.allSettled(idChunks.map((ids) => this.getSpacesByIds(ids)))
+
+    await Promise.allSettled(newSpaceIds.map((id) => this.getSpaceById(id)))
+  }
+
+  private async getSpaceById(id: string) {
+    try {
+      const oldSpace = await this.twitterSpaceService.getOneById(id)
+      const newSpace = await this.twitterSpaceControllerService.getOneById(id)
+      const userIds = ArrayUtil.difference(
+        [newSpace.hostIds, newSpace.speakerIds].flat(),
+        [oldSpace?.hostIds || [], oldSpace?.speakerIds || []].flat(),
+      )
+      await Promise.allSettled(userIds.map((v) => this.twitterUserControllerService.getUserByRestId(v)))
+      await this.notifySpace(newSpace, oldSpace)
+    } catch (error) {
+      this.logger.error(`getSpaceById: ${error.message}`, { id })
+    }
   }
 
   private async getSpacesByIds(ids: string[]) {
