@@ -223,8 +223,8 @@ export class TwitterTweetTrackingService extends EventEmitter {
     this.stream = this.client.v2.searchStream({
       autoConnect: false,
       expansions: ['author_id', 'in_reply_to_user_id', 'referenced_tweets.id', 'referenced_tweets.id.author_id'],
-      'tweet.fields': ['id', 'author_id', 'in_reply_to_user_id', 'entities'],
-      'user.fields': ['id', 'username'],
+      'tweet.fields': ['id', 'created_at', 'author_id', 'lang', 'text', 'in_reply_to_user_id', 'referenced_tweets', 'entities'],
+      'user.fields': ['id', 'created_at', 'username', 'name', 'protected', 'verified', 'verified_type'],
     })
     this.addStreamEventListeners()
   }
