@@ -336,6 +336,15 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
   private async onData(data: TweetV2SingleStreamResult) {
     try {
+      try {
+        const tweets = data?.includes?.tweets || []
+        const result = await Promise.allSettled(tweets.map((v) => this.twitterTweetControllerService.saveTweetV2(v)))
+        const failedCount = result.filter((v) => v.status === 'rejected').length
+        this.logger.debug('onData#saveTweetV2', { tweetCount: tweets.length, failedCount })
+      } catch (error) {
+        this.logger.error(`onData#saveTweetV2: ${error.message}`, data)
+      }
+
       const { author_id: authorId } = data.data
       const isAuthorExist = await this.trackTwitterTweetService.existUserId(authorId)
       if (!isAuthorExist) {
