@@ -90,6 +90,7 @@ export class TwitterEntityUtil {
       authorId: data.author_id,
       lang: data.lang,
       text: data.text,
+      inReplyToUserId: data.in_reply_to_user_id,
     }
     if (data.referenced_tweets?.length) {
       const referencedTweet = data.referenced_tweets[0]
