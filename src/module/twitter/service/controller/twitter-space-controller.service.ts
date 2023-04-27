@@ -4,6 +4,7 @@ import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
 import { TWITTER_API_LIST_SIZE } from '../../constant/twitter.constant'
 import { AudioSpaceMetadataState } from '../../enum/twitter-graphql.enum'
+import { AudioSpace } from '../../interface/twitter-graphql.interface'
 import { TwitterSaveAudioSpaceOption } from '../../interface/twitter-option.interface'
 import { twitterAudioSpaceLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
@@ -28,8 +29,9 @@ export class TwitterSpaceControllerService {
   ) { }
 
   public async getOneById(id: string) {
-    await this.saveAudioSpace(id)
-    const space = await this.twitterSpaceService.getOneById(id)
+    let space = await this.twitterSpaceService.getOneById(id)
+    await this.saveAudioSpace(id, { skipPlaylistUrl: !!space?.playlistUrl })
+    space = await this.twitterSpaceService.getOneById(id)
     return space
   }
 
@@ -125,19 +127,22 @@ export class TwitterSpaceControllerService {
 
     const canGetPlaylistUrl = !options?.skipPlaylistUrl
       && (audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING || audioSpace.metadata.is_space_available_for_replay)
-
     if (canGetPlaylistUrl) {
-      this.logger.info('saveAudioSpace#getSpacePlaylistUrl', { id })
-      try {
-        const playlistUrl = await this.twitterGraphqlSpaceService.getSpacePlaylistUrl(id, audioSpace)
-        const playlistActive = true
-        await this.twitterSpaceService.updateFields(id, {
-          playlistUrl,
-          playlistActive,
-        })
-      } catch (error) {
-        this.logger.error(`saveAudioSpace#getSpacePlaylistUrl: ${error.message}`, { id })
-      }
+      await this.saveAudioSpacePlaylist(id, audioSpace)
+    }
+  }
+
+  public async saveAudioSpacePlaylist(id: string, audioSpace: AudioSpace) {
+    this.logger.info('saveAudioSpacePlaylist', { id })
+    try {
+      const playlistUrl = await this.twitterGraphqlSpaceService.getSpacePlaylistUrl(id, audioSpace)
+      const playlistActive = true
+      await this.twitterSpaceService.updateFields(id, {
+        playlistUrl,
+        playlistActive,
+      })
+    } catch (error) {
+      this.logger.error(`saveAudioSpacePlaylist: ${error.message}`, { id })
     }
   }
 }
