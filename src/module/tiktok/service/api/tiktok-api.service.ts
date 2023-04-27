@@ -23,11 +23,7 @@ export class TiktokApiService {
     const meta = { requestId, username }
     try {
       const url = `@${username}/rss`
-      const { data } = await tiktokUserLimiter.schedule(() => {
-        this.logger.debug('--> getUserFeed', meta)
-        return this.client.get(url)
-      })
-      this.logger.debug('<-- getUserFeed', meta)
+      const { data } = await tiktokUserLimiter.schedule(() => this.client.get(url))
       return data
     } catch (error) {
       this.logger.error(`getUserFeed: ${error.message}`, meta)

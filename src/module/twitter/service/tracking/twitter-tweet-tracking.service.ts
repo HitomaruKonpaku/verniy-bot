@@ -98,7 +98,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
       const itemContents = entries.map((v) => v.content.itemContent).filter((v) => v) || []
       // eslint-disable-next-line no-underscore-dangle
       const tweetResults = itemContents.map((v) => v.tweet_results.result).filter((v) => v && v.__typename === 'Tweet') || []
-      this.logger.debug('getUserTweets', { userId, resultCount: tweetResults.length })
+      // this.logger.debug('getUserTweets', { userId, resultCount: tweetResults.length })
       await this.handleTweetResults(tweetResults)
     } catch (error) {
       this.logger.error(`getUserTweets: ${error.message}`, { userId })
