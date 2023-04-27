@@ -1,6 +1,7 @@
 import { APIEmbed, APIEmbedField } from 'discord-api-types/v10'
 import { codeBlock, inlineCode, time } from 'discord.js'
 import { TrackTwitterSpace } from '../../track/model/track-twitter-space.entity'
+import { AudioSpaceMetadataState } from '../enum/twitter-graphql.enum'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { TwitterSpace } from '../model/twitter-space.entity'
 import { TwitterUtil } from './twitter.util'
@@ -10,6 +11,23 @@ export class TwitterSpaceUtil {
     const pattern = /(?<=spaces\/)\w+/
     const value = pattern.exec(s)?.[0] || s
     return value
+  }
+
+  public static parseState(state: AudioSpaceMetadataState): SpaceState {
+    switch (state) {
+      case AudioSpaceMetadataState.NOT_STARTED:
+        return SpaceState.SCHEDULED
+      case AudioSpaceMetadataState.CANCELED:
+        return SpaceState.CANCELED
+      case AudioSpaceMetadataState.RUNNING:
+        return SpaceState.LIVE
+      case AudioSpaceMetadataState.ENDED:
+        return SpaceState.ENDED
+      case AudioSpaceMetadataState.TIMED_OUT:
+        return SpaceState.TIMED_OUT
+      default:
+        return null
+    }
   }
 
   public static getMasterPlaylistUrl(url: string): string {

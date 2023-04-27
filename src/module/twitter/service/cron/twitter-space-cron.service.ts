@@ -32,7 +32,7 @@ export class TwitterSpaceCronService extends BaseCronService {
     try {
       const spaces = await this.twitterSpaceService.getManyForActiveCheck()
       this.logger.debug('checkSpacesActive', { spaceCount: spaces.length })
-      await this.twitterSpaceControllerService.getAllByIds(spaces.map((v) => v.id))
+      await this.twitterSpaceControllerService.getAllByIdsV2(spaces.map((v) => v.id))
     } catch (error) {
       this.logger.error(`checkSpacesActive: ${error.message}`)
     }

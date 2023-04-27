@@ -8,9 +8,10 @@ export interface AudioSpaceMetadata {
   title?: string
   media_key?: string
   created_at?: number
-  updated_at?: number
+  scheduled_start?: number
   started_at?: number
   ended_at?: string
+  updated_at?: number
   disallow_join?: boolean
   narrow_cast_space_type?: number
   is_employee_only?: boolean

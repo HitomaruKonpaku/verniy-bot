@@ -44,7 +44,7 @@ export class UpdateTwitterSpaceDataCommand extends BaseCommand {
       this.isRunning = true
       this.logger.warn('Fetching...')
 
-      const resSpaces = await this.twitterSpaceControllerService.getAllByIds(reqSpaces.map((v) => v.id))
+      const resSpaces = await this.twitterSpaceControllerService.getAllByIdsV2(reqSpaces.map((v) => v.id))
       await interaction.editReply(`Updated ${resSpaces.length}/${reqSpaces.length} Spaces`)
     } finally {
       this.isRunning = false

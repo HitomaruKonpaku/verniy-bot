@@ -1,8 +1,10 @@
 import { SpaceV2, TweetV2, UserV1, UserV2 } from 'twitter-api-v2'
 import { SpaceState } from '../enum/twitter-space.enum'
+import { AudioSpace } from '../interface/twitter-graphql.interface'
 import { TwitterSpace } from '../model/twitter-space.entity'
 import { TwitterTweet } from '../model/twitter-tweet.entity'
 import { TwitterUser } from '../model/twitter-user.entity'
+import { TwitterSpaceUtil } from './twitter-space.util'
 import { TwitterUtil } from './twitter.util'
 
 export class TwitterEntityUtil {
@@ -128,6 +130,30 @@ export class TwitterEntityUtil {
       hostIds: data.host_ids,
       speakerIds: data.speaker_ids,
       participantCount: data.participant_count,
+    }
+    return obj
+  }
+
+  public static buildSpaceByAudioSpace(audioSpace: AudioSpace) {
+    const { metadata, participants } = audioSpace
+    const creator = participants.admins[0]
+    const obj: TwitterSpace = {
+      id: metadata.rest_id,
+      isActive: true,
+      createdAt: metadata.created_at,
+      updatedAt: metadata.updated_at,
+      creatorId: creator.user_results.rest_id,
+      state: TwitterSpaceUtil.parseState(metadata.state),
+      scheduledStart: metadata.scheduled_start,
+      startedAt: metadata.started_at,
+      endedAt: Number(metadata.ended_at) || null,
+      title: metadata.title,
+      hostIds: participants.admins.map((v) => v.user_results.rest_id),
+      speakerIds: participants.speakers.map((v) => v.user_results.rest_id),
+      totalLiveListeners: metadata.total_live_listeners,
+      totalReplayWatched: metadata.total_replay_watched,
+      isAvailableForReplay: metadata.is_space_available_for_replay,
+      isAvailableForClipping: metadata.is_space_available_for_clipping,
     }
     return obj
   }

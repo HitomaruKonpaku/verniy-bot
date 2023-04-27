@@ -27,7 +27,13 @@ export class TwitterSpaceControllerService {
     private readonly twitterGraphqlSpaceService: TwitterGraphqlSpaceService,
   ) { }
 
-  public async getOneById(id: string, refresh = false) {
+  public async getOneById(id: string) {
+    await this.saveAudioSpace(id)
+    const space = await this.twitterSpaceService.getOneById(id)
+    return space
+  }
+
+  public async getOneByIdV2(id: string, refresh = false) {
     let space = !refresh
       ? await this.twitterSpaceService.getOneById(id)
       : null
@@ -59,7 +65,7 @@ export class TwitterSpaceControllerService {
     return space
   }
 
-  public async getManyByIds(ids: string[]) {
+  public async getManyByIdsV2(ids: string[]) {
     this.logger.debug('getManyByIds', { idCount: ids.length })
     const res = await this.twitterApiService.getSpacesByIds(ids)
     if (res.errors?.length) {
@@ -87,14 +93,14 @@ export class TwitterSpaceControllerService {
     return spaces
   }
 
-  public async getAllByIds(ids: string[]) {
+  public async getAllByIdsV2(ids: string[]) {
     this.logger.debug('getAllByIds', { idCount: ids.length })
     if (!ids?.length) {
       return []
     }
 
     const idChunks = ArrayUtil.splitIntoChunk(ids, TWITTER_API_LIST_SIZE)
-    const results = await Promise.allSettled(idChunks.map((idChunk) => this.getManyByIds(idChunk)))
+    const results = await Promise.allSettled(idChunks.map((idChunk) => this.getManyByIdsV2(idChunk)))
     const spaces = results
       .map((result) => (result.status === 'fulfilled' ? result.value : []))
       .flat()
@@ -115,28 +121,23 @@ export class TwitterSpaceControllerService {
     const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceById(id)
     this.logger.info('saveAudioSpace', { id, audioSpace })
 
-    let playlistUrl: string
-    let playlistActive: boolean
+    await this.twitterSpaceService.save(TwitterEntityUtil.buildSpaceByAudioSpace(audioSpace))
+
     const canGetPlaylistUrl = !options?.skipPlaylistUrl
       && (audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING || audioSpace.metadata.is_space_available_for_replay)
 
     if (canGetPlaylistUrl) {
       this.logger.info('saveAudioSpace#getSpacePlaylistUrl', { id })
       try {
-        playlistUrl = await this.twitterGraphqlSpaceService.getSpacePlaylistUrl(id, audioSpace)
-        playlistActive = true
+        const playlistUrl = await this.twitterGraphqlSpaceService.getSpacePlaylistUrl(id, audioSpace)
+        const playlistActive = true
+        await this.twitterSpaceService.updateFields(id, {
+          playlistUrl,
+          playlistActive,
+        })
       } catch (error) {
         this.logger.error(`saveAudioSpace#getSpacePlaylistUrl: ${error.message}`, { id })
       }
     }
-
-    await this.twitterSpaceService.updateFields(id, {
-      totalLiveListeners: audioSpace.metadata.total_live_listeners,
-      totalReplayWatched: audioSpace.metadata.total_replay_watched,
-      isAvailableForReplay: audioSpace.metadata.is_space_available_for_replay,
-      isAvailableForClipping: audioSpace.metadata.is_space_available_for_clipping,
-      playlistUrl,
-      playlistActive,
-    })
   }
 }

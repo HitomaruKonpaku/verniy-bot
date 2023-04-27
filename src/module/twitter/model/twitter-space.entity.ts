@@ -16,7 +16,7 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'state', type: 'text', default: SpaceState.LIVE })
   state: SpaceState
 
-  @Column({ name: 'is_ticketed', type: 'boolean', default: false })
+  @Column({ name: 'is_ticketed', type: 'boolean', nullable: true })
   isTicketed?: boolean
 
   @Column({ name: 'scheduled_start', type: 'numeric', nullable: true })
