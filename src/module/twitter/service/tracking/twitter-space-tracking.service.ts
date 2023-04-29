@@ -10,7 +10,7 @@ import { TWITTER_API_LIST_SIZE } from '../../constant/twitter.constant'
 import { SpaceState } from '../../enum/twitter-space.enum'
 import { AvatarContent } from '../../interface/twitter-fleet.interface'
 import { TwitterSpace } from '../../model/twitter-space.entity'
-import { twitterAudioSpaceLimiter, twitterSpacesByFleetsAvatarContentLimiter } from '../../twitter.limiter'
+import { twitterSpacesByFleetsAvatarContentLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterSpaceUtil } from '../../util/twitter-space.util'
 import { TwitterUtil } from '../../util/twitter.util'
@@ -227,11 +227,7 @@ export class TwitterSpaceTrackingService {
       if (newSpace.state === SpaceState.LIVE && !oldSpace?.playlistUrl) {
         // Get additional space data
         try {
-          const limiter = twitterAudioSpaceLimiter
-          await limiter.schedule(
-            { priority: 3 },
-            () => this.twitterSpaceControllerService.saveAudioSpace(newSpace.id),
-          )
+          await this.twitterSpaceControllerService.saveAudioSpace(newSpace.id)
           newSpace = await this.twitterSpaceService.getOneById(newSpace.id)
         } catch (error) {
           this.logger.error(`updateSpace#saveAudioSpace: ${error.message}`, { id: newSpace.id })

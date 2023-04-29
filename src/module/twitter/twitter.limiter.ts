@@ -76,14 +76,4 @@ export const twitterSpacePlaylistLimiter = new Bottleneck({
 
 export const twitterAudioSpaceLimiter = new Bottleneck({
   maxConcurrent: 5,
-  minTime: 500,
-  reservoir: 500,
-  reservoirRefreshInterval,
-  reservoirRefreshAmount: 500,
-})
-
-export const twitterAudioSpaceBatchLimiter = new Bottleneck({
-  reservoir: 150,
-  reservoirRefreshInterval: 5 * 60 * 1000,
-  reservoirRefreshAmount: 150,
 })
