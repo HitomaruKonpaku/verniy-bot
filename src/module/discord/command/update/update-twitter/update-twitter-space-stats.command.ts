@@ -3,14 +3,11 @@ import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'disc
 import { baseLogger } from '../../../../../logger'
 import { TwitterSpaceControllerService } from '../../../../twitter/service/controller/twitter-space-controller.service'
 import { TwitterSpaceService } from '../../../../twitter/service/data/twitter-space.service'
-import { twitterAudioSpaceBatchLimiter, twitterAudioSpaceLimiter } from '../../../../twitter/twitter.limiter'
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
 export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
   protected readonly logger = baseLogger.child({ context: UpdateTwitterSpaceStatsCommand.name })
-
-  private readonly limiter = twitterAudioSpaceBatchLimiter
 
   private isRunning = false
 
@@ -21,16 +18,6 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
     protected readonly twitterSpaceControllerService: TwitterSpaceControllerService,
   ) {
     super()
-
-    this.limiter.on('empty', () => {
-      this.logger.warn('[LIMITER] empty')
-    })
-    this.limiter.on('idle', () => {
-      this.logger.warn('[LIMITER] idle')
-    })
-    this.limiter.on('depleted', (empty) => {
-      this.logger.warn('[LIMITER] depleted', { empty })
-    })
   }
 
   public static getSubcommand(subcommand: SlashCommandSubcommandBuilder) {
@@ -63,10 +50,12 @@ export class UpdateTwitterSpaceStatsCommand extends BaseCommand {
         do {
           try {
             // eslint-disable-next-line no-await-in-loop
-            await this.limiter.schedule(
-              () => twitterAudioSpaceLimiter.schedule(
-                () => this.twitterSpaceControllerService.saveAudioSpace(space.id, { skipPlaylistUrl: !!space.playlistUrl }),
-              ),
+            await this.twitterSpaceControllerService.saveAudioSpace(
+              space.id,
+              {
+                priority: 9,
+                skipPlaylistUrl: !!space.playlistUrl,
+              },
             )
             isSuccess = true
           } catch (error) {
