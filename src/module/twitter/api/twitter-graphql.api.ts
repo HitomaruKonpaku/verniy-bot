@@ -180,4 +180,30 @@ export class TwitterGraphqlApi {
     })
     return response
   }
+
+  public static async getAudioSpaceByIdLegacy(
+    id: string,
+    headers: TwitterAuthGuestTokenHeaders,
+  ) {
+    const url = 'graphql/Uv5R_-Chxbn1FEkyUkSW2w/AudioSpaceById'
+    const response = await axios.get(url, {
+      baseURL: TWITTER_API_URL,
+      headers,
+      params: {
+        variables: {
+          id,
+          isMetatagsQuery: false,
+          withSuperFollowsUserFields: false,
+          withBirdwatchPivots: false,
+          withDownvotePerspective: false,
+          withReactionsMetadata: false,
+          withReactionsPerspective: false,
+          withSuperFollowsTweetFields: false,
+          withReplays: true,
+          withScheduledSpaces: true,
+        },
+      },
+    })
+    return response
+  }
 }

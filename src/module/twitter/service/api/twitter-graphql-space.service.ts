@@ -51,6 +51,14 @@ export class TwitterGraphqlSpaceService extends TwitterPublicApiService {
     return data?.data?.audioSpace
   }
 
+  public async getAudioSpaceByIdLegacy(spaceId: string): Promise<AudioSpace> {
+    const { data } = await TwitterGraphqlApi.getAudioSpaceByIdLegacy(
+      spaceId,
+      await this.getGuestTokenHeaders(),
+    )
+    return data?.data?.audioSpace
+  }
+
   public async getLiveVideoStreamStatus(mediaKey: string): Promise<Status> {
     const { data } = await TwitterLiveVideoStreamApi.getStatus(
       mediaKey,

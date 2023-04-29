@@ -125,10 +125,27 @@ export class TwitterSpaceControllerService {
 
     await this.twitterSpaceService.save(TwitterEntityUtil.buildSpaceByAudioSpace(audioSpace))
 
+    const { metadata } = audioSpace
     const canGetPlaylistUrl = !options?.skipPlaylistUrl
-      && (audioSpace.metadata.state === AudioSpaceMetadataState.RUNNING || audioSpace.metadata.is_space_available_for_replay)
+      && (metadata.state === AudioSpaceMetadataState.RUNNING || metadata.is_space_available_for_replay)
     if (canGetPlaylistUrl) {
       await this.saveAudioSpacePlaylist(id, audioSpace)
+    }
+
+    if ([AudioSpaceMetadataState.ENDED, AudioSpaceMetadataState.TIMED_OUT].includes(metadata.state)) {
+      await this.saveAudioSpaceLegacy(id)
+    }
+  }
+
+  public async saveAudioSpaceLegacy(id: string) {
+    try {
+      const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceByIdLegacy(id)
+      this.logger.info('saveAudioSpaceLegacy', { id, audioSpace })
+
+      const { metadata } = audioSpace
+      await this.twitterSpaceService.updateFields(id, { participantCount: metadata.total_participated })
+    } catch (error) {
+      this.logger.error(`saveAudioSpaceLegacy: ${error.message}`, { id })
     }
   }
 

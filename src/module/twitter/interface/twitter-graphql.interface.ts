@@ -19,6 +19,7 @@ export interface AudioSpaceMetadata {
   is_space_available_for_replay?: boolean
   is_space_available_for_clipping?: boolean
   conversation_controls?: number
+  total_participated?: number
   total_replay_watched?: number
   total_live_listeners?: number
   creator_results: {
