@@ -124,9 +124,14 @@ export class TwitterSpaceControllerService {
     )
     this.logger.info('saveAudioSpace', { id, audioSpace })
 
+    const { metadata } = audioSpace
+    if (!metadata) {
+      await this.twitterSpaceService.updateFields(id, { isActive: false })
+      return
+    }
+
     await this.twitterSpaceService.save(TwitterEntityUtil.buildSpaceByAudioSpace(audioSpace))
 
-    const { metadata } = audioSpace
     const canGetPlaylistUrl = !options?.skipPlaylistUrl
       && metadata.state !== AudioSpaceMetadataState.CANCELED
       && (metadata.state === AudioSpaceMetadataState.RUNNING || metadata.is_space_available_for_replay)
