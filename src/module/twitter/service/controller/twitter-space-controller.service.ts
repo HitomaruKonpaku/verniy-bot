@@ -128,6 +128,7 @@ export class TwitterSpaceControllerService {
 
     const { metadata } = audioSpace
     const canGetPlaylistUrl = !options?.skipPlaylistUrl
+      && metadata.state !== AudioSpaceMetadataState.CANCELED
       && (metadata.state === AudioSpaceMetadataState.RUNNING || metadata.is_space_available_for_replay)
     if (canGetPlaylistUrl) {
       await this.saveAudioSpacePlaylist(id, audioSpace)
