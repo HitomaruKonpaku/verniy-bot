@@ -84,7 +84,7 @@ export class TiktokTrackingService {
   }
 
   private async onTweetData(data: TweetV2SingleStreamResult) {
-    const urls = TwitterUtil.getTweetEntityUrls(data)
+    const urls = TwitterUtil.getTweetV2EntityUrls(data)
     if (!urls.length) {
       return
     }

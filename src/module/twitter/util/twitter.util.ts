@@ -1,4 +1,5 @@
 import { TweetV2SingleStreamResult, UserV1 } from 'twitter-api-v2'
+import { TwitterTweet } from '../model/twitter-tweet.entity'
 
 export class TwitterUtil {
   /**
@@ -52,7 +53,13 @@ export class TwitterUtil {
     return this.getTweetUrl(author.username, tweetId)
   }
 
-  public static getTweetEntityUrls(data: TweetV2SingleStreamResult) {
+  public static getTweetEntityUrls(tweet: TwitterTweet) {
+    const entities = tweet?.entities
+    const urls = entities?.urls?.map?.((v) => v.expanded_url) || []
+    return urls
+  }
+
+  public static getTweetV2EntityUrls(data: TweetV2SingleStreamResult) {
     const entities = data.data?.entities
     const urls = entities?.urls?.map?.((v) => v.expanded_url) || []
     return urls

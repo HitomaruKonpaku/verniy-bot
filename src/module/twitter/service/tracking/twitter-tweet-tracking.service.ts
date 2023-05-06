@@ -9,6 +9,7 @@ import { ArrayUtil } from '../../../../util/array.util'
 import { ConfigService } from '../../../config/service/config.service'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitterTweetService } from '../../../track/service/track-twitter-tweet.service'
+import { TwitterEvent } from '../../enum/twitter-event.enum'
 import { TwitterTweet } from '../../model/twitter-tweet.entity'
 import { TwitterRuleUtil } from '../../util/twitter-rule.util'
 import { TwitterUtil } from '../../util/twitter.util'
@@ -116,7 +117,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
       const limiter = new Bottleneck({ maxConcurrent: 1 })
       const newResults = results.filter((v) => newTweetIds.includes(v.rest_id)).reverse()
-      await Promise.allSettled(newResults.map((result) => limiter.schedule(async () => this.handleTweetResult(result))))
+      await Promise.allSettled(newResults.map((result) => limiter.schedule(() => this.handleTweetResult(result))))
     } catch (error) {
       this.logger.error(`handleTweetResults: ${error.message}`, { results })
     }
@@ -125,6 +126,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
   private async handleTweetResult(result: any) {
     try {
       const tweet = await this.twitterTweetControllerService.saveTweet(result)
+      this.emit(TwitterEvent.TWEET, tweet)
       await this.broadcastTweet(tweet)
     } catch (error) {
       this.logger.error(`handleTweetResult: ${error.message}`, { result })
@@ -411,7 +413,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
           return true
         }
         const text = data.data.text || ''
-        const urls = TwitterUtil.getTweetEntityUrls(data)
+        const urls = TwitterUtil.getTweetV2EntityUrls(data)
         const contents = [text, ...urls].filter((v) => v).map((v) => v.toLowerCase())
         const existKeyword = record.filterKeywords.some((keyword) => contents.some((v) => v.includes(keyword.toLowerCase())))
         return existKeyword

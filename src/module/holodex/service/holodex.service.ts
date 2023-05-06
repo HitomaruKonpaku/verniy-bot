@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common'
 import { ETwitterStreamEvent, TweetV2SingleStreamResult } from 'twitter-api-v2'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/service/config.service'
+import { TwitterEvent } from '../../twitter/enum/twitter-event.enum'
+import { TwitterTweet } from '../../twitter/model/twitter-tweet.entity'
 import { TwitterTweetTrackingService } from '../../twitter/service/tracking/twitter-tweet-tracking.service'
 import { TwitterUtil } from '../../twitter/util/twitter.util'
 import { HolodexApiService } from './api/holodex-api.service'
@@ -28,41 +30,52 @@ export class HolodexService {
     if (this.configService.twitter.tweet) {
       this.logger.info('Listen to tweets')
       this.twitterTweetTrackingService.on(ETwitterStreamEvent.Data, (data) => this.onTweetData(data))
+      this.twitterTweetTrackingService.on(TwitterEvent.TWEET, (tweet) => this.onTweet(tweet))
     }
   }
 
+  private async onTweet(tweet: TwitterTweet) {
+    const urls = TwitterUtil.getTweetEntityUrls(tweet)
+    const tweetUrl = TwitterUtil.getTweetUrl(tweet.author.username, tweet.id)
+    await this.handleYouTubeUrls(urls, tweetUrl)
+  }
+
   private async onTweetData(data: TweetV2SingleStreamResult) {
-    const urls = TwitterUtil.getTweetEntityUrls(data)
-    if (!urls.length) {
+    const urls = TwitterUtil.getTweetV2EntityUrls(data)
+    const author = data.includes.users.find((v) => v.id === data.data.author_id)
+    const tweetUrl = TwitterUtil.getTweetUrl(author.username, data.data.id)
+    await this.handleYouTubeUrls(urls, tweetUrl)
+  }
+
+  private async handleYouTubeUrls(urls: string[], tweetUrl: string) {
+    if (!urls?.length) {
       return
     }
 
-    const patterns = ['youtube.com/watch', 'youtu.be']
+    const patterns = ['youtube.com', 'youtu.be']
     const filterUrls = urls.filter((url) => patterns.some((v) => url.includes(v)))
     if (!filterUrls.length) {
       return
     }
 
-    const author = data.includes.users.find((v) => v.id === data.data.author_id)
-    const tweetUrl = TwitterUtil.getTweetUrl(author.username, data.data.id)
-    this.logger.debug('onTweetData', {
+    this.logger.debug('handleYouTubeUrls', {
       tweetUrl,
       urls: filterUrls,
     })
 
-    await Promise.allSettled(filterUrls.map((url) => this.postNotice(url)))
+    await Promise.allSettled(filterUrls.map((url) => this.notice(url)))
   }
 
-  private async postNotice(url: string) {
+  private async notice(url: string) {
     if (!this.holodexApiService.apiKey) {
       return
     }
 
     try {
       const { status, data } = await this.holodexApiService.notice(url)
-      this.logger.info('postNotice', { url, status, data })
+      this.logger.info('notice', { url, status, data })
     } catch (error) {
-      this.logger.error(`postNotice: ${error.message}`, { url, status: error.response?.status })
+      this.logger.error(`notice: ${error.message}`, { url, status: error.response?.status })
     }
   }
 }
