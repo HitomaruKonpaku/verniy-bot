@@ -81,6 +81,8 @@ export class TwitterEntityUtil {
       inReplyToUserId: legacy.in_reply_to_user_id_str,
       retweetedStatusId: legacy.retweeted_status_result?.result?.rest_id,
       quotedStatusId: result.quoted_status_result?.result.rest_id,
+      entities: legacy.entities,
+      extendedEntities: legacy.extended_entities,
     }
     return obj
   }
