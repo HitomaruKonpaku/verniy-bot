@@ -33,6 +33,8 @@ export class TwitterTweet extends BaseExternalEntity {
 
   extendedEntities?: TweetExtendedEntitiesV1
 
+  isNew?: boolean
+
   author?: TwitterUser
 
   retweetedStatus?: TwitterTweet

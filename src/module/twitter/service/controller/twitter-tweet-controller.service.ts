@@ -23,14 +23,15 @@ export class TwitterTweetControllerService {
     const id = result.rest_id
 
     const tweet = await this.dbLimiter.key(id).schedule(async () => {
-      let tmpTweet = await this.twitterTweetService.getOneById(result.rest_id)
-      if (!tmpTweet) {
-        tmpTweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
+      let curTweet = await this.twitterTweetService.getOneById(result.rest_id)
+      if (!curTweet) {
+        curTweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
+        curTweet.isNew = true
       }
 
       try {
         const subResult = result.core.user_results.result
-        tmpTweet.author = await this.twitterUserControllerService.patchUser(subResult)
+        curTweet.author = await this.twitterUserControllerService.patchUser(subResult)
       } catch (error) {
         this.logger.error(`saveTweet#user: ${error.message}`, { id, result })
       }
@@ -38,7 +39,7 @@ export class TwitterTweetControllerService {
       if (result.legacy.retweeted_status_result?.result) {
         const subResult = result.legacy.retweeted_status_result.result
         try {
-          tmpTweet.retweetedStatus = await this.saveTweet(subResult)
+          curTweet.retweetedStatus = await this.saveTweet(subResult)
         } catch (error) {
           this.logger.error(`saveTweet#retweeted_status: ${error.message}`, { id, subResult })
         }
@@ -47,13 +48,13 @@ export class TwitterTweetControllerService {
       if (result.quoted_status_result?.result) {
         const subResult = result.quoted_status_result.result
         try {
-          tmpTweet.quotedStatus = await this.saveTweet(subResult)
+          curTweet.quotedStatus = await this.saveTweet(subResult)
         } catch (error) {
           this.logger.error(`saveTweet#quoted_status: ${error.message}`, { id, subResult })
         }
       }
 
-      return tmpTweet
+      return curTweet
     })
 
     return tweet
