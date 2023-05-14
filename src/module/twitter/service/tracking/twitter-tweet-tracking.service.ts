@@ -147,24 +147,20 @@ export class TwitterTweetTrackingService extends EventEmitter {
         return
       }
 
-      let tweetUrl = TwitterUtil.getTweetUrlById(tweet.id)
-      try {
-        tweetUrl = TwitterUtil.getTweetUrl(tweet.author.username, tweet.id)
-      } catch (error) {
-        this.logger.error(`broadcastTweet#getTweetUrl: ${error.message}`, { tweet })
-      }
-      this.logger.info(`broadcastTweet: ${tweetUrl}`)
+      this.logger.info(`broadcastTweet: ${tweet.url}`)
 
-      let content = tweetUrl
+      let content = tweet.url
       try {
         if (tweet.inReplyToStatusId) {
           const icon = '💬'
           const origTweetUrl = TwitterUtil.getTweetUrlById(tweet.inReplyToStatusId)
-          content = [origTweetUrl, `${icon} ${tweetUrl}`].join('\n')
+          content = [origTweetUrl, `${icon} ${tweet.url}`].join('\n')
         } else if (tweet.retweetedStatusId) {
           const icon = '🔁'
-          const origTweetUrl = TwitterUtil.getTweetUrlById(tweet.retweetedStatusId)
-          content = [origTweetUrl, `${icon} ${tweetUrl}`].join('\n')
+          const origTweetUrl = tweet.retweetedStatus
+            ? tweet.retweetedStatus.url
+            : TwitterUtil.getTweetUrlById(tweet.retweetedStatusId)
+          content = [origTweetUrl, `${icon} ${tweet.url}`].join('\n')
         }
       } catch (error) {
         this.logger.error(`broadcastTweet: Parsing tweet error: ${error.message}`, { tweet })
