@@ -126,11 +126,18 @@ export class TwitterTweetTrackingService extends EventEmitter {
   private async handleTweetResult(result: any) {
     try {
       const tweet = await this.twitterTweetControllerService.saveTweet(result)
-      this.emit(TwitterEvent.TWEET, tweet)
-      await this.broadcastTweet(tweet)
+      const tweets = [tweet, tweet.retweetedStatus, tweet.quotedStatus]
+        .filter((v) => v && v.isNew)
+        .sort((a, b) => a.createdAt - b.createdAt)
+      await Promise.allSettled(tweets.map((v) => this.handleTweetData(v)))
     } catch (error) {
       this.logger.error(`handleTweetResult: ${error.message}`, { result })
     }
+  }
+
+  private async handleTweetData(tweet: TwitterTweet) {
+    this.emit(TwitterEvent.TWEET, tweet)
+    await this.broadcastTweet(tweet)
   }
 
   private async broadcastTweet(tweet: TwitterTweet) {
