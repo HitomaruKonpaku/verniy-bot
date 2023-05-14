@@ -17,7 +17,7 @@ export class TwitterEntityUtil {
       username: legacy.screen_name,
       name: legacy.name,
       protected: !!legacy.protected,
-      verified: !!result.is_blue_verified,
+      verified: !!result.verification_info.reason,
       verifiedType: legacy.verified_type?.toLowerCase() || null,
       location: legacy.location,
       description: TwitterUtil.getUserDescription(legacy),
