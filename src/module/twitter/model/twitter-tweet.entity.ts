@@ -1,7 +1,6 @@
 import { TweetEntitiesV1, TweetExtendedEntitiesV1 } from 'twitter-api-v2'
 import { Column, Entity } from 'typeorm'
 import { BaseExternalEntity } from '../../database/model/base-external.entity'
-import { TwitterUtil } from '../util/twitter.util'
 import { TwitterUser } from './twitter-user.entity'
 
 @Entity('twitter_tweet')
@@ -41,11 +40,4 @@ export class TwitterTweet extends BaseExternalEntity {
   retweetedStatus?: TwitterTweet
 
   quotedStatus?: TwitterTweet
-
-  get url() {
-    const url = this.author
-      ? TwitterUtil.getTweetUrl(this.author.username, this.id)
-      : TwitterUtil.getTweetUrlById(this.id)
-    return url
-  }
 }
