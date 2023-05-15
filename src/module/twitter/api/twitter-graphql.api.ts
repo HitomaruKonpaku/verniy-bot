@@ -7,7 +7,8 @@ export class TwitterGraphqlApi {
     userId: string,
     headers: TwitterAuthGuestTokenHeaders,
   ) {
-    const url = 'graphql/GazOglcBvgLigl3ywt6b3Q/UserByRestId'
+    const queryId = '1YAM811Q8Ry4XyPpJclURQ'
+    const url = `graphql/${queryId}/UserByRestId`
     const response = await axios.get(url, {
       baseURL: TWITTER_API_URL,
       headers,
@@ -20,6 +21,8 @@ export class TwitterGraphqlApi {
           blue_business_profile_image_shape_enabled: true,
           responsive_web_graphql_exclude_directive_enabled: true,
           verified_phone_label_enabled: false,
+          highlights_tweets_tab_ui_enabled: true,
+          creator_subscriptions_tweet_preview_api_enabled: false,
           responsive_web_graphql_skip_user_profile_image_extensions_enabled: false,
           responsive_web_graphql_timeline_navigation_enabled: true,
         },
@@ -32,7 +35,8 @@ export class TwitterGraphqlApi {
     screenName: string,
     headers: TwitterAuthGuestTokenHeaders,
   ) {
-    const url = 'graphql/sLVLhk0bGj3MVFEKTdax1w/UserByScreenName'
+    const queryId = 'pVrmNaXcxPjisIvKtLDMEA'
+    const url = `graphql/${queryId}/UserByScreenName`
     const response = await axios.get(url, {
       baseURL: TWITTER_API_URL,
       headers,
@@ -45,6 +49,8 @@ export class TwitterGraphqlApi {
           blue_business_profile_image_shape_enabled: true,
           responsive_web_graphql_exclude_directive_enabled: true,
           verified_phone_label_enabled: false,
+          highlights_tweets_tab_ui_enabled: true,
+          creator_subscriptions_tweet_preview_api_enabled: false,
           responsive_web_graphql_skip_user_profile_image_extensions_enabled: false,
           responsive_web_graphql_timeline_navigation_enabled: true,
         },
