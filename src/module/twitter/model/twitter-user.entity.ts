@@ -41,6 +41,12 @@ export class TwitterUser extends BaseExternalUserEntity {
   @Column({ name: 'tweet_count', type: 'numeric', nullable: true })
   tweetCount?: number
 
+  @Column({ name: 'organization_id', type: 'text', nullable: true })
+  organizationId?: string
+
+  @Column({ name: 'affiliates_count', type: 'numeric', nullable: true })
+  affiliatesCount?: number
+
   tweets?: TwitterTweet[]
 
   spaces?: TwitterSpace[]
