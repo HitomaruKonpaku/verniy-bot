@@ -26,6 +26,7 @@ export class TwitterEntityUtil {
       followersCount: legacy.followers_count,
       followingCount: legacy.friends_count,
       tweetCount: legacy.statuses_count,
+      affiliatesCount: result.business_account?.affiliates_count,
     }
     return obj
   }
