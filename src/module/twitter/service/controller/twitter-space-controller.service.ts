@@ -174,4 +174,10 @@ export class TwitterSpaceControllerService {
       this.logger.error(`saveAudioSpacePlaylist: ${error.message}`, { id })
     }
   }
+
+  public async saveUnknownParticipants() {
+    const userIds = await this.twitterSpaceService.getUnknownUserIds()
+    const result = await Promise.allSettled(userIds.map((userId) => this.twitterUserControllerService.getUserByRestId(userId)))
+    return result
+  }
 }
