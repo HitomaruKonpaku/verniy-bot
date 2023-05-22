@@ -149,7 +149,7 @@ export class TwitterEntityUtil {
       state: TwitterSpaceUtil.parseState(metadata.state),
       scheduledStart: metadata.scheduled_start,
       startedAt: metadata.started_at,
-      endedAt: Number(metadata.ended_at) || null,
+      endedAt: Number(metadata.ended_at) || undefined,
       title: metadata.title,
       hostIds: participants.admins.map((v) => v.user_results.rest_id),
       speakerIds: participants.speakers.map((v) => v.user_results.rest_id),
