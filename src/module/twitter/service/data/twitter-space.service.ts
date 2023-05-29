@@ -1,6 +1,7 @@
+/* eslint-disable quotes */
 import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { IsNull, Repository } from 'typeorm'
+import { Brackets, IsNull, Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/service/base-entity.service'
 import { TwitterSpace } from '../../model/twitter-space.entity'
 import { TwitterUserService } from './twitter-user.service'
@@ -94,9 +95,16 @@ WHERE is_active = TRUE
   public async getManyForActiveCheck() {
     const spaces = await this.repository
       .createQueryBuilder()
-      // eslint-disable-next-line quotes
-      .andWhere(`DATETIME('now', '-30 day') > DATETIME(created_at / 1000, 'unixepoch')`)
       .andWhere('is_active = TRUE')
+      .andWhere(new Brackets((qb0) => {
+        qb0
+          .orWhere(new Brackets((qb1) => {
+            qb1
+              .andWhere(`DATETIME ('now', '-30 day') >= DATETIME (created_at / 1000, 'unixepoch')`)
+              .andWhere(`DATETIME ('now', '-45 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
+          }))
+          .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
+      }))
       .addOrderBy('created_at')
       .getMany()
     return spaces
@@ -105,10 +113,21 @@ WHERE is_active = TRUE
   public async getManyForPlaylistActiveCheck() {
     const spaces = await this.repository
       .createQueryBuilder()
-      // eslint-disable-next-line quotes
-      .andWhere(`DATETIME('now', '-30 day') > DATETIME(created_at / 1000, 'unixepoch')`)
       .andWhere('playlist_url NOTNULL')
-      .andWhere('(playlist_active ISNULL OR playlist_active = TRUE)')
+      .andWhere(new Brackets((qb) => {
+        qb
+          .orWhere('playlist_active ISNULL')
+          .orWhere('playlist_active = TRUE')
+      }))
+      .andWhere(new Brackets((qb0) => {
+        qb0
+          .orWhere(new Brackets((qb1) => {
+            qb1
+              .andWhere(`DATETIME ('now', '-30 day') >= DATETIME (created_at / 1000, 'unixepoch')`)
+              .andWhere(`DATETIME ('now', '-45 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
+          }))
+          .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
+      }))
       .addOrderBy('created_at')
       .getMany()
     return spaces
