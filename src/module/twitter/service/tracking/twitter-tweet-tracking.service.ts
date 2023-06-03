@@ -10,8 +10,10 @@ import { ConfigService } from '../../../config/service/config.service'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitterTweetService } from '../../../track/service/track-twitter-tweet.service'
 import { TwitterEvent } from '../../enum/twitter-event.enum'
+import { Result } from '../../interface/twitter-tweet.interface'
 import { TwitterTweet } from '../../model/twitter-tweet.entity'
 import { TwitterRuleUtil } from '../../util/twitter-rule.util'
+import { TwitterTweetUtil } from '../../util/twitter-tweet.util'
 import { TwitterUtil } from '../../util/twitter.util'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterClientService } from '../api/twitter-client.service'
@@ -95,18 +97,14 @@ export class TwitterTweetTrackingService extends EventEmitter {
   private async getUserTweets(userId: string) {
     try {
       const data = await this.twitterGraphqlUserService.getUserTweetsAndReplies(userId)
-      const entries = data.user.result.timeline_v2.timeline.instructions.find((v) => v.type === 'TimelineAddEntries')?.entries || []
-      const itemContents = entries.map((v) => v.content.itemContent).filter((v) => v) || []
-      // eslint-disable-next-line no-underscore-dangle
-      const tweetResults = itemContents.map((v) => v.tweet_results.result).filter((v) => v && v.__typename === 'Tweet') || []
-      // this.logger.debug('getUserTweets', { userId, resultCount: tweetResults.length })
-      await this.handleTweetResults(tweetResults)
+      const results = TwitterTweetUtil.parseUserTweetsAndReplies(data)
+      await this.handleTweetResults(results)
     } catch (error) {
       this.logger.error(`getUserTweets: ${error.message}`, { userId })
     }
   }
 
-  private async handleTweetResults(results: any[]) {
+  private async handleTweetResults(results: Result[]) {
     try {
       const curTweetIds = results.map((v) => v.rest_id)
       const oldTweetIds = await this.twitterTweetService.getManyByIds(curTweetIds).then((tweets) => tweets.map((tweet) => tweet.id))
@@ -116,14 +114,16 @@ export class TwitterTweetTrackingService extends EventEmitter {
       }
 
       const limiter = new Bottleneck({ maxConcurrent: 1 })
-      const newResults = results.filter((v) => newTweetIds.includes(v.rest_id)).reverse()
+      const newResults = results
+        .filter((v) => newTweetIds.includes(v.rest_id))
+        .sort((a, b) => new Date(a.legacy.created_at).getTime() - new Date(b.legacy.created_at).getTime())
       await Promise.allSettled(newResults.map((result) => limiter.schedule(() => this.handleTweetResult(result))))
     } catch (error) {
       this.logger.error(`handleTweetResults: ${error.message}`, { results })
     }
   }
 
-  private async handleTweetResult(result: any) {
+  private async handleTweetResult(result: Result) {
     try {
       const tweet = await this.twitterTweetControllerService.saveTweet(result)
       const tweets = [tweet, tweet.retweetedStatus, tweet.quotedStatus]

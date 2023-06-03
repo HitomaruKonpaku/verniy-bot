@@ -1,6 +1,7 @@
 import { SpaceV2, TweetV2, UserV1, UserV2 } from 'twitter-api-v2'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { AudioSpace } from '../interface/twitter-graphql.interface'
+import { Result as TweetResult } from '../interface/twitter-tweet.interface'
 import { TwitterSpace } from '../model/twitter-space.entity'
 import { TwitterTweet } from '../model/twitter-tweet.entity'
 import { TwitterUser } from '../model/twitter-user.entity'
@@ -69,7 +70,7 @@ export class TwitterEntityUtil {
     return obj
   }
 
-  public static buildTweet(result: any): TwitterTweet {
+  public static buildTweet(result: TweetResult): TwitterTweet {
     const { legacy } = result
     const obj: TwitterTweet = {
       id: result.rest_id,
