@@ -14,12 +14,17 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
     super()
   }
 
-  public async getRawOneById(id: string) {
+  public async getOneByIdWithoutTrack(id: string) {
     const user = await this.repository
-      .createQueryBuilder('tu')
-      .select('tu.*')
-      .andWhere('tu.id = :id', { id })
-      .getRawOne()
+      .createQueryBuilder('u')
+      .innerJoin(
+        'track',
+        't',
+        't.user_id = u.id AND t.is_active = TRUE AND t.type IN (:...types)',
+        { types: [TrackType.TWITTER_PROFILE] },
+      )
+      .andWhere('u.id = :id', { id })
+      .getOne()
     return user
   }
 
@@ -32,23 +37,32 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
     return user
   }
 
+  public async getRawOneById(id: string) {
+    const user = await this.repository
+      .createQueryBuilder('u')
+      .select('u.*')
+      .andWhere('u.id = :id', { id })
+      .getRawOne()
+    return user
+  }
+
   public async getRawOneByUsername(username: string) {
     const user = await this.repository
-      .createQueryBuilder('tu')
-      .select('tu.*')
-      .andWhere('LOWER(tu.username) = LOWER(:username)', { username })
-      .addOrderBy('tu.is_active', 'DESC')
+      .createQueryBuilder('u')
+      .select('u.*')
+      .andWhere('LOWER(u.username) = LOWER(:username)', { username })
+      .addOrderBy('u.is_active', 'DESC')
       .getRawOne()
     return user
   }
 
   public async getManyForCheck() {
     const users = await this.repository
-      .createQueryBuilder('tu')
+      .createQueryBuilder('u')
       .leftJoin(
         'track',
         't',
-        't.user_id = tu.id AND t.is_active = TRUE AND t.type = :type',
+        't.user_id = u.id AND t.is_active = TRUE AND t.type = :type',
         { type: TrackType.TWITTER_PROFILE },
       )
       .andWhere('t.user_id ISNULL')
