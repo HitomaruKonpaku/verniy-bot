@@ -71,7 +71,7 @@ export class TwitterUserControllerService {
   public async patchUser(result: any) {
     const id = result.rest_id
     const user = await this.dbLimiter.key(id).schedule(async () => {
-      let tmpUser = await this.twitterUserService.getOneById(id)
+      let tmpUser = await this.twitterUserService.getOneByIdWithoutTrack(id)
       if (!tmpUser) {
         tmpUser = await this.twitterUserService.save(TwitterEntityUtil.buildUser(result))
       }
