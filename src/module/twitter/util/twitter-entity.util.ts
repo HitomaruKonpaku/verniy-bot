@@ -15,6 +15,7 @@ export class TwitterEntityUtil {
       id: result.rest_id,
       isActive: true,
       createdAt: new Date(legacy.created_at).getTime(),
+      updatedAt: Date.now(),
       username: legacy.screen_name,
       name: legacy.name,
       protected: !!legacy.protected,
