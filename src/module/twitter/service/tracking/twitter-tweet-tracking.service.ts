@@ -106,7 +106,9 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
   private async handleTweetResults(results: Result[]) {
     try {
-      const curTweetIds = results.map((v) => v.rest_id)
+      const curTweetIds = results
+        .map((v) => v.rest_id)
+        .filter((v) => v)
       const oldTweetIds = await this.twitterTweetService.getManyByIds(curTweetIds).then((tweets) => tweets.map((tweet) => tweet.id))
       const newTweetIds = ArrayUtil.difference(curTweetIds, oldTweetIds)
       if (!newTweetIds.length) {
@@ -115,7 +117,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
       const limiter = new Bottleneck({ maxConcurrent: 1 })
       const newResults = results
-        .filter((v) => newTweetIds.includes(v.rest_id))
+        .filter((v) => v.rest_id && newTweetIds.includes(v.rest_id))
         .sort((a, b) => new Date(a.legacy.created_at).getTime() - new Date(b.legacy.created_at).getTime())
       await Promise.allSettled(newResults.map((result) => limiter.schedule(() => this.handleTweetResult(result))))
     } catch (error) {

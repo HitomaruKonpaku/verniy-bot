@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
 import { TweetV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
+import { Result } from '../../interface/twitter-tweet.interface'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterTweetService } from '../data/twitter-tweet.service'
 import { TwitterUserControllerService } from './twitter-user-controller.service'
@@ -19,7 +20,7 @@ export class TwitterTweetControllerService {
     private readonly twitterUserControllerService: TwitterUserControllerService,
   ) { }
 
-  public async saveTweet(result: any) {
+  public async saveTweet(result: Result) {
     const id = result.rest_id
 
     const tweet = await this.dbLimiter.key(id).schedule(async () => {
@@ -48,7 +49,10 @@ export class TwitterTweetControllerService {
       if (result.quoted_status_result?.result) {
         const subResult = result.quoted_status_result.result
         try {
-          curTweet.quotedStatus = await this.saveTweet(subResult)
+          // eslint-disable-next-line no-underscore-dangle
+          if (subResult.__typename !== 'TweetTombstone') {
+            curTweet.quotedStatus = await this.saveTweet(subResult)
+          }
         } catch (error) {
           this.logger.error(`saveTweet#quoted_status: ${error.message}`, { id, subResult })
         }
