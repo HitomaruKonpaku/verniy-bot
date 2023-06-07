@@ -52,13 +52,28 @@ export class HolodexService {
       return
     }
 
+    this.logger.debug('handleYouTubeUrls#orig', {
+      tweetUrl,
+      urls,
+    })
+
     const patterns = ['youtube.com', 'youtu.be']
-    const filterUrls = urls.filter((url) => patterns.some((v) => url.includes(v)))
+    const filterUrls = urls
+      .filter((url) => patterns.some((v) => url.includes(v)))
+      .map((url) => {
+        if (url.includes('/shorts/')) {
+          return url
+            .replace('?feature=share', '')
+            .replace('/shorts/', '/watch?v=')
+        }
+        return url
+      })
+      .filter((url) => url)
     if (!filterUrls.length) {
       return
     }
 
-    this.logger.debug('handleYouTubeUrls', {
+    this.logger.debug('handleYouTubeUrls#filter', {
       tweetUrl,
       urls: filterUrls,
     })
