@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
-import { bold, ChatInputCommandInteraction, inlineCode, SlashCommandSubcommandBuilder, User } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder, User, bold, inlineCode } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TrackType } from '../../../../track/enum/track-type.enum'
 import { TrackTwitterTweetService } from '../../../../track/service/track-twitter-tweet.service'
@@ -45,7 +45,7 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
   }
 
   protected async getUser(username: string): Promise<TwitterUser> {
-    const user = await this.twitterUserControllerService.getOneByUsername(TwitterUserUtil.parseUsername(username))
+    const user = await this.twitterUserControllerService.getUserByScreenName(TwitterUserUtil.parseUsername(username))
     return user
   }
 
