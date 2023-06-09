@@ -25,27 +25,12 @@ export class TiktokUserControllerService {
         return null
       }
       const parser = new XMLParser()
-      const userData = parser.parse(payload)?.rss?.channel
-      if (!userData || !userData.title) {
+      const data = parser.parse(payload)?.rss?.channel
+      if (!data || !data.title) {
         return null
       }
-      const user = await this.saveUser(userData)
-      const videoObjs: any[] = (Array.isArray(userData.item) ? userData.item : [userData.item]).filter((v) => v)
-      const videoIds: string[] = videoObjs?.map((v) => v.guid) || []
-      if (videoIds.length) {
-        try {
-          const newVideoIds = await this.tiktokVideoControllerService.getNewVideoIds(videoIds)
-          if (newVideoIds.length) {
-            const newVideoObjs = videoObjs.filter((v) => newVideoIds.some((id) => id === v.guid))
-            const result = await Promise.allSettled(newVideoObjs.map((v) => this.tiktokVideoControllerService.saveVideo(v, user.id)))
-            user.newVideos = result
-              .filter((v) => v.status === 'fulfilled')
-              .map((v: any) => v.value)
-          }
-        } catch (error) {
-          this.logger.error(`fetchUser#saveVideo: ${error.message}`, { username })
-        }
-      }
+      const user = await this.saveUser(data)
+      user.newVideos = await this.tiktokVideoControllerService.saveNewVideos(data.item, user)
       return user
     } catch (error) {
       if (error.response?.status !== 500) {

@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import * as cheerio from 'cheerio'
 import { baseLogger } from '../../../../logger'
+import { TiktokUser } from '../../model/tiktok-user.entity'
+import { TiktokVideo } from '../../model/tiktok-video.entity'
 import { TiktokApiService } from '../api/tiktok-api.service'
 import { TiktokVideoService } from '../data/tiktok-video.service'
 
@@ -22,6 +24,29 @@ export class TiktokVideoControllerService {
       return newVideoIds
     } catch (error) {
       this.logger.error(`getNewVideoIds: ${error.message}`, { videoIds })
+    }
+    return []
+  }
+
+  public async saveNewVideos(data: any, user: Pick<TiktokUser, 'id' | 'username'>) {
+    try {
+      const items = [data].flat().filter((v) => v) || []
+      const videoIds = items.map((v) => v.guid).filter((v) => v)
+      if (!videoIds.length) {
+        return []
+      }
+      const newVideoIds = await this.getNewVideoIds(videoIds)
+      if (!newVideoIds.length) {
+        return []
+      }
+      const newItems = items.filter((v) => newVideoIds.some((id) => id === v.guid))
+      const result = await Promise.allSettled(newItems.map((v) => this.saveVideo(v, user.id)))
+      const videos: TiktokVideo[] = result
+        .filter((v) => v.status === 'fulfilled')
+        .map((v: any) => v.value)
+      return videos
+    } catch (error) {
+      this.logger.error(`saveNewVideos: ${error.message}`, { username: user.username })
     }
     return []
   }
