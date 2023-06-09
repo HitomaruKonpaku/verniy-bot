@@ -66,9 +66,7 @@ export class TwitterUserControllerService {
   public async saveUser(result: any) {
     const id = result.rest_id
     const user = await this.dbLimiter.key(id).schedule(() => this.twitterUserService.save(TwitterEntityUtil.buildUser(result)))
-    if (result.affiliates_highlighted_label?.label) {
-      user.organizationId = await this.saveOrganizationId(result.affiliates_highlighted_label.label, user.id)
-    }
+    user.organizationId = await this.saveOrganizationId(result.affiliates_highlighted_label?.label, user.id)
     return user
   }
 
@@ -84,9 +82,13 @@ export class TwitterUserControllerService {
     return user
   }
 
-  public async saveOrganizationId(result: any, sourceUserId: string) {
+  public async saveOrganizationId(label: any, sourceUserId: string) {
     try {
-      const username = TwitterUserUtil.parseUsername(result.url.url)
+      if (!label) {
+        await this.twitterUserService.updateFields(sourceUserId, { organizationId: null })
+        return null
+      }
+      const username = TwitterUserUtil.parseUsername(label.url.url)
       let user = await this.twitterUserService.getOneByUsername(username)
       if (!user) {
         user = await this.getUserByScreenName(username)
@@ -95,9 +97,9 @@ export class TwitterUserControllerService {
       await this.twitterUserService.updateFields(sourceUserId, { organizationId })
       return organizationId
     } catch (error) {
-      this.logger.error(`saveOrganizationId: ${error.message}`, result)
+      this.logger.error(`saveOrganizationId: ${error.message}`, label)
     }
-    return undefined
+    return null
   }
 
   public async saveUserV1(data: UserV1) {
