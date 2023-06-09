@@ -72,8 +72,13 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
 
   public async updateIsActive(id: string, isActive: boolean) {
     const user = await this.repository.findOneByOrFail({ id })
-    await this.repository.update({ id }, { isActive })
-    Object.assign(user, { isActive })
+    const now = Date.now()
+    const data: Partial<TwitterUser> = {
+      isActive,
+      updatedAt: now,
+    }
+    await this.repository.update({ id }, data)
+    Object.assign(user, data)
     return user
   }
 }
