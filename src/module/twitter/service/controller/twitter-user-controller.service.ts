@@ -3,6 +3,7 @@ import Bottleneck from 'bottleneck'
 import { UserV1, UserV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
+import { TwitterUserUtil } from '../../util/twitter-user.util'
 import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterGraphqlUserService } from '../api/twitter-graphql-user.service'
 import { TwitterUserService } from '../data/twitter-user.service'
@@ -65,6 +66,9 @@ export class TwitterUserControllerService {
   public async saveUser(result: any) {
     const id = result.rest_id
     const user = await this.dbLimiter.key(id).schedule(() => this.twitterUserService.save(TwitterEntityUtil.buildUser(result)))
+    if (result.affiliates_highlighted_label?.label) {
+      user.organizationId = await this.saveOrganizationId(result.affiliates_highlighted_label.label, user.id)
+    }
     return user
   }
 
@@ -78,6 +82,22 @@ export class TwitterUserControllerService {
       return tmpUser
     })
     return user
+  }
+
+  public async saveOrganizationId(result: any, sourceUserId: string) {
+    try {
+      const username = TwitterUserUtil.parseUsername(result.url.url)
+      let user = await this.twitterUserService.getOneByUsername(username)
+      if (!user) {
+        user = await this.getUserByScreenName(username)
+      }
+      const organizationId = user.id
+      await this.twitterUserService.updateFields(sourceUserId, { organizationId })
+      return organizationId
+    } catch (error) {
+      this.logger.error(`saveOrganizationId: ${error.message}`, result)
+    }
+    return undefined
   }
 
   public async saveUserV1(data: UserV1) {
