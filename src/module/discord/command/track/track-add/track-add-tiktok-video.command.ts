@@ -40,7 +40,7 @@ export class TrackAddTiktokVideoCommand extends TrackAddBaseSubcommand {
   protected async getUser(username: string): Promise<TiktokUser> {
     let user = await this.tiktokUserService.getOneByUsername(username)
     if (!user) {
-      user = await this.tiktokUserControllerService.fetchUser(username)
+      user = await this.tiktokUserControllerService.fetchUser(username, { skipVideos: true })
     }
     return user
   }

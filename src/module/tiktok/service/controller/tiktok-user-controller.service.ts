@@ -18,7 +18,7 @@ export class TiktokUserControllerService {
     public readonly tiktokVideoControllerService: TiktokVideoControllerService,
   ) { }
 
-  public async fetchUser(username: string) {
+  public async fetchUser(username: string, options?: { skipVideos?: boolean }) {
     try {
       const payload = await this.tiktokApiService.getUserFeed(username)
       if (!payload) {
@@ -30,7 +30,9 @@ export class TiktokUserControllerService {
         return null
       }
       const user = await this.saveUser(data)
-      user.newVideos = await this.tiktokVideoControllerService.saveNewVideos(data.item, user)
+      if (!options?.skipVideos) {
+        user.newVideos = await this.tiktokVideoControllerService.saveNewVideos(data.item, user)
+      }
       return user
     } catch (error) {
       if (error.response?.status !== 500) {
