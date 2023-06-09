@@ -1,6 +1,7 @@
 {
   "exclude": [
     "node_modules/*",
+    "db/*",
   ],
   "compilerOptions": {
     "target": "ES2020",
