@@ -35,7 +35,7 @@ export class TwitterUserCronService extends BaseCronService {
     try {
       const users = await this.twitterUserService.getManyForCheck()
       if (users.length) {
-        await this.updateUsersLegacy(users)
+        // await this.updateUsersLegacy(users)
         await this.updateUsers(users)
       }
     } catch (error) {
