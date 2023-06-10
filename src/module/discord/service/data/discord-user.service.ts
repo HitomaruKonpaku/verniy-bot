@@ -12,4 +12,14 @@ export class DiscordUserService extends BaseEntityService<DiscordUser> {
   ) {
     super()
   }
+
+  public async getManyForCron() {
+    const users = await this.repository
+      .createQueryBuilder()
+      .andWhere('is_active = TRUE')
+      .addOrderBy('updated_at', 'ASC', 'NULLS FIRST')
+      .limit(100)
+      .getMany()
+    return users
+  }
 }

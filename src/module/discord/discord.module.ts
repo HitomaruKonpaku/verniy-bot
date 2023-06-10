@@ -13,6 +13,8 @@ import { YoutubeModule } from '../youtube/youtube.module'
 import { DISCORD_ALL_COMMANDS } from './constant/discord-command.constant'
 import { DiscordActivityCronService } from './cron/discord-activity-cron.service'
 import { DiscordCronService } from './cron/discord-cron.service'
+import { DiscordGuildCronService } from './cron/discord-guild-cron.service'
+import { DiscordUserCronService } from './cron/discord-user-cron.service'
 import { DiscordChannel } from './model/discord-channel.entity'
 import { DiscordGuild } from './model/discord-guild.entity'
 import { DiscordMessage } from './model/discord-message.entity'
@@ -56,6 +58,8 @@ import { DiscordService } from './service/discord.service'
 
     DiscordCronService,
     DiscordActivityCronService,
+    DiscordUserCronService,
+    DiscordGuildCronService,
 
     ...DISCORD_ALL_COMMANDS,
   ],
