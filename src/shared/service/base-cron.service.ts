@@ -5,7 +5,7 @@ import { CRON_TIME_ZONE } from '../../constant/cron.constant'
 export abstract class BaseCronService {
   protected readonly abstract logger: winston.Logger
 
-  protected cronTime = '* * * * * *'
+  protected cronTime = '0 0 */1 * * *'
   protected cronTimeZone = CRON_TIME_ZONE
   protected cronStartNow = false
   protected cronRunOnInit = false
