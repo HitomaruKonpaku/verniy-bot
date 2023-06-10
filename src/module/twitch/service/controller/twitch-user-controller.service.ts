@@ -42,6 +42,7 @@ export class TwitchUserControllerService {
       id: data.id,
       isActive: true,
       createdAt: new Date(data.created_at).getTime(),
+      updatedAt: Date.now(),
       username: data.login,
       displayName: data.display_name,
       type: data.type,
