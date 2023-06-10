@@ -49,7 +49,7 @@ export class TwitterUserCronService extends BaseCronService {
     const result = await Promise.allSettled(users.map(async (user) => {
       const newUser = await this.twitterUserControllerService.getUserByRestId(user.id)
       if (!newUser) {
-        await this.twitterUserService.updateFields(user.id, { isActive: false })
+        await this.twitterUserService.updateFields(user.id, { isActive: false, updatedAt: Date.now() })
       }
     }))
     const failedCount = result.filter((v) => v.status === 'rejected').length
