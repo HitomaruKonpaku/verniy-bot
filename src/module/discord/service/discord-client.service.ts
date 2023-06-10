@@ -4,6 +4,7 @@ import { ChannelType, ChatInputCommandInteraction, Client, Collection, Interacti
 import { baseLogger } from '../../../logger'
 import { DISCORD_APP_COMMANDS } from '../constant/discord-command.constant'
 import { DISCORD_CLIENT_OPTIONS } from '../constant/discord.constant'
+import { DiscordCronService } from '../cron/discord-cron.service'
 import { DiscordGuildService } from './data/discord-guild.service'
 import { DiscordDbService } from './discord-db.service'
 
@@ -20,6 +21,8 @@ export class DiscordClientService extends Client {
     private readonly discordDbService: DiscordDbService,
     @Inject(DiscordGuildService)
     private readonly discordGuildService: DiscordGuildService,
+    @Inject(DiscordCronService)
+    private readonly discordCronService: DiscordCronService,
   ) {
     super(DISCORD_CLIENT_OPTIONS)
     this.initCommands()
@@ -91,6 +94,10 @@ export class DiscordClientService extends Client {
     this.on('ready', () => {
       const { user } = this
       this.logger.warn(`${user.tag} ready!`)
+    })
+
+    this.once('ready', () => {
+      this.discordCronService.start()
     })
   }
 

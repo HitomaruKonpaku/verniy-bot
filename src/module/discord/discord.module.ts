@@ -11,6 +11,7 @@ import { TwitchModule } from '../twitch/twitch.module'
 import { TwitterModule } from '../twitter/twitter.module'
 import { YoutubeModule } from '../youtube/youtube.module'
 import { DISCORD_ALL_COMMANDS } from './constant/discord-command.constant'
+import { DiscordActivityCronService } from './cron/discord-activity-cron.service'
 import { DiscordCronService } from './cron/discord-cron.service'
 import { DiscordChannel } from './model/discord-channel.entity'
 import { DiscordGuild } from './model/discord-guild.entity'
@@ -46,12 +47,16 @@ import { DiscordService } from './service/discord.service'
   providers: [
     DiscordService,
     DiscordClientService,
+
     DiscordDbService,
     DiscordUserService,
     DiscordGuildService,
     DiscordChannelService,
     DiscordMessageService,
+
     DiscordCronService,
+    DiscordActivityCronService,
+
     ...DISCORD_ALL_COMMANDS,
   ],
   exports: [

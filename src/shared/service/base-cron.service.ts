@@ -8,6 +8,7 @@ export abstract class BaseCronService {
   protected cronTime = '* * * * * *'
   protected cronTimeZone = CRON_TIME_ZONE
   protected cronStartNow = false
+  protected cronRunOnInit = false
 
   protected cronJob: CronJob
 
@@ -26,6 +27,8 @@ export abstract class BaseCronService {
       null,
       this.cronStartNow,
       this.cronTimeZone,
+      null,
+      this.cronRunOnInit,
     )
   }
 }
