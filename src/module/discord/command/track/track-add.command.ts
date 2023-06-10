@@ -45,17 +45,18 @@ export class TrackAddCommand extends BaseCommand {
     .addSubcommand((subcommand) => TrackAddTiktokVideoCommand.getSubcommand(subcommand))
 
   public async execute(interaction: ChatInputCommandInteraction) {
+    const PFB = PermissionFlagsBits
     if (interaction.guild) {
       const { channel } = interaction
       if (!channel.isTextBased()) {
         await interaction.editReply('Channel type invalid')
         return
       }
-      if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
+      if (!channel.permissionsFor(interaction.client.user).has(PFB.SendMessages)) {
         await this.replyBotMissingPermission(interaction, 'SEND_MESSAGES')
         return
       }
-      if (!channel.permissionsFor(interaction.user).has(PermissionFlagsBits.ManageMessages)) {
+      if (!channel.permissionsFor(interaction.user).has(PFB.ManageMessages)) {
         await this.replyUserMissingPermission(interaction, 'MANAGE_MESSAGES')
         return
       }

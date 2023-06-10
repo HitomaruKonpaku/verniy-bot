@@ -45,9 +45,10 @@ export class TrackRemoveCommand extends BaseCommand {
     .addSubcommand((subcommand) => TrackRemoveTiktokVideoCommand.getSubcommand(subcommand))
 
   public async execute(interaction: ChatInputCommandInteraction) {
+    const PFB = PermissionFlagsBits
     if (interaction.guild) {
       const { channel } = interaction
-      if (!channel.permissionsFor(interaction.user).has(PermissionFlagsBits.ManageMessages)) {
+      if (!channel.permissionsFor(interaction.user).has(PFB.ManageMessages)) {
         await this.replyUserMissingPermission(interaction, 'MANAGE_MESSAGES')
         return
       }
