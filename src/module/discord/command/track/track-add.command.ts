@@ -46,9 +46,17 @@ export class TrackAddCommand extends BaseCommand {
 
   public async execute(interaction: ChatInputCommandInteraction) {
     if (interaction.guild) {
-      const member = await interaction.guild.members.fetch(interaction.user.id)
-      if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {
-        await this.replyMissingPermission(interaction, 'MANAGE_MESSAGES')
+      const { channel } = interaction
+      if (!channel.isTextBased()) {
+        await interaction.editReply('Channel type invalid')
+        return
+      }
+      if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
+        await this.replyBotMissingPermission(interaction, 'SEND_MESSAGES')
+        return
+      }
+      if (!channel.permissionsFor(interaction.user).has(PermissionFlagsBits.ManageMessages)) {
+        await this.replyUserMissingPermission(interaction, 'MANAGE_MESSAGES')
         return
       }
     }

@@ -20,8 +20,13 @@ export abstract class BaseCommand {
     await interaction.editReply(content)
   }
 
-  protected async replyMissingPermission(interaction: ChatInputCommandInteraction, permissionName: string) {
+  protected async replyUserMissingPermission(interaction: ChatInputCommandInteraction, permissionName: string) {
     const content = `You must have ${bold(inlineCode(permissionName))} permission to run this command!`
+    await interaction.editReply(content)
+  }
+
+  protected async replyBotMissingPermission(interaction: ChatInputCommandInteraction, permissionName: string) {
+    const content = `Missing ${bold(inlineCode(permissionName))} permission!`
     await interaction.editReply(content)
   }
 

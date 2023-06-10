@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { Inject, Injectable } from '@nestjs/common'
-import { bold, ChannelType, ChatInputCommandInteraction, inlineCode, PermissionFlagsBits, SlashCommandBuilder, TextChannel } from 'discord.js'
+import { ChannelType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, TextChannel, bold, inlineCode } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { TrackListService } from '../../../track/service/track-list.service'
 import { TrackListItem } from '../../interface/track.interface'
@@ -48,7 +48,7 @@ export class TrackListCommand extends BaseCommand {
     const canView = interaction.user.id === interaction.client.application.owner?.id
       || channel.permissionsFor(interaction.user).has(PermissionFlagsBits.ViewChannel)
     if (!canView) {
-      await this.replyMissingPermission(interaction, 'VIEW_CHANNEL')
+      await this.replyUserMissingPermission(interaction, 'VIEW_CHANNEL')
       return
     }
 
