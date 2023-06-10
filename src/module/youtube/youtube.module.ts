@@ -14,6 +14,8 @@ import { YoutubePlaylistItemApiService } from './service/api/youtube-playlist-it
 import { YoutubeVideoApiService } from './service/api/youtube-video-api.service'
 import { YoutubeChannelControllerService } from './service/controller/youtube-channel-controller.service'
 import { YoutubeVideoControllerService } from './service/controller/youtube-video-controller.service'
+import { YoutubeChannelCronService } from './service/cron/youtube-channel-cron.service'
+import { YoutubeCronService } from './service/cron/youtube-cron.service'
 import { YoutubeChannelService } from './service/data/youtube-channel.service'
 import { YoutubeVideoService } from './service/data/youtube-video.service'
 import { YoutubeLiveTrackingService } from './service/tracking/youtube-live-tracking.service'
@@ -35,22 +37,31 @@ import { YoutubeService } from './service/youtube.service'
   providers: [
     YoutubeService,
     YoutubeClientService,
+
     YoutubeApiService,
     YoutubeChannelApiService,
     YoutubeVideoApiService,
     YoutubePlaylistApiService,
     YoutubePlaylistItemApiService,
+
     YoutubeChannelService,
     YoutubeVideoService,
+
     YoutubeChannelControllerService,
     YoutubeVideoControllerService,
+
     YoutubeLiveTrackingService,
+
+    YoutubeCronService,
+    YoutubeChannelCronService,
   ],
   exports: [
     YoutubeService,
     YoutubeApiService,
+
     YoutubeChannelService,
     YoutubeVideoService,
+
     YoutubeChannelControllerService,
     YoutubeVideoControllerService,
   ],
