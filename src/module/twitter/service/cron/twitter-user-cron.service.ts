@@ -13,7 +13,7 @@ import { TwitterUserService } from '../data/twitter-user.service'
 export class TwitterUserCronService extends BaseCronService {
   protected readonly logger = baseLogger.child({ context: TwitterUserCronService.name })
 
-  protected cronTime = '0 0 */6 * * *'
+  protected cronTime = '0 */5 * * * *'
 
   constructor(
     @Inject(TwitterUserService)

@@ -66,6 +66,8 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
         { type: TrackType.TWITTER_PROFILE },
       )
       .andWhere('t.user_id ISNULL')
+      .addOrderBy('u.updated_at', 'ASC')
+      .limit(100)
       .getMany()
     return users
   }
