@@ -31,17 +31,17 @@ export class TwitterUserCronService extends BaseCronService {
   }
 
   private async checkUsers() {
-    this.logger.info('--> checkUsers')
+    this.logger.debug('checkUsers')
     try {
       const users = await this.twitterUserService.getManyForCheck()
-      if (users.length) {
-        // await this.updateUsersLegacy(users)
-        await this.updateUsers(users)
+      if (!users.length) {
+        return
       }
+      // await this.updateUsersLegacy(users)
+      await this.updateUsers(users)
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }
-    this.logger.info('<-- checkUsers')
   }
 
   private async updateUsers(users: TwitterUser[]) {

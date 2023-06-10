@@ -26,12 +26,12 @@ export class YoutubeChannelCronService extends BaseCronService {
   }
 
   private async checkChannels() {
+    this.logger.debug('checkChannels')
     try {
       const channels = await this.youtubeChannelService.getAll()
       if (!channels.length) {
         return
       }
-      this.logger.info('checkChannels', { channelCount: channels.length })
       const ids = channels.map((v) => v.id)
       const idChunks = ArrayUtil.splitIntoChunk(ids, YOUTUBE_API_LIST_SIZE)
       await Promise.allSettled(idChunks.map((v) => this.youtubeChannelControllerService.getManyByIds(v, true)))
