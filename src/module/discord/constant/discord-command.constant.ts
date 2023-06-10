@@ -72,11 +72,11 @@ export const DISCORD_GUILD_COMMANDS = [
 ]
 
 export const DISCORD_GLOBAL_COMMANDS = [
-  // StatusCommand,
-  // TrackListCommand,
-  // TrackAddCommand,
-  // TrackRemoveCommand,
-  // GetCommand,
+  StatusCommand,
+  TrackListCommand,
+  TrackAddCommand,
+  TrackRemoveCommand,
+  GetCommand,
 ]
 
 export const DISCORD_ALL_COMMANDS = [
