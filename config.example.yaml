@@ -1,47 +1,52 @@
 twitter:
   active: false
   tweet:
-    active: true
+    active: false
     ruleLimit: 5
     ruleLength: 512
   profile:
-    active: true
+    active: false
     interval: 60000
   space:
-    active: true
+    active: false
     interval: 60000
   cron:
-    active: true
+    active: false
 
 twitcasting:
   active: false
   live:
-    active: true
+    active: false
     interval: 60000
   cron:
-    active: true
+    active: false
+
+youtube:
+  active: false
+  cron:
+    active: false
 
 twitch:
   active: false
   live:
-    active: true
+    active: false
     interval: 60000
   chat:
-    active: true
+    active: false
   cron:
-    active: true
+    active: false
 
 instagram:
   active: false
   track:
-    active: true
+    active: false
     interval: 60000
 
 tiktok:
   active: false
   proxyIndex: 0
   track:
-    active: true
+    active: false
     interval: 300000
 
 holodex:
