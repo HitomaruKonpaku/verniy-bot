@@ -4,6 +4,7 @@
   "description": "Discord tracking bot for Twitter/TwitCasting...",
   "scripts": {
     "start": "node dist/index",
+    "deploy-commands": "node dist/deploy-commands",
     "build": "tsc",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
