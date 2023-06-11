@@ -16,7 +16,7 @@ export class DiscordGuildService extends BaseEntityService<DiscordGuild> {
   public async getManyForCron() {
     const guilds = await this.repository
       .createQueryBuilder()
-      .andWhere('left_at ISNULL')
+      .andWhere('is_active = TRUE')
       .addOrderBy('updated_at', 'ASC', 'NULLS FIRST')
       .limit(100)
       .getMany()

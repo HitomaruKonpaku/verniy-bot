@@ -12,10 +12,10 @@ export class DiscordUserCronService extends BaseCronService {
 
   protected cronTime = '0 30 */1 * * *'
 
-  private limiter = new Bottleneck({
+  private bottleneckOptions: Bottleneck.ConstructorOptions = {
     maxConcurrent: 1,
     minTime: 1000,
-  })
+  }
 
   constructor(
     @Inject(forwardRef(() => DiscordClientService))
@@ -30,9 +30,10 @@ export class DiscordUserCronService extends BaseCronService {
 
   protected async onTick() {
     this.logger.debug('--> onTick')
+    const limiter = new Bottleneck(this.bottleneckOptions)
     try {
       const users = await this.discordUserService.getManyForCron()
-      await Promise.allSettled(users.map((v) => this.limiter.schedule(() => this.updateUser(v.id))))
+      await Promise.allSettled(users.map((v) => limiter.schedule(() => this.updateUser(v.id))))
     } catch (error) {
       this.logger.error(`onTick: ${error.message}`)
     }
