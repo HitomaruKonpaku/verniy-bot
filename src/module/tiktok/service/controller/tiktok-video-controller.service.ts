@@ -57,7 +57,7 @@ export class TiktokVideoControllerService {
       isActive: true,
       createdAt: Math.floor(new Date(data.pubDate).getTime() / 1000),
       userId,
-      description: data.title || data.description,
+      description: data.title,
     })
     video.src = this.parseVideoSrc(data)
     return video
