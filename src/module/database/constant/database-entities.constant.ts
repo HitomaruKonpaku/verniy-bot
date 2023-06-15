@@ -28,6 +28,7 @@ import { TwitterFilteredStreamUser } from '../../twitter/model/twitter-filtered-
 import { TwitterSpace } from '../../twitter/model/twitter-space.entity'
 import { TwitterTweet } from '../../twitter/model/twitter-tweet.entity'
 import { TwitterUser } from '../../twitter/model/twitter-user.entity'
+import { VtuberAccount } from '../../vtuber/model/vtuber-account.entity'
 import { VtuberGroupMember } from '../../vtuber/model/vtuber-group-member.entity'
 import { VtuberGroup } from '../../vtuber/model/vtuber-group.entity'
 import { VtuberOrg } from '../../vtuber/model/vtuber-org.entity'
@@ -81,6 +82,7 @@ export const DB_ENTITIES = [
   TrackTiktokVideo,
 
   VtuberUser,
+  VtuberAccount,
   VtuberOrg,
   VtuberGroup,
   VtuberGroupMember,

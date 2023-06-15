@@ -1,6 +1,7 @@
 import { Column, Entity } from 'typeorm'
 import { BaseExternalUserEntity } from '../../database/model/base-external-user.entity'
 import { VtuberGroup } from './vtuber-group.entity'
+import { VtuberUser } from './vtuber-user.entity'
 
 @Entity('vtuber_org')
 export class VtuberOrg extends BaseExternalUserEntity {
@@ -14,4 +15,6 @@ export class VtuberOrg extends BaseExternalUserEntity {
   position?: number
 
   groups?: VtuberGroup[]
+
+  users?: VtuberUser[]
 }
