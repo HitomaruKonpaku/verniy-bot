@@ -5,6 +5,7 @@ import { DatabaseModule } from './module/database/database.module'
 import { DiscordModule } from './module/discord/discord.module'
 import { EnvironmentModule } from './module/environment/environment.module'
 import { TrackModule } from './module/track/track.module'
+import { VtuberModule } from './module/vtuber/vtuber.module'
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TrackModule } from './module/track/track.module'
     DatabaseModule,
     TrackModule,
     DiscordModule,
+    VtuberModule,
   ],
   providers: [AppService],
 })
