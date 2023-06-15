@@ -101,7 +101,7 @@ WHERE is_active = TRUE
           .orWhere(new Brackets((qb1) => {
             qb1
               .andWhere(`DATETIME ('now', '-25 day') >= DATETIME (created_at / 1000, 'unixepoch')`)
-              .andWhere(`DATETIME ('now', '-40 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
+              .andWhere(`DATETIME ('now', '-35 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
           }))
           .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
       }))
@@ -124,7 +124,7 @@ WHERE is_active = TRUE
           .orWhere(new Brackets((qb1) => {
             qb1
               .andWhere(`DATETIME ('now', '-30 day') >= DATETIME (created_at / 1000, 'unixepoch')`)
-              .andWhere(`DATETIME ('now', '-40 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
+              .andWhere(`DATETIME ('now', '-35 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
           }))
           .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
       }))
