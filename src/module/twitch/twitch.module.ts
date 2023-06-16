@@ -8,6 +8,7 @@ import { TwitchStream } from './model/twitch-stream.entity'
 import { TwitchUser } from './model/twitch-user.entity'
 import { TwitchApiService } from './service/api/twitch-api.service'
 import { TwitchStreamControllerService } from './service/controller/twitch-stream-controller.service'
+import { TwitchTeamControllerService } from './service/controller/twitch-team-controller.service'
 import { TwitchUserControllerService } from './service/controller/twitch-user-controller.service'
 import { TwitchCronService } from './service/cron/twitch-cron.service'
 import { TwitchUserCronService } from './service/cron/twitch-user-cron.service'
@@ -34,24 +35,33 @@ import { TwitchService } from './service/twitch.service'
     TwitchService,
     TwitchTokenService,
     TwitchApiService,
+
     TwitchUserService,
     TwitchStreamService,
     TwitchGameService,
+
     TwitchUserControllerService,
     TwitchStreamControllerService,
+    TwitchTeamControllerService,
+
     TwitchLiveTrackingService,
     TwitchChatTrackingService,
+
     TwitchCronService,
     TwitchUserCronService,
   ],
   exports: [
     TwitchService,
     TwitchApiService,
+
     TwitchUserService,
     TwitchStreamService,
     TwitchGameService,
+
     TwitchUserControllerService,
     TwitchStreamControllerService,
+    TwitchTeamControllerService,
+
     TwitchChatTrackingService,
   ],
 })
