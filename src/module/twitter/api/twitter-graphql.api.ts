@@ -63,7 +63,8 @@ export class TwitterGraphqlApi {
     userId: string,
     headers: TwitterAuthGuestTokenHeaders,
   ) {
-    const url = 'graphql/CdG2Vuc1v6F5JyEngGpxVw/UserTweets'
+    const queryId = 'CdG2Vuc1v6F5JyEngGpxVw'
+    const url = `graphql/${queryId}/UserTweets`
     const response = await axios.get(url, {
       baseURL: TWITTER_API_URL,
       headers,
@@ -106,7 +107,8 @@ export class TwitterGraphqlApi {
     userId: string,
     headers: TwitterAuthGuestTokenHeaders,
   ) {
-    const url = 'graphql/zQxfEr5IFxQ2QZ-XMJlKew/UserTweetsAndReplies'
+    const queryId = 'zQxfEr5IFxQ2QZ-XMJlKew'
+    const url = `graphql/${queryId}/UserTweetsAndReplies`
     const response = await axios.get(url, {
       baseURL: TWITTER_API_URL,
       headers,
@@ -149,7 +151,8 @@ export class TwitterGraphqlApi {
     id: string,
     headers: TwitterAuthGuestTokenHeaders,
   ) {
-    const url = 'graphql/F7RgOkr-vR2cxftJI_UAuQ/AudioSpaceById'
+    const queryId = 'F7RgOkr-vR2cxftJI_UAuQ'
+    const url = `graphql/${queryId}/AudioSpaceById`
     const response = await axios.get(url, {
       baseURL: TWITTER_API_URL,
       headers,
@@ -191,7 +194,8 @@ export class TwitterGraphqlApi {
     id: string,
     headers: TwitterAuthGuestTokenHeaders,
   ) {
-    const url = 'graphql/Uv5R_-Chxbn1FEkyUkSW2w/AudioSpaceById'
+    const queryId = 'Uv5R_-Chxbn1FEkyUkSW2w'
+    const url = `graphql/${queryId}/AudioSpaceById`
     const response = await axios.get(url, {
       baseURL: TWITTER_API_URL,
       headers,
