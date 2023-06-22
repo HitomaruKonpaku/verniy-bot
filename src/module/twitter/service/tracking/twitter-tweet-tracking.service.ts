@@ -156,7 +156,9 @@ export class TwitterTweetTrackingService extends EventEmitter {
       try {
         if (tweet.inReplyToStatusId) {
           const icon = '💬'
-          const origTweetUrl = TwitterUtil.getTweetUrlById(tweet.inReplyToStatusId)
+          const origTweetUrl = tweet.inReplyToUser
+            ? TwitterUtil.getTweetUrl(tweet.inReplyToUser.username, tweet.inReplyToStatusId)
+            : TwitterUtil.getTweetUrlById(tweet.inReplyToStatusId)
           content = [origTweetUrl, `${icon} ${tweetUrl}`].join('\n')
         } else if (tweet.retweetedStatusId) {
           const icon = '🔁'
