@@ -37,6 +37,10 @@ export class TwitterTweet extends BaseExternalEntity {
 
   author?: TwitterUser
 
+  inReplyToUser?: TwitterUser
+
+  inReplyToStatus?: TwitterTweet
+
   retweetedStatus?: TwitterTweet
 
   quotedStatus?: TwitterTweet
