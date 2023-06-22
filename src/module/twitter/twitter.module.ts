@@ -10,6 +10,7 @@ import { TwitterUser } from './model/twitter-user.entity'
 import { TwitterApiService } from './service/api/twitter-api.service'
 import { TwitterClientService } from './service/api/twitter-client.service'
 import { TwitterGraphqlSpaceService } from './service/api/twitter-graphql-space.service'
+import { TwitterGraphqlTweetService } from './service/api/twitter-graphql-tweet.service'
 import { TwitterGraphqlUserService } from './service/api/twitter-graphql-user.service'
 import { TwitterPublicApiService } from './service/api/twitter-public-api.service'
 import { TwitterSpaceControllerService } from './service/controller/twitter-space-controller.service'
@@ -48,6 +49,7 @@ import { TwitterService } from './service/twitter.service'
     TwitterApiService,
     TwitterPublicApiService,
     TwitterGraphqlUserService,
+    TwitterGraphqlTweetService,
     TwitterGraphqlSpaceService,
 
     TwitterFilteredStreamUserService,
@@ -73,6 +75,7 @@ import { TwitterService } from './service/twitter.service'
     TwitterApiService,
     TwitterPublicApiService,
     TwitterGraphqlUserService,
+    TwitterGraphqlTweetService,
     TwitterGraphqlSpaceService,
 
     TwitterFilteredStreamUserService,
