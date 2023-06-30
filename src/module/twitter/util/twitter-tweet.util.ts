@@ -42,7 +42,7 @@ export class TwitterTweetUtil {
       .flat()
       .filter((v) => v) || []
     const results = itemContents
-      .map((v) => v.tweet_results.result)
+      .map((v) => v.tweet_results?.result)
       .filter((v) => v?.__typename === 'Tweet') || []
     return results
   }
