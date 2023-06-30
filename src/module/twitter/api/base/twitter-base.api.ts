@@ -1,11 +1,14 @@
 /* eslint-disable class-methods-use-this */
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import { baseLogger } from '../../../../logger'
 import { TWITTER_API_URL, TWITTER_PUBLIC_AUTHORIZATION } from '../../constant/twitter.constant'
 import { TwitterApi } from '../twitter.api'
 
 export class TwitterBaseApi {
   public client: AxiosInstance
+
+  protected logger = baseLogger.child({ context: 'TwitterApi' })
 
   constructor(
     protected readonly api: TwitterApi,
@@ -67,7 +70,7 @@ export class TwitterBaseApi {
     const url = [config.baseURL, config.url]
       .join('/')
       .replace(TWITTER_API_URL, '')
-    console.debug(new Date().toISOString(), '-->', url)
+    this.logger.debug(['-->', url].join(' '))
   }
 
   private logResponse(res: AxiosResponse) {
@@ -79,11 +82,11 @@ export class TwitterBaseApi {
       .replace(TWITTER_API_URL, '')
     const limit = Number(res.headers['x-rate-limit-limit'])
     if (!limit) {
-      console.debug(new Date().toISOString(), '<--', url)
+      this.logger.debug(['<--', url].join(' '))
       return
     }
     const remaining = Number(res.headers['x-rate-limit-remaining'])
     const reset = Number(res.headers['x-rate-limit-reset'])
-    console.debug(new Date().toISOString(), '<--', url, limit, remaining, new Date(reset * 1000).toISOString())
+    this.logger.debug(['<--', url, limit, remaining, new Date(reset * 1000).toISOString()].join(' '))
   }
 }
