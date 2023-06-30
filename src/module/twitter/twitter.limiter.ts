@@ -67,7 +67,7 @@ export const twitterGqlUserTweetsLimiter = new Bottleneck({
 
 export const twitterSpacesByFleetsAvatarContentLimiter = new Bottleneck({
   maxConcurrent: 1,
-  minTime: 500,
+  minTime: 1000,
 })
 
 export const twitterSpacePlaylistLimiter = new Bottleneck({
