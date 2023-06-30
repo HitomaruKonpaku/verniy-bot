@@ -40,6 +40,14 @@ export class TrackAddTwitterProfileCommand extends TrackAddBaseSubcommand {
     return user
   }
 
+  protected isUserTrackable(): boolean | Promise<boolean> {
+    return false
+  }
+
+  protected getUntrackableMessage(): string {
+    return 'Blocked by owner!'
+  }
+
   protected getSuccessEmbedDescription(user: TwitterUser): string {
     return `Tracking **[${user.username}](${TwitterUtil.getUserUrl(user.username)})** Twitter profile`
   }
