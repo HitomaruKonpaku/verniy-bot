@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
 import { TrackModule } from '../track/track.module'
+import { TwitterApi } from './api/twitter.api'
 import { TwitterFilteredStreamUser } from './model/twitter-filtered-stream-user.entity'
 import { TwitterSpace } from './model/twitter-space.entity'
 import { TwitterTweet } from './model/twitter-tweet.entity'
@@ -26,7 +27,6 @@ import { TwitterUserService } from './service/data/twitter-user.service'
 import { TwitterProfileTrackingService } from './service/tracking/twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './service/tracking/twitter-space-tracking.service'
 import { TwitterTweetTrackingService } from './service/tracking/twitter-tweet-tracking.service'
-import { TwitterTokenService } from './service/twitter-token.service'
 import { TwitterService } from './service/twitter.service'
 
 @Module({
@@ -43,7 +43,7 @@ import { TwitterService } from './service/twitter.service'
   ],
   providers: [
     TwitterService,
-    TwitterTokenService,
+    TwitterApi,
 
     TwitterClientService,
     TwitterApiService,

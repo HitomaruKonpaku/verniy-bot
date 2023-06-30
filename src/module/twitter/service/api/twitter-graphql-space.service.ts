@@ -1,8 +1,5 @@
 import { randomUUID } from 'crypto'
 import { baseLogger } from '../../../../logger'
-import { TwitterFleetApi } from '../../api/twitter-fleet.api'
-import { TwitterGraphqlApi } from '../../api/twitter-graphql.api'
-import { TwitterLiveVideoStreamApi } from '../../api/twitter-live-video-stream.api'
 import { AvatarContent, Fleetline } from '../../interface/twitter-fleet.interface'
 import { AudioSpace } from '../../interface/twitter-graphql.interface'
 import { Status } from '../../interface/twitter-live-video-stream.interface'
@@ -16,10 +13,7 @@ export class TwitterGraphqlSpaceService extends TwitterPublicApiService {
     const requestId = randomUUID()
     try {
       this.logger.debug('--> getSpacesByFleetsAvatarContent', { requestId, userCount: userIds.length })
-      const { data } = await TwitterFleetApi.getAvatarContent(
-        userIds,
-        this.getCookieHeaders(),
-      )
+      const { data } = await this.api.fleet.avatar_content(userIds)
       this.logger.debug('<-- getSpacesByFleetsAvatarContent', { requestId })
       return data
     } catch (error) {
@@ -32,9 +26,7 @@ export class TwitterGraphqlSpaceService extends TwitterPublicApiService {
     const requestId = randomUUID()
     try {
       this.logger.debug('--> getSpacesByFleetsFleetline', { requestId })
-      const { data } = await TwitterFleetApi.getFleetline(
-        this.getCookieHeaders(),
-      )
+      const { data } = await this.api.fleet.fleetline()
       this.logger.debug('<-- getSpacesByFleetsFleetline', { requestId })
       return data
     } catch (error) {
@@ -44,26 +36,17 @@ export class TwitterGraphqlSpaceService extends TwitterPublicApiService {
   }
 
   public async getAudioSpaceById(spaceId: string): Promise<AudioSpace> {
-    const { data } = await TwitterGraphqlApi.getAudioSpaceById(
-      spaceId,
-      await this.getGuestTokenHeaders(),
-    )
+    const { data } = await this.api.graphql.AudioSpaceById(spaceId)
     return data?.data?.audioSpace
   }
 
   public async getAudioSpaceByIdLegacy(spaceId: string): Promise<AudioSpace> {
-    const { data } = await TwitterGraphqlApi.getAudioSpaceByIdLegacy(
-      spaceId,
-      await this.getGuestTokenHeaders(),
-    )
+    const { data } = await this.api.graphql.AudioSpaceById_Legacy(spaceId)
     return data?.data?.audioSpace
   }
 
   public async getLiveVideoStreamStatus(mediaKey: string): Promise<Status> {
-    const { data } = await TwitterLiveVideoStreamApi.getStatus(
-      mediaKey,
-      await this.getGuestTokenHeaders(),
-    )
+    const { data } = await this.api.liveVideoStream.status(mediaKey)
     return data
   }
 

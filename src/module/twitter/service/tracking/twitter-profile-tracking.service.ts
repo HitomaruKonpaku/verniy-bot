@@ -31,7 +31,7 @@ export class TwitterProfileTrackingService {
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) {
-    this.interval = this.configService.twitter.profile.interval
+    this.interval = this.configService.twitter?.profile?.interval || this.interval
   }
 
   public async start() {

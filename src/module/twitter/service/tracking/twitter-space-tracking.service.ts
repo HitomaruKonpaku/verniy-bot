@@ -20,7 +20,6 @@ import { TwitterSpaceControllerService } from '../controller/twitter-space-contr
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
 import { TwitterUserService } from '../data/twitter-user.service'
-import { TwitterTokenService } from '../twitter-token.service'
 
 @Injectable()
 export class TwitterSpaceTrackingService {
@@ -47,12 +46,10 @@ export class TwitterSpaceTrackingService {
     private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterGraphqlSpaceService)
     private readonly twitterGraphqlSpaceService: TwitterGraphqlSpaceService,
-    @Inject(TwitterTokenService)
-    private readonly twitterTokenService: TwitterTokenService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) {
-    this.newSpacesCheckInterval = this.configService.twitter.space.interval
+    this.newSpacesCheckInterval = this.configService.twitter?.space?.interval || this.newSpacesCheckInterval
   }
 
   public async start() {
@@ -84,7 +81,7 @@ export class TwitterSpaceTrackingService {
   }
 
   private async checkNewSpacesByAvatarContent() {
-    if (!this.twitterTokenService.getAuthToken()) {
+    if (!process.env.TWITTER_AUTH_TOKEN) {
       return
     }
 
@@ -105,7 +102,7 @@ export class TwitterSpaceTrackingService {
   }
 
   private async checkNewSpacesByFleetline() {
-    if (!this.twitterTokenService.getAuthToken()) {
+    if (!process.env.TWITTER_AUTH_TOKEN) {
       return
     }
 
