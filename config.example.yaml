@@ -2,6 +2,7 @@ twitter:
   active: false
   tweet:
     active: false
+    interval: 60000
     ruleLimit: 5
     ruleLength: 512
   profile:

@@ -3,6 +3,7 @@ import Bottleneck from 'bottleneck'
 import { hideLinkEmbed } from 'discord.js'
 import { EventEmitter } from 'events'
 import { ETwitterStreamEvent, TweetStream, TweetV2SingleStreamResult } from 'twitter-api-v2'
+
 import { baseLogger } from '../../../../logger'
 import { AppUtil } from '../../../../util/app.util'
 import { ArrayUtil } from '../../../../util/array.util'
@@ -32,7 +33,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
    */
   private readonly broadcastLimiter = new Bottleneck.Group({ maxConcurrent: 1 })
 
-  private interval = 10000
+  private interval = 60000
 
   private stream: TweetStream<TweetV2SingleStreamResult>
 
@@ -59,6 +60,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
     private readonly discordService: DiscordService,
   ) {
     super()
+    this.interval = this.configService.twitter?.tweet?.interval || this.interval
   }
 
   private get client() {

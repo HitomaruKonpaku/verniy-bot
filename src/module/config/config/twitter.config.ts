@@ -5,6 +5,7 @@ export const twitterConfig = {
 
   tweet: {
     active: false,
+    interval: 60000,
     /**
      * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
      */
