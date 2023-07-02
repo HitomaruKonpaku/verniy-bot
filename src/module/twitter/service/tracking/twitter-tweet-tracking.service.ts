@@ -174,7 +174,11 @@ export class TwitterTweetTrackingService extends EventEmitter {
       }
 
       trackItems.forEach((trackItem) => {
-        const channelContent = [trackItem.discordMessage, content]
+        const lines = [
+          trackItem.discordMessage,
+          content,
+        ]
+        const channelContent = lines
           .filter((v) => v)
           .join('\n')
         this.broadcastLimiter
