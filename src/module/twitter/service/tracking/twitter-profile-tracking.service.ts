@@ -36,7 +36,7 @@ export class TwitterProfileTrackingService {
 
   public async start() {
     this.logger.info('Starting...')
-    await this.execute()
+    setTimeout(() => this.execute(), 120000)
   }
 
   private async execute() {
