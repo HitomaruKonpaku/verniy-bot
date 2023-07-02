@@ -84,9 +84,10 @@ export class TwitterTweetTrackingService extends EventEmitter {
     try {
       const users = await this.twitterFilteredStreamUserService.getUsersForInitRules()
       if (users.length) {
+        const limiter = new Bottleneck({ maxConcurrent: 2 })
         this.logger.debug('checkUserTweets', { userCount: users.length })
         const userIds = users.map((v) => v.id)
-        await Promise.allSettled(userIds.map((id) => this.getUserTweets(id)))
+        await Promise.allSettled(userIds.map((id) => limiter.schedule(() => this.getUserTweets(id))))
       }
     } catch (error) {
       this.logger.error(`checkUserTweets: ${error.message}`)
