@@ -1,13 +1,12 @@
 import { Column, Entity, Index } from 'typeorm'
-import { DB_CURRENT_TIMESTAMP } from '../../database/constant/database.constant'
 import { BaseExternalEntity } from '../../database/model/base-external.entity'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { TwitterUser } from './twitter-user.entity'
 
 @Entity('twitter_space')
 export class TwitterSpace extends BaseExternalEntity {
-  @Column({ name: 'updated_at', type: 'numeric', default: () => DB_CURRENT_TIMESTAMP })
-  updatedAt?: number
+  @Column({ name: 'modified_at', type: 'numeric', nullable: true })
+  modifiedAt?: number
 
   @Column({ name: 'creator_id', type: 'text' })
   creatorId: string
