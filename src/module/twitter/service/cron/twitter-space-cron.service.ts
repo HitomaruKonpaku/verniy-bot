@@ -11,7 +11,8 @@ import { TwitterSpaceService } from '../data/twitter-space.service'
 export class TwitterSpaceCronService extends BaseCronService {
   protected readonly logger = baseLogger.child({ context: TwitterSpaceCronService.name })
 
-  protected cronTime = '0 0 */12 * * *'
+  protected cronTime = '0 */1 * * * *'
+  // protected cronRunOnInit = true
 
   constructor(
     @Inject(TwitterSpaceService)
@@ -23,27 +24,29 @@ export class TwitterSpaceCronService extends BaseCronService {
   }
 
   protected async onTick() {
-    await this.checkSpacesActive()
-    await this.checkSpacesPlaylist()
+    const spaces = await this.checkSpacesActive()
+    await this.checkSpacesPlaylist(spaces)
   }
 
   private async checkSpacesActive() {
     this.logger.info('--> checkSpacesActive')
+    let spaces: TwitterSpace[] = []
     try {
-      const spaces = await this.twitterSpaceService.getManyForActiveCheck()
+      spaces = await this.twitterSpaceService.getManyForActiveCheck()
       this.logger.debug('checkSpacesActive', { spaceCount: spaces.length })
       await Promise.allSettled(spaces.map((space) => this.twitterSpaceControllerService.getOneById(space.id)))
     } catch (error) {
       this.logger.error(`checkSpacesActive: ${error.message}`)
     }
     this.logger.info('<-- checkSpacesActive')
+    return spaces
   }
 
-  private async checkSpacesPlaylist() {
+  private async checkSpacesPlaylist(spaces: TwitterSpace[]) {
     this.logger.info('--> checkSpacesPlaylist')
     try {
       const limiter = twitterSpacePlaylistLimiter
-      const spaces = await this.twitterSpaceService.getManyForPlaylistActiveCheck()
+      // const spaces = await this.twitterSpaceService.getManyForPlaylistActiveCheck()
       this.logger.debug('checkSpacesPlaylist', { spaceCount: spaces.length })
       await Promise.allSettled(spaces.map((v) => limiter.schedule(() => this.checkSpacePlaylist(v))))
     } catch (error) {

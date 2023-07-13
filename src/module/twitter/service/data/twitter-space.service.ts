@@ -93,7 +93,7 @@ WHERE is_active = TRUE
   }
 
   public async getManyForActiveCheck() {
-    const spaces = await this.repository
+    const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
       .andWhere(new Brackets((qb0) => {
@@ -105,13 +105,15 @@ WHERE is_active = TRUE
           }))
           .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
       }))
+      .addOrderBy('modified_at', 'ASC', 'NULLS FIRST')
       .addOrderBy('created_at')
-      .getMany()
+      .limit(10)
+    const spaces = await query.getMany()
     return spaces
   }
 
   public async getManyForPlaylistActiveCheck() {
-    const spaces = await this.repository
+    const query = this.repository
       .createQueryBuilder()
       .andWhere('playlist_url NOTNULL')
       .andWhere(new Brackets((qb) => {
@@ -129,7 +131,7 @@ WHERE is_active = TRUE
           .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
       }))
       .addOrderBy('created_at')
-      .getMany()
+    const spaces = await query.getMany()
     return spaces
   }
 

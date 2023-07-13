@@ -57,7 +57,7 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
   }
 
   public async getManyForCheck() {
-    const users = await this.repository
+    const query = this.repository
       .createQueryBuilder('u')
       .leftJoin(
         'track',
@@ -67,8 +67,8 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
       )
       .andWhere('t.user_id ISNULL')
       .addOrderBy('u.updated_at', 'ASC')
-      .limit(100)
-      .getMany()
+      .limit(10)
+    const users = await query.getMany()
     return users
   }
 

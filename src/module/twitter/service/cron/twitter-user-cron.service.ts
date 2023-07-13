@@ -13,7 +13,8 @@ import { TwitterUserService } from '../data/twitter-user.service'
 export class TwitterUserCronService extends BaseCronService {
   protected readonly logger = baseLogger.child({ context: TwitterUserCronService.name })
 
-  protected cronTime = '0 */5 * * * *'
+  protected cronTime = '0 */2 * * * *'
+  // protected cronRunOnInit = true
 
   constructor(
     @Inject(TwitterUserService)
@@ -31,7 +32,6 @@ export class TwitterUserCronService extends BaseCronService {
   }
 
   private async checkUsers() {
-    this.logger.debug('checkUsers')
     try {
       const users = await this.twitterUserService.getManyForCheck()
       if (!users.length) {
