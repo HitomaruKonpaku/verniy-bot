@@ -92,22 +92,26 @@ WHERE is_active = TRUE
     return ids
   }
 
-  public async getManyForActiveCheck() {
+  public async getManyForActiveCheck(options?: { limit?: number }) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .andWhere(new Brackets((qb0) => {
-        qb0
-          .orWhere(new Brackets((qb1) => {
-            qb1
-              .andWhere(`DATETIME ('now', '-25 day') >= DATETIME (created_at / 1000, 'unixepoch')`)
-              .andWhere(`DATETIME ('now', '-35 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
-          }))
-          .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
-      }))
+      // .andWhere(new Brackets((qb0) => {
+      //   qb0
+      //     .orWhere(new Brackets((qb1) => {
+      //       qb1
+      //         .andWhere(`DATETIME ('now', '-25 day') >= DATETIME (created_at / 1000, 'unixepoch')`)
+      //         .andWhere(`DATETIME ('now', '-35 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
+      //     }))
+      //     .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
+      // }))
       .addOrderBy('modified_at', 'ASC', 'NULLS FIRST')
       .addOrderBy('created_at')
-      .limit(10)
+
+    if (Number.isSafeInteger(options?.limit)) {
+      query.limit(options.limit)
+    }
+
     const spaces = await query.getMany()
     return spaces
   }
