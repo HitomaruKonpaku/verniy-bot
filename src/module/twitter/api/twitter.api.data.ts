@@ -1,8 +1,11 @@
 import Bottleneck from 'bottleneck'
 import { TWITTER_GUEST_TOKEN_DURATION } from '../constant/twitter.constant'
+import { TwitterRateLimit } from './interface/twitter-api.interface'
 import { TwitterApi } from './twitter.api'
 
 export class TwitterApiData {
+  public readonly rateLimits: Record<string, TwitterRateLimit> = {}
+
   private guestToken: string
   private guestTokenCreatedAt: number
   private guestTokenLimiter = new Bottleneck({ maxConcurrent: 1 })

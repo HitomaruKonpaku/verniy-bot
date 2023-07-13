@@ -48,19 +48,23 @@ export class TwitterBaseApi {
     this.client = client
 
     client.interceptors.request.use(
-      (config) => {
+      async (config) => {
         this.logRequest(config)
+        await this.handleRequest(config)
         return config
       },
+      null,
     )
 
     client.interceptors.response.use(
       (response) => {
         this.logResponse(response)
+        this.handleResponse(response)
         return response
       },
       (error) => {
         this.logResponse(error.response)
+        this.handleResponse(error.response)
         return Promise.reject(error)
       },
     )
@@ -88,5 +92,37 @@ export class TwitterBaseApi {
     const remaining = Number(res.headers['x-rate-limit-remaining'])
     const reset = Number(res.headers['x-rate-limit-reset'])
     this.logger.debug(['<--', url, limit, remaining, new Date(reset * 1000).toISOString()].join(' '))
+  }
+
+  private async handleRequest(config: AxiosRequestConfig) {
+    try {
+      const guestToken = config.headers['x-guest-token']
+      if (guestToken) {
+        const rateLimit = this.api.data.rateLimits[config.url]
+        if (rateLimit && rateLimit.limit && rateLimit.remaining === 0) {
+          const newGuestToken = await this.api.data.getGuestToken(true)
+          // eslint-disable-next-line no-param-reassign
+          config.headers['x-guest-token'] = newGuestToken
+        }
+      }
+    } catch (error) {
+      this.logger.error(`handleRequest: ${error.message}`)
+    }
+  }
+
+  private handleResponse(res: AxiosResponse) {
+    const url = res.config.baseURL?.includes?.('graphql')
+      ? res.config.url.substring(res.config.url.indexOf('/') + 1)
+      : res.config.url
+    const limit = Number(res.headers['x-rate-limit-limit'])
+    const remaining = Number(res.headers['x-rate-limit-remaining'])
+    const reset = Number(res.headers['x-rate-limit-reset'])
+    if (limit) {
+      const { rateLimits } = this.api.data
+      rateLimits[url] = rateLimits[url] || {}
+      rateLimits[url].limit = limit
+      rateLimits[url].remaining = remaining
+      rateLimits[url].reset = reset * 1000
+    }
   }
 }
