@@ -28,9 +28,9 @@ export class TwitterSpaceControllerService {
     private readonly twitterGraphqlSpaceService: TwitterGraphqlSpaceService,
   ) { }
 
-  public async getOneById(id: string) {
+  public async getOneById(id: string, options?: TwitterSaveAudioSpaceOption) {
     let space = await this.twitterSpaceService.getOneById(id)
-    await this.saveAudioSpace(id, { skipPlaylistUrl: !!space?.playlistUrl })
+    await this.saveAudioSpace(id, { skipPlaylistUrl: !!space?.playlistUrl, ...options })
     space = await this.twitterSpaceService.getOneById(id)
     return space
   }
@@ -139,8 +139,10 @@ export class TwitterSpaceControllerService {
       await this.saveAudioSpacePlaylist(id, audioSpace)
     }
 
-    if ([AudioSpaceMetadataState.ENDED, AudioSpaceMetadataState.TIMED_OUT].includes(metadata.state)) {
-      await this.saveAudioSpaceLegacy(id, { priority: priority - 1 })
+    if (!options?.skipAudioSpaceLegacy) {
+      if ([AudioSpaceMetadataState.ENDED, AudioSpaceMetadataState.TIMED_OUT].includes(metadata.state)) {
+        await this.saveAudioSpaceLegacy(id, { priority: priority - 1 })
+      }
     }
   }
 

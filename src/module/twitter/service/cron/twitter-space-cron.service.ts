@@ -36,7 +36,7 @@ export class TwitterSpaceCronService extends BaseCronService {
       const limit = Math.max(0, 20 - liveIds.length)
       spaces = await this.twitterSpaceService.getManyForActiveCheck({ limit })
       this.logger.debug('checkSpacesActive', { spaceCount: spaces.length })
-      await Promise.allSettled(spaces.map((space) => this.twitterSpaceControllerService.getOneById(space.id)))
+      await Promise.allSettled(spaces.map((space) => this.twitterSpaceControllerService.getOneById(space.id, { skipAudioSpaceLegacy: true })))
     } catch (error) {
       this.logger.error(`checkSpacesActive: ${error.message}`)
     }
