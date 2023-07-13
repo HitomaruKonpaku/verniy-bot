@@ -126,7 +126,7 @@ export class TwitterSpaceControllerService {
 
     const { metadata } = audioSpace
     if (!metadata) {
-      await this.twitterSpaceService.updateFields(id, { isActive: false })
+      await this.twitterSpaceService.updateFields(id, { isActive: false, modifiedAt: Date.now() })
       return
     }
 
