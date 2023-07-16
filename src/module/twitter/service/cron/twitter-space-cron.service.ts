@@ -58,6 +58,9 @@ export class TwitterSpaceCronService extends BaseCronService {
   }
 
   private async checkSpacePlaylist(space: TwitterSpace) {
+    if (!space?.playlistUrl) {
+      return
+    }
     this.logger.debug('--> checkSpacePlaylist', { id: space.id })
     try {
       await axios.head(space.playlistUrl)
