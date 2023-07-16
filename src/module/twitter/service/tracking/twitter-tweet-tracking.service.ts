@@ -35,6 +35,8 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
   private interval = 60000
 
+  private useTweetsAndReplies = false
+
   private stream: TweetStream<TweetV2SingleStreamResult>
 
   constructor(
@@ -93,13 +95,16 @@ export class TwitterTweetTrackingService extends EventEmitter {
       this.logger.error(`checkUserTweets: ${error.message}`)
     }
 
+    this.useTweetsAndReplies = !this.useTweetsAndReplies
     setTimeout(() => this.checkUserTweets(), this.interval)
     this.logger.debug('<-- checkUserTweets')
   }
 
   private async getUserTweets(userId: string) {
     try {
-      const data = await this.twitterGraphqlUserService.getUserTweetsAndReplies(userId)
+      const data = this.useTweetsAndReplies
+        ? await this.twitterGraphqlUserService.getUserTweetsAndReplies(userId)
+        : await this.twitterGraphqlUserService.getUserTweets(userId)
       const results = TwitterTweetUtil.parseUserTweetsAndReplies(data)
       await this.handleTweetResults(results)
     } catch (error) {
