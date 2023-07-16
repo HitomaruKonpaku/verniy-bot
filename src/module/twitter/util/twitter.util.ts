@@ -12,7 +12,8 @@ export class TwitterUtil {
   }
 
   public static getTweetUrl(username: string, tweetId: string): string {
-    return `https://vxtwitter.com/${username}/status/${tweetId}`
+    // return `https://fxtwitter.com/${username}/status/${tweetId}`
+    return `https://twitter.com/${username}/status/${tweetId}`
   }
 
   public static getTweetUrlById(tweetId: string): string {
