@@ -78,7 +78,7 @@ export class TwitterSpaceCronService extends BaseCronService {
   private async updateSpacePlaylistActive(id: string, playlistActive: boolean) {
     this.logger.debug('updateSpacePlaylistActive', { id, playlistActive })
     try {
-      await this.twitterSpaceService.updateFields(id, { playlistActive })
+      await this.twitterSpaceService.updateFields(id, { playlistActive, playlistUpdatedAt: Date.now() })
     } catch (error) {
       this.logger.error(`updateSpacePlaylistActive: ${error.message}`, { id })
     }

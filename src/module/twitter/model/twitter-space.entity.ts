@@ -73,11 +73,14 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'narrow_cast_space_type', type: 'numeric', nullable: true })
   narrowCastSpaceType?: number
 
-  @Column({ name: 'playlist_url', type: 'text', nullable: true })
-  playlistUrl?: string
-
   @Column({ name: 'playlist_active', type: 'boolean', nullable: true })
   playlistActive?: boolean
+
+  @Column({ name: 'playlist_updated_at', type: 'numeric', nullable: true })
+  playlistUpdatedAt?: number
+
+  @Column({ name: 'playlist_url', type: 'text', nullable: true })
+  playlistUrl?: string
 
   creator?: TwitterUser
 

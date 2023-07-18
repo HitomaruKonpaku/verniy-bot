@@ -168,9 +168,11 @@ export class TwitterSpaceControllerService {
     try {
       const playlistUrl = await this.twitterGraphqlSpaceService.getSpacePlaylistUrl(id, audioSpace)
       const playlistActive = true
+      const playlistUpdatedAt = Date.now()
       await this.twitterSpaceService.updateFields(id, {
-        playlistUrl,
         playlistActive,
+        playlistUpdatedAt,
+        playlistUrl,
       })
     } catch (error) {
       this.logger.error(`saveAudioSpacePlaylist: ${error.message}`, { id })
