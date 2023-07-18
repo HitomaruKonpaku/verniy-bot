@@ -3,8 +3,8 @@
 import { Instruction, Result } from '../interface/twitter-tweet.interface'
 
 export class TwitterTweetUtil {
-  public static parseUserTweetsAndReplies(data): Result[] {
-    const instructions: Instruction[] = data.user?.result?.timeline_v2?.timeline?.instructions || []
+  public static parseUserWithProfileTweets(data: any): Result[] {
+    const instructions: Instruction[] = data?.user_result?.result?.timeline_response?.timeline.instructions || []
     const results = instructions
       .map((v) => TwitterTweetUtil.parseInstruction(v))
       .flat()
@@ -13,7 +13,7 @@ export class TwitterTweetUtil {
   }
 
   public static parseInstruction(instruction: Instruction) {
-    const type = instruction?.type
+    const type = instruction.__typename
     switch (type) {
       case 'TimelinePinEntry':
         return TwitterTweetUtil.parseTimelinePinEntryInstruction(instruction)
@@ -25,25 +25,17 @@ export class TwitterTweetUtil {
   }
 
   public static parseTimelinePinEntryInstruction(instruction: Instruction): Result {
-    const result = instruction.entry?.content?.itemContent?.tweet_results?.result
+    const result = instruction.entry?.content?.content?.tweetResult?.result
     return result
   }
 
   public static parseTimelineAddEntriesInstruction(instruction: Instruction): Result[] {
-    const entryTypes = [
-      'TimelineTimelineItem',
-      'TimelineTimelineModule',
-    ]
     const entries = instruction.entries || []
-    const itemContents = entries
-      .map((v) => v.content)
-      .filter((v) => entryTypes.includes(v.entryType))
-      .map((v) => v.items?.map?.((item) => item.item?.itemContent) || v.itemContent)
-      .flat()
-      .filter((v) => v) || []
-    const results = itemContents
-      .map((v) => v.tweet_results?.result)
-      .filter((v) => v?.__typename === 'Tweet') || []
+    const results = entries
+      .map((v) => v.content?.content)
+      .filter((v) => v)
+      .map((v) => v.tweetResult?.result)
+      .filter((v) => v)
     return results
   }
 }

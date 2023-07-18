@@ -24,7 +24,7 @@ export class AdminReloadTwitterStreamRulesCommand extends BaseCommand {
   public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
-    await this.twitterTweetTrackingService.reloadStreamRules()
+    // await this.twitterTweetTrackingService.reloadStreamRules()
 
     await interaction.editReply('✅')
   }

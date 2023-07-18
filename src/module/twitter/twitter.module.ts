@@ -26,6 +26,7 @@ import { TwitterTweetService } from './service/data/twitter-tweet.service'
 import { TwitterUserService } from './service/data/twitter-user.service'
 import { TwitterProfileTrackingService } from './service/tracking/twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './service/tracking/twitter-space-tracking.service'
+import { TwitterTweetTrackingProfileTweetService } from './service/tracking/twitter-tweet-tracking-profile-tweet.service'
 import { TwitterTweetTrackingService } from './service/tracking/twitter-tweet-tracking.service'
 import { TwitterService } from './service/twitter.service'
 
@@ -62,6 +63,7 @@ import { TwitterService } from './service/twitter.service'
     TwitterSpaceControllerService,
 
     TwitterTweetTrackingService,
+    TwitterTweetTrackingProfileTweetService,
     TwitterProfileTrackingService,
     TwitterSpaceTrackingService,
 

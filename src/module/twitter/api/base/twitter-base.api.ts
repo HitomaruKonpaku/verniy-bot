@@ -2,8 +2,8 @@
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { baseLogger } from '../../../../logger'
-import { TWITTER_API_URL, TWITTER_PUBLIC_AUTHORIZATION } from '../../constant/twitter.constant'
 import { TwitterApi } from '../twitter.api'
+import { TWITTER_API_URL, TWITTER_PUBLIC_AUTHORIZATION, TWITTER_PUBLIC_AUTHORIZATION_2 } from '../twitter.constant'
 
 export class TwitterBaseApi {
   public client: AxiosInstance
@@ -21,6 +21,14 @@ export class TwitterBaseApi {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION,
       'x-guest-token': await this.api.data.getGuestToken(),
+    }
+    return headers
+  }
+
+  protected async getGuestV2Headers() {
+    const headers = {
+      authorization: TWITTER_PUBLIC_AUTHORIZATION_2,
+      'x-guest-token': await this.api.data.getGuestToken2(),
     }
     return headers
   }
@@ -100,7 +108,9 @@ export class TwitterBaseApi {
       if (guestToken) {
         const rateLimit = this.api.data.rateLimits[config.url]
         if (rateLimit && rateLimit.limit && rateLimit.remaining === 0) {
-          const newGuestToken = await this.api.data.getGuestToken(true)
+          const newGuestToken = config.headers.authorization === TWITTER_PUBLIC_AUTHORIZATION
+            ? await this.api.data.getGuestToken(true)
+            : await this.api.data.getGuestToken2(true)
           // eslint-disable-next-line no-param-reassign
           config.headers['x-guest-token'] = newGuestToken
         }

@@ -42,6 +42,7 @@ export interface Entry extends Record<string, any> {
 }
 
 export interface Instruction extends Record<string, any> {
+  __typename?: string
   type: string
   entry?: Entry
   entries?: Entry[]
