@@ -18,6 +18,8 @@ ENV NODE_ENV=production
 WORKDIR /app/
 
 COPY --from=base /app/dist .
+COPY --from=base /app/package.json .
+COPY --from=base /app/package-lock.json .
 
 RUN npm ci
 
