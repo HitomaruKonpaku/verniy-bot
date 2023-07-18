@@ -19,7 +19,7 @@ WORKDIR /app/
 
 COPY --from=base /app/dist .
 
-RUN npm ci --production
+RUN npm ci
 
 RUN npm run deploy-commands
 
