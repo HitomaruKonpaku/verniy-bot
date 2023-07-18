@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   discord-bot:
-    image: ghcr.io/aozaki-kuro/verniy-bot:latest
+    image: ghcr.io/HitomaruKonpaku/verniy-bot:latest
     container_name: discord-bot
     restart: always
     network_mode: "host"
