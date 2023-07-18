@@ -1,8 +1,7 @@
 version: "3.8"
 services:
   discord-bot:
-    build: .
-    image: aozaki-kuro/discord-bot
+    image: ghcr.io/aozaki-kuro/verniy-bot:latest
     container_name: discord-bot
     restart: always
     network_mode: "host"

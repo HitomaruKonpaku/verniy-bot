@@ -115,6 +115,7 @@ npm install
    ```
 
 1. Run
+
    ```bash
    docker compose up -d
    ```
