@@ -161,6 +161,7 @@ export class TwitterEntityUtil {
       totalReplayWatched: metadata.total_replay_watched,
       isAvailableForReplay: metadata.is_space_available_for_replay,
       isAvailableForClipping: metadata.is_space_available_for_clipping,
+      narrowCastSpaceType: metadata.narrow_cast_space_type,
     }
     return obj
   }

@@ -70,6 +70,9 @@ export class TwitterSpace extends BaseExternalEntity {
   @Column({ name: 'is_available_for_clipping', type: 'boolean', nullable: true })
   isAvailableForClipping?: boolean
 
+  @Column({ name: 'narrow_cast_space_type', type: 'numeric', nullable: true })
+  narrowCastSpaceType?: number
+
   @Column({ name: 'playlist_url', type: 'text', nullable: true })
   playlistUrl?: string
 
