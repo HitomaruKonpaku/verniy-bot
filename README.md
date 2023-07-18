@@ -62,7 +62,7 @@ Discord tracking bot
 
 ## Getting Started
 
-```
+```bash
 git clone https://github.com/HitomaruKonpaku/verniy-bot.git
 cd verniy-bot
 npm install
@@ -73,29 +73,48 @@ npm install
 1. Clone `config.example.yaml` and rename to `config.yaml`
 1. Clone `.env.example` and rename to `.env`
 1. Fill out the values in `.env`
-    - [Create Discord bot](https://discord.com/developers/applications)
-    - Twitter token
-    - [TwitCasting token](https://twitcasting.tv/developer.php)
+   - [Create Discord bot](https://discord.com/developers/applications)
+   - Twitter token
+   - [TwitCasting token](https://twitcasting.tv/developer.php)
 1. Invite bot to your server
 
-    ```
-    https://discord.com/api/oauth2/authorize?client_id=xxxxx&permissions=0&scope=bot%20applications.commands
-    ```
+   ```txt
+   https://discord.com/api/oauth2/authorize?client_id=xxxxx&permissions=0&scope=bot%20applications.commands
+   ```
 
 1. Build
 
-    ```
-    npm run build
-    ```
+   ```bash
+   npm run build
+   ```
 
 1. Deploy slash commands
 
-    ```
-    npm run deploy-commands
-    ```
+   ```bash
+   npm run deploy-commands
+   ```
 
 1. Run
 
-    ```
-    npm start
-    ```
+   ```bash
+   npm start
+   ```
+
+## Usage (docker)
+
+1. Clone `config.example.yaml` and rename to `config.yaml`
+1. Clone `.env.example` and rename to `.env`
+1. Fill out the values in `.env`
+   - [Create Discord bot](https://discord.com/developers/applications)
+   - Twitter token
+   - [TwitCasting token](https://twitcasting.tv/developer.php)
+1. Invite bot to your server
+
+   ```txt
+   https://discord.com/api/oauth2/authorize?client_id=xxxxx&permissions=0&scope=bot%20applications.commands
+   ```
+
+1. Run
+   ```bash
+   docker compose up -d
+   ```
