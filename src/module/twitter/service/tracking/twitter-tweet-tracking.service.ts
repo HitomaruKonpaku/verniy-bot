@@ -83,7 +83,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
   private async handleTweetData(tweet: TwitterTweet) {
     this.emit(TwitterEvent.TWEET, tweet)
-    // await this.broadcastTweet(tweet)
+    await this.broadcastTweet(tweet)
   }
 
   private async broadcastTweet(tweet: TwitterTweet) {
@@ -117,7 +117,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
       trackItems.forEach((trackItem) => {
         const lines = [
-          // trackItem.discordMessage,
+          trackItem.discordMessage,
           content,
         ]
         const channelContent = lines
