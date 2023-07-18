@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 
-import { Instruction, Result } from '../interface/twitter-tweet.interface'
+import { Content, Instruction, Result } from '../interface/twitter-tweet.interface'
 
 export class TwitterTweetUtil {
   public static parseUserWithProfileTweets(data: any): Result[] {
@@ -31,11 +31,35 @@ export class TwitterTweetUtil {
 
   public static parseTimelineAddEntriesInstruction(instruction: Instruction): Result[] {
     const entries = instruction.entries || []
-    const results = entries
-      .map((v) => v.content?.content)
+    const contents = entries
+      .map((v) => v.content)
       .filter((v) => v)
-      .map((v) => v.tweetResult?.result)
+    const results = contents
+      .map((v) => TwitterTweetUtil.parseContent(v))
+      .flat()
       .filter((v) => v)
+    return results
+  }
+
+  public static parseContent(content: Content) {
+    const type = content.__typename
+    switch (type) {
+      case 'TimelineTimelineItem':
+        return TwitterTweetUtil.parseTimelineTimelineItem(content)
+      case 'TimelineTimelineModule':
+        return TwitterTweetUtil.parseTimelineTimelineModule(content)
+      default:
+        return []
+    }
+  }
+
+  public static parseTimelineTimelineItem(content: Content): Result {
+    const result = content.content?.tweetResult?.result
+    return result
+  }
+
+  public static parseTimelineTimelineModule(content: Content): Result[] {
+    const results = content.items?.map?.((v) => v.item?.content?.tweetResult?.result)
     return results
   }
 }

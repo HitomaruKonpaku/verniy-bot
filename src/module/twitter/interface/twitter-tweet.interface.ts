@@ -19,19 +19,23 @@ export interface TweetResults extends Record<string, any> {
 
 export interface ItemContent extends Record<string, any> {
   itemType: string
-  tweet_results: TweetResults
+  tweetResult?: TweetResults
+  tweet_results?: TweetResults
 }
 
 export interface ContentItem extends Record<string, any> {
   entryId: string
   item: {
-    itemContent: ItemContent
+    content?: ItemContent
+    itemContent?: ItemContent
   }
 }
 
 export interface Content extends Record<string, any> {
-  entryType: string
+  __typename?: string
+  entryType?: string
   itemContent?: ItemContent
+  content?: ItemContent
   items?: ContentItem[]
 }
 
