@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  discord-bot:
+    build: .
+    image: aozaki-kuro/discord-bot
+    container_name: discord-bot
+    restart: always
+    network_mode: "host"
+    user: "1000:1000"
+    volumes:
+      # files
+      - ./.env:/app/.env
+      - ./config.yaml:/app/config.yaml
+      # dir
+      - ./logs:/app/logs
+      - ./db:/app/db
