@@ -25,7 +25,7 @@ export class TwitterTweetTrackingProfileTweetService extends EventEmitter {
     private readonly twitterFilteredStreamUserService: TwitterFilteredStreamUserService,
   ) {
     super()
-    this.interval = this.configService.twitter?.tweet?.interval
+    this.interval = this.configService.twitter?.tweet?.interval || this.interval
   }
 
   public listen() {

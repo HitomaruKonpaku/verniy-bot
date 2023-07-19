@@ -9,7 +9,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
     const queryId = 'Lxg1V9AiIzzXEiP2c8dRnw'
     const operationName = 'UserByRestId'
     const url = this.parseUrl(queryId, operationName)
-    const headers = await this.getGuestHeaders()
+    const headers = await this.getGuestV2Headers()
     const res = await this.client.get(url, {
       headers,
       params: {
@@ -36,7 +36,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
     const queryId = 'oUZZZ8Oddwxs8Cd3iW3UEA'
     const operationName = 'UserByScreenName'
     const url = this.parseUrl(queryId, operationName)
-    const headers = await this.getGuestHeaders()
+    const headers = await this.getGuestV2Headers()
     const res = await this.client.get(url, {
       headers,
       params: {
