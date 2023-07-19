@@ -1,11 +1,12 @@
+---
 version: "3.8"
 services:
   discord-bot:
-    image: ghcr.io/HitomaruKonpaku/verniy-bot:latest
+    image: ghcr.io/hitomarukonpaku/verniy-bot:latest
     container_name: discord-bot
+    user: "1000:1000"
     restart: always
     network_mode: "host"
-    user: "1000:1000"
     volumes:
       # files
       - ./.env:/app/.env
