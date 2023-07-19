@@ -106,7 +106,8 @@ export class TwitterBaseApi {
     try {
       const guestToken = config.headers['x-guest-token']
       if (guestToken) {
-        const rateLimit = this.api.data.rateLimits[config.url]
+        const url = this.getRateLimitRequestUrl(config)
+        const rateLimit = this.api.data.rateLimits[url]
         if (rateLimit && rateLimit.limit && rateLimit.remaining === 0) {
           const newGuestToken = config.headers.authorization === TWITTER_PUBLIC_AUTHORIZATION
             ? await this.api.data.getGuestToken(true)
@@ -121,9 +122,7 @@ export class TwitterBaseApi {
   }
 
   private handleResponse(res: AxiosResponse) {
-    const url = res.config.baseURL?.includes?.('graphql')
-      ? res.config.url.substring(res.config.url.indexOf('/') + 1)
-      : res.config.url
+    const url = this.getRateLimitRequestUrl(res.config)
     const limit = Number(res.headers['x-rate-limit-limit'])
     const remaining = Number(res.headers['x-rate-limit-remaining'])
     const reset = Number(res.headers['x-rate-limit-reset'])
@@ -134,5 +133,12 @@ export class TwitterBaseApi {
       rateLimits[url].remaining = remaining
       rateLimits[url].reset = reset * 1000
     }
+  }
+
+  private getRateLimitRequestUrl(config: AxiosRequestConfig) {
+    const url = config.baseURL?.includes?.('graphql')
+      ? config.url.substring(config.url.indexOf('/') + 1)
+      : config.url
+    return url
   }
 }
