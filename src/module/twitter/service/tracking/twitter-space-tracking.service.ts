@@ -1,5 +1,4 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { SpaceV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
 import { ConfigService } from '../../../config/service/config.service'
@@ -11,15 +10,12 @@ import { SpaceState } from '../../enum/twitter-space.enum'
 import { AvatarContent } from '../../interface/twitter-fleet.interface'
 import { TwitterSpace } from '../../model/twitter-space.entity'
 import { twitterSpacesByFleetsAvatarContentLimiter } from '../../twitter.limiter'
-import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterSpaceUtil } from '../../util/twitter-space.util'
 import { TwitterUtil } from '../../util/twitter.util'
-import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterGraphqlSpaceService } from '../api/twitter-graphql-space.service'
 import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
-import { TwitterUserService } from '../data/twitter-user.service'
 
 @Injectable()
 export class TwitterSpaceTrackingService {
@@ -36,14 +32,10 @@ export class TwitterSpaceTrackingService {
     private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
     @Inject(TwitterSpaceService)
     private readonly twitterSpaceService: TwitterSpaceService,
-    @Inject(TwitterUserService)
-    private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterSpaceControllerService)
     private readonly twitterSpaceControllerService: TwitterSpaceControllerService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
-    @Inject(TwitterApiService)
-    private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterGraphqlSpaceService)
     private readonly twitterGraphqlSpaceService: TwitterGraphqlSpaceService,
     @Inject(forwardRef(() => DiscordService))
@@ -134,10 +126,6 @@ export class TwitterSpaceTrackingService {
       return
     }
 
-    // this.logger.warn('getNewSpaces', { newSpaceIds })
-    // const idChunks = ArrayUtil.splitIntoChunk(newSpaceIds, TWITTER_API_LIST_SIZE)
-    // await Promise.allSettled(idChunks.map((ids) => this.getSpacesByIds(ids)))
-
     await Promise.allSettled(newSpaceIds.map((id) => this.getSpaceById(id)))
   }
 
@@ -158,28 +146,6 @@ export class TwitterSpaceTrackingService {
       }
     } catch (error) {
       this.logger.error(`getSpaceById: ${error.message}`, { id })
-    }
-  }
-
-  private async getSpacesByIds(ids: string[]) {
-    try {
-      const result = await this.twitterApiService.getSpacesByIds(ids)
-      const spaces = result.data || []
-      const users = result.includes?.users || []
-      await Promise.allSettled(users.map((v) => this.twitterUserControllerService.saveUserV2(v)))
-      await Promise.allSettled(spaces.map((v) => this.updateSpace(v)))
-    } catch (error) {
-      this.logger.error(`getSpacesByIds: ${error.message}`)
-    }
-  }
-
-  private async getSpaces(userIds: string[]) {
-    try {
-      const result = await this.twitterApiService.getSpacesByCreatorIds(userIds)
-      const spaces = result.data || []
-      await Promise.allSettled(spaces.map((space) => this.updateSpace(space)))
-    } catch (error) {
-      this.logger.error(`getSpaces: ${error.message}`)
     }
   }
 
@@ -220,47 +186,6 @@ export class TwitterSpaceTrackingService {
   // #endregion
 
   // #region Update
-
-  private async updateSpace(space: SpaceV2) {
-    try {
-      const oldSpace = await this.twitterSpaceService.getOneById(space.id)
-      let newSpace = await this.twitterSpaceService.save(TwitterEntityUtil.buildSpace(space))
-
-      if (newSpace.state === SpaceState.LIVE && !oldSpace?.playlistUrl) {
-        // Get additional space data
-        try {
-          await this.twitterSpaceControllerService.saveAudioSpace(newSpace.id)
-          newSpace = await this.twitterSpaceService.getOneById(newSpace.id)
-        } catch (error) {
-          this.logger.error(`updateSpace#saveAudioSpace: ${error.message}`, { id: newSpace.id })
-        }
-      }
-
-      await this.updateSpaceCreator(newSpace)
-
-      await this.notifySpace(newSpace, oldSpace)
-
-      if (newSpace.state === SpaceState.ENDED) {
-        await this.saveUnknownParticipants()
-      }
-    } catch (error) {
-      this.logger.error(`updateSpace: ${error.message}`, { space })
-    }
-  }
-
-  private async updateSpaceCreator(space: TwitterSpace) {
-    try {
-      if (!space.creatorId) {
-        return
-      }
-      if (await this.twitterUserService.getOneById(space.creatorId)) {
-        return
-      }
-      await this.twitterUserControllerService.getOneById(space.creatorId)
-    } catch (error) {
-      this.logger.error(`updateSpaceCreator: ${error.message}`, { space })
-    }
-  }
 
   private async saveUnknownParticipants() {
     try {
