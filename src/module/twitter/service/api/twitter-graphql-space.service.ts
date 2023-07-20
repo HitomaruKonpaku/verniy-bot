@@ -37,17 +37,22 @@ export class TwitterGraphqlSpaceService extends TwitterPublicApiService {
 
   public async getAudioSpaceById(spaceId: string): Promise<AudioSpace> {
     const { data } = await this.api.graphql.AudioSpaceById(spaceId)
-    return data?.data?.audioSpace
+    const audioSpace = data?.data?.audioSpace as AudioSpace
+    delete audioSpace.sharings
+    return audioSpace
   }
 
   public async getAudioSpaceByIdLegacy(spaceId: string): Promise<AudioSpace> {
     const { data } = await this.api.graphql.AudioSpaceById_Legacy(spaceId)
-    return data?.data?.audioSpace
+    const audioSpace = data?.data?.audioSpace as AudioSpace
+    delete audioSpace.sharings
+    return audioSpace
   }
 
   public async getAudioSpaceByRestId(spaceId: string): Promise<AudioSpace> {
     const { data } = await this.api.graphql.AudioSpaceByRestId(spaceId)
-    return data?.data?.audio_space_by_rest_ids
+    const audioSpace = data?.data?.audio_space_by_rest_id as AudioSpace
+    return audioSpace
   }
 
   public async getLiveVideoStreamStatus(mediaKey: string): Promise<Status> {

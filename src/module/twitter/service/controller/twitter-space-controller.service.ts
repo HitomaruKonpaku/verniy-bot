@@ -123,7 +123,7 @@ export class TwitterSpaceControllerService {
       { priority },
       () => this.twitterGraphqlSpaceService.getAudioSpaceById(id),
     )
-    this.logger.info('saveAudioSpace', { id, audioSpace })
+    this.logger.debug('saveAudioSpace', { id, audioSpace })
 
     const { metadata } = audioSpace
     if (!metadata) {
@@ -145,6 +145,8 @@ export class TwitterSpaceControllerService {
         await this.saveAudioSpaceLegacy(id, { priority: priority - 1 })
       }
     }
+
+    await this.saveAudioSpaceByRestId(id)
   }
 
   public async saveAudioSpaceLegacy(id: string, options?: TwitterSaveAudioSpaceLegacyOption) {
@@ -155,12 +157,34 @@ export class TwitterSpaceControllerService {
         { priority },
         () => this.twitterGraphqlSpaceService.getAudioSpaceByIdLegacy(id),
       )
-      this.logger.info('saveAudioSpaceLegacy', { id, audioSpace })
+      this.logger.debug('saveAudioSpaceLegacy', { id, audioSpace })
 
       const { metadata } = audioSpace
       await this.twitterSpaceService.updateFields(id, { participantCount: metadata.total_participated })
     } catch (error) {
       this.logger.error(`saveAudioSpaceLegacy: ${error.message}`, { id })
+    }
+  }
+
+  public async saveAudioSpaceByRestId(id: string) {
+    try {
+      const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceByRestId(id)
+      this.logger.debug('saveAudioSpaceByRestId', { id, audioSpace })
+
+      const { metadata } = audioSpace
+      await this.twitterSpaceService.updateFields(id, {
+        modifiedAt: Date.now(),
+        lang: metadata.language,
+        title: metadata.title,
+        participantCount: metadata.total_participated,
+        totalLiveListeners: metadata.total_live_listeners,
+        totalReplayWatched: metadata.total_replay_watched,
+        narrowCastSpaceType: metadata.narrow_cast_space_type,
+        ticketsSold: metadata.tickets_sold,
+        ticketsTotal: metadata.tickets_total,
+      })
+    } catch (error) {
+      this.logger.error(`saveAudioSpaceByRestId: ${error.message}`, { id })
     }
   }
 

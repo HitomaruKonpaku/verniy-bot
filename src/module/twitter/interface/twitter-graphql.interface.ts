@@ -33,8 +33,11 @@ export interface AudioSpaceMetadata {
 
   total_participated?: number
   total_participating?: number
-  total_replay_watched?: number
   total_live_listeners?: number
+  total_replay_watched?: number
+
+  tickets_sold?: number
+  tickets_total?: number
 
   creator_results: {
     result: {
