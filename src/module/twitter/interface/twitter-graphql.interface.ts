@@ -3,25 +3,39 @@
 import { AudioSpaceMetadataState } from '../enum/twitter-graphql.enum'
 
 export interface AudioSpaceMetadata {
-  rest_id: string
+  rest_id?: string
+  broadcast_id?: string
+
   state: AudioSpaceMetadataState
   title?: string
+  language?: string
+
   media_key?: string
+
   created_at?: number
+  updated_at?: number
   scheduled_start?: number
   started_at?: number
-  ended_at?: string
-  updated_at?: number
-  disallow_join?: boolean
+  start?: number
+  ended_at?: number | string
+
   narrow_cast_space_type?: number
+  conversation_controls?: number
+
+  disallow_join?: boolean
   is_employee_only?: boolean
+  is_muted?: boolean
   is_locked?: boolean
   is_space_available_for_replay?: boolean
   is_space_available_for_clipping?: boolean
-  conversation_controls?: number
+  is_trending?: boolean
+  enable_server_audio_transcription?: boolean
+
   total_participated?: number
+  total_participating?: number
   total_replay_watched?: number
   total_live_listeners?: number
+
   creator_results: {
     result: {
       id: string
@@ -58,6 +72,7 @@ export interface AudioSpaceMetadata {
     }
     [key: string]: any
   }
+
   [key: string]: any
 }
 
@@ -94,8 +109,10 @@ export interface AudioSpaceParticipants {
 }
 
 export interface AudioSpace {
+  rest_id?: string
   metadata: AudioSpaceMetadata
-  is_subscribed?: boolean
   participants?: AudioSpaceParticipants
+  is_subscribed?: boolean
+  subscriber_count?: number
   sharings?: any
 }
