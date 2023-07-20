@@ -376,7 +376,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
     const queryId = 'kZ9wfR8EBtiP0As3sFFrBA'
     const operationName = 'AudioSpaceById'
     const url = this.parseUrl(queryId, operationName)
-    const headers = await this.getGuestHeaders()
+    const headers = await this.getGuestV2Headers()
     const res = await this.client.get(url, {
       headers,
       params: {
@@ -421,7 +421,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
     const queryId = 'Uv5R_-Chxbn1FEkyUkSW2w'
     const operationName = 'AudioSpaceById'
     const url = this.parseUrl(queryId, operationName)
-    const headers = await this.getGuestHeaders()
+    const headers = await this.getGuestV2Headers()
     const res = await this.client.get(url, {
       headers,
       params: {
