@@ -116,7 +116,7 @@ WHERE is_active = TRUE
     return spaces
   }
 
-  public async getManyForPlaylistActiveCheck() {
+  public async getManyForPlaylistCheck(options?: { limit?: number }) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('playlist_url NOTNULL')
@@ -125,16 +125,22 @@ WHERE is_active = TRUE
           .orWhere('playlist_active ISNULL')
           .orWhere('playlist_active = TRUE')
       }))
-      .andWhere(new Brackets((qb0) => {
-        qb0
-          .orWhere(new Brackets((qb1) => {
-            qb1
-              .andWhere(`DATETIME ('now', '-30 day') >= DATETIME (created_at / 1000, 'unixepoch')`)
-              .andWhere(`DATETIME ('now', '-35 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
-          }))
-          .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
-      }))
+      // .andWhere(new Brackets((qb0) => {
+      //   qb0
+      //     .orWhere(new Brackets((qb1) => {
+      //       qb1
+      //         .andWhere(`DATETIME ('now', '-30 day') >= DATETIME (created_at / 1000, 'unixepoch')`)
+      //         .andWhere(`DATETIME ('now', '-35 day') <= DATETIME (created_at / 1000, 'unixepoch')`)
+      //     }))
+      //     .orWhere(`strftime ('%w', DATETIME ('now')) = strftime ('%w', DATETIME (created_at / 1000, 'unixepoch'))`)
+      // }))
+      .addOrderBy('playlist_updated_at', 'ASC', 'NULLS FIRST')
       .addOrderBy('created_at')
+
+    if (Number.isSafeInteger(options?.limit)) {
+      query.limit(options.limit)
+    }
+
     const spaces = await query.getMany()
     return spaces
   }
@@ -186,5 +192,12 @@ ORDER BY CAST(su.id AS NUMBER)
       { playlistUrl },
     )
     return result
+  }
+
+  public async updatePlaylistInfo(id: string, playlistUrl: string, playlistActive: boolean) {
+    await this.repository.update(
+      { id, playlistUrl },
+      { playlistActive, playlistUpdatedAt: Date.now() },
+    )
   }
 }

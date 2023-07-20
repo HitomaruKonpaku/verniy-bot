@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
+import axios from 'axios'
 import { SpaceV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
@@ -183,5 +184,33 @@ export class TwitterSpaceControllerService {
     const userIds = await this.twitterSpaceService.getUnknownUserIds()
     const result = await Promise.allSettled(userIds.map((userId) => this.twitterUserControllerService.getUserByRestId(userId)))
     return result
+  }
+
+  public async checkPlaylistStatus(id: string, playlistUrl: string) {
+    if (!id || !playlistUrl) {
+      return
+    }
+    try {
+      await axios.head(playlistUrl)
+      await this.updatePlaylistStatus(id, playlistUrl, true)
+    } catch (error) {
+      if ([400, 401, 404].includes(error.response?.status)) {
+        await this.updatePlaylistStatus(id, playlistUrl, false)
+        return
+      }
+      this.logger.error(`checkPlaylist: ${error.message}`, { id })
+    }
+  }
+
+  public async updatePlaylistStatus(id: string, playlistUrl: string, playlistActive: boolean) {
+    if (!id || !playlistUrl) {
+      return
+    }
+    try {
+      await this.twitterSpaceService.updatePlaylistInfo(id, playlistUrl, playlistActive)
+      this.logger.debug('updatePlaylistStatus', { id, active: playlistActive })
+    } catch (error) {
+      this.logger.error(`updatePlaylistStatus: ${error.message}`, { id })
+    }
   }
 }

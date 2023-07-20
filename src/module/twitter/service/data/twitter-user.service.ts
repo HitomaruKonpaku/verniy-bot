@@ -56,7 +56,7 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
     return user
   }
 
-  public async getManyForCheck() {
+  public async getManyForCheck(options?: { limit?: number }) {
     const query = this.repository
       .createQueryBuilder('u')
       .leftJoin(
@@ -67,7 +67,11 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
       )
       .andWhere('t.user_id ISNULL')
       .addOrderBy('u.updated_at', 'ASC')
-      .limit(10)
+
+    if (Number.isSafeInteger(options?.limit)) {
+      query.limit(options.limit)
+    }
+
     const users = await query.getMany()
     return users
   }

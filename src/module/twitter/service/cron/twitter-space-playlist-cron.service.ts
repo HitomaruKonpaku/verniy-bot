@@ -7,13 +7,13 @@ import { TwitterSpaceControllerService } from '../controller/twitter-space-contr
 import { TwitterSpaceService } from '../data/twitter-space.service'
 
 @Injectable()
-export class TwitterSpaceCronService extends BaseCronService {
-  protected readonly logger = baseLogger.child({ context: TwitterSpaceCronService.name })
+export class TwitterSpacePlaylistCronService extends BaseCronService {
+  protected readonly logger = baseLogger.child({ context: TwitterSpacePlaylistCronService.name })
 
-  protected cronTime = '30 */1 * * * *'
+  protected cronTime = '0 */1 * * * *'
   // protected cronRunOnInit = true
 
-  private maxConcurrent = 1
+  private maxConcurrent = 5
   private limit = 20
 
   constructor(
@@ -31,9 +31,7 @@ export class TwitterSpaceCronService extends BaseCronService {
   }
 
   private async getSpaces() {
-    const liveIds = await this.twitterSpaceService.getLiveSpaceIds()
-    const limit = Math.max(0, this.limit - liveIds.length)
-    const spaces = await this.twitterSpaceService.getManyForActiveCheck({ limit })
+    const spaces = await this.twitterSpaceService.getManyForPlaylistCheck({ limit: this.limit })
     return spaces
   }
 
@@ -50,9 +48,9 @@ export class TwitterSpaceCronService extends BaseCronService {
 
   private async checkSpace(space: TwitterSpace) {
     try {
-      await this.twitterSpaceControllerService.getOneById(
+      await this.twitterSpaceControllerService.checkPlaylistStatus(
         space.id,
-        { skipAudioSpaceLegacy: true },
+        space.playlistUrl,
       )
     } catch (error) {
       this.logger.error(`checkSpace: ${error.message}`, { id: space.id })
