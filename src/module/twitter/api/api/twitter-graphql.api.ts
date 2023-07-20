@@ -442,6 +442,39 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
     return res
   }
 
+  public async AudioSpaceByRestId(id: string) {
+    const queryId = 'N80MQ7fkrpuq1-kCWVSvzQ'
+    const operationName = 'AudiospaceByRestId'
+    const url = this.parseUrl(queryId, operationName)
+    const headers = await this.getGuestV2Headers()
+    const res = await this.client.get(url, {
+      headers,
+      params: {
+        variables: {
+          audio_space_id: id,
+        },
+        features: {
+          super_follow_tweet_api_enabled: false,
+          tweetypie_unmention_optimization_enabled: false,
+          creator_subscriptions_tweet_preview_api_enabled: false,
+          android_graphql_skip_api_media_color_palette: false,
+          subscriptions_verification_info_enabled: false,
+          freedom_of_speech_not_reach_fetch_enabled: false,
+          longform_notetweets_consumption_enabled: false,
+          tweet_with_visibility_results_prefer_gql_limited_actions_policy_enabled: false,
+          longform_notetweets_rich_text_read_enabled: false,
+          super_follow_exclusive_tweet_notifications_enabled: false,
+          super_follow_user_api_enabled: false,
+          blue_business_profile_image_shape_enabled: false,
+          creator_subscriptions_subscription_count_enabled: false,
+          longform_notetweets_inline_media_enabled: false,
+          super_follow_badge_privacy_enabled: false,
+        },
+      },
+    })
+    return res
+  }
+
   // #endregion
 
   // #region Helper
