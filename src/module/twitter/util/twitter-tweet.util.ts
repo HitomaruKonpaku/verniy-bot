@@ -3,8 +3,17 @@
 import { Content, Instruction, Result } from '../interface/twitter-tweet.interface'
 
 export class TwitterTweetUtil {
+  public static parseUserTweets(data: any): Result[] {
+    const instructions: Instruction[] = data?.user?.result?.timeline_v2?.timeline?.instructions || []
+    const results = instructions
+      .map((v) => TwitterTweetUtil.parseInstruction(v))
+      .flat()
+      .filter((v) => v)
+    return results
+  }
+
   public static parseUserWithProfileTweets(data: any): Result[] {
-    const instructions: Instruction[] = data?.user_result?.result?.timeline_response?.timeline.instructions || []
+    const instructions: Instruction[] = data?.user_result?.result?.timeline_response?.timeline?.instructions || []
     const results = instructions
       .map((v) => TwitterTweetUtil.parseInstruction(v))
       .flat()
@@ -13,7 +22,7 @@ export class TwitterTweetUtil {
   }
 
   public static parseInstruction(instruction: Instruction) {
-    const type = instruction.__typename
+    const type = instruction.__typename || instruction.type
     switch (type) {
       case 'TimelinePinEntry':
         return TwitterTweetUtil.parseTimelinePinEntryInstruction(instruction)
@@ -54,12 +63,12 @@ export class TwitterTweetUtil {
   }
 
   public static parseTimelineTimelineItem(content: Content): Result {
-    const result = content.content?.tweetResult?.result
+    const result = content.itemContent?.tweet_results?.result || content.content?.tweetResult?.result
     return result
   }
 
   public static parseTimelineTimelineModule(content: Content): Result[] {
-    const results = content.items?.map?.((v) => v.item?.content?.tweetResult?.result)
+    const results = content.items?.map?.((v) => v.item?.itemContent?.tweet_results?.result || v.item?.content?.tweetResult?.result)
     return results
   }
 }
