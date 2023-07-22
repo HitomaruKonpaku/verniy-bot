@@ -117,7 +117,7 @@ export class TwitterTweetTrackingService extends EventEmitter {
 
       trackItems.forEach((trackItem) => {
         const lines = [
-          trackItem.discordMessage,
+          // trackItem.discordMessage,
           content,
         ]
         const channelContent = lines
