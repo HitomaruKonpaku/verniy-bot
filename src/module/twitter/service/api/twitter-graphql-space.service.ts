@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import { baseLogger } from '../../../../logger'
+import { AudioSpace } from '../../api/interface/twitter-graphql.interface'
 import { AvatarContent, Fleetline } from '../../interface/twitter-fleet.interface'
-import { AudioSpace } from '../../interface/twitter-graphql.interface'
 import { Status } from '../../interface/twitter-live-video-stream.interface'
 import { TwitterSpaceUtil } from '../../util/twitter-space.util'
 import { TwitterPublicApiService } from './twitter-public-api.service'

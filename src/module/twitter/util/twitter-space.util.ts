@@ -1,7 +1,7 @@
 import { APIEmbed, APIEmbedField } from 'discord-api-types/v10'
 import { codeBlock, inlineCode, time } from 'discord.js'
 import { TrackTwitterSpace } from '../../track/model/track-twitter-space.entity'
-import { AudioSpaceMetadataState } from '../enum/twitter-graphql.enum'
+import { AudioSpaceMetadataState } from '../api/enum/twitter-graphql.enum'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { TwitterSpace } from '../model/twitter-space.entity'
 import { TwitterUtil } from './twitter.util'
