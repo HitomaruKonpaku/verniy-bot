@@ -180,6 +180,7 @@ export class TwitterSpaceControllerService {
         totalLiveListeners: metadata.total_live_listeners,
         totalReplayWatched: metadata.total_replay_watched,
         narrowCastSpaceType: metadata.narrow_cast_space_type,
+        subscriberCount: audioSpace.subscriber_count,
         ticketsSold: metadata.tickets_sold,
         ticketsTotal: metadata.tickets_total,
       })
