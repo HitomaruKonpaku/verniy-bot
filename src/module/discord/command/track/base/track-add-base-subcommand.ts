@@ -36,7 +36,8 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
         return
       }
 
-      if (!this.isUserTrackable(user)) {
+      const canTrack = await this.isUserTrackable(user)
+      if (!canTrack) {
         if (!await this.isAppOwner(interaction)) {
           this.logger.warn('execute: user untrackable', meta)
           await interaction.editReply(this.getUntrackableMessage(user))
@@ -77,7 +78,7 @@ export abstract class TrackAddBaseSubcommand extends BaseCommand {
     await interaction.editReply({ embeds: [embed] })
   }
 
-  protected isUserTrackable(user: BaseExternalEntity): boolean | Promise<boolean> {
+  protected async isUserTrackable(user: BaseExternalEntity): Promise<boolean> {
     return true
   }
 

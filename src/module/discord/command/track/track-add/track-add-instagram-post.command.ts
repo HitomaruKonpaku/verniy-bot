@@ -45,7 +45,7 @@ export class TrackAddInstagramPostCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  protected isUserTrackable(user: InstagramUser): boolean {
+  protected async isUserTrackable(user: InstagramUser): Promise<boolean> {
     return !user.isPrivate
   }
 

@@ -40,8 +40,9 @@ export class TrackAddTwitterProfileCommand extends TrackAddBaseSubcommand {
     return user
   }
 
-  protected isUserTrackable(): boolean | Promise<boolean> {
-    return false
+  protected async isUserTrackable(user: TwitterUser): Promise<boolean> {
+    const canTrack = await this.trackService.existUserId(user.id)
+    return canTrack
   }
 
   protected getUntrackableMessage(): string {
