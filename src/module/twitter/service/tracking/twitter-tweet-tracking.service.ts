@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
+import { hideLinkEmbed } from 'discord.js'
 import { EventEmitter } from 'events'
 
 import { baseLogger } from '../../../../logger'
@@ -103,13 +104,19 @@ export class TwitterTweetTrackingService extends EventEmitter {
           const origTweetUrl = tweet.inReplyToUser
             ? TwitterUtil.getTweetUrl(tweet.inReplyToUser.username, tweet.inReplyToStatusId)
             : TwitterUtil.getTweetUrlById(tweet.inReplyToStatusId)
-          content = [origTweetUrl, `${icon} ${tweetUrl}`].join('\n')
+          content = [
+            origTweetUrl,
+            `${icon} ${tweetUrl}`,
+          ].join('\n')
         } else if (tweet.retweetedStatusId) {
           const icon = '🔁'
           const origTweetUrl = tweet.retweetedStatus
             ? TwitterUtil.getTweetUrlByTweet(tweet.retweetedStatus)
             : TwitterUtil.getTweetUrlById(tweet.retweetedStatusId)
-          content = [origTweetUrl, `${icon} ${tweetUrl}`].join('\n')
+          content = [
+            hideLinkEmbed(origTweetUrl),
+            `${icon} ${tweetUrl}`,
+          ].join('\n')
         }
       } catch (error) {
         this.logger.error(`broadcastTweet: Parsing tweet error: ${error.message}`, { tweet })
