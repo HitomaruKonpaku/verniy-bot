@@ -6,7 +6,7 @@ import { ArrayUtil } from '../../../../util/array.util'
 import { AudioSpaceMetadataState } from '../../api/enum/twitter-graphql.enum'
 import { AudioSpace } from '../../api/interface/twitter-graphql.interface'
 import { TWITTER_API_LIST_SIZE } from '../../constant/twitter.constant'
-import { TwitterSaveAudioSpaceLegacyOption, TwitterSaveAudioSpaceOption } from '../../interface/twitter-option.interface'
+import { TwitterSaveAudioSpaceOption } from '../../interface/twitter-option.interface'
 import { twitterAudioSpaceLimiter } from '../../twitter.limiter'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterApiService } from '../api/twitter-api.service'
@@ -118,11 +118,7 @@ export class TwitterSpaceControllerService {
 
   public async saveAudioSpace(id: string, options?: TwitterSaveAudioSpaceOption) {
     const limiter = twitterAudioSpaceLimiter
-    const priority = Math.max(0, Math.min(options?.priority || 5, 9))
-    const audioSpace = await limiter.schedule(
-      { priority },
-      () => this.twitterGraphqlSpaceService.getAudioSpaceByRestId(id),
-    )
+    const audioSpace = await limiter.schedule(() => this.twitterGraphqlSpaceService.getAudioSpaceByRestId(id))
     this.logger.debug('saveAudioSpace', { id, audioSpace })
 
     const { metadata } = audioSpace
@@ -140,52 +136,18 @@ export class TwitterSpaceControllerService {
       await this.saveAudioSpacePlaylist(id, audioSpace)
     }
 
-    // if (!options?.skipAudioSpaceLegacy) {
-    //   if ([AudioSpaceMetadataState.ENDED, AudioSpaceMetadataState.TIMED_OUT].includes(metadata.state)) {
-    //     await this.saveAudioSpaceLegacy(id, { priority: priority - 1 })
-    //   }
-    // }
-
-    // await this.saveAudioSpaceByRestId(id)
+    await this.saveAudioSpaceById(id)
   }
 
-  public async saveAudioSpaceLegacy(id: string, options?: TwitterSaveAudioSpaceLegacyOption) {
+  public async saveAudioSpaceById(id: string) {
     try {
-      const limiter = twitterAudioSpaceLimiter
-      const priority = Math.max(0, Math.min(options?.priority || 5, 9))
-      const audioSpace = await limiter.schedule(
-        { priority },
-        () => this.twitterGraphqlSpaceService.getAudioSpaceByIdLegacy(id),
-      )
-      this.logger.debug('saveAudioSpaceLegacy', { id, audioSpace })
-
-      const { metadata } = audioSpace
-      await this.twitterSpaceService.updateFields(id, { participantCount: metadata.total_participated })
-    } catch (error) {
-      this.logger.error(`saveAudioSpaceLegacy: ${error.message}`, { id })
-    }
-  }
-
-  public async saveAudioSpaceByRestId(id: string) {
-    try {
-      const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceByRestId(id)
-      this.logger.debug('saveAudioSpaceByRestId', { id, audioSpace })
-
+      const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceById(id)
       const { metadata } = audioSpace
       await this.twitterSpaceService.updateFields(id, {
-        modifiedAt: Date.now(),
-        lang: metadata.language,
-        title: metadata.title,
-        participantCount: metadata.total_participated,
-        totalLiveListeners: metadata.total_live_listeners,
-        totalReplayWatched: metadata.total_replay_watched,
-        narrowCastSpaceType: metadata.narrow_cast_space_type,
-        subscriberCount: audioSpace.subscriber_count,
-        ticketsSold: metadata.tickets_sold,
-        ticketsTotal: metadata.tickets_total,
+        updatedAt: metadata.updated_at,
       })
     } catch (error) {
-      this.logger.error(`saveAudioSpaceByRestId: ${error.message}`, { id })
+      this.logger.error(`saveAudioSpaceById: ${error.message}`, { id })
     }
   }
 
