@@ -67,7 +67,8 @@ export class TwitterGraphqlSpaceService extends TwitterPublicApiService {
       audioSpace = await this.getAudioSpaceById(spaceId)
       this.logger.info('getSpacePlaylistUrl#audioSpace', { spaceId, audioSpace })
     }
-    if (spaceId !== audioSpace.metadata.rest_id) {
+    const audioSpaceRestId = audioSpace.rest_id || audioSpace.metadata.rest_id
+    if (spaceId !== audioSpaceRestId) {
       throw new Error('Space id not match')
     }
     const liveVideoStreamStatus = await this.getLiveVideoStreamStatus(audioSpace.metadata.media_key)
