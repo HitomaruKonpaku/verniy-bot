@@ -121,7 +121,7 @@ export class TwitterSpaceControllerService {
     const priority = Math.max(0, Math.min(options?.priority || 5, 9))
     const audioSpace = await limiter.schedule(
       { priority },
-      () => this.twitterGraphqlSpaceService.getAudioSpaceById(id),
+      () => this.twitterGraphqlSpaceService.getAudioSpaceByRestId(id),
     )
     this.logger.debug('saveAudioSpace', { id, audioSpace })
 
@@ -140,13 +140,13 @@ export class TwitterSpaceControllerService {
       await this.saveAudioSpacePlaylist(id, audioSpace)
     }
 
-    if (!options?.skipAudioSpaceLegacy) {
-      if ([AudioSpaceMetadataState.ENDED, AudioSpaceMetadataState.TIMED_OUT].includes(metadata.state)) {
-        await this.saveAudioSpaceLegacy(id, { priority: priority - 1 })
-      }
-    }
+    // if (!options?.skipAudioSpaceLegacy) {
+    //   if ([AudioSpaceMetadataState.ENDED, AudioSpaceMetadataState.TIMED_OUT].includes(metadata.state)) {
+    //     await this.saveAudioSpaceLegacy(id, { priority: priority - 1 })
+    //   }
+    // }
 
-    await this.saveAudioSpaceByRestId(id)
+    // await this.saveAudioSpaceByRestId(id)
   }
 
   public async saveAudioSpaceLegacy(id: string, options?: TwitterSaveAudioSpaceLegacyOption) {

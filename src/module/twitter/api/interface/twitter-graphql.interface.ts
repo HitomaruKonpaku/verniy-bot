@@ -85,6 +85,7 @@ export interface AudioSpaceParticipantUser {
 
 export interface AudioSpaceParticipantUserResults extends AudioSpaceParticipantUser {
   result: {
+    rest_id?: string
     has_nft_avatar?: boolean
     is_blue_verified?: boolean
   }
