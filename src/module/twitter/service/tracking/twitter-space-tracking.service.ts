@@ -60,6 +60,7 @@ export class TwitterSpaceTrackingService {
     try {
       const spaceIds = await this.twitterSpaceService.getLiveSpaceIds()
       if (spaceIds.length) {
+        this.logger.debug('checkLiveSpaces', { count: spaceIds.length, ids: spaceIds })
         // const chunks = ArrayUtil.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)
         // await Promise.allSettled(chunks.map((v) => this.getSpacesByIds(v)))
         await Promise.allSettled(spaceIds.map((id) => this.getSpaceById(id)))
