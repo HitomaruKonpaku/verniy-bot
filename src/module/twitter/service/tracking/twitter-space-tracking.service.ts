@@ -83,7 +83,7 @@ export class TwitterSpaceTrackingService {
       if (userIds.length) {
         this.logger.debug('checkNewSpacesByAvatarContent', { userCount: userIds.length })
         const spaceIds = await this.getSpacesByAvatarContent(userIds)
-        this.logger.debug('checkNewSpacesByAvatarContent', { spaceCount: spaceIds.length, ids: spaceIds })
+        this.logger.debug('checkNewSpacesByAvatarContent', { count: spaceIds.length, ids: spaceIds })
         await this.getNewSpaces(spaceIds)
       }
     } catch (error) {
@@ -101,7 +101,7 @@ export class TwitterSpaceTrackingService {
 
     try {
       const spaceIds = await this.getSpacesByFleetline()
-      this.logger.debug('checkNewSpacesByFleetline', { idCount: spaceIds.length, ids: spaceIds })
+      this.logger.debug('checkNewSpacesByFleetline', { count: spaceIds.length, ids: spaceIds })
       await this.getNewSpaces(spaceIds)
     } catch (error) {
       this.logger.error(`checkNewSpacesByFleetline: ${error.message}`)
