@@ -120,13 +120,14 @@ export class TwitterSpaceTrackingService {
       return
     }
 
-    this.logger.debug('getNewSpaces', { curSpaceIds })
+    this.logger.debug('getNewSpaces', { count: curSpaceIds.length, ids: curSpaceIds })
     const spaces = await this.twitterSpaceService.getManyByIds(curSpaceIds)
     const newSpaceIds = curSpaceIds.filter((id) => !spaces.some((space) => space.id === id))
     if (!newSpaceIds?.length) {
       return
     }
 
+    this.logger.info('getNewSpaces', { count: newSpaceIds.length, ids: newSpaceIds })
     await Promise.allSettled(newSpaceIds.map((id) => this.getSpaceById(id)))
   }
 
