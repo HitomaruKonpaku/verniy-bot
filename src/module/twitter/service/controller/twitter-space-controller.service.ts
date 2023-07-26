@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 import axios from 'axios'
+import Bottleneck from 'bottleneck'
 import { SpaceV2 } from 'twitter-api-v2'
+
 import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
 import { AudioSpaceMetadataState } from '../../api/enum/twitter-graphql.enum'
@@ -35,6 +37,8 @@ export class TwitterSpaceControllerService {
     space = await this.twitterSpaceService.getOneById(id)
     return space
   }
+
+  // #region api v2
 
   public async getOneByIdV2(id: string, refresh = false) {
     let space = !refresh
@@ -116,38 +120,64 @@ export class TwitterSpaceControllerService {
     return spaces
   }
 
+  // #endregion
+
+  // #region audio space
+
+  public async getAudioSpaceById(id: string) {
+    try {
+      const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceById(id)
+      return audioSpace
+    } catch (error) {
+      this.logger.error(`getAudioSpaceById: ${error.message}`, { id })
+    }
+    return null
+  }
+
+  public async getAudioSpaceByRestId(id: string) {
+    try {
+      const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceByRestId(id)
+      return audioSpace
+    } catch (error) {
+      this.logger.error(`getAudioSpaceByRestId: ${error.message}`, { id })
+    }
+    return null
+  }
+
   public async saveAudioSpace(id: string, options?: TwitterSaveAudioSpaceOption) {
     const limiter = twitterAudioSpaceLimiter
-    const audioSpace = await limiter.schedule(() => this.twitterGraphqlSpaceService.getAudioSpaceByRestId(id))
-    this.logger.debug('saveAudioSpace', { id, audioSpace })
+    const audioSpaces = await limiter.schedule(
+      { priority: options?.priority },
+      () => Promise.all([
+        this.getAudioSpaceById(id),
+        this.getAudioSpaceByRestId(id),
+      ]),
+    )
 
-    const { metadata } = audioSpace
-    if (!metadata) {
-      await this.twitterSpaceService.updateFields(id, { isActive: false, modifiedAt: Date.now() })
+    const hasMetadata = audioSpaces.some((v) => v?.metadata)
+    if (!hasMetadata) {
+      await this.twitterSpaceService.updateFields(id, {
+        isActive: false,
+        modifiedAt: Date.now(),
+      })
       return
     }
 
-    await this.twitterSpaceService.save(TwitterEntityUtil.buildSpaceByAudioSpace(audioSpace))
+    const spaces = audioSpaces
+      .filter((v) => v?.metadata)
+      .map((v) => TwitterEntityUtil.buildSpaceByAudioSpace(v))
+    if (spaces.length) {
+      const dbLimiter = new Bottleneck({ maxConcurrent: 1 })
+      await Promise.allSettled(spaces.map((v) => dbLimiter.schedule(() => this.twitterSpaceService.save(v))))
+    }
 
+    const audioSpace = audioSpaces[0]
+    const { metadata } = audioSpace
     const canGetPlaylistUrl = !options?.skipPlaylistUrl
       && metadata.state !== AudioSpaceMetadataState.CANCELED
       && (metadata.state === AudioSpaceMetadataState.RUNNING || metadata.is_space_available_for_replay)
     if (canGetPlaylistUrl) {
       await this.saveAudioSpacePlaylist(id, audioSpace)
-    }
-
-    await this.saveAudioSpaceById(id)
-  }
-
-  public async saveAudioSpaceById(id: string) {
-    try {
-      const audioSpace = await this.twitterGraphqlSpaceService.getAudioSpaceById(id)
-      const { metadata } = audioSpace
-      await this.twitterSpaceService.updateFields(id, {
-        updatedAt: metadata.updated_at,
-      })
-    } catch (error) {
-      this.logger.error(`saveAudioSpaceById: ${error.message}`, { id })
     }
   }
 
@@ -167,11 +197,9 @@ export class TwitterSpaceControllerService {
     }
   }
 
-  public async saveUnknownParticipants() {
-    const userIds = await this.twitterSpaceService.getUnknownUserIds()
-    const result = await Promise.allSettled(userIds.map((userId) => this.twitterUserControllerService.getUserByRestId(userId)))
-    return result
-  }
+  // #endregion
+
+  // #region playlist
 
   public async checkPlaylistStatus(id: string, playlistUrl: string) {
     if (!id || !playlistUrl) {
@@ -185,7 +213,7 @@ export class TwitterSpaceControllerService {
         await this.updatePlaylistStatus(id, playlistUrl, false)
         return
       }
-      this.logger.error(`checkPlaylist: ${error.message}`, { id })
+      this.logger.error(`checkPlaylistStatus: ${error.message}`, { id })
     }
   }
 
@@ -200,4 +228,16 @@ export class TwitterSpaceControllerService {
       this.logger.error(`updatePlaylistStatus: ${error.message}`, { id })
     }
   }
+
+  // #endregion
+
+  // #region participant
+
+  public async saveUnknownParticipants() {
+    const userIds = await this.twitterSpaceService.getUnknownUserIds()
+    const result = await Promise.allSettled(userIds.map((userId) => this.twitterUserControllerService.getUserByRestId(userId)))
+    return result
+  }
+
+  // #endregion
 }

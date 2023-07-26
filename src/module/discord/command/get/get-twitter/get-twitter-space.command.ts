@@ -42,7 +42,7 @@ export class GetTwitterSpaceCommand extends BaseCommand {
       : await this.twitterSpaceService.getRawOneById(id)
 
     if (!rawSpace) {
-      await this.twitterSpaceControllerService.getOneById(id)
+      await this.twitterSpaceControllerService.getOneById(id, { priority: 0 })
       rawSpace = await this.twitterSpaceService.getRawOneById(id)
     }
 

@@ -50,10 +50,7 @@ export class TwitterSpaceCronService extends BaseCronService {
 
   private async checkSpace(space: TwitterSpace) {
     try {
-      await this.twitterSpaceControllerService.getOneById(
-        space.id,
-        { skipAudioSpaceLegacy: true },
-      )
+      await this.twitterSpaceControllerService.getOneById(space.id, { priority: 9 })
     } catch (error) {
       this.logger.error(`checkSpace: ${error.message}`, { id: space.id })
     }
