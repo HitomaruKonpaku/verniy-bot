@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
+import { TwitterSpace } from '../../../../twitter/model/twitter-space.entity'
 import { TwitterSpaceControllerService } from '../../../../twitter/service/controller/twitter-space-controller.service'
 import { TwitterSpaceService } from '../../../../twitter/service/data/twitter-space.service'
 import { TwitterSpaceUtil } from '../../../../twitter/util/twitter-space.util'
@@ -30,6 +31,13 @@ export class GetTwitterSpaceCommand extends BaseCommand {
       .addBooleanOption((option) => option
         .setName('refresh')
         .setDescription('Refresh?'))
+      .addStringOption((option) => option
+        .setName('type')
+        .setDescription('Type')
+        .addChoices(
+          { name: 'raw', value: 'raw' },
+          { name: 'embed', value: 'embed' },
+        ))
   }
 
   public async execute(interaction: ChatInputCommandInteraction) {
@@ -37,15 +45,24 @@ export class GetTwitterSpaceCommand extends BaseCommand {
 
     const id = TwitterSpaceUtil.parseId(interaction.options.getString('id', true))
     const refresh = interaction.options.getBoolean('refresh')
-    let rawSpace = refresh
-      ? null
-      : await this.twitterSpaceService.getRawOneById(id)
+    const type = interaction.options.getString('type') || 'raw'
 
-    if (!rawSpace) {
+    let space: TwitterSpace = null
+    if (!refresh) {
+      space = await this.twitterSpaceService.getOneById(id, { withCreator: true })
+    }
+    if (!space) {
       await this.twitterSpaceControllerService.getOneById(id, { priority: 0 })
-      rawSpace = await this.twitterSpaceService.getRawOneById(id)
+      space = await this.twitterSpaceService.getOneById(id, { withCreator: true })
     }
 
+    if (type === 'embed') {
+      const embed = TwitterSpaceUtil.getEmbed(space)
+      await interaction.editReply({ embeds: [embed] })
+      return
+    }
+
+    const rawSpace = await this.twitterSpaceService.getRawOneById(id)
     await this.replyObject(interaction, rawSpace)
   }
 }

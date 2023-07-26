@@ -55,7 +55,7 @@ export class TwitterSpaceUtil {
     return [...set]
   }
 
-  public static getEmbed(space: TwitterSpace, trackItem: TrackTwitterSpace) {
+  public static getEmbed(space: TwitterSpace, trackItem?: TrackTwitterSpace) {
     const creator = space?.creator
     const embed: APIEmbed = {
       title: TwitterSpaceUtil.getEmbedTitle(space, trackItem),
@@ -75,26 +75,26 @@ export class TwitterSpaceUtil {
     return embed
   }
 
-  public static getEmbedTitle(space: TwitterSpace, track: TrackTwitterSpace) {
+  public static getEmbedTitle(space: TwitterSpace, track?: TrackTwitterSpace) {
     const trackUser = [space.creator, space.hosts || [], space.speakers || []]
       .flat()
-      .find((user) => user.id === track.userId)
+      .find((user) => user.id === track?.userId)
     const displayCreator = inlineCode(space.creator?.username || space.creatorId)
-    const displayGuest = inlineCode(trackUser?.username || track.userId)
+    const displayGuest = inlineCode(trackUser?.username || track?.userId)
 
     if (space.state === SpaceState.SCHEDULED) {
       return `${displayCreator} scheduled a Space`
     }
 
     if (space.state === SpaceState.ENDED) {
-      if (space.creatorId !== track.userId) {
+      if (track && space.creatorId !== track.userId) {
         return `${displayCreator} ended a Space | Guest: ${displayGuest}`
       }
       return `${displayCreator} ended a Space`
     }
 
     // SpaceState.LIVE
-    if (space.creatorId !== track.userId) {
+    if (track && space.creatorId !== track.userId) {
       if (space.hostIds?.includes?.(track.userId)) {
         return `${displayGuest} is co-hosting ${displayCreator}'s Space`
       }
