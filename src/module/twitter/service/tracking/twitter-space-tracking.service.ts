@@ -46,8 +46,8 @@ export class TwitterSpaceTrackingService {
 
   public async start() {
     this.logger.info('Starting...')
+    await this.checkNewSpacesByFleetline()
     await this.checkNewSpacesByAvatarContent()
-    setTimeout(() => this.checkNewSpacesByFleetline(), this.newSpacesCheckInterval / 2)
     await this.checkLiveSpaces()
   }
 
