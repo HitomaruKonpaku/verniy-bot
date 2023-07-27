@@ -14,7 +14,7 @@ export class TwitterUserCronService extends BaseCronService {
   // protected cronRunOnInit = true
 
   private maxConcurrent = 1
-  private limit = 10
+  private limit = 20
 
   constructor(
     @Inject(TwitterUserService)
