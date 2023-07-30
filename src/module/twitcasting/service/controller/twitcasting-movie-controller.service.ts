@@ -21,9 +21,19 @@ export class TwitCastingMovieControllerService {
   ) { }
 
   public async getOneAndSaveById(id: string) {
-    const response = await this.twitCastingApiService.getMovieById(id)
-    const movie = await this.saveMovieInfo(response)
-    return movie
+    try {
+      const response = await this.twitCastingApiService.getMovieById(id)
+      const movie = await this.saveMovieInfo(response)
+      return movie
+    } catch (error) {
+      if (error.response?.status === 404) {
+        await this.twitCastingMovieService.updateFields(id, {
+          isActive: false,
+          updatedAt: Date.now(),
+        })
+      }
+      throw error
+    }
   }
 
   public async getMoviesByUserIds(id: string) {
@@ -60,13 +70,15 @@ export class TwitCastingMovieControllerService {
     return movie
   }
 
-  public async saveDraft(id: string, createdAt: number, userId: string) {
+  public async saveDraft(id: string, data: Partial<TwitCastingMovie>) {
     const movie: TwitCastingMovie = {
       id,
       isActive: true,
-      createdAt,
-      userId,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      userId: '',
       isLive: true,
+      ...data,
     }
     await this.twitCastingMovieService.save(movie)
     return movie
@@ -77,6 +89,7 @@ export class TwitCastingMovieControllerService {
       id: data.id,
       isActive: true,
       createdAt: data.created,
+      updatedAt: Date.now(),
       userId: data.user_id,
       isLive: data.is_live,
       isRecorded: data.is_recorded,

@@ -167,6 +167,10 @@ export class TwitCastingLiveTrackingService {
     const createdAt = Math.floor(Date.now() / 1000)
     const oldMovie = await this.twitCastingMovieService.getOneById(id)
     let newMovie: TwitCastingMovie
+    if (oldMovie?.isActive === false) {
+      return { oldMovie, newMovie }
+    }
+
     try {
       newMovie = await this.twitCastingMovieControllerService.getOneAndSaveById(id)
     } catch (error) {
@@ -178,7 +182,7 @@ export class TwitCastingLiveTrackingService {
         const user = await this.twitCastingUserService.getOneByIdOrScreenId(screenId)
         if (user) {
           this.logger.debug('getMovieData: Saving draft movie', { id, screenId })
-          newMovie = await this.twitCastingMovieControllerService.saveDraft(id, createdAt, user.id)
+          newMovie = await this.twitCastingMovieControllerService.saveDraft(id, { createdAt, userId: user.id })
           newMovie.user = user
           this.logger.warn('getMovieData: Using draft movie', { id, screenId })
         }

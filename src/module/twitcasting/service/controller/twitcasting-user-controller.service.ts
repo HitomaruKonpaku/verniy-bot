@@ -27,6 +27,7 @@ export class TwitCastingUserControllerService {
       id: data.id,
       isActive: true,
       createdAt: data.created,
+      updatedAt: Date.now(),
       screenId: data.screen_id,
       name: data.name,
       image: data.image,
