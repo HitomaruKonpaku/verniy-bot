@@ -2,6 +2,7 @@ import { Column, Entity } from 'typeorm'
 import { BaseExternalUserEntity } from '../../database/model/base-external-user.entity'
 import { YoutubePlaylistItem } from './youtube-playlist-item.entity'
 import { YoutubePlaylist } from './youtube-playlist.entity'
+import { YoutubePost } from './youtube-post.entity'
 import { YoutubeVideo } from './youtube-video.entity'
 
 @Entity('youtube_channel')
@@ -35,4 +36,6 @@ export class YoutubeChannel extends BaseExternalUserEntity {
   playlists?: YoutubePlaylist[]
 
   playlistItems?: YoutubePlaylistItem[]
+
+  posts?: YoutubePost[]
 }
