@@ -36,6 +36,7 @@ import { VtuberUser } from '../../vtuber/model/vtuber-user.entity'
 import { YoutubeChannel } from '../../youtube/model/youtube-channel.entity'
 import { YoutubePlaylistItem } from '../../youtube/model/youtube-playlist-item.entity'
 import { YoutubePlaylist } from '../../youtube/model/youtube-playlist.entity'
+import { YoutubePost } from '../../youtube/model/youtube-post.entity'
 import { YoutubeVideo } from '../../youtube/model/youtube-video.entity'
 
 export const DB_ENTITIES = [
@@ -56,6 +57,7 @@ export const DB_ENTITIES = [
   YoutubeVideo,
   YoutubePlaylist,
   YoutubePlaylistItem,
+  YoutubePost,
 
   TwitchUser,
   TwitchStream,
