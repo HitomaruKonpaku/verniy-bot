@@ -53,7 +53,7 @@ export class HolodexChannelControllerService {
       channels.push(...data)
       count = data.length
       offset += limit
-    } while (count)
+    } while (count === limit)
 
     return channels
   }
