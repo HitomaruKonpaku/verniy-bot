@@ -78,25 +78,27 @@ export class HolodexChannelControllerService {
   }
 
   public async fetchChannelAccounts(data: any) {
-    const channelId = data.id
+    const { id } = data
 
-    try {
-      await this.getChannelById(channelId)
-    } catch (error) {
-      // ignore
+    await Promise.allSettled([
+      this.getChannelById(id),
+      this.fetchChannelTwitter(id, data.twitter),
+    ])
+  }
+
+  public async fetchChannelTwitter(id: string, username: string) {
+    if (!username) {
+      return
     }
-
-    if (data.twitter) {
-      try {
-        const user = await this.twitterUserControllerService.getOneByScreenName(data.twitter, { fromDb: true })
-        await this.holodexChannelAccountService.add({
-          channelId,
-          accountType: 'twitter',
-          accountId: user.id,
-        })
-      } catch (error) {
-        this.logger.error(`fetchChannelAccounts#twitter: ${error.message}`, { channelId, twitter: data.twitter })
-      }
+    try {
+      const user = await this.twitterUserControllerService.getOneByScreenName(username, { fromDb: true })
+      await this.holodexChannelAccountService.add({
+        channelId: id,
+        accountType: 'twitter',
+        accountId: user.id,
+      })
+    } catch (error) {
+      this.logger.error(`fetchChannelTwitter: ${error.message}`, { id, username })
     }
   }
 }
