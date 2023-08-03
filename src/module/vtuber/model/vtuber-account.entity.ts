@@ -1,4 +1,4 @@
-import { Column, Entity, Unique } from 'typeorm'
+import { Column, Entity, Index, Unique } from 'typeorm'
 import { BaseExternalUserEntity } from '../../database/model/base-external-user.entity'
 import { VtuberUser } from './vtuber-user.entity'
 
@@ -8,6 +8,7 @@ export class VtuberAccount extends BaseExternalUserEntity {
   @Column({ name: 'user_id', type: 'text' })
   userId: string
 
+  @Index()
   @Column({ name: 'account_type', type: 'text' })
   accountType: string
 
