@@ -82,10 +82,6 @@ export class HolodexService {
   }
 
   private async notice(url: string) {
-    if (!this.holodexApiService.apiKey) {
-      return
-    }
-
     try {
       const { status, data } = await this.holodexApiService.notice(url)
       this.logger.info('notice', { url, status, data })

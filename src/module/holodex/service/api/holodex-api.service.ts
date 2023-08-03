@@ -11,26 +11,41 @@ export class HolodexApiService {
   private client: AxiosInstance
 
   constructor() {
-    if (!this.apiKey) {
-      this.logger.error('HOLODEX_API_KEY not found')
-    }
     this.initClient()
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  public get apiKey() {
-    return process.env.HOLODEX_API_KEY
+  public async notice(url: string) {
+    const res = await this.client.post('external/notice', { url })
+    return res
   }
 
-  public async notice(url: string) {
-    const response = await this.client.post('external/notice', { url })
-    return response
+  public async getChannels(params?: Record<string, any>) {
+    const url = 'channels'
+    const res = await this.client.get(url, { params })
+    return res
+  }
+
+  public async getChannelById(id: string) {
+    const url = `channels/${id}`
+    const res = await this.client.get(url)
+    return res
+  }
+
+  public async getVideoById(id: string) {
+    const url = `videos/${id}`
+    const res = await this.client.get(url)
+    return res
   }
 
   public initClient() {
+    const key = process.env.HOLODEX_API_KEY
+    if (!key) {
+      this.logger.error('HOLODEX_API_KEY not found')
+    }
+
     this.client = axios.create({
       baseURL: this.BASE_URL,
-      headers: { 'x-apikey': this.apiKey },
+      headers: { 'x-apikey': key },
     })
   }
 }
