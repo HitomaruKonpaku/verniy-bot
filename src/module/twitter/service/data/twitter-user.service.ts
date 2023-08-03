@@ -33,6 +33,7 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
       .createQueryBuilder()
       .andWhere('LOWER(username) = LOWER(:username)', { username })
       .addOrderBy('is_active', 'DESC')
+      .addOrderBy('created_at', 'DESC')
       .getOne()
     return user
   }

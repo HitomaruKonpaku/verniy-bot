@@ -140,7 +140,7 @@ export class TwitterSpaceTrackingService {
         [oldSpace?.hostIds || [], oldSpace?.speakerIds || []].flat(),
       )
 
-      await Promise.allSettled(userIds.map((v) => this.twitterUserControllerService.getUserByRestId(v)))
+      await Promise.allSettled(userIds.map((v) => this.twitterUserControllerService.getOneByRestId(v)))
       await this.notifySpace(newSpace, oldSpace)
 
       if (newSpace.state === SpaceState.ENDED) {

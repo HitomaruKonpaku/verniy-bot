@@ -65,7 +65,7 @@ export class TwitterProfileTrackingService {
   private async checkUserByGql(id: string) {
     try {
       const oldUser = await this.twitterUserService.getOneById(id)
-      const newUser = await this.twitterUserControllerService.getUserByRestId(id)
+      const newUser = await this.twitterUserControllerService.getOneByRestId(id)
       if (newUser) {
         await this.checkUserProfile(newUser, oldUser)
       } else {

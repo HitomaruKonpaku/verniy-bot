@@ -48,7 +48,7 @@ export class TwitterUserCronService extends BaseCronService {
 
   private async checkUser(user: TwitterUser) {
     try {
-      const newUser = await this.twitterUserControllerService.getUserByRestId(user.id)
+      const newUser = await this.twitterUserControllerService.getOneByRestId(user.id)
       if (newUser) {
         return
       }

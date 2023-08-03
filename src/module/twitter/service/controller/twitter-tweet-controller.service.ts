@@ -115,7 +115,7 @@ export class TwitterTweetControllerService {
     try {
       let user = await this.twitterUserService.getOneById(tweet.inReplyToUserId)
       if (!user) {
-        user = await this.twitterUserControllerService.getUserByRestId(tweet.inReplyToUserId)
+        user = await this.twitterUserControllerService.getOneByRestId(tweet.inReplyToUserId)
       }
       return user
     } catch (error) {

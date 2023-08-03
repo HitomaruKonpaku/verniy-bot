@@ -45,7 +45,7 @@ export class TrackAddTwitterTweetCommand extends TrackAddBaseSubcommand {
   }
 
   protected async getUser(username: string): Promise<TwitterUser> {
-    const user = await this.twitterUserControllerService.getUserByScreenName(TwitterUserUtil.parseUsername(username))
+    const user = await this.twitterUserControllerService.getOneByScreenName(TwitterUserUtil.parseUsername(username))
     return user
   }
 

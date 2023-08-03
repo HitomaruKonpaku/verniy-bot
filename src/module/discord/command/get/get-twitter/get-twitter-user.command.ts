@@ -56,8 +56,8 @@ export class GetTwitterUserCommand extends BaseCommand {
 
     if (!rawUser) {
       const user = id
-        ? await this.twitterUserControllerService.getUserByRestId(id)
-        : await this.twitterUserControllerService.getUserByScreenName(username)
+        ? await this.twitterUserControllerService.getOneByRestId(id)
+        : await this.twitterUserControllerService.getOneByScreenName(username)
       if (!user) {
         await this.replyUserNotFound(interaction)
         return

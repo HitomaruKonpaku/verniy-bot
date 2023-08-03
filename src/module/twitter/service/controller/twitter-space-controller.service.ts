@@ -235,7 +235,7 @@ export class TwitterSpaceControllerService {
 
   public async saveUnknownParticipants() {
     const userIds = await this.twitterSpaceService.getUnknownUserIds()
-    const result = await Promise.allSettled(userIds.map((userId) => this.twitterUserControllerService.getUserByRestId(userId)))
+    const result = await Promise.allSettled(userIds.map((userId) => this.twitterUserControllerService.getOneByRestId(userId)))
     return result
   }
 
