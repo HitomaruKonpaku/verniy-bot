@@ -21,7 +21,7 @@ export class HolodexApiService {
 
   public async getChannels(params?: Record<string, any>) {
     const url = 'channels'
-    const res = await this.client.get(url, { params })
+    const res = await this.client.get<any[]>(url, { params })
     return res
   }
 

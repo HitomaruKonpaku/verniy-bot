@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
 import { TrackModule } from '../track/track.module'
 import { TwitterModule } from '../twitter/twitter.module'
+import { YoutubeModule } from '../youtube/youtube.module'
 import { HolodexChannel } from './model/holodex-channel.entity'
 import { HolodexVideo } from './model/holodex-video.entity'
 import { HolodexApiService } from './service/api/holodex-api.service'
@@ -21,6 +22,7 @@ import { HolodexService } from './service/holodex.service'
     ConfigModule,
     TrackModule,
     TwitterModule,
+    YoutubeModule,
   ],
   providers: [
     HolodexService,
