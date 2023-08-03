@@ -30,6 +30,12 @@ export class HolodexChannelControllerService {
     private readonly twitterUserControllerService: TwitterUserControllerService,
   ) { }
 
+  public async getChannelById(id: string) {
+    const { data } = await this.holodexApiService.getChannelById(id)
+    const channel = await this.holodexChannelService.save(HolodexEntityUtil.buildChannel(data))
+    return channel
+  }
+
   public async getChannels(params?: Record<string, any>) {
     const limiter = new Bottleneck({ maxConcurrent: 1 })
     const { data } = await this.holodexApiService.getChannels(params)
@@ -73,6 +79,13 @@ export class HolodexChannelControllerService {
 
   public async fetchChannelAccounts(data: any) {
     const channelId = data.id
+
+    try {
+      await this.getChannelById(channelId)
+    } catch (error) {
+      // ignore
+    }
+
     if (data.twitter) {
       try {
         const user = await this.twitterUserControllerService.getOneByScreenName(data.twitter, { fromDb: true })
