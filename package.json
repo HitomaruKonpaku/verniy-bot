@@ -7,7 +7,7 @@
     "deploy-commands": "node dist/deploy-commands",
     "build": "tsc",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "eslint src --ext .ts --fix",
     "update": "git fetch -p && git pull && npm run build"
   },
   "repository": {
