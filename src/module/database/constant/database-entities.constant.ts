@@ -3,6 +3,7 @@ import { DiscordGuild } from '../../discord/model/discord-guild.entity'
 import { DiscordMessage } from '../../discord/model/discord-message.entity'
 import { DiscordUser } from '../../discord/model/discord-user.entity'
 import { HolodexChannel } from '../../holodex/model/holodex-channel.entity'
+import { HolodexChannelAccount } from '../../holodex/model/holodex-channel_account.entity'
 import { HolodexVideo } from '../../holodex/model/holodex-video.entity'
 import { InstagramPost } from '../../instagram/model/instagram-post.entity'
 import { InstagramStory } from '../../instagram/model/instagram-story.entity'
@@ -73,6 +74,7 @@ export const DB_ENTITIES = [
   TiktokVideo,
 
   HolodexChannel,
+  HolodexChannelAccount,
   HolodexVideo,
 
   Track,
