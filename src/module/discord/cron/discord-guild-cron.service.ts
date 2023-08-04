@@ -29,7 +29,6 @@ export class DiscordGuildCronService extends BaseCronService {
   }
 
   protected async onTick() {
-    this.logger.debug('--> onTick')
     const limiter = new Bottleneck(this.bottleneckOptions)
     try {
       const guilds = await this.discordGuildService.getManyForCron()
@@ -37,7 +36,6 @@ export class DiscordGuildCronService extends BaseCronService {
     } catch (error) {
       this.logger.error(`onTick: ${error.message}`)
     }
-    this.logger.debug('<-- onTick')
   }
 
   private async updateGuild(id: string) {

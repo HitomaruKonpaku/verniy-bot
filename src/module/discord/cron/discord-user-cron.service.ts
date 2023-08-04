@@ -29,7 +29,6 @@ export class DiscordUserCronService extends BaseCronService {
   }
 
   protected async onTick() {
-    this.logger.debug('--> onTick')
     const limiter = new Bottleneck(this.bottleneckOptions)
     try {
       const users = await this.discordUserService.getManyForCron()
@@ -37,7 +36,6 @@ export class DiscordUserCronService extends BaseCronService {
     } catch (error) {
       this.logger.error(`onTick: ${error.message}`)
     }
-    this.logger.debug('<-- onTick')
   }
 
   private async updateUser(id: string) {
