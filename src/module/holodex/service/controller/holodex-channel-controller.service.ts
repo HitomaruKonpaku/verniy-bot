@@ -5,6 +5,7 @@ import { ArrayUtil } from '../../../../util/array.util'
 import { TwitterUserControllerService } from '../../../twitter/service/controller/twitter-user-controller.service'
 import { YoutubeChannelControllerService } from '../../../youtube/service/controller/youtube-channel-controller.service'
 import { YoutubeChannelService } from '../../../youtube/service/data/youtube-channel.service'
+import { HolodexChannelAccountType } from '../../enum/holodex-channel-account-type.enum'
 import { HolodexChannel } from '../../model/holodex-channel.entity'
 import { HolodexEntityUtil } from '../../util/holodex-entity.util'
 import { HolodexApiService } from '../api/holodex-api.service'
@@ -94,7 +95,7 @@ export class HolodexChannelControllerService {
       const user = await this.twitterUserControllerService.getOneByScreenName(username, { fromDb: true })
       await this.holodexChannelAccountService.add({
         channelId: id,
-        accountType: 'twitter',
+        accountType: HolodexChannelAccountType.TWITTER,
         accountId: user.id,
       })
     } catch (error) {
