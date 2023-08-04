@@ -1,4 +1,3 @@
-import { HolodexVideoType } from '../enum/holodex-video-type.enum'
 import { HolodexChannel } from '../model/holodex-channel.entity'
 import { HolodexVideo } from '../model/holodex-video.entity'
 
@@ -22,20 +21,8 @@ export class HolodexEntityUtil {
     const obj: HolodexVideo = {
       id: data.id,
       createdAt: new Date(data.published_at || data.available_at || Date.now()).getTime(),
-      updatedAt: Date.now(),
       channelId: data.channel.id,
       type: data.type,
-    }
-    return obj
-  }
-
-  public static buildVideoPlaceholder(data: any) {
-    const obj: HolodexVideo = {
-      id: data.id,
-      createdAt: 0,
-      updatedAt: Date.now(),
-      channelId: data.channel_id,
-      type: HolodexVideoType.PLACEHOLDER,
     }
     return obj
   }

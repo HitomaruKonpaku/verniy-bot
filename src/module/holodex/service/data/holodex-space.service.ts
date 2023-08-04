@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import { SpaceState } from '../../../twitter/enum/twitter-space.enum'
 import { TwitterSpace } from '../../../twitter/model/twitter-space.entity'
 import { HolodexChannelAccountType } from '../../enum/holodex-channel-account-type.enum'
 import { HolodexExternalStreamType } from '../../enum/holodex-external-stream-type.enum'
@@ -17,18 +18,19 @@ export class HolodexSpaceService {
   public async getOneById(id: string): Promise<HolodexSpace> {
     const query = this
       .createQueryBuilder()
+      .andWhere('s.is_active = TRUE')
       .andWhere('s.id = :id', { id })
-    const spaces = await query.getOne()
-    return spaces
+    const space = await query.getOne()
+    return space
   }
 
   public async getManyLive(): Promise<HolodexSpace[]> {
     const query = this
       .createQueryBuilder()
       .andWhere('s.is_active = TRUE')
-      // .andWhere('s.state = :state', { state: SpaceState.LIVE })
+      .andWhere('s.state = :state', { state: SpaceState.LIVE })
+      .andWhere('s.started_at NOTNULL')
       .addOrderBy('s.started_at', 'DESC')
-      .addOrderBy('s.created_at', 'DESC')
     const spaces = await query.getMany()
     return spaces
   }

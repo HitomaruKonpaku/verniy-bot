@@ -36,6 +36,12 @@ export class HolodexApiService {
     return res
   }
 
+  public async postVideoPlaceholder(body: any) {
+    const url = 'videos/placeholder'
+    const res = await this.client.post<any[]>(url, body)
+    return res
+  }
+
   public initClient() {
     const baseUrl = HOLODEX_API_URL
     const key = process.env.HOLODEX_API_KEY
