@@ -8,10 +8,12 @@ export const twitterConfig = {
     interval: 60000,
     /**
      * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
+     * @deprecated
      */
     ruleLimit: TWITTER_STREAM_RULE_LIMIT,
     /**
      * @see https://developer.twitter.com/en/docs/twitter-api/getting-started/about-twitter-api
+     * @deprecated
      */
     ruleLength: TWITTER_STREAM_RULE_LENGTH,
   },
