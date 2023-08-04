@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { Channel, ChannelType, DMChannel, Guild, MessageCreateOptions, MessagePayload, StageChannel, TextChannel, VoiceChannel } from 'discord.js'
+import { Channel, ChannelType, DMChannel, Guild, MessageCreateOptions, MessagePayload, StageChannel, TextChannel, User, VoiceChannel } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/service/config.service'
 import { HolodexService } from '../../holodex/service/holodex.service'
@@ -56,6 +56,15 @@ export class DiscordService {
     } catch (error) {
       this.logger.error(`start: ${error.message}`)
     }
+  }
+
+  public async getOwner() {
+    let owner: User = this.client.application.owner as User
+    if (!owner) {
+      await this.client.application.fetch()
+      owner = this.client.application.owner as User
+    }
+    return owner
   }
 
   public async getGuild(id: string) {
