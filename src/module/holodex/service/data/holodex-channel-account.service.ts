@@ -5,6 +5,8 @@ import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/service/base-entity.service'
 import { HolodexChannelAccount } from '../../model/holodex-channel_account.entity'
 
+type AddData = Pick<HolodexChannelAccount, 'channelId' | 'accountType' | 'accountId'>
+
 @Injectable()
 export class HolodexChannelAccountService extends BaseEntityService<HolodexChannelAccount> {
   constructor(
@@ -14,7 +16,7 @@ export class HolodexChannelAccountService extends BaseEntityService<HolodexChann
     super()
   }
 
-  public async add(data: Pick<HolodexChannelAccount, 'channelId' | 'accountType' | 'accountId'>) {
+  public async add(data: AddData) {
     await this.repository.upsert(
       {
         id: randomUUID(),
