@@ -21,7 +21,7 @@ export class HolodexEntityUtil {
   public static buildVideo(data: any) {
     const obj: HolodexVideo = {
       id: data.id,
-      createdAt: 0,
+      createdAt: new Date(data.published_at || data.available_at || Date.now()).getTime(),
       updatedAt: Date.now(),
       channelId: data.channel.id,
       type: data.type,
