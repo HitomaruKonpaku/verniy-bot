@@ -5,7 +5,7 @@ export class HolodexEntityUtil {
   public static buildChannel(data: any) {
     const obj: HolodexChannel = {
       id: data.id,
-      createdAt: 0,
+      createdAt: data.published_at ? new Date(data.published_at).getTime() : 0,
       updatedAt: Date.now(),
       isRetired: data.inactive,
       type: data.type,
