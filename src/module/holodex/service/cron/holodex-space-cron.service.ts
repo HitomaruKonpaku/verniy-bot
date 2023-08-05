@@ -47,7 +47,7 @@ export class HolodexSpaceCronService extends BaseCronService {
         await Promise.allSettled(spaces.map((v) => limiter.schedule(() => this.notifySpace(v))))
       }
     } catch (error) {
-      this.logger.error(`checkSpaces: ${error.message}`)
+      this.logger.error(`notifySpaces: ${error.message}`)
     }
   }
 

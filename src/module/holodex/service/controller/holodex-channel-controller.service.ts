@@ -38,7 +38,7 @@ export class HolodexChannelControllerService {
   }
 
   public async getChannels(params?: Record<string, any>) {
-    const limiter = new Bottleneck({ maxConcurrent: 1 })
+    const limiter = new Bottleneck({ maxConcurrent: 5 })
     const { data } = await this.holodexApiService.getChannels(params)
     const channels = data.map((v) => HolodexEntityUtil.buildChannel(v))
     await this.holodexChannelService.saveAll(channels)
