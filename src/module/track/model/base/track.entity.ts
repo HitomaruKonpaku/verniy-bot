@@ -1,5 +1,6 @@
 import { Column, Entity, TableInheritance, Unique } from 'typeorm'
 import { BaseEntity } from '../../../database/model/base.entity'
+import { dbArrayTransformer } from '../../../database/transformer/transformer'
 import { TrackType } from '../../enum/track-type.enum'
 
 @Entity('track')
@@ -25,10 +26,7 @@ export abstract class Track extends BaseEntity {
     name: 'filter_keywords',
     type: 'text',
     nullable: true,
-    transformer: {
-      to: (value: string[]) => (Array.isArray(value) ? JSON.stringify(value) : null),
-      from: (value: string) => JSON.parse(value),
-    },
+    transformer: dbArrayTransformer,
   })
   filterKeywords?: string[]
 }

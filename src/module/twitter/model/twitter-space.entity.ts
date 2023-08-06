@@ -1,5 +1,6 @@
 import { Column, Entity, Index } from 'typeorm'
 import { BaseExternalEntity } from '../../database/model/base-external.entity'
+import { dbArrayTransformer } from '../../database/transformer/transformer'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { TwitterUser } from './twitter-user.entity'
 
@@ -37,10 +38,7 @@ export class TwitterSpace extends BaseExternalEntity {
     name: 'host_ids',
     type: 'text',
     nullable: true,
-    transformer: {
-      to: (value: string[]) => (Array.isArray(value) ? JSON.stringify(value) : null),
-      from: (value: string) => JSON.parse(value),
-    },
+    transformer: dbArrayTransformer,
   })
   hostIds?: string[]
 
@@ -48,10 +46,7 @@ export class TwitterSpace extends BaseExternalEntity {
     name: 'speaker_ids',
     type: 'text',
     nullable: true,
-    transformer: {
-      to: (value: string[]) => (Array.isArray(value) ? JSON.stringify(value) : null),
-      from: (value: string) => JSON.parse(value),
-    },
+    transformer: dbArrayTransformer,
   })
   speakerIds?: string[]
 
