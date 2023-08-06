@@ -38,7 +38,13 @@ export class HolodexApiService {
 
   public async postVideoPlaceholder(body: any) {
     const url = 'videos/placeholder'
-    const res = await this.client.post<any[]>(url, body)
+    const res = await this.client.post(url, body)
+    return res
+  }
+
+  public async deleteVideoPlaceholder(id: string) {
+    const url = `videos/placeholder/${id}`
+    const res = await this.client.delete(url)
     return res
   }
 

@@ -16,6 +16,7 @@ export class HolodexSpaceCronService extends BaseCronService {
   protected readonly logger = baseLogger.child({ context: HolodexSpaceCronService.name })
 
   protected cronTime = '0 */1 * * * *'
+  protected cronRunOnInit = true
 
   private bonusDurationSec = 120
 
@@ -77,6 +78,22 @@ export class HolodexSpaceCronService extends BaseCronService {
       }
 
       const { data } = await this.holodexApiService.postVideoPlaceholder(body)
+      if (data.error) {
+        if (data.placeholder) {
+          this.logger.error(`notifySpace#placeholder: ${data.error}`, {
+            id: space.id,
+            placeholder: {
+              id: data.placeholder.id,
+              link: data.placeholder.link,
+            },
+          })
+          return
+        }
+
+        this.logger.error(`notifySpace#response: ${data.error}`, { id: space.id })
+        return
+      }
+
       if (!space.holodexExternalStream) {
         const limiter = new Bottleneck({ maxConcurrent: 1 })
         await Promise.allSettled(data.map((v) => limiter.schedule(() => this.saveVideoSpace(v, space))))
