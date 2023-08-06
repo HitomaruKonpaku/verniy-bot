@@ -21,7 +21,7 @@ export class YoutubeVideo extends BaseExternalEntity {
   @Column({ name: 'is_upcoming', type: 'boolean', nullable: true })
   isUpcoming?: boolean
 
-  @Column({ name: 'is_members_only', type: 'boolean', nullable: true })
+  @Column({ name: 'is_members_only', type: 'boolean', default: false })
   isMembersOnly?: boolean
 
   @Column({ name: 'title', type: 'text', nullable: true })

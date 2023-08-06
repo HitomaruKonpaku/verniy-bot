@@ -1,9 +1,11 @@
 /* eslint-disable camelcase */
 import { youtube_v3 } from '@googleapis/youtube'
+import { BackstageImage, BackstagePost, PostMultiImage, Video } from 'youtubei.js/dist/src/parser/nodes'
 import VideoInfo from 'youtubei.js/dist/src/parser/youtube/VideoInfo'
 import { YoutubeChannel } from '../model/youtube-channel.entity'
 import { YoutubePlaylistItem } from '../model/youtube-playlist-item.entity'
 import { YoutubePlaylist } from '../model/youtube-playlist.entity'
+import { YoutubePost } from '../model/youtube-post.entity'
 import { YoutubeVideo } from '../model/youtube-video.entity'
 import { YoutubeApiUtil } from './youtube-api.util'
 import { YoutubeUtil } from './youtube.util'
@@ -105,6 +107,35 @@ export class YoutubeEntityUtil {
       videoId: data.contentDetails.videoId,
       position: data.snippet.position,
     }
+    return obj
+  }
+
+  public static buildPostFromBackstagePost(data: BackstagePost, channelId: string) {
+    const obj: YoutubePost = {
+      id: data.id,
+      updatedAt: Date.now(),
+      channelId,
+      authorId: data.author.id,
+      type: 'backstage_post',
+      content: data.content.text,
+    }
+
+    if (data.attachment) {
+      const { type } = data.attachment
+      if (type === 'Video') {
+        const attachment = data.attachment as Video
+        obj.videoId = attachment.id
+      }
+      if (type === 'BackstageImage') {
+        const attachment = data.attachment as BackstageImage
+        obj.images = [attachment.image]
+      }
+      if (type === 'PostMultiImage') {
+        const attachment = data.attachment as PostMultiImage
+        obj.images = attachment.images.map((v) => v.image)
+      }
+    }
+
     return obj
   }
 }

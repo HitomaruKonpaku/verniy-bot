@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
 import { youtube, youtube_v3 } from '@googleapis/youtube'
 import { Injectable } from '@nestjs/common'
-import { baseLogger } from '../../../logger'
+import { baseLogger } from '../../../../../logger'
 
 @Injectable()
-export class YoutubeClientService {
-  protected logger = baseLogger.child({ context: YoutubeClientService.name })
+export class YoutubeApiClientService {
+  protected logger = baseLogger.child({ context: YoutubeApiClientService.name })
 
   public youtube: youtube_v3.Youtube
 

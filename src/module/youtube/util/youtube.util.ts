@@ -7,6 +7,10 @@ export class YoutubeUtil {
     return `https://www.youtube.com/watch?v=${id}`
   }
 
+  public static getPostUrl(id: string) {
+    return `https://www.youtube.com/post/${id}`
+  }
+
   public static parseDate(str: string): number {
     if (str === undefined) {
       return undefined
