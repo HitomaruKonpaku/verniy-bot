@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
 
 @Injectable()
-export class YoutubeLiveTrackingService {
-  private readonly logger = baseLogger.child({ context: YoutubeLiveTrackingService.name })
+export class YoutubeCommunityTrackingService {
+  private readonly logger = baseLogger.child({ context: YoutubeCommunityTrackingService.name })
 
   public async start() {
     this.logger.info('Starting...')

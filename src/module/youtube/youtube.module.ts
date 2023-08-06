@@ -22,6 +22,7 @@ import { YoutubeCronService } from './service/cron/youtube-cron.service'
 import { YoutubeChannelService } from './service/data/youtube-channel.service'
 import { YoutubePostService } from './service/data/youtube-post.service'
 import { YoutubeVideoService } from './service/data/youtube-video.service'
+import { YoutubeCommunityTrackingService } from './service/tracking/youtube-community-tracking.service'
 import { YoutubeLiveTrackingService } from './service/tracking/youtube-live-tracking.service'
 import { YoutubeService } from './service/youtube.service'
 
@@ -57,6 +58,7 @@ import { YoutubeService } from './service/youtube.service'
     YoutubePostControllerService,
 
     YoutubeLiveTrackingService,
+    YoutubeCommunityTrackingService,
 
     YoutubeCronService,
     YoutubeChannelCronService,
