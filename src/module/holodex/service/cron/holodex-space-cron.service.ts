@@ -52,10 +52,14 @@ export class HolodexSpaceCronService extends BaseCronService {
     }
   }
 
+  private calcDuration(space: HolodexSpace) {
+    const duration = Math.floor((Date.now() - space.startedAt) / 1000) + this.bonusDurationSec
+    return duration
+  }
+
   private async notifySpace(space: HolodexSpace) {
     try {
       const owner = await this.discordService.getOwner()
-      const duration = Math.floor((Date.now() - space.startedAt) / 1000) + this.bonusDurationSec
       const body = {
         id: space.holodexExternalStream?.id,
         channel_id: space.holodexChannelAccount.channelId,
@@ -74,19 +78,23 @@ export class HolodexSpaceCronService extends BaseCronService {
           },
         },
         liveTime: new Date(space.startedAt).toISOString(),
-        duration,
+        duration: this.calcDuration(space),
       }
 
       const { data } = await this.holodexApiService.postVideoPlaceholder(body)
       if (data.error) {
-        if (data.placeholder) {
+        const { placeholder } = data
+        if (placeholder) {
           this.logger.error(`notifySpace#placeholder: ${data.error}`, {
             id: space.id,
             placeholder: {
-              id: data.placeholder.id,
-              link: data.placeholder.link,
+              id: placeholder.id,
+              link: placeholder.link,
             },
           })
+          body.id = placeholder.id
+          await this.holodexApiService.postVideoPlaceholder(body)
+          await this.updateVideoSpace(placeholder, space)
           return
         }
 
@@ -96,14 +104,14 @@ export class HolodexSpaceCronService extends BaseCronService {
 
       if (!space.holodexExternalStream) {
         const limiter = new Bottleneck({ maxConcurrent: 1 })
-        await Promise.allSettled(data.map((v) => limiter.schedule(() => this.saveVideoSpace(v, space))))
+        await Promise.allSettled(data.map((v) => limiter.schedule(() => this.createVideoSpace(v, space))))
       }
     } catch (error) {
       this.logger.error(`notifySpace: ${error.message}`, { id: space.id })
     }
   }
 
-  private async saveVideoSpace(data: any, space: HolodexSpace) {
+  private async createVideoSpace(data: any, space: HolodexSpace) {
     await this.holodexVideoService.save({
       id: data.id,
       createdAt: space.startedAt,
@@ -116,5 +124,21 @@ export class HolodexSpaceCronService extends BaseCronService {
       type: HolodexExternalStreamType.TWITTER_SPACE,
       sourceId: space.id,
     })
+  }
+
+  public async updateVideoSpace(data: any, space: HolodexSpace) {
+    await this.holodexVideoService.save({
+      id: data.id,
+      createdAt: space.startedAt,
+      channelId: data.channel_id,
+      type: data.type,
+    })
+    await this.holodexExternalStreamService.repository.update(
+      { id: data.id },
+      {
+        createdAt: space.startedAt,
+        sourceId: space.id,
+      },
+    )
   }
 }
