@@ -127,18 +127,12 @@ export class HolodexSpaceCronService extends BaseCronService {
   }
 
   public async updateVideoSpace(data: any, space: HolodexSpace) {
-    await this.holodexVideoService.save({
-      id: data.id,
+    await this.holodexVideoService.updateFields(data.id, {
       createdAt: space.startedAt,
-      channelId: data.channel_id,
-      type: data.type,
     })
-    await this.holodexExternalStreamService.repository.update(
-      { id: data.id },
-      {
-        createdAt: space.startedAt,
-        sourceId: space.id,
-      },
-    )
+    await this.holodexExternalStreamService.updateFields(data.id, {
+      createdAt: space.startedAt,
+      sourceId: space.id,
+    })
   }
 }
