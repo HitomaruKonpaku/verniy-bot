@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
 import { baseLogger } from '../../../../logger'
 import { BaseCronService } from '../../../../shared/service/base-cron.service'
+import { ConfigService } from '../../../config/service/config.service'
 import { TwitterUser } from '../../model/twitter-user.entity'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterUserService } from '../data/twitter-user.service'
@@ -21,6 +22,8 @@ export class TwitterUserCronService extends BaseCronService {
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
+    @Inject(ConfigService)
+    private readonly configService: ConfigService,
   ) {
     super()
   }
@@ -31,7 +34,9 @@ export class TwitterUserCronService extends BaseCronService {
   }
 
   private async getUsers() {
-    const users = await this.twitterUserService.getManyForCheck({ limit: this.limit })
+    const config = this.configService.twitter
+    const joinTrack = config.profile?.active
+    const users = await this.twitterUserService.getManyForCheck({ limit: this.limit, joinTrack })
     return users
   }
 

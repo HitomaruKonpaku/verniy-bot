@@ -1,8 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/service/base-entity.service'
-import { ConfigService } from '../../../config/service/config.service'
 import { TrackType } from '../../../track/enum/track-type.enum'
 import { TwitterUser } from '../../model/twitter-user.entity'
 
@@ -11,8 +10,6 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
   constructor(
     @InjectRepository(TwitterUser)
     public readonly repository: Repository<TwitterUser>,
-    @Inject(ConfigService)
-    public readonly configService:ConfigService,
   ) {
     super()
   }
@@ -60,11 +57,11 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
     return user
   }
 
-  public async getManyForCheck(options?: { limit?: number }) {
+  public async getManyForCheck(options?: { limit?: number, joinTrack?: boolean }) {
     const query = this.repository
       .createQueryBuilder('u')
 
-    if (this.configService.twitter.profile?.active) {
+    if (options?.joinTrack) {
       query
         .leftJoin(
           'track',
