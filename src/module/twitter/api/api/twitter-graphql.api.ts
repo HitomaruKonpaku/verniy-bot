@@ -11,7 +11,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async UserByRestId(userId: string) {
     const url = this.toUrl(twitterGraphqlEndpoints.UserByRestId)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.UserByRestId,
       { variables: { userId } },
@@ -22,7 +22,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async UserByScreenName(username: string) {
     const url = this.toUrl(twitterGraphqlEndpoints.UserByScreenName)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.UserByScreenName,
       { variables: { screen_name: username } },
@@ -33,7 +33,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async UserTweets(userId: string, count = 20) {
     const url = this.toUrl(twitterGraphqlEndpoints.UserTweets)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.UserTweets,
       { variables: { userId, count } },
@@ -44,7 +44,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async UserTweetsAndReplies(userId: string, count = 20) {
     const url = this.toUrl(twitterGraphqlEndpoints.UserTweetsAndReplies)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.UserTweetsAndReplies,
       { variables: { userId, count } },
@@ -55,7 +55,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async UserMedia(userId: string, count = 20) {
     const url = this.toUrl(twitterGraphqlEndpoints.UserMedia)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.UserMedia,
       { variables: { userId, count } },
@@ -66,7 +66,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async UserWithProfileTweetsQueryV2(userId: string) {
     const url = this.toUrl(twitterGraphqlEndpoints.UserWithProfileTweetsQueryV2)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.UserWithProfileTweetsQueryV2,
       { variables: { rest_id: userId } },
@@ -77,7 +77,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async UserWithProfileTweetsAndRepliesQueryV2(userId: string) {
     const url = this.toUrl(twitterGraphqlEndpoints.UserWithProfileTweetsAndRepliesQueryV2)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.UserWithProfileTweetsAndRepliesQueryV2,
       { variables: { rest_id: userId } },
@@ -92,7 +92,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async TweetDetail(tweetId: string) {
     const url = this.toUrl(twitterGraphqlEndpoints.TweetDetail)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.TweetDetail,
       { variables: { focalTweetId: tweetId } },
@@ -122,7 +122,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async AudioSpaceById(id: string) {
     const url = this.toUrl(twitterGraphqlEndpoints.AudioSpaceById)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.AudioSpaceById,
       { variables: { id } },
@@ -133,7 +133,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async AudioSpaceById_Legacy(id: string) {
     const url = this.toUrl(twitterGraphqlEndpoints.AudioSpaceById_Legacy)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.AudioSpaceById_Legacy,
       { variables: { id } },
@@ -144,7 +144,7 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
 
   public async AudioSpaceByRestId(id: string) {
     const url = this.toUrl(twitterGraphqlEndpoints.AudioSpaceByRestId)
-    const headers = await this.getGuestV2Headers()
+    const headers = this.getAuthHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.AudioSpaceByRestId,
       { variables: { audio_space_id: id } },
