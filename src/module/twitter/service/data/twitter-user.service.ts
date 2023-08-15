@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/service/base-entity.service'
+import { ConfigService } from '../../../config/service/config.service'
 import { TrackType } from '../../../track/enum/track-type.enum'
 import { TwitterUser } from '../../model/twitter-user.entity'
 
@@ -10,6 +11,8 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
   constructor(
     @InjectRepository(TwitterUser)
     public readonly repository: Repository<TwitterUser>,
+    @Inject(ConfigService)
+    public readonly configService:ConfigService,
   ) {
     super()
   }
@@ -60,14 +63,19 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
   public async getManyForCheck(options?: { limit?: number }) {
     const query = this.repository
       .createQueryBuilder('u')
-      .leftJoin(
-        'track',
-        't',
-        't.user_id = u.id AND t.is_active = TRUE AND t.type = :type',
-        { type: TrackType.TWITTER_PROFILE },
-      )
-      .andWhere('t.user_id ISNULL')
-      .addOrderBy('u.updated_at', 'ASC')
+
+    if (this.configService.twitter.profile?.active) {
+      query
+        .leftJoin(
+          'track',
+          't',
+          't.user_id = u.id AND t.is_active = TRUE AND t.type = :type',
+          { type: TrackType.TWITTER_PROFILE },
+        )
+        .andWhere('t.user_id ISNULL')
+    }
+
+    query.addOrderBy('u.updated_at', 'ASC')
 
     if (Number.isSafeInteger(options?.limit)) {
       query.limit(options.limit)
