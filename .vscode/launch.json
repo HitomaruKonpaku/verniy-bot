@@ -8,23 +8,45 @@
       "type": "node",
       "request": "launch",
       "name": "[src] deploy-commands",
-      "program": "${workspaceFolder}/src/deploy-commands.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
+      "program": "${workspaceFolder}/src/deploy-commands.ts",
       "outputCapture": "std",
       "skipFiles": [
         "<node_internals>/**"
-      ]
+      ],
     },
     {
       "type": "node",
       "request": "launch",
       "name": "[src] worker",
-      "program": "${workspaceFolder}/src/index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
+      "program": "${workspaceFolder}/src/index.ts",
       "outputCapture": "std",
       "skipFiles": [
         "<node_internals>/**"
-      ]
+      ],
     },
-  ]
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "[script] twitter-space-playlist-check",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "program": "${workspaceFolder}/src/script/twitter-space-playlist-check.ts",
+      "outputCapture": "std",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "[script] holodex-channel-fetch",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "program": "${workspaceFolder}/src/script/holodex-channel-fetch.ts",
+      "outputCapture": "std",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+    },
+  ],
 }
