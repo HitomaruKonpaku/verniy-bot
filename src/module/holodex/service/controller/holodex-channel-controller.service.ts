@@ -47,7 +47,7 @@ export class HolodexChannelControllerService {
     return channels
   }
 
-  public async getOrgChannels(org: string) {
+  public async getOrgChannels(org = '') {
     const channels: HolodexChannel[] = []
     const limit = 50
     let offset = 0
