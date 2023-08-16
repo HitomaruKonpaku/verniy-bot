@@ -24,6 +24,8 @@ async function bootstrap() {
     console.debug(index + 1, spaces.length)
     await twitterSpaceControllerService.checkPlaylistStatus(space.id, space.playlistUrl)
   })))
+
+  process.exit()
 }
 
 bootstrap()
