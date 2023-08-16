@@ -11,6 +11,7 @@ import { TrackTwitchLive } from './model/track-twitch-live.entity'
 import { TrackTwitterProfile } from './model/track-twitter-profile.entity'
 import { TrackTwitterSpace } from './model/track-twitter-space.entity'
 import { TrackTwitterTweet } from './model/track-twitter-tweet.entity'
+import { TrackUser } from './model/track-user.entity'
 import { TrackYoutubeLive } from './model/track-youtube-live.entity'
 import { TrackInstagramPostService } from './service/track-instagram-post.service'
 import { TrackInstagramProfileService } from './service/track-instagram-profile.service'
@@ -23,6 +24,7 @@ import { TrackTwitchLiveService } from './service/track-twitch-live.service'
 import { TrackTwitterProfileService } from './service/track-twitter-profile.service'
 import { TrackTwitterSpaceService } from './service/track-twitter-space.service'
 import { TrackTwitterTweetService } from './service/track-twitter-tweet.service'
+import { TrackUserService } from './service/track-user.service'
 import { TrackYoutubeLiveService } from './service/track-youtube-live.service'
 import { TrackService } from './service/track.service'
 
@@ -40,6 +42,8 @@ const services = [
   TrackInstagramPostService,
   TrackInstagramStoryService,
   TrackTiktokVideoService,
+
+  TrackUserService,
 ]
 
 @Module({
@@ -57,6 +61,8 @@ const services = [
       TrackInstagramPost,
       TrackInstagramStory,
       TrackTiktokVideo,
+
+      TrackUser,
     ]),
   ],
   providers: [

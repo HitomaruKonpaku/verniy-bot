@@ -22,6 +22,7 @@ import { TrackTwitchLive } from '../../track/model/track-twitch-live.entity'
 import { TrackTwitterProfile } from '../../track/model/track-twitter-profile.entity'
 import { TrackTwitterSpace } from '../../track/model/track-twitter-space.entity'
 import { TrackTwitterTweet } from '../../track/model/track-twitter-tweet.entity'
+import { TrackUser } from '../../track/model/track-user.entity'
 import { TrackYoutubeLive } from '../../track/model/track-youtube-live.entity'
 import { TwitCastingMovie } from '../../twitcasting/model/twitcasting-movie.entity'
 import { TwitCastingUser } from '../../twitcasting/model/twitcasting-user.entity'
@@ -91,6 +92,8 @@ export const DB_ENTITIES = [
   TrackInstagramPost,
   TrackInstagramStory,
   TrackTiktokVideo,
+
+  TrackUser,
 
   VtuberUser,
   VtuberAccount,
