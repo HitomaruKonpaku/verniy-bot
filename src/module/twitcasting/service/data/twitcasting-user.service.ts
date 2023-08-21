@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/service/base-entity.service'
+import { QueryOptions } from '../../../database/interface/query-options.interface'
 import { TwitCastingUser } from '../../model/twitcasting-user.entity'
 
 @Injectable()
@@ -29,11 +30,17 @@ export class TwitCastingUserService extends BaseEntityService<TwitCastingUser> {
     return result
   }
 
-  public async getManyActive() {
-    const result = await this.repository
+  public async getManyActive(options?: QueryOptions) {
+    const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
-      .getMany()
+      .addOrderBy('updated_at', 'ASC', 'NULLS FIRST')
+
+    if (Number.isSafeInteger(options?.limit)) {
+      query.limit(options.limit)
+    }
+
+    const result = await query.getMany()
     return result
   }
 }

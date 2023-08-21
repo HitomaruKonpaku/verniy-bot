@@ -8,7 +8,9 @@ import { TwitCastingUserService } from '../data/twitcasting-user.service'
 export class TwitCastingUserCronService extends BaseCronService {
   protected readonly logger = baseLogger.child({ context: TwitCastingUserCronService.name })
 
-  protected cronTime = '0 0 */3 * * *'
+  protected cronTime = '0 */1 * * * *'
+
+  private limit = 20
 
   constructor(
     @Inject(TwitCastingUserService)
@@ -20,18 +22,17 @@ export class TwitCastingUserCronService extends BaseCronService {
   }
 
   protected async onTick() {
+    this.logger.debug('onTick')
     await this.checkUsers()
   }
 
   private async checkUsers() {
-    this.logger.debug('--> checkUsers')
     try {
-      const users = await this.twitCastingUserService.getManyActive()
+      const users = await this.twitCastingUserService.getManyActive({ limit: this.limit })
       await Promise.allSettled(users.map((v) => this.getUser(v.id)))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }
-    this.logger.debug('<-- checkUsers')
   }
 
   private async getUser(id: string) {
@@ -39,17 +40,19 @@ export class TwitCastingUserCronService extends BaseCronService {
       await this.twitCastingUserControllerService.getOneAndSaveById(id)
     } catch (error) {
       if (error.response?.status === 404) {
-        await this.updateIsActive(id)
+        await this.deactive(id)
       }
     }
   }
 
-  private async updateIsActive(id: string) {
+  private async deactive(id: string) {
     try {
-      await this.twitCastingUserService.updateIsActive(id, false)
-      this.logger.debug('updateIsActive: ok', { id })
+      await this.twitCastingUserService.updateFields(id, {
+        isActive: false,
+        updatedAt: Date.now(),
+      })
     } catch (error) {
-      this.logger.error(`updateIsActive: ${error.message}`, { id })
+      this.logger.error(`deactive: ${error.message}`, { id })
     }
   }
 }
