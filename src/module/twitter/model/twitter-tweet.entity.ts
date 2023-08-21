@@ -1,6 +1,7 @@
 import { TweetEntitiesV1, TweetExtendedEntitiesV1 } from 'twitter-api-v2'
 import { Column, Entity } from 'typeorm'
 import { BaseExternalEntity } from '../../database/model/base-external.entity'
+import { dbObjectTransformer } from '../../database/transformer/db-object-transformer'
 import { TwitterUser } from './twitter-user.entity'
 
 @Entity('twitter_tweet')
@@ -29,8 +30,20 @@ export class TwitterTweet extends BaseExternalEntity {
   @Column({ name: 'quoted_status_id', type: 'text', nullable: true })
   quotedStatusId?: string
 
+  @Column({
+    name: 'entities',
+    type: 'text',
+    nullable: true,
+    transformer: dbObjectTransformer,
+  })
   entities?: TweetEntitiesV1
 
+  @Column({
+    name: 'extended_entities',
+    type: 'text',
+    nullable: true,
+    transformer: dbObjectTransformer,
+  })
   extendedEntities?: TweetExtendedEntitiesV1
 
   isNew?: boolean
