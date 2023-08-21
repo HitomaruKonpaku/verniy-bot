@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/service/base-entity.service'
+import { QueryOptions } from '../../../database/interface/query-options.interface'
 import { TrackType } from '../../../track/enum/track-type.enum'
 import { TwitterUser } from '../../model/twitter-user.entity'
 
@@ -57,7 +58,7 @@ export class TwitterUserService extends BaseEntityService<TwitterUser> {
     return user
   }
 
-  public async getManyForCheck(options?: { limit?: number, joinTrack?: boolean }) {
+  public async getManyForCheck(options?: QueryOptions & { joinTrack?: boolean }) {
     const query = this.repository
       .createQueryBuilder('u')
 

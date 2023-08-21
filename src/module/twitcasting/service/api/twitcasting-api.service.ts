@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import axios, { AxiosInstance } from 'axios'
 import { randomUUID } from 'crypto'
 import { baseLogger } from '../../../../logger'
+import { QueryOptions } from '../../../database/interface/query-options.interface'
 import { TwitCastingApiMovieInfo } from '../../interface/twitcasting-api.interface'
 import { twitCastingUserByIdLimiter } from '../../twitcasting.limiter'
 
@@ -81,13 +82,10 @@ export class TwitCastingApiService {
   /**
    * @see https://apiv2-doc.twitcasting.tv/#get-movies-by-user
    */
-  public async getMoviesByUserId(
-    id: string,
-    opts?: { limit?: number, offset?: number },
-  ) {
+  public async getMoviesByUserId(id: string, options?: QueryOptions) {
     const requestId = randomUUID()
-    const limit = opts?.limit || 20
-    const offset = opts?.offset || 0
+    const limit = options?.limit || 20
+    const offset = options?.offset || 0
     try {
       const params = new URLSearchParams()
       params.append('limit', String(limit))

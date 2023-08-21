@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Brackets, IsNull, Repository } from 'typeorm'
 import { BaseEntityService } from '../../../../shared/service/base-entity.service'
+import { QueryOptions } from '../../../database/interface/query-options.interface'
 import { TwitterSpace } from '../../model/twitter-space.entity'
 import { TwitterUserService } from './twitter-user.service'
 
@@ -92,7 +93,7 @@ WHERE is_active = TRUE
     return ids
   }
 
-  public async getManyForActiveCheck(options?: { limit?: number }) {
+  public async getManyForActiveCheck(options?: QueryOptions) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
@@ -116,7 +117,7 @@ WHERE is_active = TRUE
     return spaces
   }
 
-  public async getManyForPlaylistCheck(options?: { limit?: number }) {
+  public async getManyForPlaylistCheck(options?: QueryOptions) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('playlist_url NOTNULL')
