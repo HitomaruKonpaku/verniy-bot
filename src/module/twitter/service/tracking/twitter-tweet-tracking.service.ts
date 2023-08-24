@@ -56,26 +56,37 @@ export class TwitterTweetTrackingService extends EventEmitter {
         .filter((v) => v)
       const oldTweetIds = await this.twitterTweetService.getManyByIds(curTweetIds).then((tweets) => tweets.map((tweet) => tweet.id))
       const newTweetIds = ArrayUtil.difference(curTweetIds, oldTweetIds)
-      if (!newTweetIds.length) {
-        return
+
+      if (newTweetIds.length) {
+        const limiter = new Bottleneck({ maxConcurrent: 1 })
+        const newResults = results
+          .filter((v) => v.rest_id && newTweetIds.includes(v.rest_id))
+          .sort((a, b) => new Date(a.legacy.created_at).getTime() - new Date(b.legacy.created_at).getTime())
+        await Promise.allSettled(newResults.map((result) => limiter.schedule(() => this.handleTweetResult(result))))
       }
 
-      const limiter = new Bottleneck({ maxConcurrent: 1 })
-      const newResults = results
-        .filter((v) => v.rest_id && newTweetIds.includes(v.rest_id))
-        .sort((a, b) => new Date(a.legacy.created_at).getTime() - new Date(b.legacy.created_at).getTime())
-      await Promise.allSettled(newResults.map((result) => limiter.schedule(() => this.handleTweetResult(result))))
+      if (oldTweetIds.length) {
+        const limiter = new Bottleneck({ maxConcurrent: 1 })
+        const oldResults = results
+          .filter((v) => v.rest_id && oldTweetIds.includes(v.rest_id))
+        await Promise.allSettled(oldResults.map((result) => limiter.schedule(() => this.saveTweetResult(result))))
+      }
     } catch (error) {
       this.logger.error(`handleTweetResults: ${error.message}`, { results })
     }
   }
 
+  private async saveTweetResult(result: Result): Promise<TwitterTweet[]> {
+    const tweet = await this.twitterTweetControllerService.saveTweet(result)
+    const tweets = [tweet, tweet.retweetedStatus, tweet.quotedStatus]
+      .filter((v) => v && v.isNew)
+      .sort((a, b) => a.createdAt - b.createdAt)
+    return tweets
+  }
+
   private async handleTweetResult(result: Result) {
     try {
-      const tweet = await this.twitterTweetControllerService.saveTweet(result)
-      const tweets = [tweet, tweet.retweetedStatus, tweet.quotedStatus]
-        .filter((v) => v && v.isNew)
-        .sort((a, b) => a.createdAt - b.createdAt)
+      const tweets = await this.saveTweetResult(result)
       await Promise.allSettled(tweets.map((v) => this.handleTweetData(v)))
     } catch (error) {
       this.logger.error(`handleTweetResult: ${error.message}`, { result })
