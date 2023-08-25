@@ -127,5 +127,6 @@ export class ConfigVarService implements OnModuleInit {
 
   private async updateOneById(id: string, value: string) {
     await this.repository.update({ id }, { value })
+    await this.reloadVars()
   }
 }
