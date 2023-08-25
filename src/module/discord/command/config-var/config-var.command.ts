@@ -26,6 +26,7 @@ export class ConfigVarCommand extends BaseCommand {
     .addSubcommand((subcommand) => ConfigVarGetCommand.getSubcommand(subcommand))
     .addSubcommand((subcommand) => ConfigVarSetCommand.getSubcommand(subcommand))
     .setDefaultMemberPermissions(0)
+    .setDMPermission(true)
 
   public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)

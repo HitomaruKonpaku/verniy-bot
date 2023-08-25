@@ -66,7 +66,7 @@ export const DISCORD_APP_COMMANDS = [
 ]
 
 export const DISCORD_GUILD_COMMANDS = [
-  ConfigVarCommand,
+  // ConfigVarCommand,
   // AdminCommand,
   // UpdateCommand,
 
@@ -78,6 +78,7 @@ export const DISCORD_GUILD_COMMANDS = [
 ]
 
 export const DISCORD_GLOBAL_COMMANDS = [
+  ConfigVarCommand,
   StatusCommand,
   TrackListCommand,
   TrackAddCommand,
