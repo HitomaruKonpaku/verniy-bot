@@ -214,6 +214,9 @@ export class TwitterSpaceControllerService {
         return
       }
       this.logger.error(`checkPlaylistStatus: ${error.message}`, { id })
+      await this.twitterSpaceService
+        .updateFields(id, { playlistUpdatedAt: Date.now() })
+        .catch((err) => this.logger.error(`checkPlaylistStatus#updateFields: ${err.message}`, { id }))
     }
   }
 
