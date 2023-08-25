@@ -28,6 +28,14 @@ Discord tracking bot
 
 ## Commands
 
+### config_var
+
+> Bot config (owner only)
+
+- list
+- get
+- set
+
 ### track_add
 
 > Add or update user tracking
