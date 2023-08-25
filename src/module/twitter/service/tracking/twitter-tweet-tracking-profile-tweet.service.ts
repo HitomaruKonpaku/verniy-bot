@@ -3,7 +3,7 @@ import Bottleneck from 'bottleneck'
 import { EventEmitter } from 'events'
 
 import { baseLogger } from '../../../../logger'
-import { ConfigService } from '../../../config/service/config.service'
+import { ConfigVarService } from '../../../config-var/service/config-var.service'
 import { TwitterApi } from '../../api/twitter.api'
 import { TwitterEvent } from '../../enum/twitter-event.enum'
 import { TwitterTweetUtil } from '../../util/twitter-tweet.util'
@@ -13,19 +13,21 @@ import { TwitterFilteredStreamUserService } from '../data/twitter-filtered-strea
 export class TwitterTweetTrackingProfileTweetService extends EventEmitter {
   protected readonly logger = baseLogger.child({ context: TwitterTweetTrackingProfileTweetService.name })
 
-  private interval = 60000
   private withReplies = false
 
   constructor(
-    @Inject(ConfigService)
-    private readonly configService: ConfigService,
+    @Inject(ConfigVarService)
+    private readonly configVarService: ConfigVarService,
     @Inject(TwitterApi)
     private readonly twitterApi: TwitterApi,
     @Inject(TwitterFilteredStreamUserService)
     private readonly twitterFilteredStreamUserService: TwitterFilteredStreamUserService,
   ) {
     super()
-    this.interval = this.configService.twitter?.tweet?.interval || this.interval
+  }
+
+  private get interval() {
+    return this.configVarService.getNumber('TWITTER_TWEET_INTERVAL') * 1000 || 60000
   }
 
   public listen() {

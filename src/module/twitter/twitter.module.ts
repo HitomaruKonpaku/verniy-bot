@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { ConfigVarModule } from '../config-var/config-var.module'
 import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
 import { TrackModule } from '../track/track.module'
@@ -40,6 +41,7 @@ import { TwitterService } from './service/twitter.service'
       TwitterSpace,
     ]),
     ConfigModule,
+    ConfigVarModule,
     TrackModule,
     forwardRef(() => DiscordModule),
   ],

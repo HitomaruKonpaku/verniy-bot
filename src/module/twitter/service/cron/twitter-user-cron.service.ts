@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
 import { baseLogger } from '../../../../logger'
 import { BaseCronService } from '../../../../shared/service/base-cron.service'
+import { ConfigVarService } from '../../../config-var/service/config-var.service'
 import { ConfigService } from '../../../config/service/config.service'
 import { TwitterUser } from '../../model/twitter-user.entity'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
@@ -14,10 +15,9 @@ export class TwitterUserCronService extends BaseCronService {
   protected cronTime = '0 */1 * * * *'
   // protected cronRunOnInit = true
 
-  private maxConcurrent = 1
-  private limit = 20
-
   constructor(
+    @Inject(ConfigVarService)
+    private readonly configVarService: ConfigVarService,
     @Inject(TwitterUserService)
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterUserControllerService)
@@ -26,6 +26,15 @@ export class TwitterUserCronService extends BaseCronService {
     private readonly configService: ConfigService,
   ) {
     super()
+    this.cronTime = this.configVarService.getString('TWITTER_CRON_USER_EXPRESSION')
+  }
+
+  private get maxConcurrent() {
+    return this.configVarService.getNumber('TWITTER_CRON_USER_MAX_CONCURRENT')
+  }
+
+  private get limit() {
+    return this.configVarService.getNumber('TWITTER_CRON_USER_LIMIT')
   }
 
   protected async onTick() {

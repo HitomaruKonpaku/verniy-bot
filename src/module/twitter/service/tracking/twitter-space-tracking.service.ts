@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
-import { ConfigService } from '../../../config/service/config.service'
+import { ConfigVarService } from '../../../config-var/service/config-var.service'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitterSpace } from '../../../track/model/track-twitter-space.entity'
 import { TrackTwitterSpaceService } from '../../../track/service/track-twitter-space.service'
@@ -21,13 +21,9 @@ import { TwitterSpaceService } from '../data/twitter-space.service'
 export class TwitterSpaceTrackingService {
   private readonly logger = baseLogger.child({ context: TwitterSpaceTrackingService.name })
 
-  private liveSpacesCheckInterval = 60000
-  private newSpacesCheckInterval = 60000
-  private newSpacesFleetlineCheckInterval = 60000
-
   constructor(
-    @Inject(ConfigService)
-    private readonly configService: ConfigService,
+    @Inject(ConfigVarService)
+    private readonly configVarService: ConfigVarService,
     @Inject(TrackTwitterSpaceService)
     private readonly trackTwitterSpaceService: TrackTwitterSpaceService,
     @Inject(TwitterSpaceService)
@@ -40,8 +36,18 @@ export class TwitterSpaceTrackingService {
     private readonly twitterGraphqlSpaceService: TwitterGraphqlSpaceService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
-  ) {
-    this.newSpacesCheckInterval = this.configService.twitter?.space?.interval || this.newSpacesCheckInterval
+  ) { }
+
+  private get newSpacesFleetlineCheckInterval() {
+    return this.configVarService.getNumber('TWITTER_SPACE_INTERVAL_NEW_FLEETLINE') * 1000 || 60000
+  }
+
+  private get newSpacesCheckInterval() {
+    return this.configVarService.getNumber('TWITTER_SPACE_INTERVAL_NEW_AVATAR_CONTENT') * 1000 || 60000
+  }
+
+  private get liveSpacesCheckInterval() {
+    return this.configVarService.getNumber('TWITTER_SPACE_INTERVAL_LIVE') * 1000 || 60000
   }
 
   public async start() {
@@ -257,7 +263,7 @@ export class TwitterSpaceTrackingService {
 
   private async notifySpaceByTrack(space: TwitterSpace, track: TrackTwitterSpace) {
     try {
-      const content = space.state !== SpaceState.ENDED
+      const content = space.state !== SpaceState.ENDED && this.configVarService.getBoolean('TWITTER_SPACE_DISCORD_MESSAGE')
         ? track.discordMessage
         : null
       const embed = TwitterSpaceUtil.getEmbed(space, track)

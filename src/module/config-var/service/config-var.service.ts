@@ -11,6 +11,28 @@ export class ConfigVarService implements OnModuleInit {
   private readonly logger = baseLogger.child({ context: ConfigVarService.name })
 
   private readonly configVars: Record<string, boolean | number | string> = {
+    TWITTER_TWEET_INTERVAL: 60,
+    TWITTER_TWEET_DISCORD_MESSAGE: true,
+
+    TWITTER_PROFILE_INTERVAL: 60,
+    TWITTER_PROFILE_DISCORD_MESSAGE: true,
+
+    TWITTER_SPACE_INTERVAL_NEW_FLEETLINE: 60,
+    TWITTER_SPACE_INTERVAL_NEW_AVATAR_CONTENT: 60,
+    TWITTER_SPACE_INTERVAL_LIVE: 60,
+    TWITTER_SPACE_DISCORD_MESSAGE: true,
+
+    TWITTER_CRON_USER_EXPRESSION: '0 */1 * * * *',
+    TWITTER_CRON_USER_MAX_CONCURRENT: 1,
+    TWITTER_CRON_USER_LIMIT: 20,
+
+    TWITTER_CRON_SPACE_EXPRESSION: '30 */1 * * * *',
+    TWITTER_CRON_SPACE_MAX_CONCURRENT: 1,
+    TWITTER_CRON_SPACE_LIMIT: 20,
+
+    TWITTER_CRON_SPACE_PLAYLIST_EXPRESSION: '0 */1 * * * *',
+    TWITTER_CRON_SPACE_PLAYLIST_MAX_CONCURRENT: 5,
+    TWITTER_CRON_SPACE_PLAYLIST_LIMIT: 20,
   }
 
   constructor(

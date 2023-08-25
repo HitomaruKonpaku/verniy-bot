@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { bold, inlineCode, MessageCreateOptions } from 'discord.js'
 import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
-import { ConfigService } from '../../../config/service/config.service'
+import { ConfigVarService } from '../../../config-var/service/config-var.service'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitterProfileService } from '../../../track/service/track-twitter-profile.service'
 import { TwitterUser } from '../../model/twitter-user.entity'
@@ -15,11 +15,9 @@ import { TwitterUserService } from '../data/twitter-user.service'
 export class TwitterProfileTrackingService {
   private readonly logger = baseLogger.child({ context: TwitterProfileTrackingService.name })
 
-  private interval = 60000
-
   constructor(
-    @Inject(ConfigService)
-    private readonly configService: ConfigService,
+    @Inject(ConfigVarService)
+    private readonly configVarService: ConfigVarService,
     @Inject(TrackTwitterProfileService)
     private readonly trackTwitterProfileService: TrackTwitterProfileService,
     @Inject(TwitterUserService)
@@ -30,8 +28,10 @@ export class TwitterProfileTrackingService {
     private readonly twitterApiService: TwitterApiService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
-  ) {
-    this.interval = this.configService.twitter?.profile?.interval || this.interval
+  ) { }
+
+  private get interval() {
+    return this.configVarService.getNumber('TWITTER_PROFILE_INTERVAL') * 1000 || 60000
   }
 
   public async start() {
@@ -294,7 +294,11 @@ export class TwitterProfileTrackingService {
 
       trackItems.forEach((trackItem) => {
         messageOptionsList.forEach((messageOptions) => {
-          const channelContent = [trackItem.discordMessage, messageOptions.content]
+          const lines = [messageOptions.content]
+          if (this.configVarService.getBoolean('TWITTER_PROFILE_DISCORD_MESSAGE')) {
+            lines.unshift(trackItem.discordMessage)
+          }
+          const channelContent = lines
             .filter((v) => v)
             .join('\n')
           const channelMessageOptions = {

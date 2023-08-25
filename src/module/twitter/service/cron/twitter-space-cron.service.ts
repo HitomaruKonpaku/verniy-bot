@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
 import { baseLogger } from '../../../../logger'
 import { BaseCronService } from '../../../../shared/service/base-cron.service'
+import { ConfigVarService } from '../../../config-var/service/config-var.service'
 import { TwitterSpace } from '../../model/twitter-space.entity'
 import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
@@ -13,16 +14,24 @@ export class TwitterSpaceCronService extends BaseCronService {
   protected cronTime = '30 */1 * * * *'
   // protected cronRunOnInit = true
 
-  private maxConcurrent = 1
-  private limit = 20
-
   constructor(
+    @Inject(ConfigVarService)
+    private readonly configVarService: ConfigVarService,
     @Inject(TwitterSpaceService)
     private readonly twitterSpaceService: TwitterSpaceService,
     @Inject(TwitterSpaceControllerService)
     private readonly twitterSpaceControllerService: TwitterSpaceControllerService,
   ) {
     super()
+    this.cronTime = this.configVarService.getString('TWITTER_CRON_SPACE_EXPRESSION')
+  }
+
+  private get maxConcurrent() {
+    return this.configVarService.getNumber('TWITTER_CRON_SPACE_MAX_CONCURRENT')
+  }
+
+  private get limit() {
+    return this.configVarService.getNumber('TWITTER_CRON_SPACE_LIMIT')
   }
 
   protected async onTick() {

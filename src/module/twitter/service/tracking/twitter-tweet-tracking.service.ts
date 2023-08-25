@@ -5,6 +5,7 @@ import { EventEmitter } from 'events'
 
 import { baseLogger } from '../../../../logger'
 import { ArrayUtil } from '../../../../util/array.util'
+import { ConfigVarService } from '../../../config-var/service/config-var.service'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitterTweetService } from '../../../track/service/track-twitter-tweet.service'
 import { TwitterEvent } from '../../enum/twitter-event.enum'
@@ -25,6 +26,8 @@ export class TwitterTweetTrackingService extends EventEmitter {
   private readonly broadcastLimiter = new Bottleneck.Group({ maxConcurrent: 1 })
 
   constructor(
+    @Inject(ConfigVarService)
+    private readonly configVarService: ConfigVarService,
     @Inject(TwitterTweetService)
     private readonly twitterTweetService: TwitterTweetService,
     @Inject(TwitterTweetControllerService)
@@ -134,10 +137,10 @@ export class TwitterTweetTrackingService extends EventEmitter {
       }
 
       trackItems.forEach((trackItem) => {
-        const lines = [
-          // trackItem.discordMessage,
-          content,
-        ]
+        const lines = [content]
+        if (this.configVarService.getBoolean('TWITTER_TWEET_DISCORD_MESSAGE')) {
+          lines.unshift(trackItem.discordMessage)
+        }
         const channelContent = lines
           .filter((v) => v)
           .join('\n')
