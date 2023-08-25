@@ -1,3 +1,4 @@
+import { ConfigVar } from '../../config-var/model/config-var.entity'
 import { DiscordChannel } from '../../discord/model/discord-channel.entity'
 import { DiscordGuild } from '../../discord/model/discord-guild.entity'
 import { DiscordMessage } from '../../discord/model/discord-message.entity'
@@ -45,6 +46,8 @@ import { YoutubePost } from '../../youtube/model/youtube-post.entity'
 import { YoutubeVideo } from '../../youtube/model/youtube-video.entity'
 
 export const DB_ENTITIES = [
+  ConfigVar,
+
   DiscordUser,
   DiscordGuild,
   DiscordChannel,

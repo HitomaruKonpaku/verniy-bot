@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { AppService } from './app.service'
+import { ConfigVarModule } from './module/config-var/config-var.module'
 import { ConfigModule } from './module/config/config.module'
 import { DatabaseModule } from './module/database/database.module'
 import { DiscordModule } from './module/discord/discord.module'
@@ -11,6 +12,7 @@ import { VtuberModule } from './module/vtuber/vtuber.module'
   imports: [
     EnvironmentModule,
     ConfigModule,
+    ConfigVarModule,
     DatabaseModule,
     TrackModule,
     DiscordModule,

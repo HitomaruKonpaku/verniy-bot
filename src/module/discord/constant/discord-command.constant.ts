@@ -3,6 +3,10 @@ import { AdminReloadEnvironmentCommand } from '../command/admin/admin-reload/adm
 import { AdminReloadTwitterStreamRulesCommand } from '../command/admin/admin-reload/admin-reload-twitter-stream-rules.command'
 import { AdminReloadCommand } from '../command/admin/admin-reload/admin-reload.command'
 import { AdminCommand } from '../command/admin/admin.command'
+import { ConfigVarGetCommand } from '../command/config-var/config-var-get.command'
+import { ConfigVarListCommand } from '../command/config-var/config-var-list.command'
+import { ConfigVarSetCommand } from '../command/config-var/config-var-set.command'
+import { ConfigVarCommand } from '../command/config-var/config-var.command'
 import { GetTwitCastingMovieCommand } from '../command/get/get-twitcasting/get-twitcasting-movie.command'
 import { GetTwitCastingMoviesByUserCommand } from '../command/get/get-twitcasting/get-twitcasting-movies-by-user.command'
 import { GetTwitCastingUserCommand } from '../command/get/get-twitcasting/get-twitcasting-user.command'
@@ -50,6 +54,7 @@ import { UpdateYoutubeCommand } from '../command/update/update-youtube/update-yo
 import { UpdateCommand } from '../command/update/update.command'
 
 export const DISCORD_APP_COMMANDS = [
+  ConfigVarCommand,
   AdminCommand,
   UpdateCommand,
 
@@ -61,6 +66,7 @@ export const DISCORD_APP_COMMANDS = [
 ]
 
 export const DISCORD_GUILD_COMMANDS = [
+  ConfigVarCommand,
   // AdminCommand,
   // UpdateCommand,
 
@@ -80,6 +86,12 @@ export const DISCORD_GLOBAL_COMMANDS = [
 ]
 
 export const DISCORD_ALL_COMMANDS = [
+  // config-var
+  ConfigVarCommand,
+  ConfigVarListCommand,
+  ConfigVarGetCommand,
+  ConfigVarSetCommand,
+
   // admin
   AdminCommand,
   AdminReloadCommand,
