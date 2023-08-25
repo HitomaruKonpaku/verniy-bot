@@ -2,15 +2,10 @@ twitter:
   active: false
   tweet:
     active: false
-    interval: 60000
-    # ruleLimit: 5
-    # ruleLength: 512
   profile:
     active: false
-    interval: 60000
   space:
     active: false
-    interval: 60000
   cron:
     active: false
 
