@@ -102,12 +102,16 @@ export class DiscordClientService extends Client {
   }
 
   private async saveInteractionBaseData(interaction: Interaction) {
-    await this.discordDbService.saveUser(interaction.user)
-    if (interaction.channel.type === ChannelType.GuildText) {
-      await this.discordDbService.saveTextChannel(interaction.channel)
-    }
-    if (interaction.guild) {
-      await this.discordDbService.saveGuild(interaction.guild)
+    try {
+      await this.discordDbService.saveUser(interaction.user)
+      if (interaction.channel?.type === ChannelType.GuildText) {
+        await this.discordDbService.saveTextChannel(interaction.channel)
+      }
+      if (interaction.guild) {
+        await this.discordDbService.saveGuild(interaction.guild)
+      }
+    } catch (error) {
+      this.logger.error(`saveInteractionBaseData: ${error.message}`)
     }
   }
 
