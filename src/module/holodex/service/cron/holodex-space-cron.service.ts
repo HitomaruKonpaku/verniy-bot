@@ -64,7 +64,7 @@ export class HolodexSpaceCronService extends BaseCronService {
         id: space.holodexExternalStream?.id,
         channel_id: space.holodexChannelAccount.channelId,
         title: {
-          name: space.title,
+          name: space.title || `${space.creator.username}'s Space`,
           link: TwitterUtil.getSpaceUrl(space.id),
           thumbnail: space.creator.profileImageUrl,
           placeholderType: 'external-stream',
