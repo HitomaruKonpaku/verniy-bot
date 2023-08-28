@@ -13,6 +13,7 @@ export class ConfigVarService implements OnModuleInit {
   private readonly configVars: Record<string, boolean | number | string> = {
     TWITTER_TWEET_INTERVAL: 60,
     TWITTER_TWEET_DISCORD_MESSAGE: true,
+    TWITTER_TWEET_MAX_AGE: 86400,
 
     TWITTER_PROFILE_INTERVAL: 60,
     TWITTER_PROFILE_DISCORD_MESSAGE: true,

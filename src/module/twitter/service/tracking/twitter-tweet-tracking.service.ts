@@ -102,12 +102,16 @@ export class TwitterTweetTrackingService extends EventEmitter {
   }
 
   private async broadcastTweet(tweet: TwitterTweet) {
-    try {
-      const trackItems = await this.getTrackItemsByTweet(tweet)
-      if (!trackItems.length) {
-        return
-      }
+    if (Date.now() - tweet.createdAt > this.configVarService.getNumber('TWITTER_TWEET_MAX_AGE') * 1000) {
+      return
+    }
 
+    const trackItems = await this.getTrackItemsByTweet(tweet)
+    if (!trackItems.length) {
+      return
+    }
+
+    try {
       const tweetUrl = TwitterUtil.getTweetUrlByTweet(tweet)
       this.logger.info(`broadcastTweet: ${tweetUrl}`)
 
