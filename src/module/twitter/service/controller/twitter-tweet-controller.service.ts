@@ -36,18 +36,18 @@ export class TwitterTweetControllerService {
   }
 
   private async saveTweetResult(result: Result) {
-    let tweet = await this.twitterTweetService.getOneById(result.rest_id)
-    if (!tweet) {
-      tweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
-      tweet.isNew = true
+    const oldTweet = await this.twitterTweetService.getOneById(result.rest_id)
+    const newTweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
+    if (!oldTweet) {
+      newTweet.isNew = true
     }
 
-    tweet.author = await this.saveTweetAuthor(result)
-    tweet.inReplyToUser = await this.getTweetInReplyToUser(tweet)
-    tweet.retweetedStatus = await this.saveRetweetedStatusResult(result)
-    tweet.quotedStatus = await this.saveQuotedStatusResult(result)
+    newTweet.author = await this.saveTweetAuthor(result)
+    newTweet.inReplyToUser = await this.getTweetInReplyToUser(newTweet)
+    newTweet.retweetedStatus = await this.saveRetweetedStatusResult(result)
+    newTweet.quotedStatus = await this.saveQuotedStatusResult(result)
 
-    return tweet
+    return newTweet
   }
 
   private async saveTweetAuthor(result: Result) {
