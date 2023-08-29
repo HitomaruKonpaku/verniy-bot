@@ -68,12 +68,9 @@ export class TwitterTweetTrackingService extends EventEmitter {
         await Promise.allSettled(newResults.map((result) => limiter.schedule(() => this.handleTweetResult(result))))
       }
 
-      if (oldTweetIds.length) {
-        const limiter = new Bottleneck({ maxConcurrent: 1 })
-        const oldResults = results
-          .filter((v) => v.rest_id && oldTweetIds.includes(v.rest_id))
-        await Promise.allSettled(oldResults.map((result) => limiter.schedule(() => this.saveTweetResult(result))))
-      }
+      const oldResults = results
+        .filter((v) => v.rest_id && !newTweetIds.includes(v.rest_id))
+      await Promise.allSettled(oldResults.map((result) => this.saveTweetResult(result)))
     } catch (error) {
       this.logger.error(`handleTweetResults: ${error.message}`, { results })
     }
