@@ -21,6 +21,15 @@ export class TwitterTweetUtil {
     return results
   }
 
+  public static parseTweetDetail(data: any): Result[] {
+    const instructions: Instruction[] = data?.threaded_conversation_with_injections_v2?.instructions || []
+    const results = instructions
+      .map((v) => TwitterTweetUtil.parseInstruction(v))
+      .flat()
+      .filter((v) => v)
+    return results
+  }
+
   public static parseInstruction(instruction: Instruction) {
     const type = instruction.__typename || instruction.type
     switch (type) {

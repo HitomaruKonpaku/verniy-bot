@@ -8,4 +8,9 @@ export class TwitterGraphqlTweetService extends TwitterPublicApiService {
     const { data } = await this.api.graphql.TweetDetail(id)
     return data?.data
   }
+
+  public async getResultByRestId(id: string) {
+    const { data } = await this.api.graphql.TweetResultByRestId(id)
+    return data?.data
+  }
 }

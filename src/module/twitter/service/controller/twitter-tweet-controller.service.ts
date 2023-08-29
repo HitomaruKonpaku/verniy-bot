@@ -5,6 +5,8 @@ import { baseLogger } from '../../../../logger'
 import { Result } from '../../interface/twitter-tweet.interface'
 import { TwitterTweet } from '../../model/twitter-tweet.entity'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
+import { TwitterTweetUtil } from '../../util/twitter-tweet.util'
+import { TwitterGraphqlTweetService } from '../api/twitter-graphql-tweet.service'
 import { TwitterTweetService } from '../data/twitter-tweet.service'
 import { TwitterUserService } from '../data/twitter-user.service'
 import { TwitterUserControllerService } from './twitter-user-controller.service'
@@ -22,7 +24,30 @@ export class TwitterTweetControllerService {
     private readonly twitterUserService: TwitterUserService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
+    @Inject(TwitterGraphqlTweetService)
+    private readonly twitterGraphqlTweetService: TwitterGraphqlTweetService,
   ) { }
+
+  public async getByTweetDetail(id: string) {
+    const data = await this.twitterGraphqlTweetService.getDetail(id)
+    const results = TwitterTweetUtil.parseTweetDetail(data)
+    const result = results.find((v) => v.rest_id === id)
+    if (!result) {
+      return null
+    }
+    const tweet = TwitterEntityUtil.buildTweet(result)
+    return tweet
+  }
+
+  public async getByTweetResultByRestId(id: string) {
+    const data = await this.twitterGraphqlTweetService.getResultByRestId(id)
+    const { result } = data.tweetResult
+    if (!result) {
+      return null
+    }
+    const tweet = TwitterEntityUtil.buildTweet(result)
+    return tweet
+  }
 
   public async saveTweet(result: Result) {
     const id = result.rest_id
