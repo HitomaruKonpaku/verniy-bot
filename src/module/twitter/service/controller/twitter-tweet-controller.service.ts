@@ -33,9 +33,10 @@ export class TwitterTweetControllerService {
     const results = TwitterTweetUtil.parseTweetDetail(data)
     const result = results.find((v) => v.rest_id === id)
     if (!result) {
+      await this.twitterTweetService.updateFields(id, { isActive: false, updatedAt: Date.now() })
       return null
     }
-    const tweet = TwitterEntityUtil.buildTweet(result)
+    const tweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
     return tweet
   }
 
@@ -43,9 +44,10 @@ export class TwitterTweetControllerService {
     const data = await this.twitterGraphqlTweetService.getResultByRestId(id)
     const { result } = data.tweetResult
     if (!result) {
+      await this.twitterTweetService.updateFields(id, { isActive: false, updatedAt: Date.now() })
       return null
     }
-    const tweet = TwitterEntityUtil.buildTweet(result)
+    const tweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
     return tweet
   }
 
