@@ -21,6 +21,7 @@ export class TwitterBaseApi {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION,
       'x-guest-token': await this.api.data.getGuestToken(),
+      'x-guest-token-type': 1,
     }
     return headers
   }
@@ -29,6 +30,7 @@ export class TwitterBaseApi {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION_2,
       'x-guest-token': await this.api.data.getGuestToken2(),
+      'x-guest-token-type': 2,
     }
     return headers
   }
@@ -37,6 +39,7 @@ export class TwitterBaseApi {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION,
       'x-guest-token': await this.api.data.getGuestTokenDocumentCookie(),
+      'x-guest-token-type': 3,
     }
     return headers
   }
@@ -113,13 +116,21 @@ export class TwitterBaseApi {
   private async handleRequest(config: AxiosRequestConfig) {
     try {
       const guestToken = config.headers['x-guest-token']
+      const guestTokenType = Number(config.headers['x-guest-token-type'])
       if (guestToken) {
         const url = this.getRateLimitRequestUrl(config)
         const rateLimit = this.api.data.rateLimits[url]
         if (rateLimit && rateLimit.limit && rateLimit.remaining === 0) {
-          const newGuestToken = config.headers.authorization === TWITTER_PUBLIC_AUTHORIZATION
-            ? await this.api.data.getGuestToken(true)
-            : await this.api.data.getGuestToken2(true)
+          let newGuestToken: string
+          if (guestTokenType === 1) {
+            newGuestToken = await this.api.data.getGuestToken(true)
+          }
+          if (guestTokenType === 2) {
+            newGuestToken = await this.api.data.getGuestToken2(true)
+          }
+          if (guestTokenType === 3) {
+            newGuestToken = await this.api.data.getGuestTokenDocumentCookie(true)
+          }
           // eslint-disable-next-line no-param-reassign
           config.headers['x-guest-token'] = newGuestToken
         }
