@@ -39,6 +39,11 @@ export const twitterGraphqlEndpoints = {
     operationName: 'TweetDetail',
   },
 
+  TweetResultByRestId: {
+    queryId: '0hWvDhmW8YQ-S_ib3azIrw',
+    operationName: 'TweetResultByRestId',
+  },
+
   HomeLatestTimeline: {
     queryId: '9GIv1oF33K_0t1hqQOzoCg',
     operationName: 'HomeLatestTimeline',

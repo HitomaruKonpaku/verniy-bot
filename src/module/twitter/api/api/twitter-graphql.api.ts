@@ -101,6 +101,17 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
     return res
   }
 
+  public async TweetResultByRestId(tweetId: string) {
+    const url = this.toUrl(twitterGraphqlEndpoints.TweetResultByRestId)
+    const headers = await this.getGuestNewHeaders()
+    const params = this.cloneParams(
+      twitterGraphqlParams.TweetResultByRestId,
+      { variables: { tweetId } },
+    )
+    const res = await this.client.get(url, { headers, params })
+    return res
+  }
+
   // #endregion
 
   // #region Home

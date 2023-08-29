@@ -25,10 +25,18 @@ export class TwitterBaseApi {
     return headers
   }
 
-  protected async getGuestV2Headers() {
+  protected async getGuest2Headers() {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION_2,
       'x-guest-token': await this.api.data.getGuestToken2(),
+    }
+    return headers
+  }
+
+  protected async getGuestNewHeaders() {
+    const headers = {
+      authorization: TWITTER_PUBLIC_AUTHORIZATION,
+      'x-guest-token': await this.api.data.getGuestTokenDocumentCookie(),
     }
     return headers
   }
