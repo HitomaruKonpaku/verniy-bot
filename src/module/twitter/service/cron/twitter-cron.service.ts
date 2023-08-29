@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../../logger'
 import { TwitterSpaceCronService } from './twitter-space-cron.service'
 import { TwitterSpacePlaylistCronService } from './twitter-space-playlist-cron.service'
+import { TwitterTweetCronService } from './twitter-tweet-cron.service'
 import { TwitterUserCronService } from './twitter-user-cron.service'
 
 @Injectable()
@@ -15,6 +16,8 @@ export class TwitterCronService {
     private readonly twitterSpaceCronService: TwitterSpaceCronService,
     @Inject(TwitterSpacePlaylistCronService)
     private readonly twitterSpacePlaylistCronService: TwitterSpacePlaylistCronService,
+    @Inject(TwitterTweetCronService)
+    private readonly twitterTweetCronService: TwitterTweetCronService,
   ) { }
 
   public start() {
@@ -22,5 +25,6 @@ export class TwitterCronService {
     this.twitterUserCronService.start()
     this.twitterSpaceCronService.start()
     this.twitterSpacePlaylistCronService.start()
+    this.twitterTweetCronService.start()
   }
 }
