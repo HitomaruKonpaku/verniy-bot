@@ -38,7 +38,6 @@ export class TwitterUserCronService extends BaseCronService {
   }
 
   protected async onTick() {
-    this.logger.debug('onTick')
     this.checkUsers()
   }
 

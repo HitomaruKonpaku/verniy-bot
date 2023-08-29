@@ -35,7 +35,6 @@ export class TwitterSpaceCronService extends BaseCronService {
   }
 
   protected async onTick() {
-    this.logger.debug('onTick')
     this.checkSpaces()
   }
 

@@ -31,9 +31,13 @@ export class TwitterTweetControllerService {
   public async getByTweetDetail(id: string) {
     const data = await this.twitterGraphqlTweetService.getDetail(id)
     const results = TwitterTweetUtil.parseTweetDetail(data)
-    const result = results.find((v) => v.rest_id === id)
+    const result = results[0]
     if (!result) {
       await this.twitterTweetService.updateFields(id, { isActive: false, updatedAt: Date.now() })
+      return null
+    }
+    if (!result.rest_id) {
+      await this.twitterTweetService.updateFields(id, { updatedAt: Date.now() })
       return null
     }
     const tweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
@@ -45,6 +49,10 @@ export class TwitterTweetControllerService {
     const { result } = data.tweetResult
     if (!result) {
       await this.twitterTweetService.updateFields(id, { isActive: false, updatedAt: Date.now() })
+      return null
+    }
+    if (!result.rest_id) {
+      await this.twitterTweetService.updateFields(id, { updatedAt: Date.now() })
       return null
     }
     const tweet = await this.twitterTweetService.save(TwitterEntityUtil.buildTweet(result))
