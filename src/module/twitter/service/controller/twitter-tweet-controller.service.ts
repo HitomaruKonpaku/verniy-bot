@@ -31,7 +31,7 @@ export class TwitterTweetControllerService {
   public async getByTweetDetail(id: string) {
     const data = await this.twitterGraphqlTweetService.getDetail(id)
     const results = TwitterTweetUtil.parseTweetDetail(data)
-    const result = results[0]
+    const result = results.find((v) => v && v.rest_id === id)
     if (!result) {
       await this.twitterTweetService.updateFields(id, { isActive: false, updatedAt: Date.now() })
       return null
