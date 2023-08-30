@@ -21,15 +21,19 @@ export abstract class TwitterGuestTokenBase {
         || !this.token
         || tokenAge >= TWITTER_GUEST_TOKEN_DURATION
       if (canRefresh) {
-        try {
-          this.token = await this.fetchToken()
-          this.createdAt = Date.now()
-        } catch (error) {
-          this.logger.error(`getToken: ${error.message}`)
-        }
+        await this.getNewToken()
       }
       return this.token
     })
     return token
+  }
+
+  private async getNewToken() {
+    try {
+      this.token = await this.fetchToken()
+      this.createdAt = Date.now()
+    } catch (error) {
+      this.logger.error(`getNewToken: ${error.message}`)
+    }
   }
 }
