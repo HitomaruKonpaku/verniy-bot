@@ -75,6 +75,7 @@ export class TwitterEntityUtil {
     const { legacy } = result
     const obj: TwitterTweet = {
       id: result.rest_id,
+      isActive: true,
       createdAt: new Date(legacy.created_at).getTime(),
       updatedAt: Date.now(),
       authorId: legacy.user_id_str,
