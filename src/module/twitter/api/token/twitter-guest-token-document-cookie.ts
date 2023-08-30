@@ -1,8 +1,11 @@
 import axios from 'axios'
 import Bottleneck from 'bottleneck'
+import { baseLogger } from '../../../../logger'
 import { TwitterGuestTokenBase } from '../base/twitter-guest-token-base'
 
 export class TwitterGuestTokenDocumentCookie extends TwitterGuestTokenBase {
+  protected logger = baseLogger.child({ context: TwitterGuestTokenDocumentCookie.name })
+
   constructor(
     protected readonly limiter: Bottleneck,
   ) {
@@ -20,7 +23,7 @@ export class TwitterGuestTokenDocumentCookie extends TwitterGuestTokenBase {
         Object.assign(options.headers, { cookie })
       },
     })
-    const token = /(?<=gt=)\d+/.exec(data)[0]
+    const token = /(?<=gt=)\d+/.exec(data)?.[0]
     return token
   }
 }

@@ -1,7 +1,10 @@
 import Bottleneck from 'bottleneck'
+import { baseLogger } from '../../../../logger'
 import { TWITTER_GUEST_TOKEN_DURATION } from '../twitter.constant'
 
 export abstract class TwitterGuestTokenBase {
+  protected logger = baseLogger.child({ context: TwitterGuestTokenBase.name })
+
   private token: string
   private createdAt: number
 
@@ -18,8 +21,12 @@ export abstract class TwitterGuestTokenBase {
         || !this.token
         || tokenAge >= TWITTER_GUEST_TOKEN_DURATION
       if (canRefresh) {
-        this.token = await this.fetchToken()
-        this.createdAt = Date.now()
+        try {
+          this.token = await this.fetchToken()
+          this.createdAt = Date.now()
+        } catch (error) {
+          this.logger.error(`getToken: ${error.message}`)
+        }
       }
       return this.token
     })
