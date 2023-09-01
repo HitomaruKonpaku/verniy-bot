@@ -38,6 +38,7 @@ export class ConfigVarService implements OnModuleInit {
     TWITTER_CRON_TWEET_EXPRESSION: '0 */1 * * * *',
     TWITTER_CRON_TWEET_MAX_CONCURRENT: 1,
     TWITTER_CRON_TWEET_LIMIT: 1,
+    TWITTER_CRON_TWEET_LIMIT_2: 1,
   }
 
   constructor(

@@ -30,35 +30,55 @@ export class TwitterTweetCronService extends BaseCronService {
     return this.configVarService.getNumber('TWITTER_CRON_TWEET_MAX_CONCURRENT')
   }
 
-  private get limit() {
-    return this.configVarService.getNumber('TWITTER_CRON_TWEET_LIMIT')
-  }
-
   protected async onTick() {
-    this.checkTweets()
+    await this.getTweetsByTweetResultByRestId()
+    await this.getTweetsByTweetDetail()
   }
 
-  private async getTweets() {
-    const tweets = await this.twitterTweetService.getManyForCheck({ limit: this.limit })
+  private async getTweets(limit: number) {
+    const tweets = await this.twitterTweetService.getManyForCheck({ limit })
     return tweets
   }
 
-  private async checkTweets() {
+  private async getTweetsByTweetResultByRestId() {
     try {
-      const tweets = await this.getTweets()
-      this.logger.debug('checkTweets', { spaceCount: tweets.length })
+      const limit = this.configVarService.getNumber('TWITTER_CRON_TWEET_LIMIT')
+      const tweets = await this.getTweets(limit)
+      this.logger.debug('getTweetsByTweetResultByRestId', { count: tweets.length })
+
       const limiter = new Bottleneck({ maxConcurrent: this.maxConcurrent })
-      await Promise.allSettled(tweets.map((v) => limiter.schedule(() => this.checkTweet(v))))
+      await Promise.allSettled(tweets.map((v) => limiter.schedule(() => this.getTweetResultByRestId(v))))
     } catch (error) {
-      this.logger.error(`checkTweets: ${error.message}`)
+      this.logger.error(`getTweetsByTweetResultByRestId: ${error.message}`)
     }
   }
 
-  private async checkTweet(tweet: TwitterTweet) {
+  private async getTweetsByTweetDetail() {
+    try {
+      const limit = this.configVarService.getNumber('TWITTER_CRON_TWEET_LIMIT_2')
+      const tweets = await this.getTweets(limit)
+      this.logger.debug('getTweetsBygetTweetDetail', { count: tweets.length })
+
+      const limiter = new Bottleneck({ maxConcurrent: this.maxConcurrent })
+      await Promise.allSettled(tweets.map((v) => limiter.schedule(() => this.getTweetDetail(v))))
+    } catch (error) {
+      this.logger.error(`getTweetsBygetTweetDetail: ${error.message}`)
+    }
+  }
+
+  private async getTweetDetail(tweet: TwitterTweet) {
+    try {
+      await this.twitterTweetControllerService.getByTweetDetail(tweet.id)
+    } catch (error) {
+      this.logger.error(`getTweetDetail: ${error.message}`, { id: tweet.id })
+    }
+  }
+
+  private async getTweetResultByRestId(tweet: TwitterTweet) {
     try {
       await this.twitterTweetControllerService.getByTweetResultByRestId(tweet.id)
     } catch (error) {
-      this.logger.error(`checkTweet: ${error.message}`, { id: tweet.id })
+      this.logger.error(`getTweetResultByRestId: ${error.message}`, { id: tweet.id })
     }
   }
 }
