@@ -1,9 +1,16 @@
 import { ValueTransformer } from 'typeorm'
 
-export const dbObjectTransformer: ValueTransformer = {
+const replacer = (key, value) => {
+  if (Array.isArray(value) && !value.length) {
+    return undefined
+  }
+  return value
+}
+
+export const twitterEntitiesTransformer: ValueTransformer = {
   to: (value: any) => {
     if (value && typeof value === 'object') {
-      const data = JSON.stringify(value)
+      const data = JSON.stringify(value, replacer)
       return data
     }
     return null

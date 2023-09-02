@@ -1,7 +1,7 @@
 import { TweetEntitiesV1, TweetExtendedEntitiesV1 } from 'twitter-api-v2'
 import { Column, Entity } from 'typeorm'
 import { BaseExternalEntity } from '../../database/model/base-external.entity'
-import { dbObjectTransformer } from '../../database/transformer/db-object-transformer'
+import { twitterEntitiesTransformer } from '../transformer/twitter-entities-transformer'
 import { TwitterUser } from './twitter-user.entity'
 
 @Entity('twitter_tweet')
@@ -34,7 +34,7 @@ export class TwitterTweet extends BaseExternalEntity {
     name: 'entities',
     type: 'text',
     nullable: true,
-    transformer: dbObjectTransformer,
+    transformer: twitterEntitiesTransformer,
   })
   entities?: TweetEntitiesV1
 
@@ -42,7 +42,7 @@ export class TwitterTweet extends BaseExternalEntity {
     name: 'extended_entities',
     type: 'text',
     nullable: true,
-    transformer: dbObjectTransformer,
+    transformer: twitterEntitiesTransformer,
   })
   extendedEntities?: TweetExtendedEntitiesV1
 
