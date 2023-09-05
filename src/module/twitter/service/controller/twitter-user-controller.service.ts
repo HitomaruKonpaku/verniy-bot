@@ -111,8 +111,11 @@ export class TwitterUserControllerService {
 
   public async saveOrganizationId(label: any, sourceUserId: string) {
     try {
-      if (!label) {
-        await this.twitterUserService.updateFields(sourceUserId, { organizationId: null })
+      if (!label || !label.url) {
+        await this.twitterUserService.updateFields(sourceUserId, {
+          updatedAt: Date.now(),
+          organizationId: null,
+        })
         return null
       }
       const username = TwitterUserUtil.parseUsername(label.url.url)
@@ -121,10 +124,13 @@ export class TwitterUserControllerService {
         user = await this.getOneByScreenName(username)
       }
       const organizationId = user.id
-      await this.twitterUserService.updateFields(sourceUserId, { organizationId })
+      await this.twitterUserService.updateFields(sourceUserId, {
+        updatedAt: Date.now(),
+        organizationId,
+      })
       return organizationId
     } catch (error) {
-      this.logger.error(`saveOrganizationId: ${error.message}`, label)
+      this.logger.error(`saveOrganizationId: ${error.message}`, { userId: sourceUserId, label })
     }
     return null
   }
