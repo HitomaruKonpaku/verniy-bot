@@ -61,6 +61,7 @@ export class TwitterSpaceCronService extends BaseCronService {
       await this.twitterSpaceControllerService.getOneById(space.id, { priority: 9 })
     } catch (error) {
       this.logger.error(`checkSpace: ${error.message}`, { id: space.id })
+      await this.twitterSpaceService.updateFields(space.id, { modifiedAt: Date.now() })
     }
   }
 }
