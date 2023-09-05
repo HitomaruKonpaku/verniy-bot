@@ -146,7 +146,7 @@ export class TwitterEntityUtil {
     const { metadata, participants } = audioSpace
     const creator = participants.admins[0]
     const obj: TwitterSpace = {
-      id: audioSpace.rest_id || metadata.rest_id,
+      id: audioSpace.rest_id || metadata.broadcast_id || metadata.rest_id,
       isActive: true,
       createdAt: metadata.created_at,
       updatedAt: metadata.updated_at,
