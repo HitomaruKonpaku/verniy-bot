@@ -164,8 +164,16 @@ export class TwitterSpaceControllerService {
     }
 
     const spaces = audioSpaces
-      .filter((v) => v?.metadata)
-      .map((v) => TwitterEntityUtil.buildSpaceByAudioSpace(v))
+      .filter((audioSpace) => audioSpace?.metadata)
+      .map((audioSpace) => {
+        const spaceId = audioSpace.rest_id || audioSpace.metadata?.broadcast_id || audioSpace.metadata?.rest_id
+        if (!spaceId) {
+          this.logger.error('saveAudioSpace: space id not found', audioSpace)
+        }
+        const space = TwitterEntityUtil.buildSpaceByAudioSpace(audioSpace)
+        return space
+      })
+      .filter((space) => space)
     if (spaces.length) {
       const dbLimiter = new Bottleneck({ maxConcurrent: 1 })
       await Promise.allSettled(spaces.map((v) => dbLimiter.schedule(() => this.twitterSpaceService.save(v))))
