@@ -94,7 +94,7 @@ export class HolodexSpaceCronService extends BaseCronService {
           })
           body.id = placeholder.id
           await this.holodexApiService.postVideoPlaceholder(body)
-          await this.updateVideoSpace(placeholder, space)
+          await this.saveVideoSpace(placeholder, space)
           return
         }
 
@@ -104,14 +104,14 @@ export class HolodexSpaceCronService extends BaseCronService {
 
       if (!space.holodexExternalStream) {
         const limiter = new Bottleneck({ maxConcurrent: 1 })
-        await Promise.allSettled(data.map((v) => limiter.schedule(() => this.createVideoSpace(v, space))))
+        await Promise.allSettled(data.map((v) => limiter.schedule(() => this.saveVideoSpace(v, space))))
       }
     } catch (error) {
       this.logger.error(`notifySpace: ${error.message}`, { id: space.id })
     }
   }
 
-  private async createVideoSpace(data: any, space: HolodexSpace) {
+  private async saveVideoSpace(data: any, space: HolodexSpace) {
     await this.holodexVideoService.save({
       id: data.id,
       createdAt: space.startedAt,
@@ -122,16 +122,6 @@ export class HolodexSpaceCronService extends BaseCronService {
       id: data.id,
       createdAt: space.startedAt,
       type: HolodexExternalStreamType.TWITTER_SPACE,
-      sourceId: space.id,
-    })
-  }
-
-  public async updateVideoSpace(data: any, space: HolodexSpace) {
-    await this.holodexVideoService.updateFields(data.id, {
-      createdAt: space.startedAt,
-    })
-    await this.holodexExternalStreamService.updateFields(data.id, {
-      createdAt: space.startedAt,
       sourceId: space.id,
     })
   }
