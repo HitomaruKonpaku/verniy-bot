@@ -58,13 +58,22 @@ export class HolodexSpaceCronService extends BaseCronService {
   }
 
   private async notifySpace(space: HolodexSpace) {
+    const titleMinLength = 4
+    const titleMaxLength = 100
+
     try {
       const owner = await this.discordService.getOwner()
+      let title = space.title || `${space.creator.username}'s Space`
+      if (title.length < titleMinLength) {
+        title = `Space: ${space.title}`
+      }
+      title = title.slice(0, titleMaxLength)
+
       const body = {
         id: space.holodexExternalStream?.id,
         channel_id: space.holodexChannelAccount.channelId,
         title: {
-          name: space.title || `${space.creator.username}'s Space`,
+          name: title,
           link: TwitterUtil.getSpaceUrl(space.id),
           thumbnail: space.creator.profileImageUrl,
           placeholderType: 'external-stream',
@@ -107,7 +116,10 @@ export class HolodexSpaceCronService extends BaseCronService {
         await Promise.allSettled(data.map((v) => limiter.schedule(() => this.saveVideoSpace(v, space))))
       }
     } catch (error) {
-      this.logger.error(`notifySpace: ${error.message}`, { id: space.id })
+      const msg = [error.message, error.response?.data]
+        .filter((v) => v)
+        .join('. ')
+      this.logger.error(`notifySpace: ${msg}`, { id: space.id })
     }
   }
 
