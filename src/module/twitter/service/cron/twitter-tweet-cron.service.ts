@@ -43,6 +43,10 @@ export class TwitterTweetCronService extends BaseCronService {
   private async getTweetsByTweetResultByRestId() {
     try {
       const limit = this.configVarService.getNumber('TWITTER_CRON_TWEET_LIMIT')
+      if (limit <= 0) {
+        return
+      }
+
       const tweets = await this.getTweets(limit)
       this.logger.debug('getTweetsByTweetResultByRestId', { count: tweets.length })
 
@@ -56,6 +60,10 @@ export class TwitterTweetCronService extends BaseCronService {
   private async getTweetsByTweetDetail() {
     try {
       const limit = this.configVarService.getNumber('TWITTER_CRON_TWEET_LIMIT_2')
+      if (limit <= 0) {
+        return
+      }
+
       const tweets = await this.getTweets(limit)
       this.logger.debug('getTweetsBygetTweetDetail', { count: tweets.length })
 

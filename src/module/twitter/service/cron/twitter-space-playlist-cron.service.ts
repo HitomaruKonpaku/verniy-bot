@@ -45,6 +45,10 @@ export class TwitterSpacePlaylistCronService extends BaseCronService {
 
   private async checkSpaces() {
     try {
+      if (this.limit <= 0) {
+        return
+      }
+
       const spaces = await this.getSpaces()
       this.logger.debug('checkSpaces', { spaceCount: spaces.length })
       const limiter = new Bottleneck({ maxConcurrent: this.maxConcurrent })

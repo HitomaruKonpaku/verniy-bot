@@ -40,13 +40,17 @@ export class TwitterSpaceCronService extends BaseCronService {
 
   private async getSpaces() {
     const liveIds = await this.twitterSpaceService.getLiveSpaceIds()
-    const limit = Math.max(0, this.limit - liveIds.length)
+    const limit = Math.max(1, this.limit - liveIds.length)
     const spaces = await this.twitterSpaceService.getManyForActiveCheck({ limit })
     return spaces
   }
 
   private async checkSpaces() {
     try {
+      if (this.limit <= 0) {
+        return
+      }
+
       const spaces = await this.getSpaces()
       this.logger.debug('checkSpaces', { spaceCount: spaces.length })
       const limiter = new Bottleneck({ maxConcurrent: this.maxConcurrent })

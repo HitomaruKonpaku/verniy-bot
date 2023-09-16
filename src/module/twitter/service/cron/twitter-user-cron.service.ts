@@ -50,6 +50,10 @@ export class TwitterUserCronService extends BaseCronService {
 
   private async checkUsers() {
     try {
+      if (this.limit <= 0) {
+        return
+      }
+
       const users = await this.getUsers()
       this.logger.debug('checkUsers', { userCount: users.length })
       const limiter = new Bottleneck({ maxConcurrent: this.maxConcurrent })
