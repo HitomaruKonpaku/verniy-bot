@@ -1,4 +1,5 @@
 import { SpaceV2, TweetV2, UserV1, UserV2 } from 'twitter-api-v2'
+import { NumberUtil } from '../../../util/number.util'
 import { AudioSpace } from '../api/interface/twitter-graphql.interface'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { Result as TweetResult } from '../interface/twitter-tweet.interface'
@@ -156,7 +157,7 @@ export class TwitterEntityUtil {
       state: TwitterSpaceUtil.parseState(metadata.state),
       scheduledStart: metadata.scheduled_start,
       startedAt: metadata.start || metadata.started_at,
-      endedAt: Number(metadata.ended_at) || undefined,
+      endedAt: NumberUtil.toNumberOrUndefined(metadata.ended_at),
       lang: metadata.language,
       title: metadata.title,
       hostIds: participants.admins.map((v) => v.user_results.result.rest_id || v.user_results.rest_id),
@@ -184,8 +185,8 @@ export class TwitterEntityUtil {
       userId: data.twitter_user_id,
       state: data.state?.toLowerCase?.(),
       startedAt: Number(data.start_ms),
-      endedAt: Number(data.end_ms) || undefined,
-      pingedAt: Number(data.ping_ms) || undefined,
+      endedAt: NumberUtil.toNumberOrUndefined(data.end_ms),
+      pingedAt: NumberUtil.toNumberOrUndefined(data.ping_ms),
       lang: data.language,
       title: data.status,
       mediaId: data.media_id,
@@ -203,8 +204,8 @@ export class TwitterEntityUtil {
       hasLocation: data.has_location,
       lat: data.lat,
       lng: data.lng,
-      totalWatching: Number(data.total_watching) || undefined,
-      totalWatched: Number(data.total_watched) || undefined,
+      totalWatching: NumberUtil.toNumberOrUndefined(data.total_watching),
+      totalWatched: NumberUtil.toNumberOrUndefined(data.total_watched),
     }
     return obj
   }
