@@ -13,6 +13,7 @@ import { GetTwitCastingUserCommand } from '../command/get/get-twitcasting/get-tw
 import { GetTwitCastingCommand } from '../command/get/get-twitcasting/get-twitcasting.command'
 import { GetTwitchUserCommand } from '../command/get/get-twitch/get-twitch-user.command'
 import { GetTwitchCommand } from '../command/get/get-twitch/get-twitch.command'
+import { GetTwitterBroadcastCommand } from '../command/get/get-twitter/get-twitter-broadcast.command'
 import { GetTwitterSpaceCommand } from '../command/get/get-twitter/get-twitter-space.command'
 import { GetTwitterUserCommand } from '../command/get/get-twitter/get-twitter-user.command'
 import { GetTwitterCommand } from '../command/get/get-twitter/get-twitter.command'
@@ -148,6 +149,7 @@ export const DISCORD_ALL_COMMANDS = [
   GetTwitterCommand,
   GetTwitterUserCommand,
   GetTwitterSpaceCommand,
+  GetTwitterBroadcastCommand,
   GetTwitCastingCommand,
   GetTwitCastingUserCommand,
   GetTwitCastingMovieCommand,

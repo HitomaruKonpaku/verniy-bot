@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 import { Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
@@ -15,5 +14,14 @@ export class TwitterBroadcastService extends BaseEntityService<TwitterBroadcast>
     public readonly twitterUserService: TwitterUserService,
   ) {
     super()
+  }
+
+  public async getRawOneById(id: string) {
+    const space = await this.repository
+      .createQueryBuilder('b')
+      .select('b.*')
+      .andWhere('b.id = :id', { id })
+      .getRawOne()
+    return space
   }
 }

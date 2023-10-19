@@ -29,6 +29,12 @@ export class TwitterBroadcast extends BaseExternalEntity {
   @Column({ name: 'title', type: 'text', nullable: true })
   title?: string
 
+  @Column({ name: 'media_id', type: 'text', nullable: true })
+  mediaId?: string
+
+  @Column({ name: 'media_key', type: 'text', nullable: true })
+  mediaKey?: string
+
   @Column({ name: 'image_url', type: 'text', nullable: true })
   imageUrl?: string
 

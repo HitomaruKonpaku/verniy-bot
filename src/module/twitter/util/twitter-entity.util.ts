@@ -188,6 +188,8 @@ export class TwitterEntityUtil {
       pingedAt: Number(data.start_ms),
       lang: data.language,
       title: data.status,
+      mediaId: data.media_id,
+      mediaKey: data.media_key,
       imageUrl: data.image_url || data.image_url_medium || data.image_url_small,
       broadcastSource: data.broadcast_source,
       isAvailableForReplay: data.available_for_replay,
