@@ -48,6 +48,11 @@ export class GetTwitterBroadcastCommand extends BaseCommand {
 
     const broadcast = await this.twitterBroadcastControllerService.getOneById(id, { refresh })
 
+    if (!broadcast) {
+      await interaction.editReply('Broadcast not found')
+      return
+    }
+
     if (type === 'embed') {
       await this.replyObject(interaction, broadcast)
       return

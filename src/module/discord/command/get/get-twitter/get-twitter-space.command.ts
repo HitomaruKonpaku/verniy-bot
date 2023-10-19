@@ -51,9 +51,15 @@ export class GetTwitterSpaceCommand extends BaseCommand {
     if (!refresh) {
       space = await this.twitterSpaceService.getOneById(id, { withCreator: true })
     }
+
     if (!space) {
       await this.twitterSpaceControllerService.getOneById(id, { priority: 0 })
       space = await this.twitterSpaceService.getOneById(id, { withCreator: true })
+    }
+
+    if (!space) {
+      await interaction.editReply('Space not found')
+      return
     }
 
     if (type === 'embed') {
