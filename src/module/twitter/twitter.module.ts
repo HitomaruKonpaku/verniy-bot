@@ -5,6 +5,7 @@ import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
 import { TrackModule } from '../track/track.module'
 import { TwitterApi } from './api/twitter.api'
+import { TwitterBroadcast } from './model/twitter-broadcast.entity'
 import { TwitterFilteredStreamUser } from './model/twitter-filtered-stream-user.entity'
 import { TwitterSpace } from './model/twitter-space.entity'
 import { TwitterTweet } from './model/twitter-tweet.entity'
@@ -15,6 +16,7 @@ import { TwitterGraphqlSpaceService } from './service/api/twitter-graphql-space.
 import { TwitterGraphqlTweetService } from './service/api/twitter-graphql-tweet.service'
 import { TwitterGraphqlUserService } from './service/api/twitter-graphql-user.service'
 import { TwitterPublicApiService } from './service/api/twitter-public-api.service'
+import { TwitterBroadcastControllerService } from './service/controller/twitter-broardcast-controller.service'
 import { TwitterSpaceControllerService } from './service/controller/twitter-space-controller.service'
 import { TwitterTweetControllerService } from './service/controller/twitter-tweet-controller.service'
 import { TwitterUserControllerService } from './service/controller/twitter-user-controller.service'
@@ -23,6 +25,7 @@ import { TwitterSpaceCronService } from './service/cron/twitter-space-cron.servi
 import { TwitterSpacePlaylistCronService } from './service/cron/twitter-space-playlist-cron.service'
 import { TwitterTweetCronService } from './service/cron/twitter-tweet-cron.service'
 import { TwitterUserCronService } from './service/cron/twitter-user-cron.service'
+import { TwitterBroadcastService } from './service/data/twitter-broadcast.service'
 import { TwitterFilteredStreamUserService } from './service/data/twitter-filtered-stream-user.service'
 import { TwitterSpaceService } from './service/data/twitter-space.service'
 import { TwitterTweetService } from './service/data/twitter-tweet.service'
@@ -40,6 +43,7 @@ import { TwitterService } from './service/twitter.service'
       TwitterUser,
       TwitterTweet,
       TwitterSpace,
+      TwitterBroadcast,
     ]),
     ConfigModule,
     ConfigVarModule,
@@ -61,10 +65,12 @@ import { TwitterService } from './service/twitter.service'
     TwitterUserService,
     TwitterTweetService,
     TwitterSpaceService,
+    TwitterBroadcastService,
 
     TwitterUserControllerService,
     TwitterTweetControllerService,
     TwitterSpaceControllerService,
+    TwitterBroadcastControllerService,
 
     TwitterTweetTrackingService,
     TwitterTweetTrackingProfileTweetService,
@@ -90,10 +96,12 @@ import { TwitterService } from './service/twitter.service'
     TwitterUserService,
     TwitterTweetService,
     TwitterSpaceService,
+    TwitterBroadcastService,
 
     TwitterUserControllerService,
     TwitterTweetControllerService,
     TwitterSpaceControllerService,
+    TwitterBroadcastControllerService,
 
     TwitterTweetTrackingService,
   ],

@@ -1,5 +1,6 @@
 import { Column, Entity } from 'typeorm'
 import { BaseExternalUserEntity } from '../../database/model/base-external-user.entity'
+import { TwitterBroadcast } from './twitter-broadcast.entity'
 import { TwitterSpace } from './twitter-space.entity'
 import { TwitterTweet } from './twitter-tweet.entity'
 
@@ -50,4 +51,6 @@ export class TwitterUser extends BaseExternalUserEntity {
   tweets?: TwitterTweet[]
 
   spaces?: TwitterSpace[]
+
+  broadcasts?: TwitterBroadcast[]
 }

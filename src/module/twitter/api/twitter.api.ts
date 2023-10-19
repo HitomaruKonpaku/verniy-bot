@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
+import { TwitterBroadcastApi } from './api/twitter-broadcast.api'
 import { TwitterFleetApi } from './api/twitter-fleet.api'
 import { TwitterGraphqlApi } from './api/twitter-graphql.api'
 import { TwitterGuestApi } from './api/twitter-guest.api'
@@ -13,6 +14,7 @@ export class TwitterApi {
   public graphql: TwitterGraphqlApi
   public fleet: TwitterFleetApi
   public guest: TwitterGuestApi
+  public broadcast: TwitterBroadcastApi
   public liveVideoStream: TwitterLiveVideoStreamApi
 
   constructor() {
@@ -28,6 +30,7 @@ export class TwitterApi {
     this.graphql = new TwitterGraphqlApi(this, 'graphql')
     this.fleet = new TwitterFleetApi(this, 'fleets/v1')
     this.guest = new TwitterGuestApi(this, '1.1/guest')
+    this.broadcast = new TwitterBroadcastApi(this, '1.1/broadcasts')
     this.liveVideoStream = new TwitterLiveVideoStreamApi(this, '1.1/live_video_stream')
   }
 }

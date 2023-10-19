@@ -2,6 +2,7 @@ import { SpaceV2, TweetV2, UserV1, UserV2 } from 'twitter-api-v2'
 import { AudioSpace } from '../api/interface/twitter-graphql.interface'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { Result as TweetResult } from '../interface/twitter-tweet.interface'
+import { TwitterBroadcast } from '../model/twitter-broadcast.entity'
 import { TwitterSpace } from '../model/twitter-space.entity'
 import { TwitterTweet } from '../model/twitter-tweet.entity'
 import { TwitterUser } from '../model/twitter-user.entity'
@@ -169,6 +170,39 @@ export class TwitterEntityUtil {
       subscriberCount: audioSpace.subscriber_count,
       ticketsSold: metadata.tickets_sold,
       ticketsTotal: metadata.tickets_total,
+    }
+    return obj
+  }
+
+  public static buildBroadcast(data: any) {
+    const obj: TwitterBroadcast = {
+      id: data.id,
+      isActive: true,
+      createdAt: Number(data.created_at_ms),
+      updatedAt: Number(data.updated_at_ms),
+      modifiedAt: Date.now(),
+      userId: data.twitter_user_id,
+      state: data.state?.toLowerCase?.(),
+      startedAt: Number(data.start_ms),
+      endedAt: Number(data.end_ms),
+      pingedAt: Number(data.start_ms),
+      lang: data.language,
+      title: data.status,
+      imageUrl: data.image_url || data.image_url_medium || data.image_url_small,
+      broadcastSource: data.broadcast_source,
+      isAvailableForReplay: data.available_for_replay,
+      isHighLatency: data.is_high_latency,
+      hasModeration: data.has_moderation,
+      privateChat: data.private_chat,
+      friendChat: data.friend_chat,
+      width: data.width,
+      height: data.height,
+      cameraRotation: data.camera_rotation,
+      hasLocation: data.has_location,
+      lat: data.lat,
+      lng: data.lng,
+      totalWatching: Number(data.total_watching),
+      totalWatched: Number(data.total_watched),
     }
     return obj
   }

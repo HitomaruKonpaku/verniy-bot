@@ -30,6 +30,7 @@ import { TwitCastingUser } from '../../twitcasting/model/twitcasting-user.entity
 import { TwitchGame } from '../../twitch/model/twitch-game.entity'
 import { TwitchStream } from '../../twitch/model/twitch-stream.entity'
 import { TwitchUser } from '../../twitch/model/twitch-user.entity'
+import { TwitterBroadcast } from '../../twitter/model/twitter-broadcast.entity'
 import { TwitterFilteredStreamUser } from '../../twitter/model/twitter-filtered-stream-user.entity'
 import { TwitterSpace } from '../../twitter/model/twitter-space.entity'
 import { TwitterTweet } from '../../twitter/model/twitter-tweet.entity'
@@ -57,6 +58,7 @@ export const DB_ENTITIES = [
   TwitterUser,
   TwitterTweet,
   TwitterSpace,
+  TwitterBroadcast,
 
   TwitCastingUser,
   TwitCastingMovie,
