@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'disc
 import { baseLogger } from '../../../../../logger'
 import { TwitterBroadcastControllerService } from '../../../../twitter/service/controller/twitter-broardcast-controller.service'
 import { TwitterBroadcastService } from '../../../../twitter/service/data/twitter-broadcast.service'
-import { TwitterSpaceUtil } from '../../../../twitter/util/twitter-space.util'
+import { TwitterBroadcastUtil } from '../../../../twitter/util/twitter-broadcast.util'
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
@@ -42,7 +42,7 @@ export class GetTwitterBroadcastCommand extends BaseCommand {
   public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
-    const id = TwitterSpaceUtil.parseId(interaction.options.getString('id', true))
+    const id = TwitterBroadcastUtil.parseId(interaction.options.getString('id', true))
     const refresh = interaction.options.getBoolean('refresh')
     const type = interaction.options.getString('type') || 'raw'
 
