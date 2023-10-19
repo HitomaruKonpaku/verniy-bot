@@ -184,8 +184,8 @@ export class TwitterEntityUtil {
       userId: data.twitter_user_id,
       state: data.state?.toLowerCase?.(),
       startedAt: Number(data.start_ms),
-      endedAt: Number(data.end_ms),
-      pingedAt: Number(data.start_ms),
+      endedAt: Number(data.end_ms) || undefined,
+      pingedAt: Number(data.ping_ms) || undefined,
       lang: data.language,
       title: data.status,
       mediaId: data.media_id,
@@ -203,8 +203,8 @@ export class TwitterEntityUtil {
       hasLocation: data.has_location,
       lat: data.lat,
       lng: data.lng,
-      totalWatching: Number(data.total_watching),
-      totalWatched: Number(data.total_watched),
+      totalWatching: Number(data.total_watching) || undefined,
+      totalWatched: Number(data.total_watched) || undefined,
     }
     return obj
   }
