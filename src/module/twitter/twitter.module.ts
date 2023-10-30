@@ -20,6 +20,7 @@ import { TwitterBroadcastControllerService } from './service/controller/twitter-
 import { TwitterSpaceControllerService } from './service/controller/twitter-space-controller.service'
 import { TwitterTweetControllerService } from './service/controller/twitter-tweet-controller.service'
 import { TwitterUserControllerService } from './service/controller/twitter-user-controller.service'
+import { TwitterBroadcastCronService } from './service/cron/twitter-broadcast-cron.service'
 import { TwitterCronService } from './service/cron/twitter-cron.service'
 import { TwitterSpaceCronService } from './service/cron/twitter-space-cron.service'
 import { TwitterSpacePlaylistCronService } from './service/cron/twitter-space-playlist-cron.service'
@@ -82,6 +83,7 @@ import { TwitterService } from './service/twitter.service'
     TwitterSpaceCronService,
     TwitterSpacePlaylistCronService,
     TwitterTweetCronService,
+    TwitterBroadcastCronService,
   ],
   exports: [
     TwitterService,

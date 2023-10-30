@@ -36,6 +36,10 @@ export class TwitterBroadcastControllerService {
   }
 
   public async fetchByIds(ids: string[]) {
+    if (!ids?.length) {
+      return []
+    }
+
     try {
       const { data } = await this.twitterApi.broadcast.show(ids.filter((v) => v))
       const arr = Object.values(data.broadcasts)
@@ -43,12 +47,17 @@ export class TwitterBroadcastControllerService {
       const broadcasts = await Promise
         .all(arr.map((v) => dbLimiter.schedule(() => this.save(v))))
         .then((items) => items.filter((v) => v))
+        .then((items) => this.twitterBroadcastService.getManyByIds(items.map((v) => v.id)))
+
       await Promise.allSettled(broadcasts.map(async (broadcast) => {
-        const playlist = await this.fetchPlaylistById(broadcast.id, broadcast.mediaKey)
-        Object.assign(broadcast, playlist)
-        const user = await this.twitterUserControllerService.getOneByRestId(broadcast.userId)
+        if (!broadcast.playlistUrl) {
+          const playlist = await this.fetchPlaylistById(broadcast.id, broadcast.mediaKey)
+          Object.assign(broadcast, playlist)
+        }
+        const user = await this.twitterUserControllerService.getOneByRestId(broadcast.userId, { fromDb: true })
         Object.assign(broadcast, { user })
       }))
+
       return broadcasts
     } catch (error) {
       this.logger.error(`fetchByIds: ${error.message}`, { ids })
