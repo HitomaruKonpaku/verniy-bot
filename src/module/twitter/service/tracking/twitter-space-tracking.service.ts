@@ -64,7 +64,7 @@ export class TwitterSpaceTrackingService {
    */
   private async checkLiveSpaces() {
     try {
-      const spaceIds = await this.twitterSpaceService.getLiveSpaceIds()
+      const spaceIds = await this.twitterSpaceService.getManyLiveIds()
       if (spaceIds.length) {
         this.logger.debug('checkLiveSpaces', { count: spaceIds.length, ids: spaceIds })
         // const chunks = ArrayUtil.splitIntoChunk(spaceIds, TWITTER_API_LIST_SIZE)

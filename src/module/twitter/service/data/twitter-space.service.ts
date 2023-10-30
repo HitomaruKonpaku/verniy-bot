@@ -75,7 +75,7 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
     return space
   }
 
-  public async getLiveSpaceIds(): Promise<string[]> {
+  public async getManyLiveIds(): Promise<string[]> {
     const query = `
 SELECT id
 FROM twitter_space
@@ -93,7 +93,7 @@ WHERE is_active = TRUE
     return ids
   }
 
-  public async getManyForActiveCheck(options?: QueryOptions) {
+  public async getManyActive(options?: QueryOptions) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('is_active = TRUE')
@@ -117,7 +117,7 @@ WHERE is_active = TRUE
     return spaces
   }
 
-  public async getManyForPlaylistCheck(options?: QueryOptions) {
+  public async getManyPlaylistActive(options?: QueryOptions) {
     const query = this.repository
       .createQueryBuilder()
       .andWhere('playlist_url NOTNULL')

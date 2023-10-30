@@ -39,9 +39,9 @@ export class TwitterSpaceCronService extends BaseCronService {
   }
 
   private async getSpaces() {
-    const liveIds = await this.twitterSpaceService.getLiveSpaceIds()
+    const liveIds = await this.twitterSpaceService.getManyLiveIds()
     const limit = Math.max(1, this.limit - liveIds.length)
-    const spaces = await this.twitterSpaceService.getManyForActiveCheck({ limit })
+    const spaces = await this.twitterSpaceService.getManyActive({ limit })
     return spaces
   }
 

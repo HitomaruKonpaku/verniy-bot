@@ -39,7 +39,7 @@ export class TwitterSpacePlaylistCronService extends BaseCronService {
   }
 
   private async getSpaces() {
-    const spaces = await this.twitterSpaceService.getManyForPlaylistCheck({ limit: this.limit })
+    const spaces = await this.twitterSpaceService.getManyPlaylistActive({ limit: this.limit })
     return spaces
   }
 
