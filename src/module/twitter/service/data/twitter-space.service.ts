@@ -96,7 +96,15 @@ WHERE is_active = TRUE
   public async getManyActive(options?: QueryOptions) {
     const query = this.repository
       .createQueryBuilder()
-      .andWhere('is_active = TRUE')
+      .orWhere(new Brackets((qb0) => {
+        qb0
+          .andWhere('is_active = TRUE')
+      }))
+      .orWhere(new Brackets((qb0) => {
+        qb0
+          .andWhere('is_active = FALSE')
+          .andWhere('playlist_active = TRUE')
+      }))
       // .andWhere(new Brackets((qb0) => {
       //   qb0
       //     .orWhere(new Brackets((qb1) => {
