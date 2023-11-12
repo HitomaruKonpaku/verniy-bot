@@ -29,6 +29,10 @@ export class TwitterUtil {
     return `https://twitter.com/i/spaces/${spaceId}`
   }
 
+  public static getBroadcastUrl(broadcastId: string) {
+    return `https://twitter.com/i/broadcasts/${broadcastId}`
+  }
+
   public static getIncludesUserById(data: TweetV2SingleStreamResult, id: string) {
     return data.includes?.users?.find?.((v) => v?.id === id)
   }
