@@ -35,7 +35,7 @@ export class HolodexSpaceCronService extends HolodexBaseCronService<HolodexSpace
   }
 
   public getType(): HolodexExternalStreamType {
-    throw HolodexExternalStreamType.TWITTER_SPACE
+    return HolodexExternalStreamType.TWITTER_SPACE
   }
 
   public async getItems(): Promise<HolodexSpace[]> {

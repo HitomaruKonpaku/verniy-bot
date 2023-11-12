@@ -35,7 +35,7 @@ export class HolodexBroadcastCronService extends HolodexBaseCronService<HolodexB
   }
 
   public getType(): HolodexExternalStreamType {
-    throw HolodexExternalStreamType.TWITTER_BROADCAST
+    return HolodexExternalStreamType.TWITTER_BROADCAST
   }
 
   public async getItems(): Promise<HolodexBroadcast[]> {
