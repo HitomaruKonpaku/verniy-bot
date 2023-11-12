@@ -6,6 +6,8 @@ twitter:
     active: false
   space:
     active: false
+  broadcast:
+    active: false
   cron:
     active: false
 

@@ -31,6 +31,7 @@ import { TwitterFilteredStreamUserService } from './service/data/twitter-filtere
 import { TwitterSpaceService } from './service/data/twitter-space.service'
 import { TwitterTweetService } from './service/data/twitter-tweet.service'
 import { TwitterUserService } from './service/data/twitter-user.service'
+import { TwitterBroadcastTrackingService } from './service/tracking/twitter-broadcast-tracking.service'
 import { TwitterFleetlineTrackingService } from './service/tracking/twitter-fleetline-tracking.service'
 import { TwitterProfileTrackingService } from './service/tracking/twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './service/tracking/twitter-space-tracking.service'
@@ -79,6 +80,7 @@ import { TwitterService } from './service/twitter.service'
     TwitterProfileTrackingService,
     TwitterFleetlineTrackingService,
     TwitterSpaceTrackingService,
+    TwitterBroadcastTrackingService,
 
     TwitterCronService,
     TwitterUserCronService,

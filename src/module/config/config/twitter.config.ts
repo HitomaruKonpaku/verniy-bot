@@ -28,6 +28,10 @@ export const twitterConfig = {
     interval: 60000,
   },
 
+  broadcast: {
+    active: false,
+  },
+
   cron: {
     active: false,
   },

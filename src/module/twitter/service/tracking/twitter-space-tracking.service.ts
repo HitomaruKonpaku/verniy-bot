@@ -79,7 +79,6 @@ export class TwitterSpaceTrackingService {
       if (!spaceIds.length) {
         return
       }
-      this.logger.debug('onFleetlineData', { spaceIds })
       await this.getNewSpaces(spaceIds)
     } catch (error) {
       this.logger.error(`onFleetlineData: ${error.message}`)

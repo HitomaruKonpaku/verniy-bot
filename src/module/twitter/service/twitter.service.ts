@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/service/config.service'
 import { TwitterCronService } from './cron/twitter-cron.service'
+import { TwitterBroadcastTrackingService } from './tracking/twitter-broadcast-tracking.service'
 import { TwitterFleetlineTrackingService } from './tracking/twitter-fleetline-tracking.service'
 import { TwitterProfileTrackingService } from './tracking/twitter-profile-tracking.service'
 import { TwitterSpaceTrackingService } from './tracking/twitter-space-tracking.service'
@@ -22,6 +23,8 @@ export class TwitterService {
     private readonly twitterFleetlineTrackingService: TwitterFleetlineTrackingService,
     @Inject(TwitterSpaceTrackingService)
     private readonly twitterSpaceTrackingService: TwitterSpaceTrackingService,
+    @Inject(TwitterBroadcastTrackingService)
+    private readonly twitterBroadcastTrackingService: TwitterBroadcastTrackingService,
     @Inject(TwitterCronService)
     private readonly twitterCronService: TwitterCronService,
   ) { }
@@ -38,7 +41,10 @@ export class TwitterService {
     if (config.space?.active) {
       this.twitterSpaceTrackingService.start()
     }
-    if (config.space?.active) {
+    if (config.broadcast?.active) {
+      this.twitterBroadcastTrackingService.start()
+    }
+    if (config.space?.active || config.broadcast?.active) {
       this.twitterFleetlineTrackingService.start()
     }
     if (config.cron?.active) {
