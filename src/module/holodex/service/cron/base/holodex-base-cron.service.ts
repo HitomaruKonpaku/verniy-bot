@@ -77,12 +77,6 @@ export abstract class HolodexBaseCronService<T extends BaseExternalEntity> exten
         duration: this.getItemDuration(item),
       }
 
-      debugger
-      debugger
-      debugger
-      debugger
-      debugger
-
       const { data } = await this.holodexApiService.postVideoPlaceholder(body)
       if (data.error) {
         const { placeholder } = data
