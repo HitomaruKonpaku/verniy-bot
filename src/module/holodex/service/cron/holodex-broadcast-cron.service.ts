@@ -5,16 +5,16 @@ import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TwitterUtil } from '../../../twitter/util/twitter.util'
 import { HolodexExternalStreamType } from '../../enum/holodex-external-stream-type.enum'
-import { HolodexSpace } from '../../interface/holodex-space.interface'
+import { HolodexBroadcast } from '../../interface/holodex-broadcast.interface'
 import { HolodexApiService } from '../api/holodex-api.service'
-import { HolodexSpaceService } from '../data/external/holodex-space.service'
+import { HolodexBroadcastService } from '../data/external/holodex-broadcast.service'
 import { HolodexExternalStreamService } from '../data/holodex-external-stream.service'
 import { HolodexVideoService } from '../data/holodex-video.service'
 import { HolodexBaseCronService } from './base/holodex-base-cron.service'
 
 @Injectable()
-export class HolodexSpaceCronService extends HolodexBaseCronService<HolodexSpace> {
-  protected readonly logger = baseLogger.child({ context: HolodexSpaceCronService.name })
+export class HolodexBroadcastCronService extends HolodexBaseCronService<HolodexBroadcast> {
+  protected readonly logger = baseLogger.child({ context: HolodexBroadcastCronService.name })
 
   protected cronTime = '0 */1 * * * *'
   // protected cronRunOnInit = true
@@ -28,51 +28,51 @@ export class HolodexSpaceCronService extends HolodexBaseCronService<HolodexSpace
     protected readonly holodexExternalStreamService: HolodexExternalStreamService,
     @Inject(forwardRef(() => DiscordService))
     protected readonly discordService: DiscordService,
-    @Inject(HolodexSpaceService)
-    private readonly holodexSpaceService: HolodexSpaceService,
+    @Inject(HolodexBroadcastService)
+    private readonly holodexBroadcastService: HolodexBroadcastService,
   ) {
     super(holodexApiService, holodexVideoService, holodexExternalStreamService, discordService)
   }
 
   public getType(): HolodexExternalStreamType {
-    throw HolodexExternalStreamType.TWITTER_SPACE
+    throw HolodexExternalStreamType.TWITTER_BROADCAST
   }
 
-  public async getItems(): Promise<HolodexSpace[]> {
-    const items = await this.holodexSpaceService.getManyLive()
+  public async getItems(): Promise<HolodexBroadcast[]> {
+    const items = await this.holodexBroadcastService.getManyLive()
     return items
   }
 
-  protected getItemTitle(item: HolodexSpace): string {
-    let title = item.title || `${item.creator.username}'s Space`
+  protected getItemTitle(item: HolodexBroadcast): string {
+    let title = item.title || `${item.user.username}'s Broadcast`
     if (title.length < this.TITLE_MIN_LENGTH) {
-      title = `Space: ${item.title}`
+      title = `Broadcast: ${item.title}`
     }
     title = title.slice(0, this.TITLE_MAX_LENGTH)
     return title
   }
 
-  protected getItemUrl(item: HolodexSpace): string {
-    const url = TwitterUtil.getSpaceUrl(item.id)
+  protected getItemUrl(item: HolodexBroadcast): string {
+    const url = TwitterUtil.getBroadcastUrl(item.id)
     return url
   }
 
-  protected getItemThumbnailUrl(item: HolodexSpace): string {
-    const url = item.creator.profileImageUrl
+  protected getItemThumbnailUrl(item: HolodexBroadcast): string {
+    const url = item.imageUrl || item.user.profileImageUrl
     return url
   }
 
-  protected getItemLiveTime(item: HolodexSpace): string {
+  protected getItemLiveTime(item: HolodexBroadcast): string {
     const time = new Date(item.startedAt).toISOString()
     return time
   }
 
-  protected getItemDuration(item: HolodexSpace): number {
+  protected getItemDuration(item: HolodexBroadcast): number {
     const duration = Math.floor((Date.now() - item.startedAt) / 1000) + this.extraDurationSec
     return duration
   }
 
-  protected getVideoCreatedAt(item: HolodexSpace): number {
+  protected getVideoCreatedAt(item: HolodexBroadcast): number {
     return item.startedAt
   }
 }

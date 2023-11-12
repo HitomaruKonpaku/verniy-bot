@@ -8,4 +8,8 @@ export const holodexConfig = {
   space: {
     active: false,
   },
+
+  broadcast: {
+    active: false,
+  },
 }

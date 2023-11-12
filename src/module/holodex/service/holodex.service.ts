@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/service/config.service'
+import { HolodexBroadcastCronService } from './cron/holodex-broadcast-cron.service'
 import { HolodexSpaceCronService } from './cron/holodex-space-cron.service'
 import { HolodexTweetTrackingService } from './tracking/holodex-tweet-tracking.service'
 
@@ -15,6 +16,8 @@ export class HolodexService {
     private readonly holodexTweetTrackingService: HolodexTweetTrackingService,
     @Inject(HolodexSpaceCronService)
     private readonly holodexSpaceCronService: HolodexSpaceCronService,
+    @Inject(HolodexBroadcastCronService)
+    private readonly holodexBroadcastCronService: HolodexBroadcastCronService,
   ) { }
 
   public async start() {
@@ -28,6 +31,9 @@ export class HolodexService {
     }
     if (config.space?.active) {
       this.holodexSpaceCronService.start()
+    }
+    if (config.broadcast?.active) {
+      this.holodexBroadcastCronService.start()
     }
   }
 }

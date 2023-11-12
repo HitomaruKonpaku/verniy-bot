@@ -53,3 +53,5 @@ holodex:
     active: false
   space:
     active: false
+  broadcast:
+    active: false

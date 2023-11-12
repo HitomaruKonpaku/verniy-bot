@@ -1,12 +1,13 @@
 /* eslint-disable class-methods-use-this */
+
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { SpaceState } from '../../../twitter/enum/twitter-space.enum'
-import { TwitterSpace } from '../../../twitter/model/twitter-space.entity'
-import { HolodexChannelAccountType } from '../../enum/holodex-channel-account-type.enum'
-import { HolodexExternalStreamType } from '../../enum/holodex-external-stream-type.enum'
-import { HolodexSpace } from '../../interface/holodex-space.interface'
+import { SpaceState } from '../../../../twitter/enum/twitter-space.enum'
+import { TwitterSpace } from '../../../../twitter/model/twitter-space.entity'
+import { HolodexChannelAccountType } from '../../../enum/holodex-channel-account-type.enum'
+import { HolodexExternalStreamType } from '../../../enum/holodex-external-stream-type.enum'
+import { HolodexSpace } from '../../../interface/holodex-space.interface'
 
 @Injectable()
 export class HolodexSpaceService {
