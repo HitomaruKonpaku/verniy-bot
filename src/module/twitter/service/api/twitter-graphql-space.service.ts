@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import { baseLogger } from '../../../../logger'
 import { AudioSpace } from '../../api/interface/twitter-graphql.interface'
-import { AvatarContent, Fleetline } from '../../interface/twitter-fleet.interface'
+import { AvatarContent } from '../../interface/twitter-fleet.interface'
 import { Status } from '../../interface/twitter-live-video-stream.interface'
 import { TwitterSpaceUtil } from '../../util/twitter-space.util'
 import { TwitterPublicApiService } from './twitter-public-api.service'
@@ -18,19 +18,6 @@ export class TwitterGraphqlSpaceService extends TwitterPublicApiService {
       return data
     } catch (error) {
       this.logger.error(`getSpacesByFleetsAvatarContent: ${error.message}`, { requestId })
-      throw error
-    }
-  }
-
-  public async getSpacesByFleetsFleetline(): Promise<Fleetline> {
-    const requestId = randomUUID()
-    try {
-      this.logger.debug('--> getSpacesByFleetsFleetline', { requestId })
-      const { data } = await this.api.fleet.fleetline()
-      this.logger.debug('<-- getSpacesByFleetsFleetline', { requestId })
-      return data
-    } catch (error) {
-      this.logger.error(`getSpacesByFleetsFleetline: ${error.message}`, { requestId })
       throw error
     }
   }

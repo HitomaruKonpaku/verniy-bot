@@ -7,7 +7,7 @@ import { TrackTwitterSpace } from '../../../track/model/track-twitter-space.enti
 import { TrackTwitterSpaceService } from '../../../track/service/track-twitter-space.service'
 import { TWITTER_API_LIST_SIZE } from '../../constant/twitter.constant'
 import { SpaceState } from '../../enum/twitter-space.enum'
-import { AvatarContent } from '../../interface/twitter-fleet.interface'
+import { AvatarContent, Fleetline } from '../../interface/twitter-fleet.interface'
 import { TwitterSpace } from '../../model/twitter-space.entity'
 import { twitterSpacesByFleetsAvatarContentLimiter } from '../../twitter.limiter'
 import { TwitterSpaceUtil } from '../../util/twitter-space.util'
@@ -16,6 +16,7 @@ import { TwitterGraphqlSpaceService } from '../api/twitter-graphql-space.service
 import { TwitterSpaceControllerService } from '../controller/twitter-space-controller.service'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterSpaceService } from '../data/twitter-space.service'
+import { TwitterFleetlineTrackingService } from './twitter-fleetline-tracking.service'
 
 @Injectable()
 export class TwitterSpaceTrackingService {
@@ -32,15 +33,13 @@ export class TwitterSpaceTrackingService {
     private readonly twitterSpaceControllerService: TwitterSpaceControllerService,
     @Inject(TwitterUserControllerService)
     private readonly twitterUserControllerService: TwitterUserControllerService,
+    @Inject(TwitterFleetlineTrackingService)
+    private readonly twitterFleetlineTrackingService: TwitterFleetlineTrackingService,
     @Inject(TwitterGraphqlSpaceService)
     private readonly twitterGraphqlSpaceService: TwitterGraphqlSpaceService,
     @Inject(forwardRef(() => DiscordService))
     private readonly discordService: DiscordService,
   ) { }
-
-  private get newSpacesFleetlineCheckInterval() {
-    return this.configVarService.getNumber('TWITTER_SPACE_INTERVAL_NEW_FLEETLINE') * 1000 || 60000
-  }
 
   private get newSpacesCheckInterval() {
     return this.configVarService.getNumber('TWITTER_SPACE_INTERVAL_NEW_AVATAR_CONTENT') * 1000 || 60000
@@ -50,12 +49,44 @@ export class TwitterSpaceTrackingService {
     return this.configVarService.getNumber('TWITTER_SPACE_INTERVAL_LIVE') * 1000 || 60000
   }
 
-  public async start() {
+  public start() {
     this.logger.info('Starting...')
-    await this.checkNewSpacesByFleetline()
+    this.twitterFleetlineTrackingService.once('response', (response) => this.onceFleetlineResponse(response))
+  }
+
+  // #region Fleetline
+
+  private addFleetlineListeners() {
+    this.twitterFleetlineTrackingService.on('data', (data) => this.onFleetlineData(data))
+  }
+
+  private async onceFleetlineResponse(response: any) {
+    this.addFleetlineListeners()
+
+    if (response.data) {
+      await this.onFleetlineData(response.data)
+    }
+
     await this.checkNewSpacesByAvatarContent()
     await this.checkLiveSpaces()
   }
+
+  private async onFleetlineData(data: Fleetline) {
+    try {
+      const spaceIds = data.threads
+        .map((v) => v.live_content?.audiospace?.broadcast_id)
+        .filter((v) => v) || []
+      if (!spaceIds.length) {
+        return
+      }
+      this.logger.debug('onFleetlineData', { spaceIds })
+      await this.getNewSpaces(spaceIds)
+    } catch (error) {
+      this.logger.error(`onFleetlineData: ${error.message}`)
+    }
+  }
+
+  // #endregion
 
   // #region Checkers
 
@@ -98,23 +129,6 @@ export class TwitterSpaceTrackingService {
 
     const interval = this.newSpacesCheckInterval
     setTimeout(() => this.checkNewSpacesByAvatarContent(), interval)
-  }
-
-  private async checkNewSpacesByFleetline() {
-    if (!process.env.TWITTER_AUTH_TOKEN) {
-      return
-    }
-
-    try {
-      const spaceIds = await this.getSpacesByFleetline()
-      this.logger.debug('checkNewSpacesByFleetline', { count: spaceIds.length, ids: spaceIds })
-      await this.getNewSpaces(spaceIds)
-    } catch (error) {
-      this.logger.error(`checkNewSpacesByFleetline: ${error.message}`)
-    }
-
-    const interval = this.newSpacesFleetlineCheckInterval
-    setTimeout(() => this.checkNewSpacesByFleetline(), interval)
   }
 
   // #endregion
@@ -174,19 +188,6 @@ export class TwitterSpaceTrackingService {
       return spaceIds
     } catch (error) {
       this.logger.error(`getSpacesByAvatarContent: ${error.message}`)
-    }
-    return []
-  }
-
-  private async getSpacesByFleetline() {
-    try {
-      const result = await this.twitterGraphqlSpaceService.getSpacesByFleetsFleetline()
-      const spaceIds = result.threads
-        .map((v) => v.live_content?.audiospace?.broadcast_id)
-        .filter((v) => v) || []
-      return spaceIds
-    } catch (error) {
-      this.logger.error(`getSpacesByFleetline: ${error.message}`)
     }
     return []
   }

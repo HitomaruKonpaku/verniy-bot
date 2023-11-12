@@ -66,7 +66,8 @@ interface AudioSpace {
 }
 
 interface LiveContent {
-  audiospace: AudioSpace
+  audiospace?: AudioSpace
+  livevideo?: any
 }
 
 interface AvatarContentUser {
