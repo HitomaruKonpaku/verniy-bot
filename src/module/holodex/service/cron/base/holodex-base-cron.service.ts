@@ -112,6 +112,7 @@ export abstract class HolodexBaseCronService<T extends BaseExternalEntity> exten
   }
 
   protected async saveVideo(data: any, item: T) {
+    this.logger.debug('saveVideo', { type: this.getType(), id: data.id, sourceId: item.id })
     await this.holodexVideoService.save({
       id: data.id,
       createdAt: this.getVideoCreatedAt(item),
