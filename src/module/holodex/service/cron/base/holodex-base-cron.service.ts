@@ -77,7 +77,7 @@ export abstract class HolodexBaseCronService<T extends BaseExternalEntity> exten
         duration: this.getItemDuration(item),
       }
 
-      const { data } = await this.holodexApiService.postVideoPlaceholder(body)
+      const { data } = await this.postVideo(body)
       if (data.error) {
         const { placeholder } = data
         if (placeholder) {
@@ -90,7 +90,7 @@ export abstract class HolodexBaseCronService<T extends BaseExternalEntity> exten
           })
 
           body.id = placeholder.id
-          await this.holodexApiService.postVideoPlaceholder(body)
+          await this.postVideo(body)
           await this.saveVideo(placeholder, item)
           return
         }
@@ -109,6 +109,12 @@ export abstract class HolodexBaseCronService<T extends BaseExternalEntity> exten
         .join('. ')
       this.logger.error(`notifyItem: ${msg}`, { id: item.id })
     }
+  }
+
+  protected async postVideo(body) {
+    const response = await this.holodexApiService.postVideoPlaceholder(body)
+    this.logger.debug('postVideo', { type: this.getType(), id: body.id || response.data[0]?.id, sourceUrl: body.title.link })
+    return response
   }
 
   protected async saveVideo(data: any, item: T) {
