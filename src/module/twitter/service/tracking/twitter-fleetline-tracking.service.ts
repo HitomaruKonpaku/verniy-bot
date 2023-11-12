@@ -27,7 +27,11 @@ export class TwitterFleetlineTrackingService extends EventEmitter {
   }
 
   private async requestFleetline() {
-    await this.getFleetline()
+    try {
+      await this.getFleetline()
+    } catch (error) {
+      this.logger.error(`requestFleetline: ${error.message}`)
+    }
 
     const interval = 60E3
     setTimeout(() => this.requestFleetline(), interval)
