@@ -38,16 +38,21 @@ export class TwitterBroadcastCronService extends BaseCronService {
 
   private async checkBroadcasts() {
     try {
+      const ids: string[] = []
       const liveIds = await this.twitterBroadcastService.getManyLiveIds()
-      await this.twitterBroadcastControllerService.fetchByIds(liveIds)
-      if (this.limit <= 0) {
-        return
+      ids.push(...liveIds)
+
+      if (this.limit) {
+        const limit = Math.max(0, this.limit - liveIds.length)
+        if (limit) {
+          const activeIds = await this.twitterBroadcastService.getManyActive({ limit })
+            .then((broadcasts) => broadcasts.map((broadcast) => broadcast.id))
+            .catch(() => [])
+          ids.push(...activeIds)
+        }
       }
 
-      const limit = Math.max(0, this.limit - liveIds.length)
-      const activeIds = await this.twitterBroadcastService.getManyActive({ limit })
-        .then((broadcasts) => broadcasts.map((broadcast) => broadcast.id))
-      await this.twitterBroadcastControllerService.fetchByIds(activeIds)
+      await this.twitterBroadcastControllerService.fetchByIds(ids)
     } catch (error) {
       this.logger.error(`checkBroadcasts: ${error.message}`)
     }
