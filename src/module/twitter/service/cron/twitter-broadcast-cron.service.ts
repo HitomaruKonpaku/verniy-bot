@@ -40,6 +40,10 @@ export class TwitterBroadcastCronService extends BaseCronService {
     try {
       const ids: string[] = []
       const liveIds = await this.twitterBroadcastService.getManyLiveIds()
+        .catch((error) => {
+          this.logger.error(`checkBroadcasts#live: ${error.message}`)
+          return []
+        })
       ids.push(...liveIds)
 
       if (this.limit) {
@@ -47,11 +51,19 @@ export class TwitterBroadcastCronService extends BaseCronService {
         if (limit) {
           const activeIds = await this.twitterBroadcastService.getManyActive({ limit })
             .then((broadcasts) => broadcasts.map((broadcast) => broadcast.id))
-            .catch(() => [])
+            .catch((error) => {
+              this.logger.error(`checkBroadcasts#active: ${error.message}`)
+              return []
+            })
           ids.push(...activeIds)
         }
       }
 
+      if (!ids.length) {
+        return
+      }
+
+      this.logger.debug('checkBroadcasts', { count: ids.length })
       await this.twitterBroadcastControllerService.fetchByIds(ids)
     } catch (error) {
       this.logger.error(`checkBroadcasts: ${error.message}`)
