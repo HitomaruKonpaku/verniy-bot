@@ -1,10 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { bold, inlineCode } from 'discord.js'
+import { bold, hideLinkEmbed, hyperlink, inlineCode, spoiler } from 'discord.js'
 import { ChatUserstate, Client } from 'tmi.js'
 import { baseLogger } from '../../../../logger'
 import { DiscordService } from '../../../discord/service/discord.service'
 import { TrackTwitchChat } from '../../../track/model/track-twitch-chat.entity'
 import { TrackTwitchChatService } from '../../../track/service/track-twitch-chat.service'
+import { TwitchUtil } from '../../util/twitch.util'
 import { TwitchUserService } from '../data/twitch-user.service'
 
 @Injectable()
@@ -157,7 +158,11 @@ export class TwitchChatTrackingService {
           return
         }
 
-        const msgContent = `💬 ${bold(inlineCode(userstate['display-name']))} 📄 ${inlineCode(message)}`
+        const srcUsername = channel.replace(/^#/, '')
+        const srcUrl = TwitchUtil.getUserUrl(srcUsername)
+        const msgSrc = spoiler(hyperlink('src', hideLinkEmbed(srcUrl)))
+        const msgAuthor = bold(inlineCode(userstate['display-name']))
+        const msgContent = `${msgSrc} 💬 ${msgAuthor} 📄 ${inlineCode(message)}`
         const content = [trackItem.discordMessage, msgContent]
           .filter((v) => v)
           .join('\n') || null
