@@ -18,6 +18,8 @@ import { TwitCastingUserService } from '../data/twitcasting-user.service'
 export class TwitCastingLiveTrackingService {
   private readonly logger = baseLogger.child({ context: TwitCastingLiveTrackingService.name })
 
+  private closeCount = 0
+
   constructor(
     @Inject(ConfigService)
     private readonly configService: ConfigService,
@@ -62,14 +64,27 @@ export class TwitCastingLiveTrackingService {
     const url = this.twitCastingApiService.getRealtimeLivesUrl()
     const socket = new WebSocket(url)
     socket.on('error', (error) => this.logger.error(`[WS] error: ${error.message}`))
-    socket.on('open', () => this.logger.debug('[WS] open'))
+    socket.on('open', () => this.onWsOpen())
     socket.on('close', () => this.onWsClose())
     socket.on('message', (payload) => this.onWsMessage(String(payload)))
   }
 
+  private onWsOpen() {
+    this.logger.debug('[WS] open')
+    this.closeCount = 0
+  }
+
   private onWsClose() {
     this.logger.debug('[WS] close')
-    this.initRealtimeApi()
+
+    const ms = ([1, 5, 10, 20, 30, 45][this.closeCount] || 60) * 1000
+    this.logger.debug(`[WS] retry in ${ms}ms`)
+
+    setTimeout(() => {
+      this.initRealtimeApi()
+    }, ms)
+
+    this.closeCount += 1
   }
 
   private onWsMessage(payload: string) {
