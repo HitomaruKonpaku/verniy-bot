@@ -87,6 +87,8 @@ WHERE is_active = TRUE
       AND strftime('%s', 'now') * 1000 >= scheduled_start
     )
   )
+ORDER BY updated_at
+LIMIT 20
     `
     const spaces = await this.repository.query(query)
     const ids = spaces.map((v) => v.id)
