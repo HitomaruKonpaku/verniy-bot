@@ -4,9 +4,14 @@ import { baseLogger } from '../../../../logger'
 import { BaseCronService } from '../../../../shared/service/base-cron.service'
 import { ConfigVarService } from '../../../config-var/service/config-var.service'
 import { ConfigService } from '../../../config/service/config.service'
+import { TwitterApiOptions } from '../../api/interface/twitter-api.interface'
 import { TwitterUser } from '../../model/twitter-user.entity'
 import { TwitterUserControllerService } from '../controller/twitter-user-controller.service'
 import { TwitterUserService } from '../data/twitter-user.service'
+
+interface GetOptions {
+  limit?: number
+}
 
 @Injectable()
 export class TwitterUserCronService extends BaseCronService {
@@ -38,37 +43,41 @@ export class TwitterUserCronService extends BaseCronService {
   }
 
   protected async onTick() {
-    this.checkUsers()
+    await this.checkUsers()
+    await this.checkUsers({ usePublic: true })
   }
 
-  private async getUsers() {
+  private async getUsers(opts?: GetOptions) {
     const config = this.configService.twitter
     const joinTrack = config.profile?.active
-    const users = await this.twitterUserService.getManyForCheck({ limit: this.limit, joinTrack })
+    const users = await this.twitterUserService.getManyForCheck({ limit: opts?.limit || 0, joinTrack })
     return users
   }
 
-  private async checkUsers() {
+  private async checkUsers(opts?: TwitterApiOptions) {
     try {
       if (this.limit <= 0) {
         return
       }
 
-      const users = await this.getUsers()
-      this.logger.debug('checkUsers', { userCount: users.length })
+      const users = await this.getUsers({ limit: this.limit })
+      this.logger.debug('checkUsers', { userCount: users.length, ...opts })
       const limiter = new Bottleneck({ maxConcurrent: this.maxConcurrent })
-      await Promise.allSettled(users.map((v) => limiter.schedule(() => this.checkUser(v))))
+      await Promise.allSettled(users.map((v) => limiter.schedule(() => this.checkUser(v, opts))))
     } catch (error) {
       this.logger.error(`checkUsers: ${error.message}`)
     }
   }
 
-  private async checkUser(user: TwitterUser) {
+  private async checkUser(user: TwitterUser, opts?: TwitterApiOptions) {
     try {
-      const newUser = await this.twitterUserControllerService.getOneByRestId(user.id)
+      const newUser = !opts?.usePublic
+        ? await this.twitterUserControllerService.getOneByRestId(user.id)
+        : await this.twitterUserControllerService.getOneByScreenName(user.username, opts)
       if (newUser) {
         return
       }
+
       await this.twitterUserService.updateFields(
         user.id,
         {
@@ -77,7 +86,7 @@ export class TwitterUserCronService extends BaseCronService {
         },
       )
     } catch (error) {
-      this.logger.error(`checkUser: ${error.message}`, { id: user.id })
+      this.logger.error(`checkUser: ${error.message}`, { id: user.id, ...opts })
     }
   }
 }

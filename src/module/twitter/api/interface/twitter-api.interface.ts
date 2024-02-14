@@ -8,3 +8,7 @@ export interface TwitterGraphqlEndpoint {
   queryId: string
   operationName: string
 }
+
+export interface TwitterApiOptions {
+  usePublic?: boolean
+}

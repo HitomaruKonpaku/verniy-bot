@@ -4,6 +4,7 @@ import { UserV1, UserV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
 import { BooleanUtil } from '../../../../util/boolean.util'
 import { HistoryService } from '../../../history/service/history.service'
+import { TwitterApiOptions } from '../../api/interface/twitter-api.interface'
 import { TwitterUser } from '../../model/twitter-user.entity'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterUserUtil } from '../../util/twitter-user.util'
@@ -11,7 +12,7 @@ import { TwitterApiService } from '../api/twitter-api.service'
 import { TwitterGraphqlUserService } from '../api/twitter-graphql-user.service'
 import { TwitterUserService } from '../data/twitter-user.service'
 
-interface GetOptions {
+interface GetOptions extends TwitterApiOptions {
   fromDb?: boolean
 }
 
@@ -40,7 +41,7 @@ export class TwitterUserControllerService {
 
     if (!user) {
       const data = await this.twitterGraphqlUserService.getUserByRestId(id)
-      const { result } = data.user
+      const result = data?.user?.result
       if (!result?.rest_id) {
         return null
       }
@@ -57,8 +58,8 @@ export class TwitterUserControllerService {
     }
 
     if (!user) {
-      const data = await this.twitterGraphqlUserService.getUserByScreenName(screenName)
-      const { result } = data.user
+      const data = await this.twitterGraphqlUserService.getUserByScreenName(screenName, options)
+      const result = data?.user?.result
       if (!result?.rest_id) {
         return null
       }

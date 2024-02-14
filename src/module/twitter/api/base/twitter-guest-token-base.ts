@@ -30,7 +30,9 @@ export abstract class TwitterGuestTokenBase {
 
   private async getNewToken() {
     try {
+      this.logger.debug('--> fetchToken')
       this.token = await this.fetchToken()
+      this.logger.debug('<-- fetchToken', { token: this.token })
       this.createdAt = Date.now()
     } catch (error) {
       this.logger.error(`getNewToken: ${error.message}`)

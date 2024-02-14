@@ -1,4 +1,5 @@
 import { baseLogger } from '../../../../logger'
+import { TwitterApiOptions } from '../../api/interface/twitter-api.interface'
 import { twitterGqlUserByRestIdLimiter, twitterGqlUserByScreenNameLimiter, twitterGqlUserTweetsLimiter } from '../../twitter.limiter'
 import { TwitterPublicApiService } from './twitter-public-api.service'
 
@@ -11,9 +12,9 @@ export class TwitterGraphqlUserService extends TwitterPublicApiService {
     return data?.data
   }
 
-  public async getUserByScreenName(screenName: string) {
+  public async getUserByScreenName(screenName: string, opts?: TwitterApiOptions) {
     const limiter = twitterGqlUserByScreenNameLimiter
-    const { data } = await limiter.schedule(() => this.api.graphql.UserByScreenName(screenName))
+    const { data } = await limiter.schedule(() => this.api.graphql.UserByScreenName(screenName, opts))
     return data?.data
   }
 

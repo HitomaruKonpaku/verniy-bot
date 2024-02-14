@@ -4,7 +4,7 @@ import { DeepPartial } from 'typeorm'
 import { TwitterBaseApi } from '../base/twitter-base.api'
 import { twitterGraphqlEndpoints } from '../constant/twitter-graphql-endpoint.constant'
 import { twitterGraphqlParams } from '../constant/twitter-graphql-param.constant'
-import { TwitterGraphqlEndpoint } from '../interface/twitter-api.interface'
+import { TwitterApiOptions, TwitterGraphqlEndpoint } from '../interface/twitter-api.interface'
 
 export class TwitterGraphqlApi extends TwitterBaseApi {
   // #region User
@@ -20,9 +20,11 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
     return res
   }
 
-  public async UserByScreenName(username: string) {
+  public async UserByScreenName(username: string, opts?: TwitterApiOptions) {
     const url = this.toUrl(twitterGraphqlEndpoints.UserByScreenName)
-    const headers = this.getAuthHeaders()
+    const headers = !opts?.usePublic
+      ? this.getAuthHeaders()
+      : await this.getGuestNewHeaders()
     const params = this.cloneParams(
       twitterGraphqlParams.UserByScreenName,
       { variables: { screen_name: username } },

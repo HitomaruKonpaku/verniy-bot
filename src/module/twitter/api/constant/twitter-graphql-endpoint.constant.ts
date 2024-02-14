@@ -1,11 +1,11 @@
 export const twitterGraphqlEndpoints = {
   UserByRestId: {
-    queryId: 'Lxg1V9AiIzzXEiP2c8dRnw',
+    queryId: 'tD8zKvQzwY3kdx5yz6YmOw',
     operationName: 'UserByRestId',
   },
 
   UserByScreenName: {
-    queryId: 'oUZZZ8Oddwxs8Cd3iW3UEA',
+    queryId: 'k5XapwcSikNsEsILW5FvgA',
     operationName: 'UserByScreenName',
   },
 
