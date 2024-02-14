@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Bottleneck from 'bottleneck'
+import { USER_AGENT } from '../../../../constant/app.constant'
 import { baseLogger } from '../../../../logger'
 import { TwitterGuestTokenBase } from '../base/twitter-guest-token-base'
 
@@ -17,6 +18,9 @@ export class TwitterGuestTokenDocumentCookie extends TwitterGuestTokenBase {
     const { data } = await axios.request({
       method: 'GET',
       url: 'https://twitter.com',
+      headers: {
+        'user-agent': USER_AGENT,
+      },
       beforeRedirect(options, responseDetails) {
         const cookie = (responseDetails.headers['set-cookie'] as any as string[])
           .map((v) => v.split(';')[0]).join('; ')
