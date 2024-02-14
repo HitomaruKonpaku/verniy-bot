@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigVarModule } from '../config-var/config-var.module'
 import { ConfigModule } from '../config/config.module'
 import { DiscordModule } from '../discord/discord.module'
+import { HistoryModule } from '../history/history.module'
 import { TrackModule } from '../track/track.module'
 import { TwitterApi } from './api/twitter.api'
 import { TwitterBroadcast } from './model/twitter-broadcast.entity'
@@ -50,6 +51,7 @@ import { TwitterService } from './service/twitter.service'
     ]),
     ConfigModule,
     ConfigVarModule,
+    HistoryModule,
     TrackModule,
     forwardRef(() => DiscordModule),
   ],

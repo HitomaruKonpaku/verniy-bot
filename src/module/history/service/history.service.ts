@@ -13,4 +13,14 @@ export class HistoryService {
     const result = await this.historyRepository.save(data)
     return result
   }
+
+  public async saveString(data: Omit<History, 'id' | 'isActive' | 'createdAt' | 'type'>) {
+    const result = await this.save({ type: 'string', ...data })
+    return result
+  }
+
+  public async saveBoolean(data: Omit<History, 'id' | 'isActive' | 'createdAt' | 'type'>) {
+    const result = await this.save({ type: 'boolean', ...data })
+    return result
+  }
 }

@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common'
 import Bottleneck from 'bottleneck'
 import { UserV1, UserV2 } from 'twitter-api-v2'
 import { baseLogger } from '../../../../logger'
+import { BooleanUtil } from '../../../../util/boolean.util'
+import { HistoryService } from '../../../history/service/history.service'
 import { TwitterUser } from '../../model/twitter-user.entity'
 import { TwitterEntityUtil } from '../../util/twitter-entity.util'
 import { TwitterUserUtil } from '../../util/twitter-user.util'
@@ -26,6 +28,8 @@ export class TwitterUserControllerService {
     private readonly twitterApiService: TwitterApiService,
     @Inject(TwitterGraphqlUserService)
     private readonly twitterGraphqlUserService: TwitterGraphqlUserService,
+    @Inject(HistoryService)
+    private readonly historyService: HistoryService,
   ) { }
 
   public async getOneByRestId(id: string, options?: GetOptions) {
@@ -92,7 +96,7 @@ export class TwitterUserControllerService {
 
   public async saveUser(result: any) {
     const id = result.rest_id
-    const user = await this.dbLimiter.key(id).schedule(() => this.twitterUserService.save(TwitterEntityUtil.buildUser(result)))
+    const user = await this.dbLimiter.key(id).schedule(() => this.save(TwitterEntityUtil.buildUser(result)))
     user.organizationId = await this.saveOrganizationId(result.affiliates_highlighted_label?.label, user.id)
     return user
   }
@@ -102,7 +106,7 @@ export class TwitterUserControllerService {
     const user = await this.dbLimiter.key(id).schedule(async () => {
       let tmpUser = await this.twitterUserService.getOneByIdWithoutTrack(id)
       if (!tmpUser) {
-        tmpUser = await this.twitterUserService.save(TwitterEntityUtil.buildUser(result))
+        tmpUser = await this.save(TwitterEntityUtil.buildUser(result))
       }
       return tmpUser
     })
@@ -136,7 +140,7 @@ export class TwitterUserControllerService {
   }
 
   public async saveUserV1(data: UserV1) {
-    const user = await this.twitterUserService.save(TwitterEntityUtil.buildUserV1(data))
+    const user = await this.save(TwitterEntityUtil.buildUserV1(data))
     return user
   }
 
@@ -146,12 +150,42 @@ export class TwitterUserControllerService {
   }
 
   public async saveUserV2(data: UserV2) {
-    const user = await this.twitterUserService.save(TwitterEntityUtil.buildUserV2(data))
+    const user = await this.save(TwitterEntityUtil.buildUserV2(data))
     return user
   }
 
   public async saveUsersV2(data: UserV2[]) {
     const users = await this.twitterUserService.saveAll(data.map((v) => TwitterEntityUtil.buildUserV2(v)))
     return users
+  }
+
+  private async save(data: TwitterUser) {
+    const oldUser = await this.twitterUserService.getOneById(data.id)
+    const newUser = await this.twitterUserService.save(data)
+    this.saveHistory(oldUser, newUser)
+    return newUser
+  }
+
+  private async saveHistory(oldUser: TwitterUser, newUser: TwitterUser) {
+    if (!oldUser) {
+      return
+    }
+
+    const entity = 'twitter_user'
+    let fields = ['isActive', 'protected', 'verified']
+    await Promise.allSettled(fields.map((field) => this.historyService.saveBoolean({
+      entity,
+      field,
+      oldValue: BooleanUtil.toNumberStr(oldUser[field]),
+      newValue: BooleanUtil.toNumberStr(newUser[field]),
+    })))
+
+    fields = ['username', 'name', 'location', 'description', 'profileImageUrl', 'profileBannerUrl']
+    await Promise.allSettled(fields.map((field) => this.historyService.saveString({
+      entity,
+      field,
+      oldValue: oldUser[field],
+      newValue: newUser[field],
+    })))
   }
 }
