@@ -172,20 +172,35 @@ export class TwitterUserControllerService {
     }
 
     const entity = 'twitter_user'
+
     let fields = ['isActive', 'protected', 'verified']
-    await Promise.allSettled(fields.map((field) => this.historyService.saveBoolean({
-      entity,
-      field,
-      oldValue: BooleanUtil.toNumberStr(oldUser[field]),
-      newValue: BooleanUtil.toNumberStr(newUser[field]),
-    })))
+    await Promise.allSettled(fields.map(async (field) => {
+      if (oldUser[field] === newUser[field]) {
+        return
+      }
+
+      await this.historyService.saveBoolean({
+        entity,
+        entityId: newUser.id,
+        field,
+        oldValue: BooleanUtil.toNumberStr(oldUser[field]),
+        newValue: BooleanUtil.toNumberStr(newUser[field]),
+      })
+    }))
 
     fields = ['username', 'name', 'location', 'description', 'profileImageUrl', 'profileBannerUrl']
-    await Promise.allSettled(fields.map((field) => this.historyService.saveString({
-      entity,
-      field,
-      oldValue: oldUser[field],
-      newValue: newUser[field],
-    })))
+    await Promise.allSettled(fields.map(async (field) => {
+      if (oldUser[field] === newUser[field]) {
+        return
+      }
+
+      await this.historyService.saveString({
+        entity,
+        entityId: newUser.id,
+        field,
+        oldValue: oldUser[field],
+        newValue: newUser[field],
+      })
+    }))
   }
 }
