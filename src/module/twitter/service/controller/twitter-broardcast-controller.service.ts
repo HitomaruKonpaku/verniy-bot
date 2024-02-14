@@ -41,11 +41,10 @@ export class TwitterBroadcastControllerService {
     }
 
     try {
-      const { data } = await this.twitterApi.broadcast.show(ids.filter((v) => v))
-      const arr = Object.values(data.broadcasts)
+      const { data: res } = await this.twitterApi.broadcast.show(ids.filter((v) => v))
       const dbLimiter = new Bottleneck({ maxConcurrent: 1 })
       const broadcasts = await Promise
-        .all(arr.map((v) => dbLimiter.schedule(() => this.save(v))))
+        .all(Object.entries(res.broadcasts).map(([id, value]) => dbLimiter.schedule(() => this.save(id, value))))
         .then((items) => items.filter((v) => v))
         .then((items) => this.twitterBroadcastService.getManyByIds(items.map((v) => v.id)))
 
@@ -78,17 +77,29 @@ export class TwitterBroadcastControllerService {
     } catch (error) {
       this.logger.error(`fetchPlaylistById: ${error.message}`, { id, mediaKey })
     }
+
     return null
   }
 
-  public async save(data: any) {
+  public async save(id: string, data: any) {
     try {
-      const broadcast = TwitterEntityUtil.buildBroadcast(data)
-      await this.twitterBroadcastService.save(broadcast)
-      return broadcast
+      if (data?.id) {
+        const broadcast = TwitterEntityUtil.buildBroadcast(data)
+        await this.twitterBroadcastService.save(broadcast)
+        return broadcast
+      }
+
+      await this.twitterBroadcastService.updateFields(
+        id,
+        {
+          isActive: false,
+          updatedAt: Date.now(),
+        },
+      )
     } catch (error) {
       this.logger.error(`save: ${error.message}`, { data })
     }
+
     return null
   }
 
@@ -109,6 +120,7 @@ export class TwitterBroadcastControllerService {
     } catch (error) {
       this.logger.error(`savePlaylist: ${error.message}`, { id })
     }
+
     return null
   }
 }
