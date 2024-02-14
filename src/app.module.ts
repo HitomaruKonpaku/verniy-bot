@@ -5,6 +5,7 @@ import { ConfigModule } from './module/config/config.module'
 import { DatabaseModule } from './module/database/database.module'
 import { DiscordModule } from './module/discord/discord.module'
 import { EnvironmentModule } from './module/environment/environment.module'
+import { HistoryModule } from './module/history/history.module'
 import { TrackModule } from './module/track/track.module'
 import { VtuberModule } from './module/vtuber/vtuber.module'
 
@@ -12,8 +13,9 @@ import { VtuberModule } from './module/vtuber/vtuber.module'
   imports: [
     EnvironmentModule,
     ConfigModule,
-    ConfigVarModule,
     DatabaseModule,
+    ConfigVarModule,
+    HistoryModule,
     TrackModule,
     DiscordModule,
     VtuberModule,

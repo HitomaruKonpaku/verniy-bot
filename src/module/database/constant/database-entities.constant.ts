@@ -3,6 +3,7 @@ import { DiscordChannel } from '../../discord/model/discord-channel.entity'
 import { DiscordGuild } from '../../discord/model/discord-guild.entity'
 import { DiscordMessage } from '../../discord/model/discord-message.entity'
 import { DiscordUser } from '../../discord/model/discord-user.entity'
+import { History } from '../../history/model/history.entity'
 import { HolodexChannel } from '../../holodex/model/holodex-channel.entity'
 import { HolodexChannelAccount } from '../../holodex/model/holodex-channel_account.entity'
 import { HolodexExternalStream } from '../../holodex/model/holodex-external-stream.entity'
@@ -48,6 +49,8 @@ import { YoutubeVideo } from '../../youtube/model/youtube-video.entity'
 
 export const DB_ENTITIES = [
   ConfigVar,
+
+  History,
 
   DiscordUser,
   DiscordGuild,
