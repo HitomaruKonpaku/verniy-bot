@@ -10,6 +10,10 @@ export class HistoryService {
   ) { }
 
   public async save(data: Omit<History, 'id' | 'isActive' | 'createdAt'>) {
+    if (data.newValue === data.oldValue) {
+      return null
+    }
+
     const result = await this.historyRepository.save(data)
     return result
   }
