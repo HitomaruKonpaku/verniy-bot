@@ -16,6 +16,7 @@ export class History {
   @Column({ name: 'entity', type: 'text' })
   entity: string
 
+  @Index()
   @Column({ name: 'entity_id', type: 'text' })
   entityId: string
 
