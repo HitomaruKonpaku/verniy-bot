@@ -36,6 +36,8 @@ FROM track AS t
 WHERE t.type = 'twitcasting_live'
   AND t.is_active = TRUE
   AND u.id NOTNULL
+  AND u.is_active = TRUE
+  AND u.is_retired = FALSE
 ORDER BY t.created_at
     `
     const records = await this.repository.query(query)
