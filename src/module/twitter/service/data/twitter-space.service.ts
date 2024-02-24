@@ -75,19 +75,53 @@ export class TwitterSpaceService extends BaseEntityService<TwitterSpace> {
     return space
   }
 
+  /**
+   * Get ids of `live` Space that are being tracked
+   */
   public async getManyLiveIds(): Promise<string[]> {
     const query = `
-SELECT id
-FROM twitter_space
-WHERE is_active = TRUE
-  AND (
-    state = 'live'
-    OR (
-      state = 'scheduled'
-      AND strftime('%s', 'now') * 1000 >= scheduled_start
+WITH "space" AS (
+  SELECT *
+  FROM "twitter_space"
+  WHERE is_active = TRUE
+    AND (
+      state = 'live'
+      OR (
+        state = 'scheduled'
+        AND strftime('%s', 'now') * 1000 >= scheduled_start
+      )
     )
+)
+SELECT id
+FROM "space"
+WHERE id IN (
+    SELECT DISTINCT s.id
+    FROM "space" AS s
+      LEFT JOIN "track" AS t ON (
+        t.user_id = s.creator_id
+        AND t.is_active = TRUE
+        AND t.type = 'twitter_space'
+      )
+    UNION
+    SELECT DISTINCT s.id
+    FROM "space" AS s,
+      json_each(s.host_ids) AS hst
+      LEFT JOIN "track" AS t ON (
+        t.user_id = hst.value
+        AND t.is_active = TRUE
+        AND t.type = 'twitter_space'
+      )
+    UNION
+    SELECT DISTINCT s.id
+    FROM "space" AS s,
+      json_each(s.speaker_ids) AS spk
+      LEFT JOIN "track" AS t ON (
+        t.user_id = spk.value
+        AND t.is_active = TRUE
+        AND t.type = 'twitter_space'
+      )
   )
-ORDER BY updated_at
+ORDER BY modified_at NULLS FIRST
 LIMIT 20
     `
     const spaces = await this.repository.query(query)
