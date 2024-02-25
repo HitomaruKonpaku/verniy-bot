@@ -1,4 +1,4 @@
-import { Column, Entity, Index, TableInheritance, Unique } from 'typeorm'
+import { Column, Entity, TableInheritance, Unique } from 'typeorm'
 import { BaseEntity } from '../../../database/model/base.entity'
 import { dbArrayTransformer } from '../../../database/transformer/transformer'
 import { TrackType } from '../../enum/track-type.enum'
@@ -7,7 +7,6 @@ import { TrackType } from '../../enum/track-type.enum'
 @TableInheritance({ column: { name: 'type', type: 'text' } })
 @Unique(['type', 'userId', 'discordChannelId', 'filterUserId'])
 export abstract class Track extends BaseEntity {
-  @Index()
   @Column({ name: 'type', type: 'text' })
   type: TrackType
 
