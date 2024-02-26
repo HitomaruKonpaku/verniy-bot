@@ -21,17 +21,17 @@
   },
   "homepage": "https://github.com/HitomaruKonpaku/verniy-bot#readme",
   "dependencies": {
-    "@discordjs/rest": "^2.0.0",
+    "@discordjs/rest": "^2.2.0",
     "@googleapis/youtube": "^6.0.0",
     "@nestjs/common": "^9.3.9",
     "@nestjs/core": "^9.3.9",
     "@nestjs/typeorm": "^9.0.1",
-    "axios": "^0.28.0",
+    "axios": "^0.27.2",
     "bottleneck": "^2.19.5",
     "cheerio": "^1.0.0-rc.12",
     "cron": "^2.0.0",
-    "discord-api-types": "^0.37.51",
-    "discord.js": "^14.11.0",
+    "discord-api-types": "^0.37.70",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "fast-xml-parser": "^4.2.5",
     "glob": "^10.2.6",
@@ -58,6 +58,6 @@
     "@typescript-eslint/parser": "^5.27.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "typescript": "^4.7.4"
+    "typescript": "^5.3.3"
   }
 }
