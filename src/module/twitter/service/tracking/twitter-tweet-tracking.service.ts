@@ -129,8 +129,8 @@ export class TwitterTweetTrackingService extends EventEmitter {
             ? TwitterUtil.getTweetUrlByTweet(tweet.retweetedStatus)
             : TwitterUtil.getTweetUrlById(tweet.retweetedStatusId)
           content = [
-            hideLinkEmbed(origTweetUrl),
-            `${icon} ${tweetUrl}`,
+            origTweetUrl,
+            `${icon} ${hideLinkEmbed(tweetUrl)}`,
           ].join('\n')
         }
       } catch (error) {
