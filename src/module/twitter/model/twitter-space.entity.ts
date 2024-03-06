@@ -1,6 +1,7 @@
 import { Column, Entity, Index } from 'typeorm'
 import { BaseExternalEntity } from '../../database/model/base-external.entity'
 import { dbArrayTransformer } from '../../database/transformer/transformer'
+import { AudioSpaceMetadataState } from '../api/enum/twitter-graphql.enum'
 import { SpaceState } from '../enum/twitter-space.enum'
 import { TwitterUser } from './twitter-user.entity'
 
@@ -15,6 +16,10 @@ export class TwitterSpace extends BaseExternalEntity {
   @Index()
   @Column({ name: 'state', type: 'text', default: SpaceState.LIVE })
   state: SpaceState
+
+  @Index()
+  @Column({ name: 'alt_state', type: 'text', nullable: true })
+  altState?: AudioSpaceMetadataState
 
   @Column({ name: 'is_ticketed', type: 'boolean', nullable: true })
   isTicketed?: boolean

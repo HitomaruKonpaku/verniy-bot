@@ -14,19 +14,15 @@ export class TwitterSpaceUtil {
   }
 
   public static parseState(state: AudioSpaceMetadataState): SpaceState {
-    switch (state) {
-      case AudioSpaceMetadataState.NOT_STARTED:
-        return SpaceState.SCHEDULED
-      case AudioSpaceMetadataState.CANCELED:
-        return SpaceState.CANCELED
-      case AudioSpaceMetadataState.RUNNING:
-        return SpaceState.LIVE
-      case AudioSpaceMetadataState.ENDED:
-      case AudioSpaceMetadataState.TIMED_OUT:
-        return SpaceState.ENDED
-      default:
-        return null
+    const obj = {
+      [AudioSpaceMetadataState.NOT_STARTED]: SpaceState.SCHEDULED,
+      [AudioSpaceMetadataState.PRE_PUBLISHED]: SpaceState.SCHEDULED,
+      [AudioSpaceMetadataState.RUNNING]: SpaceState.LIVE,
+      [AudioSpaceMetadataState.TIMED_OUT]: SpaceState.ENDED,
+      [AudioSpaceMetadataState.ENDED]: SpaceState.ENDED,
+      [AudioSpaceMetadataState.CANCELED]: SpaceState.CANCELED,
     }
+    return obj[state] || null
   }
 
   public static getMasterPlaylistUrl(url: string): string {

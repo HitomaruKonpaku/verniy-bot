@@ -155,6 +155,7 @@ export class TwitterEntityUtil {
       modifiedAt: Date.now(),
       creatorId: creator?.user_results?.result?.rest_id || creator?.user_results?.rest_id,
       state: TwitterSpaceUtil.parseState(metadata.state),
+      altState: metadata.state,
       scheduledStart: metadata.scheduled_start,
       startedAt: metadata.start || metadata.started_at,
       endedAt: NumberUtil.toNumberOrUndefined(metadata.ended_at),
