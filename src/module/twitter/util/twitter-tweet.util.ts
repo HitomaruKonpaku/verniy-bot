@@ -5,7 +5,7 @@ import { Content, Instruction, Result } from '../interface/twitter-tweet.interfa
 export class TwitterTweetUtil {
   public static parseId(s: string): string {
     const pattern = /(?<=status\/)\w+/
-    const value = (pattern.exec(s)?.[0] || s).replace(/\?.+/g, '')
+    const value = (pattern.exec(s)?.[0] || s)?.replace(/\?.+/g, '')
     return value
   }
 

@@ -9,7 +9,7 @@ import { TwitterUtil } from './twitter.util'
 export class TwitterSpaceUtil {
   public static parseId(s: string): string {
     const pattern = /(?<=spaces\/)\w+/
-    const value = (pattern.exec(s)?.[0] || s).replace(/\?.+/g, '')
+    const value = (pattern.exec(s)?.[0] || s)?.replace(/\?.+/g, '')
     return value
   }
 
