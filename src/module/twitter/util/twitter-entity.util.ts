@@ -91,6 +91,13 @@ export class TwitterEntityUtil {
       entities: legacy.entities,
       extendedEntities: legacy.extended_entities,
     }
+
+    if (legacy?.entities?.urls?.length) {
+      obj.spaceIds = legacy.entities.urls
+        .filter((v) => v.expanded_url.includes('i/spaces'))
+        .map((v) => TwitterSpaceUtil.parseId(v.expanded_url))
+    }
+
     return obj
   }
 

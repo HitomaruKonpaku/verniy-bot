@@ -57,4 +57,6 @@ export class TwitterTweet extends BaseExternalEntity {
   retweetedStatus?: TwitterTweet
 
   quotedStatus?: TwitterTweet
+
+  spaceIds?: string[]
 }

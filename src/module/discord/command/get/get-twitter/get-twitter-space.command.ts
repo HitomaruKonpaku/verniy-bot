@@ -1,10 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js'
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder, inlineCode } from 'discord.js'
 import { baseLogger } from '../../../../../logger'
 import { TwitterSpace } from '../../../../twitter/model/twitter-space.entity'
 import { TwitterSpaceControllerService } from '../../../../twitter/service/controller/twitter-space-controller.service'
+import { TwitterTweetControllerService } from '../../../../twitter/service/controller/twitter-tweet-controller.service'
 import { TwitterSpaceService } from '../../../../twitter/service/data/twitter-space.service'
 import { TwitterSpaceUtil } from '../../../../twitter/util/twitter-space.util'
+import { TwitterTweetUtil } from '../../../../twitter/util/twitter-tweet.util'
 import { BaseCommand } from '../../base/base-command'
 
 @Injectable()
@@ -16,6 +18,8 @@ export class GetTwitterSpaceCommand extends BaseCommand {
     protected readonly twitterSpaceService: TwitterSpaceService,
     @Inject(TwitterSpaceControllerService)
     protected readonly twitterSpaceControllerService: TwitterSpaceControllerService,
+    @Inject(TwitterTweetControllerService)
+    protected readonly twitterTweetControllerService: TwitterTweetControllerService,
   ) {
     super()
   }
@@ -26,8 +30,10 @@ export class GetTwitterSpaceCommand extends BaseCommand {
       .setDescription('Space')
       .addStringOption((option) => option
         .setName('id')
-        .setDescription('Id')
-        .setRequired(true))
+        .setDescription('Id'))
+      .addStringOption((option) => option
+        .setName('tweet_id')
+        .setDescription('Tweet id or url'))
       .addBooleanOption((option) => option
         .setName('refresh')
         .setDescription('Refresh?'))
@@ -43,7 +49,20 @@ export class GetTwitterSpaceCommand extends BaseCommand {
   public async execute(interaction: ChatInputCommandInteraction) {
     await super.execute(interaction)
 
-    const id = TwitterSpaceUtil.parseId(interaction.options.getString('id', true))
+    let id = TwitterSpaceUtil.parseId(interaction.options.getString('id'))
+    if (!id) {
+      const tweetId = TwitterTweetUtil.parseId(interaction.options.getString('tweet_id'))
+      if (tweetId) {
+        const tweet = await this.twitterTweetControllerService.getByTweetDetail(tweetId)
+        id = tweet.spaceIds?.[0]
+      }
+    }
+
+    if (!id) {
+      await interaction.editReply('Id not found')
+      return
+    }
+
     const refresh = interaction.options.getBoolean('refresh')
     const type = interaction.options.getString('type') || 'raw'
 
@@ -58,7 +77,7 @@ export class GetTwitterSpaceCommand extends BaseCommand {
     }
 
     if (!space) {
-      await interaction.editReply('Space not found')
+      await interaction.editReply(`Space ${inlineCode(id)} not found`)
       return
     }
 

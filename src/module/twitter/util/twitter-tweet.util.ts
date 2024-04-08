@@ -3,6 +3,12 @@
 import { Content, Instruction, Result } from '../interface/twitter-tweet.interface'
 
 export class TwitterTweetUtil {
+  public static parseId(s: string): string {
+    const pattern = /(?<=status\/)\w+/
+    const value = (pattern.exec(s)?.[0] || s).replace(/\?.+/g, '')
+    return value
+  }
+
   public static parseUserTweets(data: any): Result[] {
     const instructions: Instruction[] = data?.user?.result?.timeline_v2?.timeline?.instructions || []
     const results = instructions
