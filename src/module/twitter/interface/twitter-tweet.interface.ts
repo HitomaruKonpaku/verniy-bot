@@ -11,6 +11,7 @@ export interface Result extends Record<string, any> {
   rest_id: string
   legacy: Legacy
   is_translatable: boolean
+  tweet?: Result
 }
 
 export interface TweetResults extends Record<string, any> {

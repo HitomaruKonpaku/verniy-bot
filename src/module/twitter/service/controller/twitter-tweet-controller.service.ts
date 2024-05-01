@@ -86,8 +86,9 @@ export class TwitterTweetControllerService {
   }
 
   private async saveTweetAuthor(result: Result) {
-    const id = result.rest_id
-    const subResult = result.core?.user_result?.result
+    const tmpResult = result.tweet || result
+    const id = tmpResult.rest_id
+    const subResult = tmpResult.core?.user_result?.result
 
     try {
       const user = await this.twitterUserControllerService.patchUser(subResult)

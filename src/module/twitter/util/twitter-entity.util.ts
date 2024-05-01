@@ -74,20 +74,22 @@ export class TwitterEntityUtil {
   }
 
   public static buildTweet(result: TweetResult): TwitterTweet {
-    const { legacy } = result
+    const tmpResult = result.tweet || result
+    const { legacy } = tmpResult
+
     const obj: TwitterTweet = {
-      id: result.rest_id,
+      id: tmpResult.rest_id,
       isActive: true,
       createdAt: new Date(legacy.created_at).getTime(),
       updatedAt: Date.now(),
       authorId: legacy.user_id_str,
       lang: legacy.lang,
       text: legacy.full_text,
-      isTranslatable: result.is_translatable,
+      isTranslatable: tmpResult.is_translatable,
       inReplyToStatusId: legacy.in_reply_to_status_id_str,
       inReplyToUserId: legacy.in_reply_to_user_id_str,
       retweetedStatusId: legacy.retweeted_status_result?.result?.rest_id,
-      quotedStatusId: result.quoted_status_result?.result?.rest_id,
+      quotedStatusId: tmpResult.quoted_status_result?.result?.rest_id,
       entities: legacy.entities,
       extendedEntities: legacy.extended_entities,
     }
