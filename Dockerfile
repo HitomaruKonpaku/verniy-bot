@@ -1,6 +1,6 @@
 # Building
 
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 WORKDIR /app/
 
@@ -11,7 +11,7 @@ RUN npm run build
 
 # Deploy
 
-FROM node:18-alpine
+FROM node:20-alpine
 
 ENV NODE_ENV=production
 
