@@ -7,5 +7,6 @@ logs/
 .tmp/
 
 .env
+!example/.env
 config.json
 config.yaml

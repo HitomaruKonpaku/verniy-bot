@@ -1,0 +1,12 @@
+---
+services:
+  verniy-bot:
+    container_name: verniy-bot
+    image: ghcr.io/hitomarukonpaku/verniy-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./config.yaml:/app/config.yaml
+      - ./logs:/app/logs
+      - ./db:/app/db
