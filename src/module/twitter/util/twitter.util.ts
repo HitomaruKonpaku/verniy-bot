@@ -12,7 +12,9 @@ export class TwitterUtil {
   }
 
   public static getTweetUrl(username: string, tweetId: string): string {
-    return `https://vxtwitter.com/${username}/status/${tweetId}`
+    const host = process.env.TWITTER_TWEET_URL_HOST
+      || 'x.com'
+    return `https://${host}/${username}/status/${tweetId}`
   }
 
   public static getTweetUrlById(tweetId: string): string {
