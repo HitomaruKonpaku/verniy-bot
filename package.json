@@ -39,7 +39,7 @@
     "instagram-stories": "^1.2.2",
     "js-yaml": "^4.1.0",
     "sha1": "^1.1.1",
-    "sqlite3": "^5.1.5",
+    "sqlite3": "^5.1.7",
     "tmi.js": "^1.8.5",
     "twitter-api-v2": "^1.14.3",
     "typeorm": "^0.3.14",

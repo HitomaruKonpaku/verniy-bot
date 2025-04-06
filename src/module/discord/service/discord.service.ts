@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable, NotImplementedException } from '@nestjs/common'
 import { Channel, ChannelType, DMChannel, Guild, MessageCreateOptions, MessagePayload, StageChannel, TextChannel, User, VoiceChannel } from 'discord.js'
 import { baseLogger } from '../../../logger'
 import { ConfigService } from '../../config/service/config.service'
@@ -134,6 +134,11 @@ export class DiscordService {
         if (guild) {
           this.db.saveGuild(guild)
         }
+      }
+
+      if (!channel.isSendable()) {
+        this.logger.warn(`CHANNEL_NOT_SENDABLE | ${JSON.stringify({ id: channel.id })}`)
+        throw new NotImplementedException('CHANNEL_NOT_SENDABLE')
       }
 
       // Send message
