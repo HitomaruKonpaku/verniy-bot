@@ -119,6 +119,10 @@ export class TwitterSpaceUtil {
   public static getEmbedFields(space: TwitterSpace) {
     const fields: APIEmbedField[] = [
       {
+        name: 'ID',
+        value: codeBlock(space.id),
+      },
+      {
         name: '📄 Title',
         value: codeBlock(space.title),
       },
@@ -163,14 +167,14 @@ export class TwitterSpaceUtil {
       )
     }
 
-    if ([SpaceState.LIVE].includes(space.state) && space.playlistUrl) {
-      fields.push(
-        {
-          name: 'Open with...',
-          value: `Copy [this link](${TwitterSpaceUtil.toDynamicPlaylistUrl(space.playlistUrl)}) & open with MPV / IINA / VLC...`,
-        },
-      )
-    }
+    // if ([SpaceState.LIVE].includes(space.state) && space.playlistUrl) {
+    //   fields.push(
+    //     {
+    //       name: 'Open with...',
+    //       value: `Copy [this link](${TwitterSpaceUtil.toDynamicPlaylistUrl(space.playlistUrl)}) & open with MPV / IINA / VLC...`,
+    //     },
+    //   )
+    // }
 
     return fields
   }
