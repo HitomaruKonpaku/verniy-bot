@@ -31,7 +31,7 @@
     "cheerio": "^1.0.0-rc.12",
     "cron": "^2.0.0",
     "discord-api-types": "^0.37.70",
-    "discord.js": "^14.14.1",
+    "discord.js": "^14.21.0",
     "dotenv": "^16.3.1",
     "fast-xml-parser": "^4.2.5",
     "glob": "^10.2.6",
@@ -47,7 +47,7 @@
     "winston": "^3.7.2",
     "winston-daily-rotate-file": "^4.7.1",
     "ws": "^8.13.0",
-    "youtubei.js": "^5.8.0"
+    "youtubei.js": "^15.0.1"
   },
   "devDependencies": {
     "@types/cron": "^2.0.0",
