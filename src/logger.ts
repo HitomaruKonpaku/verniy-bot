@@ -35,7 +35,7 @@ const logger = winston.createLogger({
     format.metadata({ fillExcept: ['timestamp', 'level', 'message'] }),
     format((info) => Object.assign(info, { level: info.level.toUpperCase() }))(),
     format((info) => {
-      const { metadata } = info
+      const metadata = info.metadata as any
       if (metadata.context) {
         Object.assign(info, { context: metadata.context })
         delete metadata.context
