@@ -53,7 +53,7 @@
   "devDependencies": {
     "@types/cron": "^2.0.0",
     "@types/js-yaml": "^4.0.5",
-    "@types/node": "^16.18.39",
+    "@types/node": "^22.19.0",
     "@types/tmi.js": "^1.8.3",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
