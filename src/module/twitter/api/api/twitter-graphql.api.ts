@@ -184,6 +184,9 @@ export class TwitterGraphqlApi extends TwitterBaseApi {
         Object.assign(obj, { [key]: { ...obj[key], ...value[key] } })
       })
     }
+    Object.keys(obj).forEach((key) => {
+      obj[key] = JSON.stringify(obj[key])
+    })
     return obj
   }
 

@@ -5,6 +5,7 @@ import { TwitterFleetApi } from './api/twitter-fleet.api'
 import { TwitterGraphqlApi } from './api/twitter-graphql.api'
 import { TwitterGuestApi } from './api/twitter-guest.api'
 import { TwitterLiveVideoStreamApi } from './api/twitter-live-video-stream.api'
+import { TwitterTransaction } from './twitter-transaction'
 import { TwitterApiData } from './twitter.api.data'
 
 @Injectable()
@@ -16,6 +17,8 @@ export class TwitterApi {
   public guest: TwitterGuestApi
   public broadcast: TwitterBroadcastApi
   public liveVideoStream: TwitterLiveVideoStreamApi
+
+  public readonly transaction = new TwitterTransaction()
 
   constructor() {
     this.createData()

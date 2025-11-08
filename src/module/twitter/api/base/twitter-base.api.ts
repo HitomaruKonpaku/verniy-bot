@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosHeaders, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { baseLogger } from '../../../../logger'
 import { TwitterApi } from '../twitter.api'
 import { TWITTER_API_URL, TWITTER_PUBLIC_AUTHORIZATION, TWITTER_PUBLIC_AUTHORIZATION_2 } from '../twitter.constant'
@@ -12,39 +12,42 @@ export class TwitterBaseApi {
 
   constructor(
     protected readonly api: TwitterApi,
-    path: string,
+    protected readonly path: string,
   ) {
     this.createClient(path)
   }
 
-  protected async getGuestHeaders() {
+  protected async getGuestHeaders(extraHeaders?: Record<string, any>) {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION,
       'x-guest-token': await this.api.data.getGuestToken(),
       'x-guest-token-type': 1,
+      ...(extraHeaders || {}),
     }
     return headers
   }
 
-  protected async getGuest2Headers() {
+  protected async getGuest2Headers(extraHeaders?: Record<string, any>) {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION_2,
       'x-guest-token': await this.api.data.getGuestToken2(),
       'x-guest-token-type': 2,
+      ...(extraHeaders || {}),
     }
     return headers
   }
 
-  protected async getGuestNewHeaders() {
+  protected async getGuestNewHeaders(extraHeaders?: Record<string, any>) {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION,
       'x-guest-token': await this.api.data.getGuestTokenDocumentCookie(),
       'x-guest-token-type': 3,
+      ...(extraHeaders || {}),
     }
     return headers
   }
 
-  protected getAuthHeaders() {
+  protected getAuthHeaders(extraHeaders?: Record<string, any>) {
     const cookies = {
       auth_token: process.env.TWITTER_AUTH_TOKEN,
       ct0: process.env.TWITTER_CSRF_TOKEN,
@@ -57,6 +60,7 @@ export class TwitterBaseApi {
       authorization: TWITTER_PUBLIC_AUTHORIZATION,
       cookie,
       'x-csrf-token': process.env.TWITTER_CSRF_TOKEN,
+      ...(extraHeaders || {}),
     }
     return headers
   }
@@ -114,6 +118,23 @@ export class TwitterBaseApi {
   }
 
   private async handleRequest(config: AxiosRequestConfig) {
+    await this.handleRequestXClientTransactionId(config)
+    await this.handleRequestXGuestToken(config)
+  }
+
+  private async handleRequestXClientTransactionId(config: AxiosRequestConfig) {
+    const headers = config.headers as AxiosHeaders
+    const url = `/${config.url}`
+    try {
+      const transactionId = await this.api.transaction.generateTransactionId(config.method, url)
+      headers.set('x-client-transaction-id', transactionId)
+    } catch (error) {
+      this.logger.error(`handleRequest#x-client-transaction-id: ${error.message} | ${JSON.stringify({ url })}`)
+      throw error
+    }
+  }
+
+  private async handleRequestXGuestToken(config: AxiosRequestConfig) {
     try {
       const guestToken = config.headers['x-guest-token']
       const guestTokenType = Number(config.headers['x-guest-token-type'])
@@ -136,7 +157,7 @@ export class TwitterBaseApi {
         }
       }
     } catch (error) {
-      this.logger.error(`handleRequest: ${error.message}`)
+      this.logger.error(`handleRequest#x-guest-token: ${error.message}`)
     }
   }
 
