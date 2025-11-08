@@ -139,7 +139,7 @@ export class TwitterBaseApi {
       headers.set('x-client-transaction-id', transactionId)
     } catch (error) {
       this.logger.error(`handleRequest#x-client-transaction-id: ${error.message} | ${JSON.stringify({ url })}`)
-      throw error
+      // throw error
     }
   }
 
