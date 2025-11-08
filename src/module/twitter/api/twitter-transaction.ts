@@ -12,7 +12,7 @@ interface TransactionItem {
  * @since 2025-11-08
  */
 export class TwitterTransaction {
-  private readonly logger = baseLogger.child({ label: '[TwitterTransaction]' })
+  private readonly logger = baseLogger.child({ context: TwitterTransaction.name })
 
   private readonly ttl = 1000
 
