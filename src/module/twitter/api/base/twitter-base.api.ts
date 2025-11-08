@@ -17,6 +17,15 @@ export class TwitterBaseApi {
     this.createClient(path)
   }
 
+  /**
+   * @param path
+   * @returns /graphql/ZHSN3WlvahPKVvUxVQbg1A/UserByScreenName
+   */
+  protected toTransactionUrl(path: string) {
+    const url = ['', this.path, path].join('/')
+    return url
+  }
+
   protected async getGuestHeaders(extraHeaders?: Record<string, any>) {
     const headers = {
       authorization: TWITTER_PUBLIC_AUTHORIZATION,
@@ -124,7 +133,7 @@ export class TwitterBaseApi {
 
   private async handleRequestXClientTransactionId(config: AxiosRequestConfig) {
     const headers = config.headers as AxiosHeaders
-    const url = `/${config.url}`
+    const url = this.toTransactionUrl(config.url)
     try {
       const transactionId = await this.api.transaction.generateTransactionId(config.method, url)
       headers.set('x-client-transaction-id', transactionId)
