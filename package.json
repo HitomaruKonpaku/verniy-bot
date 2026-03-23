@@ -47,7 +47,7 @@
     "winston": "^3.7.2",
     "winston-daily-rotate-file": "^4.7.1",
     "ws": "^8.13.0",
-    "x-client-transaction-id": "^0.1.9",
+    "x-client-transaction-id": "^0.2.0",
     "youtubei.js": "^16.0.1"
   },
   "devDependencies": {
