@@ -28,7 +28,7 @@ export class TwitterCronService {
     this.twitterUserCronService.start()
     this.twitterSpaceCronService.start()
     this.twitterSpacePlaylistCronService.start()
-    this.twitterTweetCronService.start()
-    this.twitterBroadcastCronService.start()
+    // this.twitterTweetCronService.start()
+    // this.twitterBroadcastCronService.start()
   }
 }
